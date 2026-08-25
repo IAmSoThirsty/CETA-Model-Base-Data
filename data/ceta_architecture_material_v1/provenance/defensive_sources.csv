@@ -1,0 +1,21 @@
+layer,name,upstream,local_status
+threat_catalogs,MITRE_ATLAS,https://github.com/mitre-atlas/atlas-data,source-derived release index embedded
+threat_catalogs,genai_incidents,https://github.com/emmanuelgjr/genai_incidents,live schema/inventory embedded
+threat_catalogs,AVID,https://github.com/avidml,live repository inventory embedded
+threat_catalogs,OWASP_GenAI_Data_Security_Initiative,https://github.com/GenAI-Security-Project/GenAI-Data-Security-Initiative,21-risk taxonomy embedded
+labeled_datasets,NVIDIA_Aegis_2,https://huggingface.co/datasets/nvidia/Aegis-AI-Content-Safety-Dataset-2.0,taxonomy/splits embedded; large raw payload remote
+labeled_datasets,BeaverTails,https://huggingface.co/datasets/PKU-Alignment/BeaverTails,14-category taxonomy embedded; large raw payload remote
+labeled_datasets,Do_Not_Answer,https://github.com/Libr-AI/do-not-answer,exact dataset artifact identities embedded; large CSVs remote
+labeled_datasets,JBB_Behaviors,https://huggingface.co/datasets/JailbreakBench/JBB-Behaviors,200 behavior records embedded from current public viewer
+labeled_datasets,HarmBench,https://github.com/centerforaisafety/HarmBench,canonical behavior artifact identity embedded; large CSV remote
+labeled_datasets,securecode_aiml,https://github.com/scthornton/securecode-aiml,747-record dataset metadata embedded; raw JSONL/parquet remote
+labeled_datasets,Defensive_LLM,https://huggingface.co/datasets/Lateos/Defensive-LLM,public sample/config metadata embedded; sample blobs remote
+probes_and_frameworks,PurpleLlama_CyberSecEval,https://github.com/meta-llama/PurpleLlama,framework inventory + selected small data embedded
+probes_and_frameworks,NVIDIA_garak,https://github.com/NVIDIA/garak,live capability snapshot embedded; repo tree remote
+probes_and_frameworks,Microsoft_PyRIT,https://github.com/microsoft/PyRIT,live capability/version snapshot embedded; repo tree remote
+probes_and_frameworks,DeepTeam,https://github.com/confident-ai/deepteam,live capability/version snapshot embedded; repo tree remote
+probes_and_frameworks,meetrais_genai_security,https://github.com/meetrais/genai-security,repository/license identity embedded; repo tree remote
+probes_and_frameworks,awesome_ai_agent_security,https://github.com/zhangjunmengyang/awesome-ai-agent-security,architecture/capability snapshot embedded; repo tree remote
+reference_maps,awesome_ai_security,https://github.com/ottosulin/awesome-ai-security,current category map embedded; full link list remote
+reference_maps,awesome_llm_security,https://github.com/corca-ai/awesome-llm-security,repository identity embedded; full link list remote
+reference_maps,awesome_ai_security_tools,https://github.com/scadastrangelove/awesome-ai-security-tools,repository identity embedded; full link list remote

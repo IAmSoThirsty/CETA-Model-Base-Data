@@ -164,6 +164,12 @@ python scripts/verify_all.py
 
 The verification path is local-only. It performs no remote fetch.
 
+### Supplied architecture and defensive-evaluation material
+
+The provenance-bound human-relations/stewardship corpus and defensive evaluation subset are materialized under `data/ceta_architecture_material_v1/`. They provide 406 lifecycle-section awareness records, 1,624 situational templates, 21 role contracts, 84 role-conditioned cases, 20 public scenarios, five unacceptable-failure lessons, operation-specific risk/equivalence policy, and 200 defensive behaviors.
+
+These records do not silently alter `ceta_curriculum_v2`. They are validated source material for adjudicating a future structured curriculum. Private challenge questions and their answer key remain outside the repository and are hash-bound as evaluation-only material. See `docs/SUPPLIED_DATA_INTEGRATION.md`.
+
 ### Lightning H100 handoff
 
 Keep the Studio on CPU while preparing it. After the operator explicitly switches the Studio to an H100, launch the governed epoch with:

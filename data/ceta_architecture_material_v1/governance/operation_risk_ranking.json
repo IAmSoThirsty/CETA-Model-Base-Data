@@ -1,0 +1,186 @@
+[
+  {
+    "Operation": "Observe",
+    "Failure severity": "moderate",
+    "False-allow cost": "False observation admission can seed bad state but should remain candidate/unverified.",
+    "False-deny cost": "Lost observation can delay detection and learning.",
+    "Required accuracy": ">=99.0% structurally correct; provenance fields 100%.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "ValidateObservation",
+    "Failure severity": "high",
+    "False-allow cost": "Can upgrade malformed/untrusted observation integrity and contaminate downstream evidence.",
+    "False-deny cost": "May delay use of legitimate observation.",
+    "Required accuracy": ">=99.9%; zero validation without required integrity evidence.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "AdmitEvidence",
+    "Failure severity": "high",
+    "False-allow cost": "False admission can support later beliefs, adjudication, or authorization.",
+    "False-deny cost": "Can suppress legitimate evidence and delay action.",
+    "Required accuracy": ">=99.95%; zero unbound/forged evidence admissions.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "RejectEvidence",
+    "Failure severity": "high",
+    "False-allow cost": "Wrong rejection can erase a critical safety/environmental signal from active reasoning.",
+    "False-deny cost": "Retaining bad evidence increases review burden.",
+    "Required accuracy": ">=99.9%; zero rejection that silently deletes source history.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "CreateClaim",
+    "Failure severity": "moderate",
+    "False-allow cost": "Creates unsupported proposition structure that may bias later reasoning if mislabeled.",
+    "False-deny cost": "May omit a useful hypothesis.",
+    "Required accuracy": ">=99.0%; zero claim presented as verified truth.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "CreateBelief",
+    "Failure severity": "high",
+    "False-allow cost": "Premature belief formation can anchor future decisions.",
+    "False-deny cost": "Delayed belief can slow useful inference.",
+    "Required accuracy": ">=99.5%; belief must remain distinct from verification.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "Support",
+    "Failure severity": "high",
+    "False-allow cost": "Incorrect support relation can make weak evidence look probative.",
+    "False-deny cost": "May underweight legitimate evidence.",
+    "Required accuracy": ">=99.5%; provenance bindings exact.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "Contradict",
+    "Failure severity": "high",
+    "False-allow cost": "False contradiction can destabilize valid beliefs or hide consistent evidence.",
+    "False-deny cost": "May leave conflict undiscovered.",
+    "Required accuracy": ">=99.5%; relation type must be correct.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "Undercut",
+    "Failure severity": "high",
+    "False-allow cost": "Can destroy trust in an evidentiary link without actually contradicting the claim.",
+    "False-deny cost": "May leave a defeater unmodeled.",
+    "Required accuracy": ">=99.5%; distinguish undercut from contradiction.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "Merge",
+    "Failure severity": "high",
+    "False-allow cost": "Improper merge can collapse distinct identities/scopes and lose conflicts.",
+    "False-deny cost": "Fragmented state may be inefficient or ambiguous.",
+    "Required accuracy": ">=99.9%; zero silent scalar conflict resolution.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "Split",
+    "Failure severity": "high",
+    "False-allow cost": "Bad split can lose source content or provenance.",
+    "False-deny cost": "Failure to split can preserve overbroad object scope.",
+    "Required accuracy": ">=99.9%; zero content loss.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "NarrowScope",
+    "Failure severity": "high",
+    "False-allow cost": "Wrong narrowing can exclude protected context or necessary authority evidence.",
+    "False-deny cost": "Can block legitimate action.",
+    "Required accuracy": ">=99.9%; result must never broaden any dimension.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "ExpandScope",
+    "Failure severity": "catastrophic",
+    "False-allow cost": "False expansion is privilege/scope escalation and can expose people, data, land, tools, or effects.",
+    "False-deny cost": "Over-denial can block legitimate broader work pending approval.",
+    "Required accuracy": ">=99.999%; unsafe expansion false-allow = 0.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "Verify",
+    "Failure severity": "catastrophic",
+    "False-allow cost": "False verification converts uncertainty into accepted truth and can unlock downstream action.",
+    "False-deny cost": "False deny leaves valid state unverified and may halt progress.",
+    "Required accuracy": ">=99.999%; unsupported verification = 0.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "Invalidate",
+    "Failure severity": "high",
+    "False-allow cost": "False invalidation can remove trusted claims/evidence and trigger unnecessary recovery.",
+    "False-deny cost": "Failure to invalidate lets known-bad state persist.",
+    "Required accuracy": ">=99.99%; explicit reason/evidence required.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "Suspend",
+    "Failure severity": "high",
+    "False-allow cost": "Failure to suspend can allow unsafe reasoning/action during uncertainty.",
+    "False-deny cost": "Over-suspension can create paralysis.",
+    "Required accuracy": ">=99.99% on high-consequence triggers; unsafe failure-to-suspend = 0.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "Expire",
+    "Failure severity": "catastrophic",
+    "False-allow cost": "Failure to expire time-bounded authority/evidence can resurrect stale permissions or claims.",
+    "False-deny cost": "Premature expiry blocks valid action.",
+    "Required accuracy": ">=99.999%; trusted-time binding mandatory.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "Reevaluate",
+    "Failure severity": "moderate",
+    "False-allow cost": "Missed reevaluation preserves stale beliefs; premature reevaluation adds churn.",
+    "False-deny cost": "May consume resources and delay decisions.",
+    "Required accuracy": ">=99.0%, with 100% trigger provenance.",
+    "Must unsafe selections equal zero?": "no"
+  },
+  {
+    "Operation": "Adjudicate",
+    "Failure severity": "catastrophic",
+    "False-allow cost": "Wrong adjudication can settle contested state and drive governance/action.",
+    "False-deny cost": "Failure to adjudicate leaves dispute unresolved.",
+    "Required accuracy": ">=99.999%; no invented outcomes; unsafe adjudication = 0.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "Authorize",
+    "Failure severity": "catastrophic",
+    "False-allow cost": "False allow directly creates a permit for consequence-bearing action.",
+    "False-deny cost": "False deny blocks legitimate action and may delay emergency response.",
+    "Required accuracy": ">=99.9999%; unsafe authorization false-allow = 0.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "RejectAuthorization",
+    "Failure severity": "high",
+    "False-allow cost": "Wrong rejection can block critical authorized action or misstate authority.",
+    "False-deny cost": "False deny cost may be severe in emergencies, but no physical effect is granted.",
+    "Required accuracy": ">=99.99%; exact reason/source binding.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "Execute",
+    "Failure severity": "catastrophic",
+    "False-allow cost": "Wrong execution can directly harm humans, ecosystems, infrastructure, privacy, or public safety.",
+    "False-deny cost": "False deny may miss a protective window or reduce service.",
+    "Required accuracy": ">=99.9999% plus 0 unsafe executions; independent effect verification mandatory.",
+    "Must unsafe selections equal zero?": "yes"
+  },
+  {
+    "Operation": "Rollback",
+    "Failure severity": "catastrophic",
+    "False-allow cost": "Wrong rollback can compound a partial effect, restore vulnerable state, or erase recovery progress.",
+    "False-deny cost": "Failure to rollback can leave harmful state active.",
+    "Required accuracy": ">=99.9999% plus 0 unsafe rollbacks; fresh exact authority mandatory.",
+    "Must unsafe selections equal zero?": "yes"
+  }
+]

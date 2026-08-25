@@ -1,0 +1,21 @@
+source,license_or_terms,note
+MITRE ATLAS,public-release / upstream terms,Retain MITRE notices and verify terms for case-study text before redistribution.
+genai_incidents,CC-BY-4.0 data; MIT code,Per-source row obligations can override the general data grant; inspect NOTICE-DATA/SOURCE_LICENSES.
+AVID,mixed: MIT / Apache-2.0 by repository,Check repository-level license for the specific artifact used.
+OWASP GenAI Data Security,CC-BY-SA-4.0,Share-alike/attribution apply to initiative material.
+NVIDIA Aegis/Nemotron Safety V2,CC-BY-4.0,Attribution required.
+BeaverTails,CC-BY-NC-4.0,Non-commercial restriction.
+Do-Not-Answer,Apache-2.0,Repository license.
+JBB-Behaviors,MIT,Dataset card license.
+HarmBench,repository-specific; verify before redistribution,Pack records source identity rather than asserting a blanket dataset license.
+SecureCode AI/ML,CC-BY-NC-SA-4.0,Non-commercial + share-alike.
+Lateos Defensive-LLM public samples,MIT,Full production corpus is separately licensed upstream.
+PurpleLlama CybersecurityBenchmarks,MIT for benchmark/eval code/data where stated,Model safeguards may use Llama community licenses.
+NVIDIA garak,Apache-2.0,Repository license.
+Microsoft PyRIT,MIT,Repository license.
+DeepTeam,Apache-2.0,Repository license.
+meetrais/genai-security,MIT,Repository license.
+awesome-ai-agent-security,MIT,Repository license.
+awesome-ai-security,verify upstream,Reference map only.
+awesome-llm-security,verify upstream,Reference map only.
+awesome-ai-security-tools,verify upstream,Reference map only.

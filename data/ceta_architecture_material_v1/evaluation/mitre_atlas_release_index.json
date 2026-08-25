@@ -1,0 +1,40 @@
+{
+  "content_version": "2026.07",
+  "format_version": "6.0.0",
+  "release_date": "2026-07-31",
+  "commit": "2306eca",
+  "counts": {
+    "matrix": 1,
+    "tactics": 16,
+    "techniques": 101,
+    "subtechniques": 77,
+    "mitigations": 37,
+    "case_studies": 68
+  },
+  "added_or_highlighted_techniques": [
+    "Publish Poisoned AI Artifacts",
+    "Manipulate AI Model: Modify Prompt Construction Logic",
+    "AI Agent Tool Poisoning: Definition and Instructions",
+    "AI Agent Tool Poisoning: Implementation",
+    "AI Agent Tool Poisoning: Runtime Response"
+  ],
+  "added_mitigations": [
+    "AI Red Team",
+    "Limit AI Workload Resource Consumption"
+  ],
+  "updated_mitigations": [
+    "Memory Hardening",
+    "Generative AI Model Alignment",
+    "Generative AI Guardrails",
+    "Generative AI Guidelines",
+    "Maintain AI Dataset Provenance",
+    "Segmentation of AI Agent Components"
+  ],
+  "added_case_studies": [
+    "Prompt-Based Attacks Against Gemini via Calendar Invitations",
+    "Poisoned GGUF Templates: Inference-Time Supply Chain Attack",
+    "Model Namespace Reuse Supply Chain Attack",
+    "ZombieAgent: Data Exfiltration Attack on ChatGPT",
+    "Claude Code GitHub Action Secret Exposure"
+  ]
+}

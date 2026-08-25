@@ -2,8 +2,8 @@
   "schema_version": 1,
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
-  "file_count": 135,
-  "content_root": "sha256:bbbe5999797b45f3345198bf3d14996d6202b8bb7e68554f2f88520f873e7561",
+  "file_count": 164,
+  "content_root": "sha256:341bdbe8e4cc4307274181f69dad9fcd329c157a4947e40c3a70b60e20f30f20",
   "files": [
     {
       "path": ".gitattributes",
@@ -17,8 +17,8 @@
     },
     {
       "path": "README.md",
-      "size": 8961,
-      "sha256": "1c0c29bf98398b2d3cc4d6167257b2604b23bba17d2a58da954e3651b546b579"
+      "size": 9742,
+      "sha256": "1a4808fe329dc81ddc9d6062096d0410a469c084b4a585ef8c34ffc24eb220ce"
     },
     {
       "path": "STATUS.md",
@@ -39,6 +39,131 @@
       "path": "corpus/local_file_manifest.json",
       "size": 1745066,
       "sha256": "65f4e0e50e1e680ef0df7a5855624216f843d1fd8b553fdf81aadcc50e2c1c5f"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/evaluation/aegis_safety_taxonomy.json",
+      "size": 642,
+      "sha256": "df39a057e44b2d2621ee337035d3cbc62bbce741bca5bac867415a3fcb2ef2b0"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/evaluation/beavertails_harm_categories.json",
+      "size": 487,
+      "sha256": "e1173e25ce9ab667c97b53af8eec0af0cc778b7dc532cef6707bb22320c160be"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/evaluation/jbb_benign_behaviors.csv",
+      "size": 20571,
+      "sha256": "b51ed0d426dfd642a0bd7c4bf7a2713a6cf58b450342d3792101c84bea05697d"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/evaluation/jbb_harmful_behaviors.csv",
+      "size": 23113,
+      "sha256": "d7ac575536c40fb97e95de54363af072e6e9293764d47f1e74afce6c6778c018"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/evaluation/mitre_atlas_release_index.json",
+      "size": 1215,
+      "sha256": "1a682d2064b83d9c2f8dac52802a02efc881cb18bbf6314a70ee8c84af8cbdc2"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/evaluation/owasp_dsgai_risk_taxonomy.json",
+      "size": 1823,
+      "sha256": "86db15a0977439b4e3bebb5a9885649d8b481c17333aacd845e7eaf87b1fc80a"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/evaluation/purplellama_autopatch_samples.json",
+      "size": 182,
+      "sha256": "d2988eafc0bd2184b9887f73a0e31b62b3812095371fe8d851bfb3c55ed71471"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/governance/operation_risk_ranking.json",
+      "size": 8823,
+      "sha256": "da24a60682cc1ed5d5fb76a7a626b25d991352779aaa0afe8ba3f6d168ac7f2f"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/governance/semantic_equivalence_by_operation.json",
+      "size": 4097,
+      "sha256": "7bea4a858ea80f26cd18109041fe4405da05a6c78cdada11c2a69a594eb75156"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/manifest.json",
+      "size": 7040,
+      "sha256": "2b9e381216bac53552f66ff9ddbfdc48d711d73ba1161bec490a2688d16a56d4"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/maps/high_value_stewardship_section_map.csv",
+      "size": 22289,
+      "sha256": "78195e4cda948f223355e58482ceeeb55cc58e16931b5434b68dd87d299d620f"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/maps/section_dependency_edges.csv",
+      "size": 188143,
+      "sha256": "09170b90763352302fc9de398b963cd87c9613e157afbd88edd6cd231e913534"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/maps/section_role_matrix.csv",
+      "size": 81416,
+      "sha256": "03df126ba21a8624176a1acaf43a37d375a69b42f847554f96e5fa3a7e0cf9ab"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/mission/DEPLOYMENT_BOUNDARY.json",
+      "size": 1360,
+      "sha256": "b974a54d0b78ba7c859b81738f3ff7f8e69c3f2fd44a347f916f97dc82b8cfa9"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/mission/MISSION_PARAGRAPH.txt",
+      "size": 1255,
+      "sha256": "0341bf51f8a0e850e4d9d9991578d8cd1a880f6e59dab49da2a38760d54f18f6"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/provenance/defensive_license_matrix.csv",
+      "size": 1545,
+      "sha256": "a5e5fb3879d5674f3dc7bb99b1591b9b7ee63c1ac279bc041aae5d50c167e1c9"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/provenance/defensive_remote_artifacts.csv",
+      "size": 1689,
+      "sha256": "8348c4f91762dd6e8fb5b8bb82c4a75b358865300080452622f65d322f373b5d"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/provenance/defensive_retrieval_status.json",
+      "size": 1594,
+      "sha256": "80e3372955f07abdfde3718514a9bb6f3d273c3312f3fdbc7d235e201944aec3"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/provenance/defensive_sources.csv",
+      "size": 2781,
+      "sha256": "47ada3f8eec65b27ac27e875bf908fd0048a209b720793b7fcc414e0a365cfdc"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/training/public_scenarios.jsonl",
+      "size": 30913,
+      "sha256": "03c2434d973faedc2a1c2792874653cbc508e253576c33a6fbd52944d5411764"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/training/role_conditioned_cases_84.jsonl",
+      "size": 73878,
+      "sha256": "8a5aa70f621abcaf1406ec34c6f4240dd4f4d6c90ae4197fc1af89ba19011311"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/training/role_contracts_21.json",
+      "size": 37822,
+      "sha256": "6177fc8ed7b47b7170d958f394dc0e4ec65148caf6ac0eeab2b3c49fc4f28250"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/training/section_awareness_406.jsonl",
+      "size": 1641820,
+      "sha256": "3042714eb01124650c2e6c28b3f7dd6bc401f99495a77205598e7f54bbf8ae31"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/training/section_situational_templates_1624.jsonl",
+      "size": 3695230,
+      "sha256": "7cc44e841badbbfde069f95cc0efc59a914c1ec34925d43477e885fa315eee9b"
+    },
+    {
+      "path": "data/ceta_architecture_material_v1/training/unacceptable_failures.json",
+      "size": 3856,
+      "sha256": "55de636301126fb799c3f405611218e220366ed50dc7659962aad614cf7addc9"
     },
     {
       "path": "data/ceta_curriculum_v2/heldout.jsonl",
@@ -84,6 +209,11 @@
       "path": "docs/RESTART_AND_RECOVERY.md",
       "size": 1791,
       "sha256": "fedee81db61421627a1a1f36f0017bed72b32a58b3406065bb0e1699687d6450"
+    },
+    {
+      "path": "docs/SUPPLIED_DATA_INTEGRATION.md",
+      "size": 2742,
+      "sha256": "7d0afcc9bf63c8f93146101fd286a7332aa5cd9f95699328edabe55ab2f909b6"
     },
     {
       "path": "docs/TRAINING_BOUNDARY.md",
@@ -261,6 +391,11 @@
       "sha256": "1375177ad3954d80c217cc4b2444db3ba303abe0f4b76d0583eedd6f3cab983d"
     },
     {
+      "path": "scripts/ingest_supplied_architecture_data.py",
+      "size": 16700,
+      "sha256": "3e68b4270ce6e58fd3e1abea4a2c7a45a9fecb3b6106a69cfc6c9baaebb6a12b"
+    },
+    {
       "path": "scripts/run_bounded_models.py",
       "size": 2987,
       "sha256": "229b53f4bd653c7248e215b55a3f99c17826f8cfb1c9e501e6f13ecc2bce0813"
@@ -281,6 +416,11 @@
       "sha256": "8c703af2fafcf70d1fbca5401ee2cd4e9a3eb3d919744eb30a0e92083daa22e4"
     },
     {
+      "path": "scripts/validate_architecture_material.py",
+      "size": 5784,
+      "sha256": "8181a7bc0b48b06a5befdbe635a76bfc5d5a153f896f60027cfff44eca211835"
+    },
+    {
       "path": "scripts/validate_ceta_curriculum.py",
       "size": 11335,
       "sha256": "b5c2136d3220dbc28d4f72b3f634daaaa7f2bc6b15a6bbfe29e4fc2d271ef4b5"
@@ -292,8 +432,8 @@
     },
     {
       "path": "scripts/verify_all.py",
-      "size": 1170,
-      "sha256": "9437f3e2fd77fb1b12d12c95ef49b9f77d5219052e55f1fa8283e341c6072e98"
+      "size": 1249,
+      "sha256": "091ba1d50183abe956024ee528b30f465c4329a342c139594b116c45a7b224ea"
     },
     {
       "path": "scripts/verify_corpus_manifest.py",
@@ -567,8 +707,8 @@
     },
     {
       "path": "src/training/source_policy.py",
-      "size": 7644,
-      "sha256": "34485957b54a3cc81297a2d287ded57871c00ec54a03d1af9a8af96a3d2ec52f"
+      "size": 7796,
+      "sha256": "a81d7cbd29bb1bfd95d14a0a2f1d4cd3fab69605d9600b82f2224d3de5eab6f6"
     },
     {
       "path": "src/training/worlds.py",
@@ -669,6 +809,11 @@
       "path": "tests/test_source_boundaries.py",
       "size": 5912,
       "sha256": "a70fa9779acf3a13d2a4894fe005541040a1a6e1c2a704ad1595d44b1a5e7d5f"
+    },
+    {
+      "path": "tests/test_supplied_architecture_data.py",
+      "size": 2120,
+      "sha256": "bafae4530b84df4b6adebe95bfe12139de51ba9fce4adf85677d1772b6fb8c9e"
     },
     {
       "path": "tests/test_transition_history.py",

@@ -1,0 +1,26 @@
+{
+  "assembled_at": "2026-08-25",
+  "purpose": "single folder of defensive AI-security knowledge, labeled safety/eval data, probe-framework intelligence, and reference maps",
+  "embedded_full_payloads": [
+    "02_labeled_datasets/JBB_Behaviors/harmful-behaviors.csv (100 records)",
+    "02_labeled_datasets/JBB_Behaviors/benign-behaviors.csv (100 records)",
+    "01_threat_catalogs/OWASP_GenAI_Data_Security/DSGAI_2026_RISK_TAXONOMY.json",
+    "02_labeled_datasets/NVIDIA_Aegis_2/SAFETY_TAXONOMY.json",
+    "02_labeled_datasets/BeaverTails/HARM_CATEGORIES.json",
+    "01_threat_catalogs/MITRE_ATLAS/ATLAS_2026.07_RELEASE_INDEX.json",
+    "03_probes_and_frameworks/PurpleLlama_CyberSecEval/autopatch_samples.json"
+  ],
+  "not_embedded_due_transfer_boundary": [
+    "MITRE ATLAS full YAML/STIX/Excel release assets",
+    "genai_incidents bulk incident corpus",
+    "Aegis/Nemotron 28.5MB Xet-backed JSON payload",
+    "BeaverTails 39.5MB compressed/Xet payload",
+    "Do-Not-Answer multi-megabyte English/Chinese CSVs",
+    "HarmBench 194KB behavior CSV",
+    "SecureCode AI/ML 747-record JSONL/parquet",
+    "Lateos 9.1MB public sample blobs",
+    "full source trees for probe/framework repositories"
+  ],
+  "integrity_note": "Every locally embedded file is hashed in manifests/FILE_HASHES.sha256. Remote identities/hashes are preserved when the upstream exposed them.",
+  "jbb_serialization_note": "JBB harmful/benign rows are fully represented from the current public dataset viewer; local CSV byte serialization is independently hashed and not claimed byte-identical to the upstream blob."
+}

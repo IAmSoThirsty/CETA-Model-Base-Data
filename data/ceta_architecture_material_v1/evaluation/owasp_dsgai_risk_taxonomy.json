@@ -1,0 +1,86 @@
+[
+  {
+    "id": "DSGAI01",
+    "name": "Sensitive Data Leakage"
+  },
+  {
+    "id": "DSGAI02",
+    "name": "Agent Identity & Credential Exposure"
+  },
+  {
+    "id": "DSGAI03",
+    "name": "Shadow AI & Unsanctioned Data Flows"
+  },
+  {
+    "id": "DSGAI04",
+    "name": "Data, Model & Artifact Poisoning"
+  },
+  {
+    "id": "DSGAI05",
+    "name": "Data Integrity & Validation Failures"
+  },
+  {
+    "id": "DSGAI06",
+    "name": "Tool, Plugin & Agent Data Exchange Risks"
+  },
+  {
+    "id": "DSGAI07",
+    "name": "Data Governance, Lifecycle & Classification for AI Systems"
+  },
+  {
+    "id": "DSGAI08",
+    "name": "Non-Compliance & Regulatory Violations"
+  },
+  {
+    "id": "DSGAI09",
+    "name": "Multimodal Capture & Cross-Channel Data Leakage"
+  },
+  {
+    "id": "DSGAI10",
+    "name": "Synthetic Data, Anonymization & Transformation Pitfalls"
+  },
+  {
+    "id": "DSGAI11",
+    "name": "Cross-Context & Multi-User Conversation Bleed"
+  },
+  {
+    "id": "DSGAI12",
+    "name": "Unsafe Natural-Language Data Gateways (LLM-to-SQL/Graph)"
+  },
+  {
+    "id": "DSGAI13",
+    "name": "Vector Store Platform Data Security"
+  },
+  {
+    "id": "DSGAI14",
+    "name": "Excessive Telemetry & Monitoring Leakage"
+  },
+  {
+    "id": "DSGAI15",
+    "name": "Over-Broad Context Windows & Prompt Over-Sharing"
+  },
+  {
+    "id": "DSGAI16",
+    "name": "Endpoint & Browser Assistant Overreach"
+  },
+  {
+    "id": "DSGAI17",
+    "name": "Data Availability & Resilience Failures in AI Pipelines"
+  },
+  {
+    "id": "DSGAI18",
+    "name": "Inference & Data Reconstruction"
+  },
+  {
+    "id": "DSGAI19",
+    "name": "Human-in-the-Loop & Labeler Overexposure"
+  },
+  {
+    "id": "DSGAI20",
+    "name": "Model Exfiltration & IP Replication"
+  },
+  {
+    "id": "DSGAI21",
+    "name": "Disinformation & Integrity Attacks via Data Poisoning"
+  }
+]

@@ -1,0 +1,407 @@
+relevance_score,section_id,title,training_priority,domain_cues
+98,020,Systems Engineering,critical,general_lifecycle
+97,018,Risk Management,critical,earth_stewardship
+80,023,Systems Architecture,critical,general_lifecycle
+77,027,Process Architecture,critical,general_lifecycle
+76,026,Capability Architecture,critical,general_lifecycle
+74,029,Operational Architecture,critical,general_lifecycle
+65,107,Software Engineering,critical,general_lifecycle
+65,019,Requirements Engineering,critical,general_lifecycle
+65,002,Foresight / Futures,critical,general_lifecycle
+64,017,Feasibility Analysis,critical,general_lifecycle
+61,308,AI Operations,critical,"ai_reasoning, continuity_operations"
+61,189,Cybersecurity Engineering,critical,security_authority
+60,022,Solution Architecture,critical,general_lifecycle
+60,021,Enterprise Architecture,critical,general_lifecycle
+60,016,Domain Analysis,critical,general_lifecycle
+59,015,User Research,critical,human_relations
+58,028,Functional Architecture,critical,general_lifecycle
+58,025,Business Architecture,critical,general_lifecycle
+56,208,Threat Modeling,critical,ai_reasoning
+55,178,Agent Systems Engineering,critical,ai_reasoning
+54,245,Chaos Engineering,critical,general_lifecycle
+51,391,Data Retention,critical,general_lifecycle
+50,008,Program Management,critical,general_lifecycle
+50,005,Business Strategy,critical,general_lifecycle
+49,035,Infrastructure Architecture,critical,earth_stewardship
+49,024,Domain Architecture,critical,general_lifecycle
+48,050,Safety Architecture,critical,"human_relations, earth_stewardship"
+48,007,Portfolio Management,critical,general_lifecycle
+48,003,Innovation,critical,general_lifecycle
+47,032,Application Architecture,critical,general_lifecycle
+45,151,Database Engineering,critical,general_lifecycle
+45,001,Research,critical,general_lifecycle
+43,383,Platform Migration,critical,general_lifecycle
+43,166,Operations Research,critical,continuity_operations
+42,405,Lifecycle Governance,critical,"human_relations, security_authority"
+42,252,Safety Testing,critical,"human_relations, earth_stewardship"
+42,244,Resilience Testing,critical,general_lifecycle
+42,214,Incident Response,critical,continuity_operations
+42,182,AI Safety,critical,"human_relations, earth_stewardship, ai_reasoning"
+42,010,Product Management,critical,general_lifecycle
+41,350,Supply Chain Management,critical,earth_stewardship
+41,270,DevSecOps,critical,general_lifecycle
+41,040,Communications Architecture,high,general_lifecycle
+40,225,Records Management,critical,general_lifecycle
+40,211,Red Teaming,critical,general_lifecycle
+40,198,Embedded Security,critical,security_authority
+40,186,Prompt Engineering,critical,general_lifecycle
+39,399,Hardware Disposal,critical,earth_stewardship
+39,301,Site Reliability Engineering,critical,general_lifecycle
+39,069,Embedded Software Engineering,critical,general_lifecycle
+39,052,Resilience Architecture,critical,general_lifecycle
+38,313,Observability Engineering,critical,continuity_operations
+38,183,AI Governance,critical,"human_relations, ai_reasoning, security_authority"
+37,396,Account Closure,critical,general_lifecycle
+37,333,Technical Support,critical,general_lifecycle
+37,312,IT Operations,critical,continuity_operations
+37,259,Source Control Management,critical,general_lifecycle
+36,384,Modernization,critical,general_lifecycle
+36,357,Distribution,critical,general_lifecycle
+36,305,Network Operations,high,continuity_operations
+36,263,Environment Management,critical,earth_stewardship
+36,231,Software Testing,critical,general_lifecycle
+36,105,Prototyping,critical,general_lifecycle
+35,349,Vendor Management,high,general_lifecycle
+35,253,Model Testing,critical,ai_reasoning
+35,106,User Validation,critical,human_relations
+35,066,Semiconductor Engineering,critical,general_lifecycle
+35,011,Business Analysis,critical,general_lifecycle
+34,406,System Retirement,high,continuity_operations
+34,330,Failover Engineering,critical,general_lifecycle
+34,218,Privacy Engineering,critical,human_relations
+34,093,XR Design,critical,general_lifecycle
+34,012,Market Research,critical,general_lifecycle
+34,006,Product Strategy,critical,general_lifecycle
+33,378,Software Updates,critical,general_lifecycle
+33,348,Procurement,critical,general_lifecycle
+33,246,Security Testing,critical,security_authority
+33,194,Cloud Security,critical,security_authority
+33,137,Digital Twin Engineering,critical,general_lifecycle
+33,109,Algorithm Engineering,high,general_lifecycle
+33,058,Robotics Architecture,critical,earth_stewardship
+33,045,Security Architecture,critical,security_authority
+33,013,Competitive Intelligence,high,general_lifecycle
+32,327,Disaster Recovery,critical,"earth_stewardship, continuity_operations"
+32,326,Business Continuity,critical,continuity_operations
+32,307,Data Operations,critical,continuity_operations
+32,289,Change Management,critical,general_lifecycle
+32,277,Cloud Engineering,critical,general_lifecycle
+32,217,Trust and Safety,critical,"human_relations, earth_stewardship"
+32,210,Penetration Testing,high,general_lifecycle
+32,185,Model Operations,critical,"ai_reasoning, continuity_operations"
+32,154,Data Modeling,critical,ai_reasoning
+32,147,Recommendation Systems Engineering,high,general_lifecycle
+32,128,API Engineering,critical,general_lifecycle
+31,388,Version Management,critical,general_lifecycle
+31,235,System Testing,high,general_lifecycle
+31,234,Integration Testing,critical,general_lifecycle
+31,199,Hardware Security,critical,"earth_stewardship, security_authority"
+31,180,Model Evaluation,critical,ai_reasoning
+31,164,Data Science,critical,general_lifecycle
+31,077,Experience Design,critical,general_lifecycle
+31,014,Stakeholder Management,critical,human_relations
+30,398,Infrastructure Decommissioning,critical,"earth_stewardship, continuity_operations"
+30,393,Digital Preservation,critical,general_lifecycle
+30,304,Cloud Operations,critical,continuity_operations
+30,282,Server Engineering,critical,general_lifecycle
+30,232,Hardware Testing,critical,earth_stewardship
+30,192,Platform Security,critical,security_authority
+30,184,MLOps,critical,general_lifecycle
+30,158,Data Migration,critical,general_lifecycle
+30,129,Integration Engineering,critical,general_lifecycle
+30,030,Information Architecture,critical,general_lifecycle
+29,395,Data Deletion,critical,general_lifecycle
+29,382,Data Migration Operations,critical,continuity_operations
+29,197,Mobile Security,critical,security_authority
+29,193,Infrastructure Security,critical,"earth_stewardship, security_authority"
+29,056,AI Architecture,high,ai_reasoning
+29,004,Mission Strategy,critical,general_lifecycle
+28,269,DevOps,critical,general_lifecycle
+28,181,Model Alignment,critical,ai_reasoning
+28,168,Deep Learning Engineering,critical,general_lifecycle
+28,130,Microservices Engineering,high,general_lifecycle
+28,048,Governance Architecture,critical,"human_relations, security_authority"
+27,401,Environmental Disposal or Recycling,critical,earth_stewardship
+27,375,Corrective Maintenance,critical,continuity_operations
+27,303,Runtime Operations,high,continuity_operations
+27,302,Production Engineering,critical,general_lifecycle
+27,226,Audit,critical,general_lifecycle
+27,196,Endpoint Security,critical,security_authority
+27,167,Machine Learning Engineering,high,ai_reasoning
+27,138,Game Engineering,critical,general_lifecycle
+27,071,Telecommunications Engineering,critical,earth_stewardship
+26,342,Knowledge Management,high,ai_reasoning
+26,300,Content Delivery Networks,high,general_lifecycle
+26,238,Regression Testing,critical,general_lifecycle
+26,228,Quality Management,critical,general_lifecycle
+26,202,Authorization Engineering,critical,security_authority
+26,201,Authentication Engineering,critical,general_lifecycle
+26,195,Network Security,critical,security_authority
+26,175,Knowledge Graph Engineering,critical,ai_reasoning
+26,173,Speech Engineering,critical,general_lifecycle
+26,125,Native Application Engineering,critical,general_lifecycle
+26,115,Driver Engineering,critical,general_lifecycle
+26,097,Content Design,critical,general_lifecycle
+26,092,VR Design,critical,general_lifecycle
+26,065,Industrial Design,critical,general_lifecycle
+26,061,Electrical Engineering,critical,general_lifecycle
+26,031,Data Architecture,critical,general_lifecycle
+25,402,Post-Implementation Review,standard,general_lifecycle
+25,400,Secure Destruction,critical,general_lifecycle
+25,318,Alerting,critical,general_lifecycle
+25,274,Tooling Engineering,critical,general_lifecycle
+25,216,Abuse Prevention,standard,security_authority
+25,190,Application Security,critical,security_authority
+25,170,Generative AI Engineering,critical,ai_reasoning
+25,123,Mobile Engineering,critical,general_lifecycle
+24,363,Financial Operations,high,continuity_operations
+24,356,Logistics,critical,general_lifecycle
+24,328,Backup Engineering,high,continuity_operations
+24,306,Security Operations,critical,"security_authority, continuity_operations"
+24,278,Edge Computing Engineering,critical,general_lifecycle
+24,145,Streaming Engineering,high,general_lifecycle
+24,136,Simulation Engineering,critical,general_lifecycle
+24,075,Human–Computer Interaction,critical,human_relations
+24,042,API Architecture,critical,general_lifecycle
+23,368,Growth Engineering,critical,general_lifecycle
+23,366,Customer Analytics,high,human_relations
+23,285,Database Administration,critical,general_lifecycle
+23,268,Continuous Deployment,critical,general_lifecycle
+23,236,End-to-End Testing,critical,general_lifecycle
+23,169,AI Engineering,critical,ai_reasoning
+23,121,Web Engineering,high,general_lifecycle
+23,067,PCB Design,critical,general_lifecycle
+22,354,Hardware Certification,critical,earth_stewardship
+22,320,Problem Management,critical,general_lifecycle
+22,309,Application Operations,high,continuity_operations
+22,299,Domain and DNS Management,critical,general_lifecycle
+22,295,Environment Promotion,critical,earth_stewardship
+22,275,Infrastructure Engineering,critical,earth_stewardship
+22,206,Security Operations,critical,"security_authority, continuity_operations"
+22,188,Human-in-the-Loop Operations,critical,"human_relations, continuity_operations"
+22,171,Natural Language Processing,standard,ai_reasoning
+22,159,Data Warehousing,high,general_lifecycle
+22,126,Browser Engineering,high,general_lifecycle
+22,122,Desktop Engineering,high,general_lifecycle
+22,074,Robotics Engineering,critical,earth_stewardship
+22,046,Identity Architecture,critical,security_authority
+21,404,Lessons Learned,critical,general_lifecycle
+21,381,Dependency Updates,critical,general_lifecycle
+21,341,Documentation Engineering,critical,general_lifecycle
+21,265,Build Automation,standard,general_lifecycle
+21,161,Analytics Engineering,standard,general_lifecycle
+21,157,Data Integration,high,general_lifecycle
+21,063,Computer Engineering,standard,general_lifecycle
+21,009,Project Management,critical,general_lifecycle
+20,397,Service Decommissioning,high,continuity_operations
+20,386,Technical Debt Management,critical,general_lifecycle
+20,376,Preventive Maintenance,critical,continuity_operations
+20,367,Product Analytics,critical,general_lifecycle
+20,365,Usage Metering,critical,general_lifecycle
+20,260,Dependency Management,critical,general_lifecycle
+20,241,Stress Testing,critical,general_lifecycle
+20,222,Ethics,critical,human_relations
+20,187,Synthetic Data Engineering,critical,general_lifecycle
+20,108,Computer Science,critical,general_lifecycle
+20,072,Signal Processing,critical,general_lifecycle
+20,059,Embedded Systems Architecture,critical,general_lifecycle
+20,057,Machine Learning Architecture,high,ai_reasoning
+19,390,Sunset Planning,high,general_lifecycle
+19,379,Firmware Updates,critical,general_lifecycle
+19,279,Container Engineering,critical,general_lifecycle
+19,256,Verification,critical,general_lifecycle
+19,243,Reliability Testing,critical,general_lifecycle
+19,212,Blue Teaming,critical,general_lifecycle
+19,200,Identity and Access Management,critical,security_authority
+19,176,Ontology Engineering,critical,ai_reasoning
+19,133,High-Performance Computing,high,general_lifecycle
+19,113,Operating Systems Engineering,critical,general_lifecycle
+19,064,Mechanical Engineering,critical,general_lifecycle
+19,033,Software Architecture,critical,general_lifecycle
+18,385,Refactoring,critical,general_lifecycle
+18,345,Brand Management,standard,general_lifecycle
+18,267,Continuous Delivery,critical,general_lifecycle
+18,255,Test Automation,critical,general_lifecycle
+18,250,Localization Testing,critical,general_lifecycle
+18,247,Accessibility Testing,critical,"human_relations, security_authority"
+18,177,Semantic Systems Engineering,high,general_lifecycle
+18,143,Video Engineering,standard,general_lifecycle
+18,139,Graphics Engineering,critical,general_lifecycle
+18,117,Application Engineering,high,general_lifecycle
+18,089,Conversational Design,critical,general_lifecycle
+18,088,Voice Interface Design,critical,general_lifecycle
+18,084,Visual Design,standard,general_lifecycle
+18,070,Internet of Things Engineering,critical,general_lifecycle
+18,047,Privacy Architecture,critical,human_relations
+18,044,Runtime Architecture,high,general_lifecycle
+18,038,Distributed Systems Architecture,high,general_lifecycle
+17,369,Experimentation,high,general_lifecycle
+17,362,Revenue Operations,high,continuity_operations
+17,346,Sales Engineering,critical,general_lifecycle
+17,344,Technical Marketing,critical,general_lifecycle
+17,329,Restore Engineering,standard,continuity_operations
+17,322,Availability Management,standard,general_lifecycle
+17,321,Capacity Management,high,general_lifecycle
+17,288,Release Management,critical,general_lifecycle
+17,286,Storage Administration,high,general_lifecycle
+17,284,Network Engineering,critical,general_lifecycle
+17,257,Validation,critical,general_lifecycle
+17,203,Cryptography,high,general_lifecycle
+17,104,Design Systems,high,general_lifecycle
+17,094,Game Design,high,general_lifecycle
+17,076,Interaction Design,standard,general_lifecycle
+17,055,Knowledge Architecture,high,ai_reasoning
+17,037,Edge Architecture,critical,general_lifecycle
+16,377,Adaptive Maintenance,critical,continuity_operations
+16,371,Optimization,critical,general_lifecycle
+16,355,Device Provisioning,standard,general_lifecycle
+16,332,Command and Control,high,general_lifecycle
+16,221,Policy,high,general_lifecycle
+16,204,Key Management,critical,general_lifecycle
+16,179,Model Training,critical,ai_reasoning
+16,155,Data Governance,critical,"human_relations, security_authority"
+16,149,Blockchain Engineering,critical,general_lifecycle
+16,148,Geographic Information Systems,critical,general_lifecycle
+16,144,Media Engineering,critical,general_lifecycle
+16,124,Cross-Platform Engineering,standard,general_lifecycle
+16,120,Full-Stack Engineering,critical,general_lifecycle
+16,118,Frontend Engineering,critical,general_lifecycle
+16,114,Kernel Engineering,critical,general_lifecycle
+16,101,Localization,critical,general_lifecycle
+16,086,Motion Design,critical,general_lifecycle
+15,352,Production Planning,critical,general_lifecycle
+15,319,Incident Management,critical,continuity_operations
+15,281,Virtualization Engineering,critical,general_lifecycle
+15,258,Configuration Management,critical,general_lifecycle
+15,153,Data Engineering,high,general_lifecycle
+15,096,Narrative Design,critical,general_lifecycle
+15,085,Graphic Design,critical,general_lifecycle
+15,068,Firmware Engineering,standard,general_lifecycle
+15,060,Hardware Architecture,high,earth_stewardship
+15,054,Content Architecture,critical,general_lifecycle
+14,392,Data Archival,high,general_lifecycle
+14,374,Maintenance Engineering,critical,continuity_operations
+14,347,Solutions Engineering,critical,general_lifecycle
+14,337,Community Management,critical,human_relations
+14,324,Reliability Management,critical,general_lifecycle
+14,276,Infrastructure as Code,critical,earth_stewardship
+14,254,Data Testing,critical,general_lifecycle
+14,213,Digital Forensics,critical,general_lifecycle
+14,131,Distributed Systems Engineering,critical,general_lifecycle
+14,127,Extension Engineering,high,general_lifecycle
+14,091,AR Design,standard,general_lifecycle
+14,051,Reliability Architecture,critical,general_lifecycle
+13,380,Security Patching,critical,security_authority
+13,360,Payments Engineering,critical,general_lifecycle
+13,325,Service Level Management,high,general_lifecycle
+13,317,Metrics Engineering,standard,general_lifecycle
+13,315,Logging,critical,general_lifecycle
+13,298,Certificate Management,critical,general_lifecycle
+13,297,Configuration Delivery,high,general_lifecycle
+13,266,Continuous Integration,standard,general_lifecycle
+13,219,Legal,critical,general_lifecycle
+13,205,Secrets Management,standard,general_lifecycle
+13,103,Accessibility Design,critical,"human_relations, security_authority"
+13,098,Content Strategy,high,general_lifecycle
+13,082,UX Design,critical,general_lifecycle
+13,081,UX Architecture,critical,general_lifecycle
+13,053,Accessibility Architecture,critical,"human_relations, security_authority"
+12,364,Licensing Operations,high,continuity_operations
+12,343,Product Marketing,standard,general_lifecycle
+12,335,Help Desk,standard,general_lifecycle
+12,310,Platform Operations,critical,continuity_operations
+12,249,Usability Testing,critical,general_lifecycle
+12,248,Compatibility Testing,high,general_lifecycle
+12,233,Unit Testing,critical,general_lifecycle
+12,207,Threat Intelligence,critical,general_lifecycle
+12,191,Product Security,critical,security_authority
+11,403,Postmortem Analysis,high,general_lifecycle
+11,394,Records Disposal,critical,general_lifecycle
+11,359,Billing Engineering,standard,general_lifecycle
+11,339,Education,standard,general_lifecycle
+11,334,Customer Support,standard,human_relations
+11,293,Installation Engineering,standard,general_lifecycle
+11,264,Build Engineering,high,general_lifecycle
+11,262,Artifact Management,high,general_lifecycle
+11,220,Regulatory Compliance,critical,security_authority
+11,215,Fraud Prevention,standard,security_authority
+11,165,Statistics,standard,general_lifecycle
+11,162,Business Intelligence,standard,general_lifecycle
+11,142,Audio Engineering,high,general_lifecycle
+11,102,Internationalization,critical,general_lifecycle
+11,062,Electronics Engineering,high,general_lifecycle
+11,049,Compliance Architecture,critical,security_authority
+10,331,Operational Readiness,high,general_lifecycle
+10,294,Provisioning,standard,general_lifecycle
+10,290,Deployment Engineering,high,general_lifecycle
+10,174,Reinforcement Learning,critical,general_lifecycle
+10,172,Computer Vision,high,general_lifecycle
+10,160,Data Lake Engineering,high,general_lifecycle
+10,119,Backend Engineering,high,general_lifecycle
+10,111,Compiler Engineering,critical,general_lifecycle
+10,110,Programming Language Engineering,critical,general_lifecycle
+10,073,Control Systems Engineering,critical,general_lifecycle
+10,036,Cloud Architecture,high,general_lifecycle
+9,292,Packaging,standard,general_lifecycle
+9,229,Quality Engineering,high,general_lifecycle
+9,224,Licensing,critical,general_lifecycle
+9,163,Data Analysis,high,general_lifecycle
+9,146,Search Engineering,standard,general_lifecycle
+8,373,Roadmap Management,standard,general_lifecycle
+8,351,Manufacturing,critical,general_lifecycle
+8,311,Service Management,standard,general_lifecycle
+8,296,Feature Management,standard,general_lifecycle
+8,291,Distribution Engineering,high,general_lifecycle
+8,242,Scalability Testing,high,general_lifecycle
+8,240,Load Testing,high,general_lifecycle
+8,230,Quality Assurance,critical,general_lifecycle
+8,227,Internal Controls,standard,general_lifecycle
+8,140,Rendering Engineering,standard,general_lifecycle
+8,112,Runtime Engineering,critical,general_lifecycle
+8,090,Spatial Interface Design,critical,general_lifecycle
+8,078,Service Design,standard,general_lifecycle
+8,043,Event-Driven Architecture,high,general_lifecycle
+7,389,Deprecation Management,critical,general_lifecycle
+7,336,Customer Success,critical,human_relations
+7,314,Monitoring,high,general_lifecycle
+7,271,GitOps,standard,general_lifecycle
+7,152,Storage Engineering,high,general_lifecycle
+7,116,Middleware Engineering,critical,general_lifecycle
+7,100,Copywriting,standard,general_lifecycle
+7,087,Sound Design,critical,general_lifecycle
+7,079,UX Strategy,standard,general_lifecycle
+7,034,Platform Architecture,critical,general_lifecycle
+6,372,Feedback Management,standard,general_lifecycle
+6,358,Commerce,standard,general_lifecycle
+6,340,Developer Relations,standard,general_lifecycle
+6,316,Tracing,standard,general_lifecycle
+6,039,Network Architecture,high,general_lifecycle
+5,370,A/B Testing,high,general_lifecycle
+5,361,Subscription Management,standard,general_lifecycle
+5,338,Training,standard,general_lifecycle
+5,273,Developer Experience,standard,general_lifecycle
+5,251,Compliance Testing,critical,security_authority
+5,239,Performance Testing,high,general_lifecycle
+5,237,Acceptance Testing,high,general_lifecycle
+5,141,Animation Engineering,standard,general_lifecycle
+5,095,Level Design,standard,general_lifecycle
+5,083,UI Design,standard,general_lifecycle
+4,283,Systems Administration,high,general_lifecycle
+4,132,Real-Time Systems Engineering,high,general_lifecycle
+3,323,Performance Management,high,general_lifecycle
+3,280,Container Orchestration,high,general_lifecycle
+3,223,Intellectual Property,high,general_lifecycle
+3,209,Vulnerability Management,standard,general_lifecycle
+3,156,Data Quality Engineering,high,general_lifecycle
+3,099,Technical Writing,high,general_lifecycle
+3,041,Integration Architecture,high,general_lifecycle
+0,387,Compatibility Management,standard,general_lifecycle
+0,353,Assembly,standard,general_lifecycle
+0,287,Release Engineering,high,general_lifecycle
+0,272,Platform Engineering,standard,general_lifecycle
+0,261,Package Management,standard,general_lifecycle
+0,150,Smart Contract Engineering,standard,general_lifecycle
+0,135,Scientific Computing,standard,general_lifecycle
+0,134,Parallel Computing,standard,general_lifecycle
+0,080,UX Research,standard,general_lifecycle

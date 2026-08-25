@@ -1,0 +1,18 @@
+source,path,ref,git_blob_sha,size,note
+MITRE ATLAS,dist/v6/ATLAS-2026.07.yaml,v2026.07,,,canonical machine-readable release
+genai_incidents,schema/incident.schema.json,56702426a4f81874c60c951452e3492a84f9d31d,,,incident JSON schema
+genai_incidents,INCIDENTS.md,main,e0232c22cd470eab621cc5985f45e9de5d82dfa4,2437077,bulk human-readable rollup
+Do-Not-Answer,datasets/data_en.csv,460703484df354958a5e1cd7378a38fcb94a2f3e,6c7ad83cf665b418229955e0abb602ab0cac6384,3912791,English dataset
+Do-Not-Answer,datasets/data_zh.csv,460703484df354958a5e1cd7378a38fcb94a2f3e,49a5d55f04c5bb8c6c279a4151b5132cf662e320,1470752,Chinese dataset
+HarmBench,data/behavior_datasets/harmbench_behaviors_text_all.csv,c0423b952435fcc8467108d8f25962dbae5b7de2,,194 KB,canonical behavior corpus; known SHA-256 in source record
+SecureCode AI/ML,train.jsonl,main,,,747-example JSONL
+SecureCode AI/ML,train.parquet,main,,,747-example parquet
+PurpleLlama,CybersecurityBenchmarks/datasets/prompt_injection/prompt_injection.json,main,,,prompt-injection eval data
+PurpleLlama,CybersecurityBenchmarks/datasets/interpreter/interpreter.json,main,,,interpreter-abuse eval data
+PurpleLlama,CybersecurityBenchmarks/datasets/autopatch/autopatch_samples.json,main,,,small selected copy embedded locally
+Aegis/Nemotron Safety V2,dataset root,main,,28.5 MB,"33,416 rows; Xet-backed"
+BeaverTails,round0/330k/train.jsonl.xz,main,,,large compressed split
+BeaverTails,round0/330k/test.jsonl.xz,main,,,large compressed split
+BeaverTails,round0/30k/train.jsonl.gz,main,,,compressed split
+BeaverTails,round0/30k/test.jsonl.gz,main,,,compressed split
+Lateos/Defensive-LLM,dataset root,main,,9.1 MB,public sample files/configs

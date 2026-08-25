@@ -1,0 +1,184 @@
+{
+  "counts": {
+    "ceta_operations_ranked": 23,
+    "codex_sections": 406,
+    "public_scenarios": 20,
+    "role_conditioned_cases": 84,
+    "roles": 21,
+    "section_situational_templates": 1624,
+    "unacceptable_failure_examples": 5
+  },
+  "dataset_id": "CETA_ARCHITECTURE_MATERIAL/v1",
+  "defensive_coverage": {
+    "embedded_full_payloads": 7,
+    "locally_hashed_files": 54,
+    "not_embedded_due_transfer_boundary": 9,
+    "represented_sources": 20,
+    "requested_sources": 20
+  },
+  "files": [
+    {
+      "path": "evaluation/aegis_safety_taxonomy.json",
+      "sha256": "df39a057e44b2d2621ee337035d3cbc62bbce741bca5bac867415a3fcb2ef2b0",
+      "size_bytes": 642
+    },
+    {
+      "path": "evaluation/beavertails_harm_categories.json",
+      "sha256": "e1173e25ce9ab667c97b53af8eec0af0cc778b7dc532cef6707bb22320c160be",
+      "size_bytes": 487
+    },
+    {
+      "path": "evaluation/jbb_benign_behaviors.csv",
+      "sha256": "b51ed0d426dfd642a0bd7c4bf7a2713a6cf58b450342d3792101c84bea05697d",
+      "size_bytes": 20571
+    },
+    {
+      "path": "evaluation/jbb_harmful_behaviors.csv",
+      "sha256": "d7ac575536c40fb97e95de54363af072e6e9293764d47f1e74afce6c6778c018",
+      "size_bytes": 23113
+    },
+    {
+      "path": "evaluation/mitre_atlas_release_index.json",
+      "sha256": "1a682d2064b83d9c2f8dac52802a02efc881cb18bbf6314a70ee8c84af8cbdc2",
+      "size_bytes": 1215
+    },
+    {
+      "path": "evaluation/owasp_dsgai_risk_taxonomy.json",
+      "sha256": "86db15a0977439b4e3bebb5a9885649d8b481c17333aacd845e7eaf87b1fc80a",
+      "size_bytes": 1823
+    },
+    {
+      "path": "evaluation/purplellama_autopatch_samples.json",
+      "sha256": "d2988eafc0bd2184b9887f73a0e31b62b3812095371fe8d851bfb3c55ed71471",
+      "size_bytes": 182
+    },
+    {
+      "path": "governance/operation_risk_ranking.json",
+      "sha256": "da24a60682cc1ed5d5fb76a7a626b25d991352779aaa0afe8ba3f6d168ac7f2f",
+      "size_bytes": 8823
+    },
+    {
+      "path": "governance/semantic_equivalence_by_operation.json",
+      "sha256": "7bea4a858ea80f26cd18109041fe4405da05a6c78cdada11c2a69a594eb75156",
+      "size_bytes": 4097
+    },
+    {
+      "path": "maps/high_value_stewardship_section_map.csv",
+      "sha256": "78195e4cda948f223355e58482ceeeb55cc58e16931b5434b68dd87d299d620f",
+      "size_bytes": 22289
+    },
+    {
+      "path": "maps/section_dependency_edges.csv",
+      "sha256": "09170b90763352302fc9de398b963cd87c9613e157afbd88edd6cd231e913534",
+      "size_bytes": 188143
+    },
+    {
+      "path": "maps/section_role_matrix.csv",
+      "sha256": "03df126ba21a8624176a1acaf43a37d375a69b42f847554f96e5fa3a7e0cf9ab",
+      "size_bytes": 81416
+    },
+    {
+      "path": "mission/DEPLOYMENT_BOUNDARY.json",
+      "sha256": "b974a54d0b78ba7c859b81738f3ff7f8e69c3f2fd44a347f916f97dc82b8cfa9",
+      "size_bytes": 1360
+    },
+    {
+      "path": "mission/MISSION_PARAGRAPH.txt",
+      "sha256": "0341bf51f8a0e850e4d9d9991578d8cd1a880f6e59dab49da2a38760d54f18f6",
+      "size_bytes": 1255
+    },
+    {
+      "path": "provenance/defensive_license_matrix.csv",
+      "sha256": "a5e5fb3879d5674f3dc7bb99b1591b9b7ee63c1ac279bc041aae5d50c167e1c9",
+      "size_bytes": 1545
+    },
+    {
+      "path": "provenance/defensive_remote_artifacts.csv",
+      "sha256": "8348c4f91762dd6e8fb5b8bb82c4a75b358865300080452622f65d322f373b5d",
+      "size_bytes": 1689
+    },
+    {
+      "path": "provenance/defensive_retrieval_status.json",
+      "sha256": "80e3372955f07abdfde3718514a9bb6f3d273c3312f3fdbc7d235e201944aec3",
+      "size_bytes": 1594
+    },
+    {
+      "path": "provenance/defensive_sources.csv",
+      "sha256": "47ada3f8eec65b27ac27e875bf908fd0048a209b720793b7fcc414e0a365cfdc",
+      "size_bytes": 2781
+    },
+    {
+      "path": "training/public_scenarios.jsonl",
+      "sha256": "03c2434d973faedc2a1c2792874653cbc508e253576c33a6fbd52944d5411764",
+      "size_bytes": 30913
+    },
+    {
+      "path": "training/role_conditioned_cases_84.jsonl",
+      "sha256": "8a5aa70f621abcaf1406ec34c6f4240dd4f4d6c90ae4197fc1af89ba19011311",
+      "size_bytes": 73878
+    },
+    {
+      "path": "training/role_contracts_21.json",
+      "sha256": "6177fc8ed7b47b7170d958f394dc0e4ec65148caf6ac0eeab2b3c49fc4f28250",
+      "size_bytes": 37822
+    },
+    {
+      "path": "training/section_awareness_406.jsonl",
+      "sha256": "3042714eb01124650c2e6c28b3f7dd6bc401f99495a77205598e7f54bbf8ae31",
+      "size_bytes": 1641820
+    },
+    {
+      "path": "training/section_situational_templates_1624.jsonl",
+      "sha256": "7cc44e841badbbfde069f95cc0efc59a914c1ec34925d43477e885fa315eee9b",
+      "size_bytes": 3695230
+    },
+    {
+      "path": "training/unacceptable_failures.json",
+      "sha256": "55de636301126fb799c3f405611218e220366ed50dc7659962aad614cf7addc9",
+      "size_bytes": 3856
+    }
+  ],
+  "private_holdout": {
+    "allowed_use": "One-time or deliberately scheduled independent evaluation only after model, curriculum, and operation-specific thresholds are frozen.",
+    "answer_key_sha256": "0976c401b94e2d99c630256ec212fd83ff1f195f5e968cecc8f2dc5a9cf2738d",
+    "challenge_sha256": "a2d650278c17dc015d57da6db1fa7628674035621f9a2be5972e766b5105d9d0",
+    "materialized_in_repository": false,
+    "note": "Only this hash-bound exclusion manifest is materialized; challenge and answer records remain outside training and Git delivery.",
+    "prohibited_uses": [
+      "training",
+      "curriculum_generation",
+      "retrieval_augmented_training",
+      "threshold_tuning_after_freeze",
+      "prompt engineering against exact cases"
+    ],
+    "scenario_count": 60,
+    "status": "PRIVATE_EVALUATION_ONLY",
+    "structural_difference": "Cases use multi-event histories, common-cause failures, role/authority conflicts, recovery forks, measurement-vs-model defects, and legal-but-undesirable alternatives rather than copying the 20 public cases."
+  },
+  "schema_version": 1,
+  "source_archives": {
+    "defensive_knowledge_eval_stack": {
+      "filename": "AI_Defensive_Knowledge_Eval_Stack_FULL.zip",
+      "sha256": "936af5c2bb222e1b0e3fd339f97e0c468c1f5444eea0a1d037cd6e3fc8736519"
+    },
+    "human_relations_training_material": {
+      "filename": "CETA_AGI_Human_Relations_Training_Material_v1.0.0.zip",
+      "package_manifest_sha256": "f4f42d72ee8b4020e4dd646bef4d6fb0517876717e931771a13c0c20ecac3fca",
+      "sha256": "0b5f586416905de1b9ebb0ca4a409e2ce07061cad9812e94a893ff32ae4a5ecc"
+    }
+  },
+  "training_boundary": {
+    "allowed_now": [
+      "source-aware curriculum design",
+      "risk and semantic-equivalence policy derivation",
+      "role and lifecycle applicability adjudication"
+    ],
+    "current_ceta_curriculum_automatically_modified": false,
+    "forbidden_now": [
+      "direct concatenation into ceta_curriculum_v2",
+      "training on private holdout or defensive evaluation records",
+      "treating source prose as an executable authority grant"
+    ],
+    "reason": "Supplied prose/design records require atomic CETA transition adjudication before conversion to structured state-to-transition cases."
+  }
+}

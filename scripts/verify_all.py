@@ -11,6 +11,7 @@ commands = [
     [sys.executable, str(ROOT / "scripts/validate_architecture.py")],
     [sys.executable, str(ROOT / "scripts/validate_evidence_registry.py")],
     [sys.executable, str(ROOT / "scripts/validate_ceta_curriculum.py")],
+    [sys.executable, str(ROOT / "scripts/validate_architecture_material.py")],
     [sys.executable, str(ROOT / "scripts/hostile_audit.py")],
     [sys.executable, str(ROOT / "scripts/run_bounded_models.py")],
     [sys.executable, "-m", "unittest", "discover", "-s", str(ROOT / "tests"), "-v"],

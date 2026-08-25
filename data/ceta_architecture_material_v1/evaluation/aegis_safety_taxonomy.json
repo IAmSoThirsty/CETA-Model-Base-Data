@@ -1,0 +1,31 @@
+{
+  "non_unsafe": [
+    "Safe",
+    "Needs Caution"
+  ],
+  "core_unsafe": [
+    "Hate/Identity Hate",
+    "Sexual",
+    "Suicide and Self Harm",
+    "Violence",
+    "Guns/Illegal Weapons",
+    "Threat",
+    "PII/Privacy",
+    "Sexual Minor",
+    "Criminal Planning/Confessions",
+    "Harassment",
+    "Controlled/Regulated substances",
+    "Profanity"
+  ],
+  "fine_grained_unsafe": [
+    "Illegal Activity",
+    "Immoral/Unethical",
+    "Unauthorized Advice",
+    "Political/Misinformation/Conspiracy",
+    "Fraud/Deception",
+    "Copyright/Trademark/Plagiarism",
+    "High Risk Gov. Decision Making",
+    "Malware",
+    "Manipulation"
+  ]
+}

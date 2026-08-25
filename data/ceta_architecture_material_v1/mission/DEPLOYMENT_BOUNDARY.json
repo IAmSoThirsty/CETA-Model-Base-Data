@@ -1,0 +1,16 @@
+{
+  "primary": "Independent symbolic/neural decision engine: a learned transition-policy head proposes CETA transitions over explicit state; a constitutional VM decides legality and computes proof obligations.",
+  "integration_modes": [
+    "Embedded as a policy/epistemic head inside a larger agent or model system.",
+    "Used as a governance/reasoning substrate around an LLM that performs language parsing, explanation, retrieval, or tool-interface work outside CETA.",
+    "Connected to sensors, memory projections, human cockpits, and effect gateways for stewardship applications."
+  ],
+  "not_intended_as": [
+    "A conventional language-model curriculum whose target is prose answers.",
+    "A free-standing executor with unilateral real-world authority.",
+    "A hidden safety filter whose policy can be rewritten by the model it governs.",
+    "A replacement for qualified human/domain authority, consent, law, or emergency command."
+  ],
+  "language_boundary": "Language is serialization and observation input. CETA reasoning target remains structured state -> TransitionProposal -> VM-governed state transition.",
+  "human_authority_boundary": "Human purpose, consent, delegated scope, protected outcomes, exception authority, risk acceptance, and final authority remain externally grounded and cannot be manufactured by a model or role quorum."
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "UF-01",
+    "name": "Caller-selected artifact authority",
+    "prior_failure": "Artifact admission trusted a caller-supplied required producer role, allowing caller input to weaken the policy mapping.",
+    "unacceptable_decision": "Treat caller-declared role/authority as sufficient to admit or authorize an artifact.",
+    "required_lesson": "Authority-bearing type-to-role mappings must be owned by policy/registry state and independently verified; caller metadata cannot widen them.",
+    "danger": "A malicious or mistaken caller can manufacture legitimacy for a consequential artifact.",
+    "provenance": "The_STATE_REGISTER_Epoch_Ready_v0.3.0.zip: docs/HOSTILE_REVIEW.md — Caller-selected artifact authority"
+  },
+  {
+    "id": "UF-02",
+    "name": "Expired permit revocation rolled back",
+    "prior_failure": "Permit expiry was updated inside a transaction that then raised, causing the expiry update itself to roll back.",
+    "unacceptable_decision": "Return an expiry error while leaving the permit state effectively usable.",
+    "required_lesson": "Fail-closed state changes such as expiry/revocation must be durably committed before an error is returned.",
+    "danger": "An expired permit can resurrect across retry/restart and authorize an effect after its validity window.",
+    "provenance": "The_STATE_REGISTER_Epoch_Ready_v0.3.0.zip: docs/HOSTILE_REVIEW.md — Expired permit rollback / Expiry after preparation"
+  },
+  {
+    "id": "UF-03",
+    "name": "Generic lifecycle permit bypass",
+    "prior_failure": "A generic permit method could mint promotion or deployment authority without the specialized constitutional gate.",
+    "unacceptable_decision": "Infer lifecycle authority from a generic rule-consequence allow path.",
+    "required_lesson": "Training, promotion, deployment, recall, restore, and similar lifecycle powers require dedicated authority paths with exact source bindings.",
+    "danger": "A component can self-escalate from ordinary permission to deployment/promotion power.",
+    "provenance": "The_STATE_REGISTER_Epoch_Ready_v0.3.0.zip: docs/HOSTILE_REVIEW.md — Generic lifecycle permit path"
+  },
+  {
+    "id": "UF-04",
+    "name": "Restart identity loss",
+    "prior_failure": "The first runtime regenerated keys and policy on process restart instead of proving continuity with the prior runtime identity.",
+    "unacceptable_decision": "Resume governance under newly generated identity/policy while presenting the process as continuation.",
+    "required_lesson": "Identity, policy epoch, key validity, event chain, and consumed nonces must survive restart and be verified before reopening state.",
+    "danger": "A restart becomes an authority reset that erases revocation or continuity constraints.",
+    "provenance": "The_STATE_REGISTER_Epoch_Ready_v0.3.0.zip: docs/HOSTILE_REVIEW.md — Restart identity loss"
+  },
+  {
+    "id": "UF-05",
+    "name": "Measurement defect mislabeled as model failure",
+    "prior_failure": "Earlier evaluation used a 32-token generation cap even though complete decision/audit targets required substantially more output, making parse failure structurally possible because of measurement bounds.",
+    "unacceptable_decision": "Treat max-token truncation as genuine model incompetence and feed it directly into corrective training.",
+    "required_lesson": "Preserve the historical result, restate the affected competence as INDETERMINATE when measurement is insufficient, and only convert genuine model failures into corrective curriculum after cause classification.",
+    "danger": "The learner is trained to correct a defect caused by the evaluator, contaminating both curriculum and competence claims.",
+    "provenance": "CLAUDE_CODE_END_TO_END_LEARNING_LOOP_DIRECTIVE.md: Stage 3/4 evidence interpretation and Failure-to-Curriculum Bridge"
+  }
+]

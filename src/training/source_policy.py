@@ -32,6 +32,10 @@ FORBIDDEN_MATERIALIZATIONS: tuple[str, ...] = (
     "implementation_code_reference.jsonl",
     "heldout_sources/**",
     "source_archive/**",
+    "data/ceta_architecture_material_v1/**",
+    "**/private_holdout/**",
+    "PRIVATE_CHALLENGE_60_NO_ANSWERS.jsonl",
+    "ANSWER_KEY_SEPARATE.jsonl",
 )
 
 

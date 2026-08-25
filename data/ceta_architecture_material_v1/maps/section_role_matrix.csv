@@ -1,0 +1,407 @@
+section_id,title,ROLE_01_ARCHITECT,ROLE_02_RESEARCHER,ROLE_03_ANALYST,ROLE_04_CRITIC,ROLE_05_SECURITY_AUDITOR,ROLE_06_IMPLEMENTER,ROLE_07_REFACTORER,ROLE_08_TESTER,ROLE_09_VERIFIER,ROLE_10_DOCUMENTATION_WRITER,ROLE_11_TEACHER,ROLE_12_PLANNER,ROLE_13_COORDINATOR,ROLE_14_OBSERVER,ROLE_15_MEMORY_CURATOR,ROLE_16_GOVERNANCE_REVIEWER,ROLE_17_RED_TEAM,ROLE_18_OPTIMIZER,ROLE_19_USER_EXPERIENCE_REVIEWER,ROLE_20_DECISION_ARBITER_ADVISORY,ROLE_21_GUIDEBOOK_ARCHITECT,specialist_expertise_cues_not_authority
+001,Research,1,1,1,1,1,0,0,0,1,0,0,1,0,1,1,1,1,0,1,0,0,Primary role:;evaluates;organizes;reports source-grounded information within the accepted question;authority boundary;Common supporting roles:;user;process;patterns;constraints;implications;interfaces;trust;implementation sequencing;dependencies;cost;decision points;decisions;continuity;retrievable research state;owner research addresses actual journeys;comprehension;agency;failure;recovery;Challenge;assurance roles where consequence warrants:;framing;omissions;unsupported conclusions;evidence integrity;reproducibility;claim boundaries;threat exposure;research handling;consent;provenance;policy;evidence obligations;manipulation;blind spots;failure-inducing assumptions;Role selection must use the smallest sufficient set;must not alter the source-defined role contracts
+002,Foresight / Futures,1,1,1,1,1,0,0,0,1,0,0,1,0,1,1,1,1,0,1,1,0,Primary roles:;evaluates evidence concerning drivers;historical patterns;current signals;time-sensitive findings;conflicting sources;alternative explanations;second-order effects;scenario differences;sensitivity;uncertainty;decision implications;Common supporting roles:;interfaces;modularity;portability;resilience;authority;recovery;retirement;indicators;decision gates;staged commitments;dependencies;review triggers to an executable roadmap;social;technical;user;environmental signals without silently interpreting them as trends;forecast dates;evidence;decisions;outcomes;lessons so future review can compare expectation with reality;owner;operator;accessibility;comprehension;trust;recovery effects;Challenge;assurance roles where consequence warrants:;hidden assumptions;internal consistency;framing;omitted consequences;accountability;consent;institutional;policy;human-control implications;technologies;attack surfaces;cryptographic assumptions;dependencies;defensive capability may change;discontinuity;misuse;capture;failure;loss-of-control futures;support of material evidence;forecast baselines;scenario logic;indicators;claims about resilience;sensitivity;reversibility;conditions;residual uncertainty while preserving human decision authority;Role selection must use the smallest sufficient set;must not alter the source-defined role contracts
+003,Innovation,1,1,1,1,1,0,0,0,1,0,0,1,1,1,0,1,1,0,1,1,0,Primary roles:;current state;prior art;source quality;unresolved evidence;assumptions;effects;costs;risks;decision implications;boundaries;interfaces;invariants;implementation consequences without treating the concept as built;Common supporting roles:;dependencies;gates;rollback;completion evidence;agency;comprehension;accessibility;recovery;outcomes without unsupported interpretation;preserves provenance across parallel exploration;keeps recommendations advisory unless authority is explicit;Challenge;assurance roles where consequence warrants:;hidden assumptions;omitted alternatives;unsupported confidence;evidence integrity;acceptance boundaries;the exact status of claims;authority;delegation;policy;evidence;human decision boundaries;data exposure;trust-boundary changes;controls required before testing;seductive demonstrations;bypasses;hidden externalities;failure under adversarial conditions;Role selection must use the smallest sufficient set;preserve chamber independence where review is required;leave every source-defined role contract unchanged
+004,Mission Strategy,1,1,1,1,0,0,0,0,1,0,1,1,0,0,1,1,1,0,1,1,0,Primary roles:;source intent;affected parties;evidence base;tradeoffs;outcomes;alternatives;assumptions;second-order effects;Common supporting roles:;amendments;rationale;dissent;superseded language;user journeys;invariants implied by the mission;Challenge;assurance roles where consequence warrants:;hidden assumptions;omitted alternatives;unsupported confidence;evidence integrity;acceptance boundaries;the exact status of claims;authority;delegation;policy;evidence;human decision boundaries;metric gaming;coercive interpretation;exclusion;harmful optimization;conditions where security compromise would defeat the mission;Role selection must use the smallest sufficient set;preserve chamber independence where review is required;leave every source-defined role contract unchanged
+005,Business Strategy,1,1,1,1,1,0,0,0,1,0,0,1,1,0,1,1,1,0,1,1,0,Primary roles:;economics;capabilities;dependencies;risks;consequences;customer;competitor;regulatory;operating evidence;preserves uncertainty;dissent;Common supporting roles:;platform;integration;data;trust;operational implications;experiments;gates;resources;contingencies;assumptions;commitments;review triggers;comprehension;accessibility;or complete journeys;Challenge;assurance roles where consequence warrants:;hidden assumptions;omitted alternatives;unsupported confidence;evidence integrity;acceptance boundaries;the exact status of claims;authority;delegation;policy;evidence;human decision boundaries;data;infrastructure;identities;external dependencies;incentive failures;platform dependence;adversarial market response;catastrophic assumptions;Role selection must use the smallest sufficient set;preserve chamber independence where review is required;leave every source-defined role contract unchanged
+006,Product Strategy,1,1,1,1,1,0,0,0,1,1,0,1,0,1,0,1,1,0,1,1,0,Primary roles:;contexts;alternatives;product evidence;source quality;capabilities;tradeoffs;decision implications;journeys;agency;comprehension;accessibility;failure;recovery;Common supporting roles:;system boundaries;experiments;roadmap gates;product lifecycle work;user behavior without unsupported interpretation;capability boundaries;user-facing truth;Challenge;assurance roles where consequence warrants:;hidden assumptions;omitted alternatives;unsupported confidence;evidence integrity;acceptance boundaries;the exact status of claims;authority;delegation;policy;evidence;human decision boundaries;identity;data;abuse;dependency implications;deceptive affordances;automation bias;capability overclaim;recovery failure;Role selection must use the smallest sufficient set;preserve chamber independence where review is required;leave every source-defined role contract unchanged
+007,Portfolio Management,1,1,1,1,1,0,0,0,1,0,0,1,1,1,1,1,1,0,0,1,0,Primary roles:;sensitivity;risk;dependency;outcome analysis;dependencies;gates;time horizons;Common supporting roles:;dependency;evidence;conflict visibility across initiatives;duplication;technical concentration risk;validates external assumptions;decisions;assumptions;retirement knowledge;detects changes without interpreting them as value;Challenge;assurance roles where consequence warrants:;hidden assumptions;omitted alternatives;unsupported confidence;evidence integrity;acceptance boundaries;the exact status of claims;authority;delegation;policy;evidence;human decision boundaries;systemic dependencies;concentration of sensitive assets;gaming;hidden coupling;resource optimism;failure of correlated initiatives;Role selection must use the smallest sufficient set;preserve chamber independence where review is required;leave every source-defined role contract unchanged
+008,Program Management,1,0,1,1,1,0,0,1,1,1,0,1,1,1,1,1,1,0,0,1,0,Primary roles:;phases;gates;risks;resources;completion evidence;synchronizes;tracks;reconciles;hands off workstreams while preserving provenance;conflict;benefits;dependencies;scenarios;decision implications;Common supporting roles:;interfaces;standards;integration;trust;technical decision dependencies;workstream state without interpreting activity as success;versions;continuity;retrievable program history;interface records;operating guides;transition documents;Challenge;assurance roles where consequence warrants:;hidden assumptions;omitted alternatives;unsupported confidence;evidence integrity;acceptance boundaries;the exact status of claims;authority;delegation;policy;evidence;human decision boundaries;boundary;failure;recovery behavior across workstreams;identity;data;supply-chain;shared-infrastructure risk;dependency failure;status laundering;integration gaps;Role selection must use the smallest sufficient set;preserve chamber independence where review is required;leave every source-defined role contract unchanged
+009,Project Management,1,0,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1,0,0,1,0,Primary roles:;dependencies;phases;gates;risks;schedule;resources;completion evidence;synchronizes bounded work;tracks evidence;preserves conflict;consolidates results;events;transitions;gaps without interpreting activity as success;Common supporting roles:;constraints;interfaces;implementation sequence where assigned;acceptance criteria;boundary;failure;recovery behavior;operating;decision;handoff records;provenance;decisions;next safe action;Challenge;assurance roles where consequence warrants:;hidden assumptions;omitted alternatives;unsupported confidence;evidence integrity;acceptance boundaries;the exact status of claims;authority;delegation;policy;evidence;human decision boundaries;data;access;supply-chain;deployment risk;hidden dependencies;bypasses;false-readiness claims;Role selection must use the smallest sufficient set;preserve chamber independence where review is required;leave every source-defined role contract unchanged
+010,Product Management,1,1,1,1,1,0,0,1,1,0,0,1,1,1,1,1,1,0,1,0,0,Primary roles:;options;prioritization;outcomes;tradeoffs;complete journeys;comprehension;accessibility;agency;recovery;delivery;release;migration;lifecycle work by dependencies;evidence gates;Common supporting roles:;evaluates user;market;competitor;domain;regulatory evidence;preserves status;evidence;conflict;interface;data;trust;technical-dependency implications;incidents;user outcomes without unsupported causation;rationale;roadmap history;continuity;Challenge;assurance roles where consequence warrants:;hidden assumptions;omitted alternatives;unsupported confidence;evidence integrity;acceptance boundaries;the exact status of claims;authority;delegation;policy;evidence;human decision boundaries;complete journeys;data;identity;abuse;provider risks;dark patterns;misuse;deceptive status;failure recovery;Role selection must use the smallest sufficient set;preserve chamber independence where review is required;leave every source-defined role contract unchanged
+011,Business Analysis,1,1,1,1,1,0,0,0,1,0,0,1,0,1,1,1,1,0,1,1,0,Primary roles:;target state;gaps;options;impacts;decision implications;regulatory;market;policy;source claims;states;events;handoffs;exceptions without unsupported causation;Common supporting roles:;boundaries;interfaces;authority flows;structural implications;journeys;language;accessibility;agency;recovery;decisions;dependencies;validation;handoff;business rules;decisions;change history;Challenge;assurance roles where consequence warrants:;hidden assumptions;omitted alternatives;unsupported confidence;evidence integrity;acceptance boundaries;the exact status of claims;authority;delegation;policy;evidence;human decision boundaries;access;fraud;control;process-abuse risks;process gaming;hidden incentives;bypasses;harmful optimization;Role selection must use the smallest sufficient set;preserve chamber independence where review is required;leave every source-defined role contract unchanged
+012,Market Research,0,1,1,1,1,0,0,0,1,0,0,1,0,1,1,1,1,0,1,1,0,Primary roles:;executes source-grounded market inquiry;evaluates source quality;comparison;uncertainty;sensitivity;decision analysis;limitations;Common supporting roles:;sampling;analysis;review;decision gates;research interaction;comprehension;accessibility;participant burden;definitions;source state;decisions;expiration;Challenge;assurance roles where consequence warrants:;hidden assumptions;omitted alternatives;unsupported confidence;evidence integrity;acceptance boundaries;the exact status of claims;authority;delegation;policy;evidence;human decision boundaries;storage;access;reidentification;provider;leakage risk;category;sponsor;confirmation;survivorship;synthetic-evidence;market-size assumptions;Role selection must use the smallest sufficient set;preserve chamber independence where review is required;leave every source-defined role contract unchanged
+013,Competitive Intelligence,1,1,1,1,1,0,0,0,1,0,0,0,0,1,1,1,1,0,1,1,0,Primary roles:;assesses lawful;traceable;current competitive sources;alternative explanation;scenario;strategic implication analysis;reviews collection boundaries;sensitive handling;prohibited access;Common supporting roles:;interfaces;dependencies;operational implications without assuming implementation parity;user control rather than screenshot similarity;changes with timestamps;provenance;monitoring history;decisions;superseded findings;Challenge;assurance roles where consequence warrants:;hidden assumptions;omitted alternatives;unsupported confidence;evidence integrity;acceptance boundaries;the exact status of claims;authority;delegation;policy;evidence;human decision boundaries;deceptive claims;comparison bias;likely competitor response;internal overreaction;Role selection must use the smallest sufficient set;preserve chamber independence where review is required;leave every source-defined role contract unchanged
+014,Stakeholder Management,0,1,1,1,1,0,0,0,1,1,1,0,1,1,1,1,1,0,1,1,0,Primary roles:;context;source evidence;engagement needs;impacts;power;conflict;obligations;decision implications;assignments;dependencies;commitments;escalation without becoming sovereign authority;Common supporting roles:;comprehension;accessibility;agency;consent;grievance paths;decisions;events;state transitions without unsupported interpretation;commitments;preferences;decisions;dissent;continuity with data minimization;records;decisions;public or internal communication artifacts;Challenge;assurance roles where consequence warrants:;hidden assumptions;omitted alternatives;unsupported confidence;evidence integrity;acceptance boundaries;the exact status of claims;authority;delegation;policy;evidence;human decision boundaries;privacy;data handling;impersonation;communication;third-party risk;exclusion;coercion;dark patterns;hidden commitments;grievance suppression;Role selection must use the smallest sufficient set;preserve chamber independence where review is required;leave every source-defined role contract unchanged
+015,User Research,0,1,1,1,1,0,0,0,1,0,1,1,0,1,1,1,1,0,1,1,0,Primary roles:;roles;examines complete journeys;accessibility;comprehension;agency;trust;failure;recovery;evidence-backed friction without inventing personas;method;source hierarchy;inclusion;exclusion;evidence quality;conflicting findings;uncertainty;traceable conclusions;events;states;timing;environment;gaps without assigning unsupported motive;cause;severity;or recommendation;Common supporting roles:;segments;contexts;alternatives;causes;tradeoffs;decision implications while disclosing sampling;measurement limits;sessions;analysis;validation;decision gates;data disposition;moderators;accessibility support;translators;reviewers while preserving provenance;participant protections;necessary;source-bound research memory with expiry;access;correction;deletion controls;owner materials without talking down to users or changing the research purpose;Challenge;assurance roles where consequence warrants:;hidden assumptions;omitted alternatives;unsupported confidence;evidence integrity;acceptance boundaries;the exact status of claims;authority;delegation;policy;evidence;human decision boundaries;recordings;identities;access;provider use;reidentification;leakage;retention risk;selection bias;coercion;synthetic evidence;accessibility exclusion;privacy leakage;false validation;Role selection must use the smallest sufficient set;preserve chamber independence where review is required;leave every source-defined role contract unchanged
+016,Domain Analysis,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,1,1,0,Primary roles:;differences;tradeoffs;causes;consequences;rules;uncertainty;decision-relevant domain findings;terminology;conflicting evidence;jurisdictions;time sensitivity;evidence gaps;responsibilities;interfaces;authority flows;trust boundaries;invariants;failure modes;implementation implications without treating diagrams as implementation;Common supporting roles:;states;transitions;decisions;measurements;exceptions;gaps before interpretation;model versions;provenance;decisions;disputes;expiry;retrievable continuity;authority;delegation;evidence;exceptions;policy sources are legitimate;enforceable;state are understandable;usable in complete human journeys;models;examples;decision tables;interface meaning;change records;Challenge;assurance roles where consequence warrants:;hidden assumptions;omitted alternatives;unsupported confidence;evidence integrity;acceptance boundaries;the exact status of claims;authority;delegation;policy;evidence;human decision boundaries;identities;trust boundaries;abuse;information exposure;rule-enforcement risks;state transitions;rules;invariants;boundaries;exception paths;model-to-implementation traceability;authority confusion;impossible states;rule bypass;adversarial inputs;harmful edge cases;Role selection must use the smallest sufficient set;preserve chamber independence where review is required;leave every source-defined role contract unchanged
+017,Feasibility Analysis,1,1,1,1,1,0,0,1,1,0,0,1,1,1,0,1,1,1,1,1,0,Primary roles:;sensitivity analysis;tradeoff analysis;evidence-proportionate conclusions;interfaces;trust boundaries;failure modes;implementation sequence;whether requirements map to realizable components;dependencies;resources;milestones;validation gates;contingencies;completion evidence without inventing capacity or deadlines;preserves disqualifying constraints;dissent;reversibility;residual uncertainty;Common supporting roles:;standards;laws;providers;costs;dependencies;time-sensitive evidence;workloads;environments;resource use;failures;operating conditions before interpretation;executes bounded prototypes;benchmarks;compatibility tests;failure tests;recovery tests;artifact identity;evidence integrity;reproducibility;whether demonstrated results support the stated conclusion;trust boundaries;identity;access;dependency;supply-chain;security-operability feasibility;authority;approvals;evidence thresholds;delegation;human decision boundaries;owners can understand;operate;recover;complete required journeys;safety;security;governance;accessibility;recovery;preserves conflicts;tracks dependencies;consolidates evidence without erasing dissent;Challenge roles where consequence warrants:;omitted costs;hidden dependencies;false equivalence;unsupported readiness;abuse;operational;model;human;environmental;failure-recovery assumptions;Role selection must use the smallest sufficient set;maintain independence between proposal;assurance where required;preserve every source-defined role contract unchanged
+018,Risk Management,1,1,1,1,1,0,0,1,1,0,0,1,1,1,1,1,1,0,1,1,0,Primary roles:;consequences;uncertainty;comparative treatments;sensitivity;decision implications;tasks;dependencies;triggers;contingencies;validation gates;completion evidence;policy;scope;acceptance legitimacy;evidence;delegation;exceptions;trusted-state consequences;Specialist;assurance roles:;hazard;legal;regulatory;scientific;supplier;market;domain evidence;conditions;thresholds;incidents;near misses;control state;data gaps without unsupported interpretation;vulnerabilities;identity;access;supply chain;evidence integrity;control effectiveness;interface;trust-boundary;dependency;common-mode;recovery;lifecycle risks;cognitive load;accessibility;trust;consent;dark patterns;recovery;complete journeys;boundary behavior;failure;denial;recovery;rollback;monitoring;risk claims;control operation;residual-risk boundaries;acceptance conditions;bypasses;abuse paths;correlated failures;control evasion;optimistic residual-risk claims;missing requirements;false precision;unsupported ratings;omitted affected parties;decisions;evidence;expiry;supersession;incidents;lessons;reopening triggers;conflicts;dependencies;treatment status;consolidated reporting;Role selection must match the risk;consequence;use independent review where required;leave source-defined role contracts unchanged
+019,Requirements Engineering,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,0,1,1,0,Primary roles:;relationships;conflicts;dependencies;alternatives;decision implications while separating evidence from interpretation;allocable;interface-aware;governable;recoverable;precedence;mandatory constraints;delegation;waivers;exceptions;status transitions;acceptance legitimacy;analysis;validation;baseline;change;verification work with owners;dependencies;gates;evidence;Evidence;human;domain roles:;legal;regulatory;scientific;market;supplier;domain evidence for requirements;constraints;accessibility;cognitive load;trust;consent;error;denial;correction;recovery requirements;state;events;workflows;gaps;operational conditions without unsupported interpretation;identity;authorization;data;supply-chain;evidence-integrity;abuse requirements;rationale;examples;decisions;version history;supersession;conflicts;decisions;change history;evidence;reopening triggers;Assurance;coordination roles:;preserves provenance;reconciles compatible outputs;surfaces conflicts;prevents parallel roles from silently producing different baselines;hidden assumptions;missing requirements;contradictions;implementation bias;false completeness;unsupported priority;identifies untestable statements;maintains coverage;defect linkage;source;quality;traceability;evidence;verification state;acceptance boundaries;omitted adversarial conditions;unsafe defaults;privilege assumptions;evidence manipulation;failure-recovery gaps;implementation-deviation evidence;must not alter requirements without authorization;Role selection must match the work;consequence;are not redefined by this section
+020,Systems Engineering,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,define each assignment;preserve separation among analysis;execution;review;verification;decision;elements;interfaces;data;authority;trust;failure;recovery;verification paths from approved requirements;evaluates authoritative technical;operational;scientific;supplier;regulatory;lifecycle evidence;tradeoff;sensitivity;dependency;consequence;whole-system analysis without seizing decision authority;internal consistency;hidden assumptions;operational realism;interfaces;evidence;readiness claims;trust boundaries;identity;authorization;supply chain;runtime;evidence;recovery;security claims;integration;prototype;configuration;requirements;interfaces into reproducible normal;boundary;failure;recovery;compatibility;governance tests;version;environment;evidence limits;interface records;decisions;procedures;limitations;recovery;lifecycle documentation;dependencies;tradeoffs;evidence;operating procedures without replacing authority or qualified training;integration;verification;validation;transition;operation;maintenance;retirement work with explicit gates;dependencies;reconciles bounded specialist workstreams while preserving provenance;dissent;human authority;one coherent system result;events;measurements;transitions;anomalies;failures;evidence without unsupported interpretation;decisions;traceability;evidence;lessons;continuity under retention;access rules;scope;delegation;policy;evidence;approval;exception;transition compliance;interfaces;authority;failure paths;recovery;bypasses;human factors;readiness claims;regression guardrails;operator;maintainer;support;accessibility;failure;recovery;control journeys;constraints;evidence;sensitivity;reversibility;human approval boundaries
+021,Enterprise Architecture,1,1,1,1,1,0,0,0,0,1,0,1,1,1,0,1,1,0,1,1,0,The existing source-defined roles apply without modification:;boundaries;components;interfaces;flows;alternatives;verification paths;market;supplier;regulatory;technical;organizational evidence;portfolio;cost;dependency;scenario;transition analysis;unsupported assumptions;hidden dependencies;identity;access;supply-chain;evidence;control boundaries;dependencies;gates;milestones;contingencies;handoffs;conflicts;provenance;operating evidence;changes;baseline identity;traceability;evidence sufficiency;policy;exception;conformance boundaries;accessibility;control;enterprise-operability impacts;authority are explicit;continuity;bypass;dependency;migration;recovery;governance assumptions
+022,Solution Architecture,1,1,1,1,1,1,0,1,1,1,0,1,1,0,1,1,1,0,1,1,0,The existing source-defined roles apply without modification:;interfaces;flows;trust boundaries;alternatives;tradeoffs;sequencing;verification;technology;provider;compatibility;operational;regulatory evidence;workload;cost;complexity;risk;reversibility;sensitivity analysis;identity;authorization;secrets;supply chain;evidence;operational security;accessibility;comprehension;consequence;recovery;bypasses;failure paths;dependencies;readiness claims;migration;deployment;validation;rollback;recovery sequencing;contract;failure;recovery;claim-verification design;conflict preservation;policy;compliance;exception boundaries;continuity;authority
+023,Systems Architecture,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,0,1,1,0,Primary roles:;Common supporting roles:;Challenge;assurance roles where consequence warrants:;Implementation remains separately authorized;scope;target;constraints
+024,Domain Architecture,1,1,1,1,1,0,0,1,1,1,0,1,1,1,1,1,1,0,1,1,0,Primary roles:;Common supporting roles:;Challenge;assurance roles where consequence warrants:;The selected roles must operate within their existing contracts. Domain experts
+025,Business Architecture,1,1,1,1,1,0,0,0,1,0,0,1,1,1,0,1,1,0,1,1,0,views;boundaries;interfaces;dependencies;authority;failure;recovery;verification path;assesses authoritative business;market;operational;regulatory;contractual;stakeholder evidence;target states;options;outcomes;costs;dependencies;risks;sensitivity to assumptions;hidden dependencies;incomplete stakeholder coverage;metric distortion;operating-model contradictions;identity;authority;supply-chain;information;partner;control implications;scenarios;controls;acceptance conditions;artifact identity;version;scope;completion boundaries;catalogs;decisions;glossary;traceability;operating guidance;modeling;decisions;experiments;transition;adoption;verification;recovery work;preserves provenance;reconciles compatible outputs;surfaces unresolved conflict;decisions;events;dependencies;workarounds;evidence without unsupported interpretation;decisions;source links;supersession;open questions;continuity;rule hierarchy;policy;exception;approval;safe-halt conditions;bypasses;hidden authority;concentration;transition;resilience;false-readiness claims;employee;operator;customer;user journeys remain understandable;accessible;controllable;recoverable;provides advisory recommendations unless explicit decision authority exists;Roles must be selected for the required function;given explicit assignments;inputs;authority;prohibited actions;outputs;evidence requirements;review gates;completion conditions. The role corpus remains unchanged
+026,Capability Architecture,1,1,1,1,1,0,0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,boundaries;dependencies;realization;interfaces;lifecycle;failure;recovery;verification;market;workforce;operational;supplier;regulatory;benchmark evidence;levels;gaps;dependencies;costs;benefits;risks;capacity;sensitivity;duplicate labels;unsupported maturity;hidden realization;weak measures;false readiness;authority;data;supply-chain;partner;resilience;security implications;conditions into scenarios;tests;acceptance criteria;coverage models;evidence;configuration identity;environment;demand;scope;catalogs;definitions;realization views;decisions;guidance;assessment;increments;investments;transitions;adoption;testing;retirement;dependencies;conflict;evidence;handoffs;synthesis;demand;performance;incidents;dependencies;workarounds;state;model versions;evidence;decisions;supersession;continuity;policy;obligations;exceptions;delegation;risk acceptance;safe-halt conditions;concentration;bypass;degradation;demand spikes;supplier failure;recovery;controls;or resilience;accessible;controllable;recoverable journeys;priorities against authorized criteria without assuming final authority;The existing role definitions remain controlling;are not redefined by this section
+027,Process Architecture,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,responsibilities;dependencies;interfaces;controls;failure;recovery;implementation implications;domain;user;operational;policy;legal;supplier;current-state evidence;bottlenecks;variants;dependencies;tradeoffs;causes;consequences;outcome relationships;states;events;waits;handoffs;workarounds;exceptions without unsupported interpretation;design;validation;transition;adoption;review work with gates;evidence;participants;decisions;conflicts;handoffs without redefining the objective;hidden work;circular control;false simplicity;unsupported effectiveness;recovery gaps;policy;delegation;consent;exceptions;procedural compliance;evidence admissibility;privileged steps;data handling;abuse paths;evidence integrity;secure recovery;accessibility;burden;denial;correction;recovery;dignity;complete user or owner journeys;journeys into reproducible normal;boundary;failure;recovery;compatibility tests;versions;environments;methods;acceptance criteria;definitions;procedures;decisions;limitations;recovery instructions;versions;decisions;evidence;dissent;supersession;continuity;configuration;automation;code;or operational change without changing the process contract unilaterally;controls;authority;accessibility;resilience;handoffs;identity;evidence;denial;recovery;human oversight;are not redefined here
+028,Functional Architecture,1,1,1,1,1,0,1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,decomposition;contracts;allocations;dependencies;states;interfaces;failure;recovery;lifecycle implications;alternatives;completeness;feasibility;quality;dependencies;tradeoffs;consequences;domain;technical;human;operational;supplier;standard;current-behavior evidence;inputs;outputs;states;transitions;timings;failures;system signals without unsupported causation;allocation;prototyping;integration;verification;validation;transition;review work;resolves routing or provenance issues without seizing authority;hidden implementation bias;circular dependencies;false completeness;unsupported behavior;authorization;trust;data;control;abuse;evidence;security behavior at functional boundaries;owner;operator;maintainer;support;accessibility;explanation;correction;denial;recovery functions;boundary;failure;degraded;recovery;compatibility;security;accessibility;governance conditions;allocations;contracts;evidence;reproducibility;exact scope;models;contracts;decisions;assumptions;limitations;handoffs;traceability;versions;evidence;dissent;decisions;continuity;requirements precedence;mandatory constraints;delegation;exceptions;acceptance;status transitions;reports deviations rather than silently changing the functional baseline;acceptance boundaries;misuse;malformed input;privilege escalation;model manipulation;failure;recovery;evidence attacks;preserves owner decisions;Role selection must preserve independence between implementation
+029,Operational Architecture,1,0,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,0,0,service boundaries;responsibilities;dependencies;controls;lifecycle implications;service behavior;incidents;tradeoffs;risk;operational evidence;work;signals;queues;failures;operator behavior;suppliers;support;incidents;changes;handoffs;deployment;transition;maintenance;recovery;retirement;trust boundaries;monitoring;abuse;secure recovery;commitments;exceptions;records;status claims;degradation;recovery;continuity scenarios;operational claims against exact evidence;operating concepts;records;handoffs;changes;incidents;evidence;continuity;missing ownership;unsafe defaults;false readiness;operator;support;accessibility;recovery journeys;reports deviations;abuse;failure;recovery boundaries
+030,Information Architecture,1,1,1,1,1,1,0,1,1,1,0,0,0,1,1,1,0,0,1,0,0,relationships;ownership;flows;context;lifecycle;user;content;records;legal;accessibility;source evidence;structures;usage;findability;quality;impacts;navigation;search behavior;information use;taxonomies;metadata;content structures;explanations;findability;accessibility;language;burden;correction;classification;access;records;provenance;privacy;publication;trust boundaries;access;integrity;abuse paths;provenance;version;permission;reproducibility;hidden assumptions;duplicate meaning;false precision;exclusion;supersession;decisions;sources;continuity;controls without changing meaning unilaterally;search;labels;access;context;error;correction;lifecycle behavior
+031,Data Architecture,1,1,1,1,1,1,0,1,1,1,0,0,0,1,1,1,1,1,0,0,0,ownership;flows;contracts;controls;lineage;lifecycle;quality;dependencies;transformations;tradeoffs;impact;domain;legal;user;operational;data-use evidence;flows;failures;quality;user or system effects;authority;access;retention;records;privacy;policy;integrity;identity;access;secrets;abuse;recovery;quality;contracts;controls;evidence;quality;access;migration;deletion;recovery;compatibility behavior;dictionaries;catalogs;contracts;evidence records;transformations;versions;decisions;continuity;missing lineage;hidden copies;biased samples;unowned quality;pipelines;controls;migrations;cost without weakening meaning;quality;rights;or controls;poisoning;corruption;bypass;re-identification;deletion failures
+032,Application Architecture,1,1,1,1,1,1,1,1,1,1,0,1,0,0,1,1,1,1,1,0,0,responsibilities;interfaces;dependencies;state;deployment;lifecycle;alternatives;dependencies;cost;risk;impacts;domain;technical;operational;supplier;current-state evidence;reports deviations;behavior;workflows;failure;security;accessibility;performance;recovery;compatibility;versions;configurations;evidence;acceptance;authorization;secrets;dependencies;data;attack surface;recovery;operator;accessibility;explanation;correction;recovery journeys;release;records;licensing;risk;status;implementation;integration;transition;support;retirement;contracts;runbooks;decisions;limitations;dependencies;decisions;evidence;continuity;hidden coupling;false completeness;unsupported claims;integration;privilege;failure;recovery paths
+033,Software Architecture,1,1,1,1,1,1,1,1,1,1,0,1,0,0,1,1,1,1,0,0,0,Role selection is proportional to consequence;existing role contracts remain controlling
+034,Platform Architecture,1,1,1,1,1,1,0,1,1,1,0,1,1,0,1,1,1,1,0,0,0,
+035,Infrastructure Architecture,1,1,1,1,1,1,0,1,1,1,0,1,1,0,1,1,1,1,0,0,0,
+036,Cloud Architecture,1,1,1,1,1,1,0,1,1,1,0,1,1,0,1,1,1,1,0,0,0,
+037,Edge Architecture,1,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,1,0,0,0,0,Safety Auditor
+038,Distributed Systems Architecture,1,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,1,1,0,0,0,
+039,Network Architecture,1,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,1,1,0,0,0,
+040,Communications Architecture,1,1,1,1,1,0,0,1,1,1,0,1,1,1,1,1,1,0,1,0,0,
+041,Integration Architecture,1,1,1,1,1,1,0,1,1,1,0,1,1,0,1,1,1,1,0,0,0,
+042,API Architecture,1,1,1,1,1,1,0,1,1,1,0,1,0,0,1,1,1,1,0,0,0,
+043,Event-Driven Architecture,1,1,1,1,1,1,0,1,1,1,0,1,1,0,1,1,1,1,0,0,0,
+044,Runtime Architecture,1,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,1,1,0,0,0,
+045,Security Architecture,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,0,0,0,0,
+046,Identity Architecture,1,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,1,0,0,0,0,
+047,Privacy Architecture,1,1,1,1,1,0,0,1,1,1,0,1,0,1,1,1,1,0,0,0,0,Privacy
+048,Governance Architecture,1,1,1,1,1,0,0,0,1,1,0,1,1,0,1,1,1,0,0,1,0,
+049,Compliance Architecture,1,1,1,1,1,0,0,0,1,1,0,1,0,0,1,1,1,0,0,0,0,
+050,Safety Architecture,1,1,1,1,0,0,0,1,1,1,0,1,0,1,1,1,1,0,1,0,0,Safety Auditor
+051,Reliability Architecture,1,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,1,1,0,0,0,
+052,Resilience Architecture,1,1,1,1,1,0,0,1,1,1,0,1,1,1,1,1,1,1,0,0,0,Safety Auditor
+053,Accessibility Architecture,1,1,1,1,0,0,0,1,1,1,0,1,0,1,1,1,1,0,1,0,0,
+054,Content Architecture,0,1,1,1,0,0,0,1,1,1,0,0,0,0,1,1,1,0,1,0,0,
+055,Knowledge Architecture,1,1,1,1,0,0,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0,
+056,AI Architecture,1,1,1,1,1,1,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0,
+057,Machine Learning Architecture,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,
+058,Robotics Architecture,1,1,1,1,1,0,0,1,1,1,0,1,0,1,1,1,1,0,0,0,0,
+059,Embedded Systems Architecture,1,1,1,1,1,1,0,1,1,1,0,1,0,0,1,1,1,0,0,0,0,
+060,Hardware Architecture,1,1,1,1,1,1,0,1,1,1,0,1,0,0,1,1,1,0,0,0,0,
+061,Electrical Engineering,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,0,0,selected according to consequence;existing role contracts
+062,Electronics Engineering,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,0,0,0,
+063,Computer Engineering,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,0,0,
+064,Mechanical Engineering,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,0,
+065,Industrial Design,1,1,1,1,0,1,0,1,1,1,0,1,0,0,1,1,1,1,1,0,0,
+066,Semiconductor Engineering,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,0,0,0,
+067,PCB Design,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,0,0,0,
+068,Firmware Engineering,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,0,0,
+069,Embedded Software Engineering,1,0,1,1,1,1,0,1,1,1,0,1,0,1,1,1,1,1,0,1,0,must preserve independent verification
+070,Internet of Things Engineering,1,0,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,0,1,0,Safety specialist through the existing role contract;Privacy
+071,Telecommunications Engineering,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,0,1,0,
+072,Signal Processing,1,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,1,1,1,1,0,
+073,Control Systems Engineering,1,0,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,0,1,0,Safety
+074,Robotics Engineering,1,0,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,Safety Auditor
+075,Human–Computer Interaction,1,1,1,1,0,1,0,1,1,1,0,0,0,1,1,1,0,0,1,1,0,Interaction Designer through existing contract;Accessibility specialist
+076,Interaction Design,1,1,1,1,0,1,0,1,1,1,0,0,0,1,1,1,0,0,1,1,0,Interaction Designer;Accessibility specialist
+077,Experience Design,1,1,1,1,0,0,0,1,1,1,0,0,0,1,1,1,0,0,1,0,0,Interaction Designer;Service Designer;Content Designer;Accessibility specialist
+078,Service Design,1,1,1,1,1,0,0,1,1,1,0,0,1,0,1,1,0,0,1,0,0,Service Designer;Process;Operations owners;Accessibility specialist
+079,UX Strategy,1,1,1,1,0,0,0,0,1,1,0,1,1,0,1,1,0,0,1,1,0,UX Strategist;Product;Service owners
+080,UX Research,0,1,1,1,0,0,0,1,1,1,0,0,0,1,1,1,0,0,1,1,0,Accessibility specialist;Security;Privacy Auditors
+081,UX Architecture,1,1,1,1,0,1,0,1,1,1,0,0,0,0,1,1,0,0,1,0,0,UX Strategist;Interaction Designer;Content Designer;Accessibility specialist
+082,UX Design,1,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,0,0,1,0,0,UX Designer;Interaction Designer;Visual Designer;Content Designer;Accessibility specialist
+083,UI Design,1,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,0,0,1,0,0,UI Designer;UX Designer;Interaction Designer;Visual Designer;Accessibility specialist
+084,Visual Design,0,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,0,0,1,0,0,Visual Designer;UI Designer;UX Designer;Graphic Designer;Accessibility specialist;Content Designer
+085,Graphic Design,0,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Graphic Designer;Visual Designer;UX Designer;Content Designer;Accessibility specialist
+086,Motion Design,0,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Motion Designer;UI Designer;Interaction Designer;UX Reviewer;Accessibility specialist
+087,Sound Design,0,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Sound Designer;Voice Designer;UX;Interaction Designers;Accessibility specialist;Content Designer
+088,Voice Interface Design,1,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Voice Interface Designer;Conversational Designer;UX Reviewer;Accessibility specialist;Security;Privacy Auditors
+089,Conversational Design,0,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Conversational Designer;Voice Interface Designer;UX Reviewer;Content Designer;Security;Privacy Auditors
+090,Spatial Interface Design,1,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Spatial Designer;UX;Interaction Designers;Robotics;Safety specialists;Accessibility specialist
+091,AR Design,0,1,0,1,0,1,0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,AR Designer;Spatial Designer;UX;Interaction Designers;Robotics;Safety specialists;Accessibility specialist;Security;Privacy Auditors
+092,VR Design,0,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,VR Designer;Spatial Designer;UX;Interaction Designers;Accessibility;Safety specialists;Privacy Auditor
+093,XR Design,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,XR Designer;Spatial;AR;VR;UX;Interaction;Research;Safety;Privacy;Accessibility;Security;Testing;Verification;Governance;Implementation;Documentation roles
+094,Game Design,0,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Game Designer;Level Designer;Narrative Designer;UX Reviewer;Content Designer;Safety;Privacy Auditors
+095,Level Design,0,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Level Designer;Game Designer;Narrative Designer;UX Reviewer;Accessibility specialist
+096,Narrative Design,0,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Narrative Designer;Game;Level Designers;Content Designer;Cultural or domain reviewers;UX Reviewer;Accessibility specialist
+097,Content Design,0,1,0,0,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Content Designer;Technical Writer;Copywriter;UX Reviewer;Domain Expert;Accessibility specialist;Legal
+098,Content Strategy,0,1,1,1,0,0,0,0,1,1,0,0,0,0,0,1,0,0,0,0,0,Content Strategist;Content Designer;Technical Writer;Copywriter;UX Strategist;Legal;Accessibility;Localization
+099,Technical Writing,1,1,0,1,1,1,0,1,1,1,0,0,0,0,1,1,0,0,0,0,0,Technical Writer;Operations;Accessibility specialist;Localization
+100,Copywriting,0,1,0,1,0,0,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Copywriter;Content Designer;UX Writer;Product Owner;Legal;Accessibility specialist;Localization
+101,Localization,0,1,0,1,0,0,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Localization Specialist;Translator;Content Designer;UX Reviewer;Cultural or domain Expert;Accessibility specialist
+102,Internationalization,1,0,1,0,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Localization Specialist;Technical Writer;Content Designer;UX Reviewer;Accessibility specialist;Security;Privacy Auditors
+103,Accessibility Design,0,1,0,1,0,1,0,1,1,1,0,0,0,0,0,1,0,0,1,0,0,Accessibility Designer;Interaction;UI;Content;Visual Designers
+104,Design Systems,1,0,0,1,0,1,0,1,1,1,0,0,0,0,1,1,0,0,0,0,0,Design Systems Designer;UX;UI;Interaction;Visual;Content;Accessibility Designers
+105,Prototyping,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,0,fidelity;dependencies;system implications;promotion risks;domain;user;technical;operational;participant evidence;alternatives;observations;feasibility;uncertainty;omitted states;hidden work;weak evidence;premature promotion;identity;access;isolation;secrets;abuse;disposal;burden;accessibility;dignity;error;correction;recovery;consent;policy;records;claims;decision boundaries;experiments;review gates;next actions;owners;dependencies;handoffs;boundary;failure;accessibility;security;recovery scenarios;method;evidence;claims;artifact;observations;decisions;limitations;disposal;evidence;dissent;decisions;continuity;prompt manipulation;data leakage;bypass;failure;misleading interpretation;are not redefined here
+106,User Validation,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,conducts evidence gathering with users;affected people;accessibility;comprehension;burden;dignity;trust;recovery;patterns;segments;tradeoffs;uncertainty;disconfirming evidence;context;workarounds;hesitation;errors;environmental conditions;function;information;data;application;system implications;consent;participant treatment;claims;privacy;records;acceptance;identity;access;abuse;secure recovery;leading instruments;false consensus;omitted populations;weak causation;sessions;analysis;remediation;re-test;decision gates;owners;specialists;logistics;handoffs;regression;accessibility;recovery tests;records;findings;traceability;claims;instruments;findings;decisions;limitations;participant-facing records;evidence;consent boundaries;dissent;decisions;continuity;excluding;or burdening participants;exclusion;privacy leakage;unsafe behavior;denial or recovery failure;are not redefined here
+107,Software Engineering,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,0,Role selection is proportional to consequence;existing role contracts remain controlling
+108,Computer Science,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,0,0,0,0,0,
+109,Algorithm Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,1,0,0,
+110,Programming Language Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,0,0,0,
+111,Compiler Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,0,0,0,
+112,Runtime Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,0,0,0,
+113,Operating Systems Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,0,0,0,
+114,Kernel Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,0,0,0,
+115,Driver Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,0,0,0,
+116,Middleware Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,0,0,0,
+117,Application Engineering,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,0,0,
+118,Frontend Engineering,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,0,0,1,0,0,Accessibility specialist through existing role contracts
+119,Backend Engineering,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,
+120,Full-Stack Engineering,1,1,1,1,1,1,1,1,1,1,0,0,1,0,1,1,0,0,1,0,0,
+121,Web Engineering,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,0,0,1,0,0,
+122,Desktop Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,0,0,1,0,0,
+123,Mobile Engineering,1,1,1,0,1,1,0,1,1,1,0,0,1,0,1,1,1,0,1,0,0,Privacy;Accessibility specialist
+124,Cross-Platform Engineering,1,1,1,0,1,1,1,1,1,1,0,0,1,0,1,1,1,0,1,0,0,Accessibility specialist
+125,Native Application Engineering,1,1,1,0,1,1,0,1,1,1,0,0,1,0,1,1,1,0,1,0,0,Privacy Reviewer;Accessibility specialist
+126,Browser Engineering,1,1,1,0,1,1,0,1,1,1,0,0,1,0,1,1,1,0,1,0,0,Privacy;Accessibility specialist
+127,Extension Engineering,1,0,1,0,1,1,0,1,1,1,0,0,1,0,1,1,1,0,1,0,0,Privacy Reviewer
+128,API Engineering,1,0,1,1,1,1,0,1,1,1,0,0,1,1,1,1,1,0,0,0,0,Privacy Reviewer
+129,Integration Engineering,1,1,1,1,1,1,0,1,1,1,0,0,1,1,1,1,1,0,0,0,0,Privacy Reviewer
+130,Microservices Engineering,1,1,1,1,1,1,0,1,1,1,0,0,1,1,1,1,1,1,0,0,0,
+131,Distributed Systems Engineering,1,0,1,1,1,1,0,1,1,1,0,0,1,1,1,1,1,1,0,0,0,
+132,Real-Time Systems Engineering,1,0,1,0,1,1,0,1,1,1,0,0,1,1,1,1,1,1,0,0,0,Safety Auditor
+133,High-Performance Computing,1,1,1,0,1,1,0,1,1,1,0,0,1,1,1,1,1,1,0,0,0,
+134,Parallel Computing,1,0,1,1,1,1,0,1,1,1,0,0,1,1,1,1,1,1,0,0,0,
+135,Scientific Computing,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,0,0,0,
+136,Simulation Engineering,1,1,1,1,0,1,0,1,1,1,0,0,0,1,1,1,1,1,0,0,0,
+137,Digital Twin Engineering,1,1,1,0,1,1,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0,Domain Expert;Safety Auditor
+138,Game Engineering,1,0,1,0,1,1,0,1,1,1,0,0,1,0,1,1,1,0,1,0,0,Game Designer;Accessibility specialist
+139,Graphics Engineering,1,1,0,0,1,1,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,Graphics Engineer;Designer;Accessibility specialist
+140,Rendering Engineering,1,0,1,0,1,1,0,1,1,1,0,0,0,0,1,0,1,1,0,0,0,Graphics Engineer;Accessibility specialist
+141,Animation Engineering,1,0,0,1,0,1,0,1,1,1,0,0,0,0,1,1,1,0,1,0,0,Motion Designer;Accessibility specialist
+142,Audio Engineering,1,0,0,0,1,1,0,1,1,1,0,0,0,0,1,1,1,0,1,0,0,Audio Engineer;Accessibility specialist;Privacy Reviewer
+143,Video Engineering,1,1,0,0,1,1,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,Video Engineer;Privacy Reviewer;Accessibility specialist
+144,Media Engineering,1,1,0,0,1,1,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,Media Engineer;Designer;Privacy Reviewer;Accessibility specialist
+145,Streaming Engineering,1,0,0,0,1,1,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0,Media Engineer;Network Engineer;Privacy Reviewer;Accessibility specialist
+146,Search Engineering,1,1,1,0,1,1,0,1,1,1,0,0,0,0,1,1,1,0,1,0,0,Privacy Reviewer
+147,Recommendation Systems Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,1,0,1,0,0,Privacy Reviewer
+148,Geographic Information Systems,1,1,1,0,1,1,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,Domain Expert;Privacy Reviewer;Accessibility specialist
+149,Blockchain Engineering,1,0,1,0,1,1,0,1,1,1,0,0,1,1,1,1,1,0,0,0,0,Cryptography Engineer;Privacy Reviewer
+150,Smart Contract Engineering,1,1,1,0,1,1,0,1,1,1,0,0,0,0,1,1,1,0,0,1,0,Cryptography Engineer
+151,Database Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,1,1,1,1,1,0,0,0,
+152,Storage Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,1,1,1,1,1,0,0,0,
+153,Data Engineering,1,1,1,1,1,1,0,1,1,1,0,0,1,1,1,1,1,1,0,0,0,
+154,Data Modeling,1,1,1,1,1,1,0,1,1,1,0,0,0,1,1,1,1,0,1,0,0,
+155,Data Governance,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,1,0,1,0,0,
+156,Data Quality Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,1,1,1,1,1,0,0,0,
+157,Data Integration,1,1,1,1,1,1,0,1,1,1,0,0,1,1,1,1,1,0,0,0,0,
+158,Data Migration,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,0,0,0,0,
+159,Data Warehousing,1,1,1,1,1,1,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0,Data Engineer
+160,Data Lake Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,1,1,1,1,1,0,0,0,Data Engineer
+161,Analytics Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,0,1,0,0,0,Data Engineer
+162,Business Intelligence,1,1,1,1,1,0,0,1,1,1,0,0,0,0,1,1,0,0,1,0,0,Data Engineer
+163,Data Analysis,1,1,1,1,1,0,0,1,1,1,0,0,0,1,1,1,0,0,0,1,0,Privacy Reviewer
+164,Data Science,1,1,1,1,1,0,0,1,1,1,0,0,0,0,1,1,0,0,0,1,0,Statistician;Privacy Reviewer
+165,Statistics,0,1,1,1,1,0,0,1,1,1,0,0,0,1,1,1,0,0,0,1,0,Privacy Reviewer
+166,Operations Research,1,1,1,1,1,0,0,1,1,1,0,1,0,0,1,1,0,1,0,1,0,Operations Reviewer;Privacy Reviewer
+167,Machine Learning Engineering,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,Privacy Reviewer
+168,Deep Learning Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,0,0,0,Privacy Reviewer;Safety Auditor
+169,AI Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,Prompt Engineer;Privacy Reviewer;Safety Auditor;Human-in-the-Loop Operator
+170,Generative AI Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,Prompt Engineer;Content Reviewer;Privacy Reviewer;Safety Auditor;Human-in-the-Loop Operator
+171,Natural Language Processing,0,1,1,1,1,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,Domain Expert;Prompt Engineer;UX Reviewer;Accessibility Reviewer;Privacy Reviewer;Safety Auditor
+172,Computer Vision,1,1,1,1,1,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,Safety Auditor;Privacy Reviewer;Accessibility Reviewer;Human-in-the-Loop Operator
+173,Speech Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,UX Reviewer;Accessibility Reviewer;Privacy Reviewer;Safety Auditor;HITL Operator
+174,Reinforcement Learning,1,1,1,1,1,1,0,1,1,1,0,1,0,0,0,1,1,1,0,0,0,Safety Auditor;Privacy Reviewer;HITL Operator
+175,Knowledge Graph Engineering,1,1,1,1,1,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,Data Engineer;Ontology Engineer;Privacy Reviewer
+176,Ontology Engineering,1,1,1,1,0,0,0,1,1,1,0,0,0,0,1,1,0,0,0,0,0,Ontology Engineer;Accessibility Reviewer
+177,Semantic Systems Engineering,1,1,1,1,1,0,0,1,1,1,0,0,0,0,1,1,0,0,0,0,0,Ontology Engineer;Data Engineer;Privacy Reviewer
+178,Agent Systems Engineering,1,1,1,1,1,1,0,1,1,1,0,1,1,0,1,1,1,0,0,0,0,Safety Auditor;Human-in-the-Loop Operator
+179,Model Training,1,1,0,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,0,0,0,Data Scientist;Privacy Reviewer;Safety Auditor
+180,Model Evaluation,0,1,1,1,1,0,0,1,1,1,0,0,0,0,1,1,1,0,0,1,0,Safety Auditor;Privacy Reviewer;Accessibility Reviewer
+181,Model Alignment,0,1,1,1,1,0,0,1,1,1,0,0,0,0,1,1,1,0,0,1,0,Safety Auditor;Domain Expert;Privacy Reviewer
+182,AI Safety,1,1,1,1,1,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,Safety Auditor;Privacy Reviewer;UX Reviewer;Human-in-the-Loop Operator
+183,AI Governance,1,1,1,1,1,0,0,0,1,1,0,0,0,0,1,1,0,0,0,1,0,Privacy Reviewer;Safety Auditor;Human-in-the-Loop Operator
+184,MLOps,1,0,0,1,1,1,0,1,1,1,0,1,0,0,1,1,0,1,0,0,0,DevOps Engineer;Privacy Reviewer;Safety Auditor;HITL Operator
+185,Model Operations,1,0,1,1,1,0,0,1,1,1,0,1,0,1,1,1,0,0,0,0,0,Operations Engineer;Privacy Reviewer;Safety Auditor;HITL Operator
+186,Prompt Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,Prompt Engineer;Privacy Reviewer;Safety Auditor;HITL Operator
+187,Synthetic Data Engineering,0,1,1,1,1,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,Data Engineer;Data Scientist;Privacy Reviewer
+188,Human-in-the-Loop Operations,0,0,1,1,1,0,0,0,1,1,0,0,0,1,1,1,0,0,1,1,0,Human-in-the-Loop Operator;Safety Auditor;Privacy Reviewer;Accessibility Reviewer
+189,Cybersecurity Engineering,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,0,0,0,selected proportionally to consequence;with independent verification where needed
+190,Application Security,1,0,1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,0,0,0,0,
+191,Product Security,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,0,0,0,0,Product Manager
+192,Platform Security,1,0,1,0,1,1,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0,Platform Engineer;Infrastructure Engineer;Identity Engineer;Network Engineer;Operations Engineer
+193,Infrastructure Security,1,0,0,0,1,1,0,1,1,1,0,0,0,1,0,1,1,0,0,0,0,Infrastructure Engineer;Systems Administrator;Network Engineer;Operations Engineer
+194,Cloud Security,1,0,1,0,1,1,0,1,1,0,0,0,0,1,0,1,1,0,0,0,0,Platform Engineer;Identity Engineer;Network Engineer;Operations Engineer
+195,Network Security,1,0,1,0,1,1,0,1,1,0,0,0,0,1,0,1,1,0,0,0,0,Network Engineer;Identity Engineer;Operations Engineer
+196,Endpoint Security,0,0,1,0,1,1,0,1,1,0,0,0,0,1,0,1,1,0,0,0,0,Endpoint Engineer;Identity Engineer;Systems Administrator;Privacy Reviewer;Operations Engineer
+197,Mobile Security,1,1,1,1,1,1,0,1,1,1,0,0,1,1,1,1,1,0,1,0,0,preserve the role contracts defined in Section 02
+198,Embedded Security,1,1,0,0,1,1,0,1,1,1,0,0,0,1,1,1,1,0,1,0,0,Embedded Engineer;Hardware Engineer;Safety Reviewer;preserve their Section 02 contracts
+199,Hardware Security,1,1,1,1,1,1,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0,Hardware Engineer;Embedded Engineer
+200,Identity and Access Management,1,1,1,1,1,1,0,1,1,1,0,0,1,1,1,1,0,0,1,0,0,Identity Engineer
+201,Authentication Engineering,1,1,0,1,1,1,0,1,1,1,0,0,0,1,1,1,0,0,1,0,0,Identity Engineer;Accessibility Reviewer
+202,Authorization Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0,Identity Engineer
+203,Cryptography,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,Cryptography Engineer
+204,Key Management,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,0,0,0,0,0,Cryptography Engineer;Key Management Engineer
+205,Secrets Management,1,1,0,1,1,1,0,1,1,1,0,0,0,0,1,1,0,0,0,0,0,Identity Engineer;Cryptography Engineer;Key Management Engineer
+206,Security Operations,1,1,1,1,1,1,0,1,1,1,0,0,1,1,1,1,1,0,0,0,0,Incident Responder
+207,Threat Intelligence,1,1,1,1,1,0,0,0,1,1,0,0,0,1,1,1,1,0,0,0,0,
+208,Threat Modeling,1,1,1,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0,Safety Reviewer;Privacy Reviewer
+209,Vulnerability Management,1,1,1,1,1,1,0,1,1,1,0,0,1,0,1,1,0,0,0,0,0,
+210,Penetration Testing,1,1,1,1,1,1,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0,
+211,Red Teaming,1,1,1,1,1,0,0,1,1,1,0,0,1,1,1,1,1,0,0,0,0,Threat Modeler
+212,Blue Teaming,0,0,1,1,1,1,0,1,1,1,0,0,1,1,1,1,0,0,0,0,0,Blue Team Lead;Threat Modeler
+213,Digital Forensics,0,1,1,1,1,0,0,0,1,1,0,0,0,1,1,1,0,0,0,0,0,Incident Responder;Legal Advisor
+214,Incident Response,1,1,1,0,1,0,0,1,1,1,0,0,1,0,1,1,0,0,0,0,0,Incident Responder;Incident Commander;Legal Advisor;Privacy Reviewer
+215,Fraud Prevention,0,1,1,1,1,0,0,1,1,1,0,0,0,0,0,1,0,0,1,0,0,Data Scientist;Privacy Reviewer;Ethics Reviewer
+216,Abuse Prevention,0,1,1,1,1,0,0,1,1,1,0,0,0,0,0,1,0,0,1,0,0,Trust;Safety Reviewer;Privacy Reviewer;Ethics Reviewer;Incident Responder
+217,Trust and Safety,0,1,1,1,1,0,0,1,1,1,0,0,0,0,0,1,0,0,1,0,0,Trust;Safety Reviewer;Ethics Reviewer;Privacy Reviewer;Legal Advisor
+218,Privacy Engineering,1,1,1,1,1,0,0,1,1,1,0,0,0,0,0,1,0,0,1,0,0,Privacy Engineer;Legal Advisor;Ethics Reviewer
+219,Legal,0,1,1,1,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,Legal Advisor;Privacy Reviewer;Records Manager
+220,Regulatory Compliance,0,1,1,1,1,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,Legal Advisor;Auditor;Privacy Reviewer
+221,Policy,0,1,1,1,0,0,0,0,1,1,0,0,0,0,1,1,0,0,1,0,0,Legal Advisor;Accessibility Reviewer
+222,Ethics,0,1,1,1,0,0,0,0,1,1,0,0,0,0,1,1,1,0,1,0,0,Ethics Reviewer;Privacy Reviewer;Legal Advisor;Safety Reviewer
+223,Intellectual Property,0,1,1,1,1,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,Legal Advisor;Privacy Reviewer
+224,Licensing,0,1,1,1,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,Legal Advisor
+225,Records Management,0,1,1,0,1,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,Records Manager;Legal Advisor;Privacy Reviewer;Archivist
+226,Audit,0,1,1,1,1,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,Auditor;Privacy Reviewer
+227,Internal Controls,0,1,1,1,1,0,0,1,1,1,0,0,0,0,1,1,0,0,0,0,0,Auditor;Privacy Reviewer
+228,Quality Management,1,1,1,1,0,0,0,1,1,1,0,0,0,0,1,1,0,0,0,0,0,Quality Manager;Quality Engineer;Quality Assurance Reviewer
+229,Quality Engineering,1,1,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,1,1,0,0,Quality Engineer
+230,Quality Assurance,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,0,0,1,0,0,Quality Assurance Reviewer;Quality Manager;Auditor
+231,Software Testing,1,1,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,1,0,0,Quality Assurance Reviewer
+232,Hardware Testing,0,1,1,1,0,1,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,Hardware Engineer;Safety Reviewer;Quality Engineer
+233,Unit Testing,0,1,1,1,0,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Quality Engineer
+234,Integration Testing,1,0,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Integration Engineer;Quality Engineer
+235,System Testing,1,0,1,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,1,0,0,Systems Engineer;Quality Engineer
+236,End-to-End Testing,0,1,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,1,0,0,Systems Engineer;Accessibility Reviewer
+237,Acceptance Testing,0,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,0,0,1,0,0,Quality Assurance Reviewer;Operations Reviewer;Accessibility Reviewer
+238,Regression Testing,1,1,1,1,0,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Quality Engineer
+239,Performance Testing,1,0,1,1,0,0,0,1,1,1,0,0,0,1,0,0,0,1,0,0,0,Performance Engineer;Quality Engineer;Operations Engineer
+240,Load Testing,1,0,1,0,0,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,Load Test Engineer;Performance Engineer;Operations Engineer;Quality Engineer
+241,Stress Testing,1,0,1,1,0,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,Resilience Engineer;Performance Engineer;Safety Reviewer;Operations Engineer
+242,Scalability Testing,1,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,1,0,0,0,Scalability Engineer;Performance Engineer;Data Engineer;Operations Engineer
+243,Reliability Testing,1,0,1,1,0,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,Reliability Engineer;Resilience Engineer;Operations Engineer;Quality Engineer
+244,Resilience Testing,1,0,1,1,1,0,0,1,1,1,0,1,0,1,0,0,0,0,0,0,0,Resilience Engineer;Operations Engineer;Safety Reviewer
+245,Chaos Engineering,1,0,1,1,0,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,Chaos Engineer;Resilience Engineer;Operations Engineer;Safety Reviewer
+246,Security Testing,0,1,1,1,1,1,0,1,1,1,0,0,0,0,0,0,1,0,0,0,0,Threat Modeler
+247,Accessibility Testing,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,0,0,1,0,0,Accessibility Reviewer;Content Designer
+248,Compatibility Testing,1,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,1,0,0,Release Engineer;Support Reviewer
+249,Usability Testing,0,1,1,1,0,0,0,1,1,1,0,0,0,1,0,0,0,0,1,0,0,Accessibility Reviewer
+250,Localization Testing,0,1,0,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,1,0,0,Localization Reviewer;Accessibility Reviewer;Content Designer;Legal Advisor
+251,Compliance Testing,0,1,1,1,1,0,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Legal Advisor;Auditor;Privacy Reviewer
+252,Safety Testing,0,1,1,1,0,0,0,0,1,1,0,0,0,1,0,1,0,0,0,0,0,Safety Engineer;Safety Reviewer;Test Engineer;Systems Engineer
+253,Model Testing,0,1,1,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,1,0,0,Data Scientist;Statistician;Privacy Reviewer;Safety Reviewer
+254,Data Testing,1,1,1,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Data Engineer;Privacy Reviewer
+255,Test Automation,0,1,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Test Automation Engineer;Quality Engineer
+256,Verification,1,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Quality Assurance Reviewer;Requirements Engineer
+257,Validation,0,1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,Validator;Safety Reviewer;Accessibility Reviewer
+258,Configuration Management,1,0,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Configuration Manager;Platform Engineer
+259,Source Control Management,0,1,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Source Control Manager;Reviewer
+260,Dependency Management,1,1,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Dependency Manager
+261,Package Management,0,1,1,0,1,0,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Package Manager;Dependency Manager;Build Engineer
+262,Artifact Management,0,0,0,0,1,0,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Artifact Manager;Build Engineer;Release Engineer;Dependency Manager
+263,Environment Management,1,0,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Environment Manager;Platform Engineer;Data Engineer
+264,Build Engineering,0,0,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Build Engineer;Dependency Manager;Platform Engineer
+265,Build Automation,0,0,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Build Automation Engineer;Build Engineer;Platform Engineer
+266,Continuous Integration,0,0,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,CI Engineer;Build Engineer;Dependency Manager;Quality Engineer
+267,Continuous Delivery,1,0,0,1,1,0,0,1,1,1,0,0,1,0,0,0,0,0,0,0,0,Release Engineer;Delivery Engineer;Operations Engineer;Support Reviewer
+268,Continuous Deployment,0,0,0,1,1,0,0,1,1,1,0,0,1,0,0,0,0,0,0,0,0,Deployment Engineer;Release Engineer;Platform Engineer;Operations Engineer
+269,DevOps,1,0,0,1,1,1,0,1,1,1,0,1,1,0,0,0,0,1,1,0,0,Operations Engineer
+270,DevSecOps,0,0,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,DevSecOps Engineer;Threat Modeler;Build Engineer;Privacy Reviewer
+271,GitOps,0,0,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,GitOps Engineer;Platform Engineer;Source Control Manager;Configuration Manager
+272,Platform Engineering,1,0,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,1,0,0,Platform Engineer;Product Manager;Operations Engineer
+273,Developer Experience,0,1,1,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,1,0,0,Developer Experience Engineer;Platform Engineer
+274,Tooling Engineering,1,0,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Tooling Engineer;Developer Experience Engineer
+275,Infrastructure Engineering,1,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Infrastructure Engineer;Platform Engineer;Network Engineer;Database Administrator;Storage Administrator;Operations Engineer
+276,Infrastructure as Code,1,0,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,IaC Engineer;Infrastructure Engineer;Platform Engineer
+277,Cloud Engineering,1,0,1,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Cloud Engineer;Infrastructure Engineer;Data Engineer;Platform Engineer;Operations Engineer
+278,Edge Computing Engineering,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Edge Engineer;Infrastructure Engineer;Embedded Engineer;Network Engineer;Fleet Operator;Safety Reviewer;Operations Engineer
+279,Container Engineering,0,0,1,0,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Container Engineer;Build Engineer;Platform Engineer;Dependency Manager
+280,Container Orchestration,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Orchestration Engineer;Container Engineer;Platform Engineer;Network Engineer;Storage Administrator;Operations Engineer
+281,Virtualization Engineering,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Virtualization Engineer;Infrastructure Engineer;Server Engineer;Storage Administrator;Network Engineer;Operations Engineer
+282,Server Engineering,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Server Engineer;Systems Administrator;Infrastructure Engineer;Network Engineer;Storage Administrator;Operations Engineer
+283,Systems Administration,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Systems Administrator;Operations Engineer;Platform Engineer;Server Engineer;Network Engineer;Database Administrator;Storage Administrator
+284,Network Engineering,1,0,1,1,1,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,Network Engineer;Cloud Engineer;Systems Administrator;Operations Engineer
+285,Database Administration,1,0,1,0,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Database Administrator;Data Engineer;Privacy Reviewer;Performance Engineer
+286,Storage Administration,1,0,1,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Storage Administrator;Database Administrator;Privacy Reviewer;Infrastructure Engineer;Operations Engineer
+287,Release Engineering,0,0,0,1,1,0,0,1,1,1,0,0,1,0,0,0,0,0,0,0,0,Release Engineer;Delivery Engineer;Product Manager;Operations Engineer;Support Reviewer
+288,Release Management,0,0,0,0,1,0,0,1,1,1,0,0,1,0,0,0,0,0,0,0,0,Release Manager;Release Engineer;Product Manager;Operations Engineer;Support Reviewer
+289,Change Management,1,0,0,0,1,1,0,1,1,1,0,1,0,0,0,1,0,0,0,0,0,Change Manager;Operations Engineer
+290,Deployment Engineering,0,0,0,0,1,0,0,1,1,0,0,0,1,0,0,0,0,0,0,0,0,Deployment Engineer;Release Engineer;Platform Engineer;Operations Engineer
+291,Distribution Engineering,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Distribution Engineer;Release Engineer;Artifact Manager;Support Reviewer;Network Engineer;Operations Engineer
+292,Packaging,0,0,1,0,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Packaging Engineer;Build Engineer;Artifact Manager
+293,Installation Engineering,0,0,0,0,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Installation Engineer;Release Engineer;Deployment Engineer;Systems Administrator;Support Reviewer
+294,Provisioning,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Provisioning Engineer;IAM Engineer;Infrastructure Engineer;Platform Engineer;Data Engineer;Operations Engineer
+295,Environment Promotion,1,0,0,0,1,0,0,1,1,0,0,0,1,0,0,0,0,0,0,0,0,Release Engineer;Environment Manager;Deployment Engineer;Operations Engineer
+296,Feature Management,0,0,1,0,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Feature Manager;Product Manager;Release Engineer;Experimenter;Privacy Reviewer
+297,Configuration Delivery,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Configuration Manager;Deployment Engineer;Release Engineer;Platform Engineer;Operations Engineer
+298,Certificate Management,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Certificate Manager;Cryptography Engineer;Key Manager;Network Engineer;Platform Engineer;Operations Engineer
+299,Domain and DNS Management,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,DNS Engineer;Network Engineer;Certificate Manager;Cloud Engineer;Platform Engineer;Operations Engineer
+300,Content Delivery Networks,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,CDN Engineer;Network Engineer;Cloud Engineer;Release Engineer;Content Engineer;Operations Engineer
+301,Site Reliability Engineering,1,0,1,1,0,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,Site Reliability Engineer;Operations Engineer;Incident Responder;Capacity Engineer
+302,Production Engineering,0,0,0,0,1,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,Production Engineer;Site Reliability Engineer;Operations Engineer;Release Engineer;Incident Responder;Capacity Engineer
+303,Runtime Operations,0,0,0,0,1,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,Runtime Engineer;Operations Engineer;Site Reliability Engineer;Application Engineer;Platform Engineer;Incident Responder
+304,Cloud Operations,1,0,1,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Cloud Operations Engineer;Platform Engineer;Data Engineer;SRE;Incident Responder
+305,Network Operations,0,0,0,0,1,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,Network Operations Engineer;Network Engineer;Cloud Engineer;DNS Engineer;Incident Responder
+306,Security Operations,0,0,1,0,1,0,0,1,1,1,0,0,1,1,0,0,0,0,0,0,0,Incident Responder
+307,Data Operations,1,0,1,0,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Data Operations Engineer;Data Engineer;Privacy Reviewer
+308,AI Operations,1,0,0,0,1,0,0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,AI Operations Engineer;Model Evaluator;Privacy Reviewer;Data Engineer;SRE;Incident Responder
+309,Application Operations,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Application Operations Engineer;Application Engineer;SRE;Operations Engineer;Incident Responder;Support Reviewer
+310,Platform Operations,0,0,0,0,1,0,0,1,1,0,0,0,1,0,0,0,0,0,0,0,0,Platform Operations Engineer;Platform Engineer;SRE;Cloud Engineer;Support Reviewer;Incident Responder
+311,Service Management,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,Service Manager;Product Manager;Operations Engineer;Support Reviewer;Incident Responder
+312,IT Operations,0,0,0,0,1,0,0,1,1,0,0,0,1,0,0,0,0,0,0,0,0,IT Operations Engineer;Service Manager;Systems Administrator;Support Reviewer;IAM Engineer;Network Engineer
+313,Observability Engineering,0,0,1,0,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Observability Engineer;SRE;Operations Engineer;Privacy Reviewer;Data Engineer
+314,Monitoring,0,0,1,0,1,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,Monitoring Engineer;SRE;Operations Engineer
+315,Logging,0,0,1,0,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Logging Engineer;Observability Engineer;Privacy Reviewer;SRE;Data Engineer
+316,Tracing,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Tracing Engineer;Observability Engineer;SRE;Application Engineer;Network Engineer;Privacy Reviewer;Incident Responder
+317,Metrics Engineering,0,1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,Metrics Engineer;Data Engineer;SRE;Privacy Reviewer
+318,Alerting,0,0,1,0,0,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,Alert Engineer;SRE;Operations Engineer;Incident Responder
+319,Incident Management,0,0,1,0,0,0,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,Incident Commander;Incident Responder;SRE;Operations Engineer;Legal Advisor;Privacy Reviewer
+320,Problem Management,1,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Problem Manager;Incident Responder;SRE
+321,Capacity Management,1,0,1,0,0,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,Capacity Engineer;SRE;Performance Engineer;Operations Engineer
+322,Availability Management,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Availability Engineer;SRE;Operations Engineer;Capacity Engineer;Incident Responder;Service Manager
+323,Performance Management,1,0,1,0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,0,0,0,Performance Engineer;SRE;Capacity Engineer;Operations Engineer
+324,Reliability Management,1,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Reliability Engineer;SRE;Problem Manager;Incident Responder;Capacity Engineer
+325,Service Level Management,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,Service Manager;SRE;Metrics Engineer;Product Manager;Legal Advisor;Support Reviewer
+326,Business Continuity,0,1,1,0,0,0,0,1,1,1,0,1,1,0,0,0,0,0,0,0,0,Operations Engineer;Safety Reviewer
+327,Disaster Recovery,0,0,0,0,1,0,0,1,1,0,0,1,1,0,0,0,0,0,0,0,0,Incident Commander;Operations Engineer;SRE;Data Engineer
+328,Backup Engineering,0,0,0,0,1,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,Backup Engineer;Data Engineer;Storage Administrator;Database Administrator;Operations Engineer
+329,Restore Engineering,0,0,0,0,1,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,Restore Engineer;Data Engineer;Database Administrator;Storage Administrator;Incident Commander
+330,Failover Engineering,0,0,0,0,1,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,Failover Engineer;SRE;Network Engineer;Database Administrator;Operations Engineer;Incident Commander
+331,Operational Readiness,0,0,0,0,1,0,0,1,1,0,0,0,1,0,0,1,0,0,0,0,0,Operational Readiness Reviewer;Operations Engineer;SRE;Release Manager;Support Reviewer
+332,Command and Control,1,0,0,1,1,0,0,0,1,1,0,1,1,0,0,1,0,0,0,0,0,Incident Commander;Operations Engineer
+333,Technical Support,0,0,1,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,Technical Support Engineer;Support Reviewer;Application Engineer;Systems Administrator
+334,Customer Support,0,0,1,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,Customer Support Specialist;Technical Support Engineer;Customer Success Manager;Privacy Reviewer
+335,Help Desk,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,IT Operations Engineer;Technical Support Engineer;IAM Engineer;Privacy Reviewer
+336,Customer Success,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,Customer Success Manager;Product Manager;Technical Support Engineer;Privacy Reviewer
+337,Community Management,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,Community Manager;Trust;Safety Reviewer;Moderator;Privacy Reviewer;Accessibility Reviewer
+338,Training,0,1,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,1,0,0,Training Designer;Subject Matter Expert;Accessibility Reviewer
+339,Education,0,1,1,1,0,0,0,0,1,1,1,0,0,0,1,0,0,0,1,0,0,Accessibility Reviewer
+340,Developer Relations,0,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,Developer Relations Lead;Developer Experience Engineer;Community Manager;Technical Writer;Product Manager;Support Reviewer
+341,Documentation Engineering,0,1,0,1,0,0,0,0,1,1,0,0,0,0,1,0,0,0,1,0,0,Technical Writer;Subject Matter Expert;Accessibility Reviewer
+342,Knowledge Management,0,1,1,1,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,Knowledge Manager;Domain Expert;Librarian;Privacy Reviewer
+343,Product Marketing,0,1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,Product Marketer;Product Manager;Technical Marketer;Legal Advisor
+344,Technical Marketing,1,1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,Technical Marketer;Product Manager;Engineer;Legal Advisor
+345,Brand Management,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,Brand Manager;Product Marketer;Legal Advisor;Accessibility Reviewer
+346,Sales Engineering,1,1,1,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,Sales Engineer;Solutions Engineer;Product Manager;Legal Advisor
+347,Solutions Engineering,1,1,1,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,Solutions Engineer;Data Engineer;Operations Engineer
+348,Procurement,1,1,1,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,Legal Advisor;Privacy Reviewer
+349,Vendor Management,0,1,1,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,Vendor Manager;Legal Advisor;Privacy Reviewer;Service Manager
+350,Supply Chain Management,0,1,1,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,Supply Chain Manager;Vendor Manager;Hardware Engineer;Quality Engineer
+351,Manufacturing,0,0,0,0,0,0,0,1,1,1,0,1,0,1,0,0,0,0,0,0,0,Manufacturing Engineer;Quality Engineer;Hardware Engineer;Safety Reviewer;Supply Chain Manager
+352,Production Planning,0,1,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,Supply Chain Manager;Manufacturing Engineer;Quality Engineer;Safety Reviewer
+353,Assembly,0,0,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,Assembly Engineer;Manufacturing Engineer;Hardware Engineer;Embedded Engineer;Quality Engineer;Safety Reviewer
+354,Hardware Certification,0,1,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Certification Engineer;Hardware Engineer;Safety Reviewer;Legal Advisor;Quality Assurance Reviewer
+355,Device Provisioning,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Device Provisioning Engineer;Embedded Engineer;IAM Engineer;Key Manager;Manufacturing Engineer;Operations Engineer
+356,Logistics,0,0,1,0,1,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,Logistics Manager;Supply Chain Manager;Device Provisioning Engineer
+357,Distribution,0,0,1,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,Distribution Manager;Logistics Manager;Release Engineer;Customer Support
+358,Commerce,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,Commerce Manager;Product Manager;Legal Advisor;Payments Engineer;Billing Engineer;Customer Support
+359,Billing Engineering,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,Billing Engineer;Commerce Manager;Payments Engineer;Subscription Manager;Legal Advisor
+360,Payments Engineering,0,0,1,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Payments Engineer;Billing Engineer;Privacy Reviewer;Commerce Manager;Incident Responder
+361,Subscription Management,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,Subscription Manager;Commerce Manager;Billing Engineer;Payments Engineer;Customer Support;Legal Advisor
+362,Revenue Operations,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,Revenue Operations Manager;Commerce Manager;Billing Engineer;Payments Engineer;Sales Engineer;Auditor
+363,Financial Operations,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,Accountant;Auditor;Commerce Manager;Billing Engineer;Payments Engineer
+364,Licensing Operations,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,License Manager;Legal Advisor;Commerce Manager;Auditor
+365,Usage Metering,0,0,1,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Metering Engineer;Data Engineer;Billing Engineer;Privacy Reviewer
+366,Customer Analytics,0,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,Product Manager;Privacy Reviewer;Statistician
+367,Product Analytics,0,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,Product Manager;Statistician;Privacy Reviewer;Experimenter
+368,Growth Engineering,0,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,Growth Engineer;Product Manager;Experimenter;Privacy Reviewer;Ethics Reviewer
+369,Experimentation,0,1,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Experimenter;Statistician;Product Manager;Privacy Reviewer;Ethics Reviewer
+370,A/B Testing,0,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,A/B Test Engineer;Statistician;Experimenter;Privacy Reviewer;Accessibility Reviewer
+371,Optimization,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,Experimenter;Performance Engineer;Safety Reviewer
+372,Feedback Management,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,Customer Support;Community Manager;Product Manager;Privacy Reviewer;Trust;Safety Reviewer
+373,Roadmap Management,1,1,1,1,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,Product Manager;Portfolio Manager
+374,Maintenance Engineering,0,0,0,0,0,0,0,1,1,1,0,1,0,0,0,0,0,0,0,0,0,Maintenance Engineer;Reliability Engineer;Operations Engineer;Hardware Engineer;Software Engineer;Safety Reviewer
+375,Corrective Maintenance,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Corrective Maintenance Engineer;Incident Responder;Problem Manager;Hardware Engineer;Software Engineer;Safety Reviewer;Operations Engineer
+376,Preventive Maintenance,0,0,0,0,0,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,Preventive Maintenance Engineer;Reliability Engineer;Hardware Engineer;Software Engineer;Safety Reviewer;Operations Engineer
+377,Adaptive Maintenance,1,1,1,0,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Adaptive Maintenance Engineer;Product Manager
+378,Software Updates,0,0,0,0,1,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,Update Engineer;Release Engineer;Dependency Manager;Operations Engineer;Support Reviewer
+379,Firmware Updates,0,0,0,0,1,0,0,1,1,0,0,0,1,0,0,0,0,0,0,0,0,Firmware Engineer;Embedded Engineer;Device Provisioning Engineer;Safety Reviewer;Field Operations Engineer
+380,Security Patching,0,0,1,0,1,0,0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,Security Engineer;Update Engineer;Systems Administrator;Operations Engineer
+381,Dependency Updates,0,0,1,0,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Dependency Manager;Build Engineer;Release Engineer
+382,Data Migration Operations,1,0,1,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,Data Migration Engineer;Database Administrator;Privacy Reviewer;Operations Engineer
+383,Platform Migration,1,0,0,0,1,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,Migration Engineer;Cloud Engineer;Platform Engineer;Data Engineer;Operations Engineer
+384,Modernization,1,1,1,0,1,1,1,1,1,0,0,1,0,0,0,1,0,1,0,0,0,
+385,Refactoring,1,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Quality Engineer
+386,Technical Debt Management,1,1,1,0,1,0,1,0,1,0,0,1,0,0,0,1,0,0,0,0,0,Quality Engineer;Operations Engineer
+387,Compatibility Management,1,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,Compatibility Manager;Release Engineer;API Engineer;Data Engineer;Support Reviewer
+388,Version Management,1,0,0,0,0,0,0,1,1,1,0,0,0,0,0,1,0,0,0,0,0,Version Manager;Release Engineer;Configuration Manager;Dependency Manager
+389,Deprecation Management,1,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,Deprecation Manager;Product Manager;Version Manager;Support Reviewer;Legal Advisor
+390,Sunset Planning,1,0,0,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,Product Manager;Migration Engineer;Data Engineer;Support Reviewer;Legal Advisor;Records Manager
+391,Data Retention,0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,1,0,0,0,0,0,Records Manager;Privacy Engineer;Legal Advisor;Data Engineer
+392,Data Archival,0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,Archivist;Records Manager;Data Engineer;Storage Administrator;Privacy Reviewer;Legal Advisor
+393,Digital Preservation,0,1,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,Digital Archivist;Records Manager;Data Engineer;Legal Advisor;Privacy Reviewer
+394,Records Disposal,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,Records Manager;Legal Advisor;Privacy Reviewer;Data Engineer;Archivist
+395,Data Deletion,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,Privacy Engineer;Data Engineer;Records Manager;Legal Advisor;Archivist
+396,Account Closure,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,IAM Engineer;Privacy Reviewer;Records Manager;Legal Advisor;Billing Engineer;Customer Support
+397,Service Decommissioning,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,Service Manager;Operations Engineer;Migration Engineer;Data Engineer;Support Reviewer;Legal Advisor
+398,Infrastructure Decommissioning,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,Infrastructure Engineer;Cloud Engineer;Platform Engineer;Data Engineer;Network Engineer;Storage Administrator;Operations Engineer
+399,Hardware Disposal,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,Hardware Engineer;Asset Manager;Key Manager;Logistics Manager;Environmental Reviewer;Records Manager
+400,Secure Destruction,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,Records Manager;Privacy Reviewer;Key Manager;Hardware Engineer;Environmental Reviewer;Legal Advisor
+401,Environmental Disposal or Recycling,0,0,1,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,Environmental Reviewer;Hardware Engineer;Safety Reviewer;Logistics Manager;Records Manager
+402,Post-Implementation Review,0,1,1,1,0,0,0,0,1,1,0,0,0,0,0,1,0,0,1,0,0,Validator;Product Manager;Operations Engineer
+403,Postmortem Analysis,0,1,1,1,0,0,0,0,1,1,0,0,0,0,0,1,0,0,0,0,0,Postmortem Facilitator;Incident Responder;Problem Manager
+404,Lessons Learned,0,1,1,1,0,0,0,0,1,1,1,1,0,0,1,1,0,0,0,0,0,Quality Manager
+405,Lifecycle Governance,1,1,1,0,0,0,0,0,1,1,0,1,1,0,1,1,0,0,0,0,0,Auditor
+406,System Retirement,1,1,1,1,1,0,0,0,1,0,0,1,1,0,1,1,0,0,0,0,0,Migration Engineer;Data Engineer;Privacy Reviewer;Legal Advisor;Records Manager;Operations Engineer;Support Reviewer;preserve the role contracts defined in Section 02
