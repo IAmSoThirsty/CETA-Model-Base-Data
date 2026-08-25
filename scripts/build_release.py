@@ -38,6 +38,14 @@ def release_paths() -> tuple[Path,...]:
     return tuple(sorted(included,key=lambda item:item.relative_to(ROOT).as_posix()))
 
 
+def archive_info(name: str) -> zipfile.ZipInfo:
+    info=zipfile.ZipInfo(name,date_time=(1980,1,1,0,0,0))
+    info.create_system=3
+    info.compress_type=zipfile.ZIP_DEFLATED
+    info.external_attr=(0o100644 & 0xFFFF)<<16
+    return info
+
+
 def main() -> None:
     parser=argparse.ArgumentParser()
     parser.add_argument("--output",required=True)
@@ -54,9 +62,7 @@ def main() -> None:
     with zipfile.ZipFile(out,"w",compression=zipfile.ZIP_DEFLATED,compresslevel=9) as zf:
         for path in release_paths():
             rel=path.relative_to(ROOT)
-            info=zipfile.ZipInfo(prefix+rel.as_posix(),date_time=(1980,1,1,0,0,0))
-            info.compress_type=zipfile.ZIP_DEFLATED
-            info.external_attr=(0o100644 & 0xFFFF)<<16
+            info=archive_info(prefix+rel.as_posix())
             zf.writestr(info,path.read_bytes(),compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)
     digest=sha256(out)
     sidecar=out.with_suffix(out.suffix+".sha256")
