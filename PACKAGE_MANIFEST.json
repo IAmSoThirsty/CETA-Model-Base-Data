@@ -3,23 +3,8 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 132,
-  "content_root": "sha256:ca5a86c2ee9943e7b0d9d11bbaf73c8a58a607086b29ad350c88a3cc54d0bd72",
+  "content_root": "sha256:10bf7454a6161608f65c28cc56dbf588776f19e533fbb79b655fea14b64bc54b",
   "files": [
-    {
-      "path": "README.md",
-      "size": 8169,
-      "sha256": "edb352f5b31222c274bb3ed1daa5cb7d71065891dcdc712dfed0338513178485"
-    },
-    {
-      "path": "STATUS.md",
-      "size": 4496,
-      "sha256": "0109d4943ab5d8ea6a8d7f4d070e73cb81c30df84732486ba09c2af87417ecd0"
-    },
-    {
-      "path": "VERSION",
-      "size": 6,
-      "sha256": "d915cc95d6ca8f47ae297713ed46d4e5c5d99ddd29fc3c61e263bdf305f2b5b0"
-    },
     {
       "path": "corpus/CETA.md",
       "size": 2573,
@@ -81,16 +66,6 @@
       "sha256": "7c44b2b3625a7c6d39045e02d09f9c0a31c1ead7063b6d28b3331aff539dc706"
     },
     {
-      "path": "evidence/EPOCH_HOSTILE_GATE_REPORT.json",
-      "size": 788,
-      "sha256": "3fe4238fc638b220cfc45598cb119f9dde615b31837828c318c8e64a8e7fbfc2"
-    },
-    {
-      "path": "evidence/EPOCH_READINESS_REPORT.json",
-      "size": 5740,
-      "sha256": "8afee94e052b733faaa7aa95b70a5f5086bfa313d72e2b35f6c42ef4d2feb43d"
-    },
-    {
       "path": "evidence/adjudications/OC-001_transition_legality.json",
       "size": 3019,
       "sha256": "6ddd2d75118580eae658b10497a9bb76b01bb13a05447918eb0fe42424113017"
@@ -131,6 +106,16 @@
       "sha256": "423030ee4d9c86af1d6529a6ebffe2199732c9231cb5528c72745f6bc104af5a"
     },
     {
+      "path": "evidence/EPOCH_HOSTILE_GATE_REPORT.json",
+      "size": 812,
+      "sha256": "ad746c9c88d69c697e2b1e2852b644567b6a801109d386edc4da0df0337a5b28"
+    },
+    {
+      "path": "evidence/EPOCH_READINESS_REPORT.json",
+      "size": 5868,
+      "sha256": "5212960ae9157df70b398abc4e0281ff5a29eeb8c1b9bae7484be4ae3c97f459"
+    },
+    {
       "path": "evidence/historical_failures.json",
       "size": 5122,
       "sha256": "6acce7062a9f1cd1e8512a47894eecc9f4294d253ea32f02df3adf8cb058a9a5"
@@ -154,6 +139,11 @@
       "path": "pyproject.toml",
       "size": 436,
       "sha256": "be8841079f95fd9f8c44fc392a17be21ab74c2bf0321eea3647ff57317752c19"
+    },
+    {
+      "path": "README.md",
+      "size": 8169,
+      "sha256": "edb352f5b31222c274bb3ed1daa5cb7d71065891dcdc712dfed0338513178485"
     },
     {
       "path": "registry/build_constraints.json",
@@ -207,8 +197,8 @@
     },
     {
       "path": "requirements-training.txt",
-      "size": 31,
-      "sha256": "8568551fbd635a0e3edce562ac1de127f766f941c65c3d2aa548d1c4f23c3a88"
+      "size": 47,
+      "sha256": "90dfbd11e00f944c25ebfd253c7c0b8c6d628b20e9ec9c601305c7ed4cc7d477"
     },
     {
       "path": "requirements.txt",
@@ -596,6 +586,11 @@
       "sha256": "51ed50e98f36d4dd1b5c3532ecb735ec2b700943c519018141d502039add76a8"
     },
     {
+      "path": "STATUS.md",
+      "size": 4496,
+      "sha256": "0109d4943ab5d8ea6a8d7f4d070e73cb81c30df84732486ba09c2af87417ecd0"
+    },
+    {
       "path": "tests/test_architecture_contracts.py",
       "size": 2523,
       "sha256": "3d01ba6a3dc8b01d1bb40adae90a3c28cda56d1e3558cabc003a657a888b6ff1"
@@ -664,6 +659,11 @@
       "path": "tests/test_transition_training.py",
       "size": 4402,
       "sha256": "f8f6f45b217e3d05ff0816111b56f402162105a4f7bd01a450df7c0085808285"
+    },
+    {
+      "path": "VERSION",
+      "size": 6,
+      "sha256": "d915cc95d6ca8f47ae297713ed46d4e5c5d99ddd29fc3c61e263bdf305f2b5b0"
     }
   ]
 }
