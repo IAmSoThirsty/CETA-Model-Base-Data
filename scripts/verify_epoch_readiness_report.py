@@ -73,6 +73,22 @@ def main() -> None:
     if report.get('promotion_gate',{}).get('outcome') not in {'PROMOTED','QUARANTINED'}:
         fail('promotion outcome missing')
 
+    policy=report.get('promotion_gate',{}).get('policy',{})
+    operation_floors=policy.get('operation_target_accuracy')
+    if operation_floors is not None:
+        canonical=set(json.loads((ROOT/'registry/ceta_operations.json').read_text(encoding='utf-8'))['operations'])
+        if set(operation_floors)!=canonical: fail('operation-specific promotion policy coverage mismatch')
+        zero_illegal=set(policy.get('zero_illegal_selection_operations',[]))
+        if not zero_illegal <= canonical: fail('zero-illegal-selection policy names unknown operations')
+        for split in ('validation','heldout'):
+            operation_metrics=report.get(split,{}).get('operation_metrics',{})
+            if set(operation_metrics)!=canonical: fail(f'{split} operation metrics coverage mismatch')
+            for operation,metrics in operation_metrics.items():
+                if int(metrics.get('case_count',0)) < 1: fail(f'{split}/{operation} has no evaluated cases')
+                for key in ('target_accuracy','opcode_accuracy','legal_selection_rate'):
+                    if not 0.0 <= float(metrics.get(key,-1.0)) <= 1.0: fail(f'{split}/{operation} {key} out of range')
+                if int(metrics.get('illegal_selection_count',-1)) < 0: fail(f'{split}/{operation} illegal-selection count invalid')
+
     print('EPOCH READINESS REPORT VERIFY: PASS')
     print(f"report_hash={claimed} promotion={report['promotion_gate']['outcome']} validation_target={report['validation']['target_accuracy']:.6f} heldout_target={report['heldout']['target_accuracy']:.6f}")
     print(f"report={report_path}")

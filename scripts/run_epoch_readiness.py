@@ -16,10 +16,11 @@ import torch
 from history import domain_hash
 from training import (
     CheckpointPromotionRegistry, GovernedEpochTrainer, IndependentCheckpointEvaluator,
-    PromotionPolicy, TrainingConfig, effective_optimizer_events, file_sha256,
+    TrainingConfig, effective_optimizer_events, file_sha256, promotion_policy_from_risk_material,
 )
 
 DATA=ROOT/'data/ceta_curriculum_v2'
+RISK_POLICY=ROOT/'data/ceta_architecture_material_v1/governance/operation_risk_ranking.json'
 DEFAULT_REPORT=ROOT/'evidence/EPOCH_READINESS_REPORT.json'
 
 
@@ -69,7 +70,8 @@ def main() -> None:
 
         evaluator=IndependentCheckpointEvaluator(config=config,device=args.device)
         validation=evaluator.evaluate(final_checkpoint.path,validation_path,split='validation')
-        strict_policy=PromotionPolicy(
+        strict_policy=promotion_policy_from_risk_material(
+            RISK_POLICY,
             min_target_accuracy=0.95,
             min_opcode_accuracy=0.95,
             min_legal_selection_rate=0.99,
@@ -115,6 +117,8 @@ def main() -> None:
                 'policy':{
                     'min_target_accuracy':strict_policy.min_target_accuracy,'min_opcode_accuracy':strict_policy.min_opcode_accuracy,
                     'min_legal_selection_rate':strict_policy.min_legal_selection_rate,'max_mean_transition_loss':strict_policy.max_mean_transition_loss,
+                    'operation_target_accuracy':dict(strict_policy.operation_target_accuracy),
+                    'zero_illegal_selection_operations':list(strict_policy.zero_illegal_selection_operations),
                 },
                 'outcome':promotion_status,
                 'note':'Smoke checkpoint quality is not a production-model claim. Strict promotion is intentionally independent of epoch-readiness.',

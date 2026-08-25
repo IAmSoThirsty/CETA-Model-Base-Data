@@ -16,6 +16,7 @@ from training import (
     CheckpointPromotionRegistry, EvaluationMetrics, GovernedEpochTrainer,
     IndependentCheckpointEvaluator, PromotionPolicy, TrainingBindingError,
     TrainingConfig, TrainingEventLedger, effective_optimizer_events, file_sha256, hash_torch_state,
+    promotion_policy_from_risk_material,
 )
 from history import domain_hash
 
@@ -123,6 +124,32 @@ class GovernedTrainingTests(unittest.TestCase):
             self.assertEqual(metrics.case_count,69)
             self.assertGreaterEqual(metrics.legal_selection_rate,0.0)
             self.assertLessEqual(metrics.legal_selection_rate,1.0)
+            self.assertEqual(len(metrics.operation_metrics),23)
+            self.assertTrue(all(item['case_count']==3 for item in metrics.operation_metrics.values()))
+
+    def test_supplied_operation_risk_policy_is_machine_enforced(self):
+        path=ROOT/'data/ceta_architecture_material_v1/governance/operation_risk_ranking.json'
+        policy=promotion_policy_from_risk_material(path)
+        self.assertEqual(len(policy.operation_target_accuracy),23)
+        self.assertAlmostEqual(policy.operation_target_accuracy['Authorize'],0.999999)
+        self.assertIn('Execute',policy.zero_illegal_selection_operations)
+        self.assertNotIn('Reevaluate',policy.zero_illegal_selection_operations)
+
+        body={
+            'split':'validation','case_count':1,'target_accuracy':1.0,'opcode_accuracy':1.0,
+            'legal_selection_rate':1.0,'mean_transition_loss':0.0,'rejected_candidate_count':0,
+            'checkpoint_sha256':'cp','dataset_sha256':'data','curriculum_manifest_sha256':'manifest',
+            'curriculum_splits_sha256':'splits',
+            'operation_metrics':{
+                operation:{'case_count':1,'target_accuracy':1.0,'opcode_accuracy':1.0,'legal_selection_rate':1.0,'illegal_selection_count':0}
+                for operation in policy.operation_target_accuracy
+            },
+        }
+        body['operation_metrics']['Execute']['illegal_selection_count']=1
+        metrics=EvaluationMetrics(**body,evaluation_hash=domain_hash(body,domain='CETA/INDEPENDENT_EVALUATION/v1'))
+        passed,failures=policy.evaluate(metrics)
+        self.assertFalse(passed)
+        self.assertIn('OPERATION_ILLEGAL_SELECTION:Execute',failures)
 
     def test_promotion_quarantine_and_rollback_are_explicit(self):
         with tempfile.TemporaryDirectory() as td:

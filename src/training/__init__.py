@@ -6,6 +6,7 @@ from .governed import (
     CheckpointPromotionRegistry, CheckpointRef, CheckpointStore, CurriculumBinding, EvaluationMetrics, GovernedEpochTrainer,
     IndependentCheckpointEvaluator, PromotionPolicy, TrainingBindingError, TrainingConfig, TrainingCursor,
     TrainingEventLedger, effective_optimizer_events, file_sha256, hash_torch_state, load_cases, resolve_curriculum_binding,
+    promotion_policy_from_risk_material,
 )
 from .model import IllegalTransitionAlternative, TransitionLoss, TransitionTrainingCase, structural_world_fingerprint
 from .source_policy import (
@@ -54,6 +55,7 @@ __all__ = [
     "hash_torch_state",
     "load_cases",
     "resolve_curriculum_binding",
+    "promotion_policy_from_risk_material",
     "classify_failure",
     "deterministic_partition",
     "forbidden_reason",

@@ -170,6 +170,8 @@ The provenance-bound human-relations/stewardship corpus and defensive evaluation
 
 These records do not silently alter `ceta_curriculum_v2`. They are validated source material for adjudicating a future structured curriculum. Private challenge questions and their answer key remain outside the repository and are hash-bound as evaluation-only material. See `docs/SUPPLIED_DATA_INTEGRATION.md`.
 
+The supplied 23-operation risk policy is enforced now: independent evaluation records per-operation metrics, and governed promotion applies the operation-specific accuracy and zero-illegal-selection requirements in addition to aggregate floors.
+
 ### Lightning H100 handoff
 
 Keep the Studio on CPU while preparing it. After the operator explicitly switches the Studio to an H100, launch the governed epoch with:

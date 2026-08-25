@@ -23,6 +23,12 @@ The material is richer than the current `ceta_curriculum_v2` state-to-transition
 
 This separation prevents prose targets, multi-action outcomes, evaluation material, or role descriptions from being mistaken for executable authority or exact transition labels.
 
+## Enforced promotion policy
+
+The supplied operation-risk ranking is machine-read by `promotion_policy_from_risk_material`. Independent evaluation now emits per-operation case counts, exact-target accuracy, opcode accuracy, VM-legal selection rate, and illegal-selection counts. A governed epoch uses the supplied operation-specific accuracy floors and zero-illegal-selection requirements in addition to the existing aggregate promotion policy. Missing operation metrics fail closed.
+
+This improves evaluation and promotion immediately. It does not pretend that the prose/design records have already become structured transition examples; that conversion remains subject to the isolation boundary above.
+
 ## Rebuild
 
 ```powershell

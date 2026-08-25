@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from collections import defaultdict
+from dataclasses import asdict, dataclass, field
 import hashlib
 import json
 import os
 from pathlib import Path
+import re
 from typing import Any, Iterable, Mapping, Sequence
 
 import torch
@@ -87,15 +89,19 @@ class EvaluationMetrics:
     curriculum_manifest_sha256: str
     curriculum_splits_sha256: str
     evaluation_hash: str
+    operation_metrics: Mapping[str,Mapping[str,Any]] = field(default_factory=dict)
 
     def body(self) -> dict[str,Any]:
-        return {
+        body={
             'split':self.split,'case_count':self.case_count,'target_accuracy':self.target_accuracy,
             'opcode_accuracy':self.opcode_accuracy,'legal_selection_rate':self.legal_selection_rate,
             'mean_transition_loss':self.mean_transition_loss,'rejected_candidate_count':self.rejected_candidate_count,
             'checkpoint_sha256':self.checkpoint_sha256,'dataset_sha256':self.dataset_sha256,
             'curriculum_manifest_sha256':self.curriculum_manifest_sha256,'curriculum_splits_sha256':self.curriculum_splits_sha256,
         }
+        if self.operation_metrics:
+            body['operation_metrics']={str(op):dict(metrics) for op,metrics in sorted(self.operation_metrics.items())}
+        return body
 
 
 @dataclass(frozen=True)
@@ -104,12 +110,17 @@ class PromotionPolicy:
     min_opcode_accuracy: float
     min_legal_selection_rate: float
     max_mean_transition_loss: float
+    operation_target_accuracy: Mapping[str,float] = field(default_factory=dict)
+    zero_illegal_selection_operations: tuple[str,...] = ()
 
     def __post_init__(self) -> None:
         for name in ('min_target_accuracy','min_opcode_accuracy','min_legal_selection_rate'):
             value=getattr(self,name)
             if not 0.0 <= value <= 1.0: raise TrainingBindingError(f'{name} must be in [0,1]')
         if self.max_mean_transition_loss < 0: raise TrainingBindingError('max_mean_transition_loss must be nonnegative')
+        for operation,value in self.operation_target_accuracy.items():
+            if not operation or not 0.0 <= float(value) <= 1.0:
+                raise TrainingBindingError(f'invalid operation target-accuracy floor: {operation}={value}')
 
     def evaluate(self, metrics: EvaluationMetrics) -> tuple[bool,tuple[str,...]]:
         failures=[]
@@ -117,7 +128,59 @@ class PromotionPolicy:
         if metrics.opcode_accuracy < self.min_opcode_accuracy: failures.append('OPCODE_ACCURACY_FLOOR')
         if metrics.legal_selection_rate < self.min_legal_selection_rate: failures.append('LEGAL_SELECTION_FLOOR')
         if metrics.mean_transition_loss > self.max_mean_transition_loss: failures.append('TRANSITION_LOSS_CEILING')
-        return (not failures,tuple(failures))
+        for operation,floor in sorted(self.operation_target_accuracy.items()):
+            operation_metrics=metrics.operation_metrics.get(operation)
+            if not operation_metrics:
+                failures.append(f'OPERATION_METRICS_MISSING:{operation}')
+            elif float(operation_metrics.get('target_accuracy',-1.0)) < float(floor):
+                failures.append(f'OPERATION_TARGET_ACCURACY_FLOOR:{operation}')
+        for operation in sorted(set(self.zero_illegal_selection_operations)):
+            operation_metrics=metrics.operation_metrics.get(operation)
+            if not operation_metrics:
+                failures.append(f'OPERATION_METRICS_MISSING:{operation}')
+            elif int(operation_metrics.get('illegal_selection_count',-1)) != 0:
+                failures.append(f'OPERATION_ILLEGAL_SELECTION:{operation}')
+        unique=tuple(dict.fromkeys(failures))
+        return (not unique,unique)
+
+
+def promotion_policy_from_risk_material(
+    path: str|Path,
+    *,
+    min_target_accuracy: float = 0.95,
+    min_opcode_accuracy: float = 0.95,
+    min_legal_selection_rate: float = 0.99,
+    max_mean_transition_loss: float = 1.0,
+) -> PromotionPolicy:
+    records=json.loads(Path(path).read_text(encoding='utf-8'))
+    if not isinstance(records,list) or not records:
+        raise TrainingBindingError('operation risk material must be a non-empty JSON list')
+    accuracy={}; zero_illegal=[]
+    for record in records:
+        operation=str(record.get('Operation',''))
+        required=str(record.get('Required accuracy',''))
+        match=re.search(r'>=\s*([0-9]+(?:\.[0-9]+)?)%',required)
+        if not operation or match is None:
+            raise TrainingBindingError(f'operation risk material has no parseable accuracy: {operation or "<missing>"}')
+        if operation in accuracy:
+            raise TrainingBindingError(f'duplicate operation risk material: {operation}')
+        accuracy[operation]=float(match.group(1))/100.0
+        if str(record.get('Must unsafe selections equal zero?','')).strip().lower()=='yes':
+            zero_illegal.append(operation)
+    from transition_policy import OPERATION_TO_INDEX
+    canonical=set(OPERATION_TO_INDEX)
+    if set(accuracy)!=canonical:
+        raise TrainingBindingError(
+            f'operation risk material coverage mismatch: missing={sorted(canonical-set(accuracy))} extra={sorted(set(accuracy)-canonical)}'
+        )
+    return PromotionPolicy(
+        min_target_accuracy=min_target_accuracy,
+        min_opcode_accuracy=min_opcode_accuracy,
+        min_legal_selection_rate=min_legal_selection_rate,
+        max_mean_transition_loss=max_mean_transition_loss,
+        operation_target_accuracy=dict(sorted(accuracy.items())),
+        zero_illegal_selection_operations=tuple(sorted(zero_illegal)),
+    )
 
 
 class TrainingEventLedger:
@@ -387,6 +450,7 @@ class IndependentCheckpointEvaluator:
         model.to(self.device); model.eval()
         cases=load_cases(dataset_path)
         target_correct=0; opcode_correct=0; legal=0; loss_total=0.0; rejected=0
+        by_operation=defaultdict(lambda:{'case_count':0,'target_correct':0,'opcode_correct':0,'legal':0,'illegal_selection_count':0})
         with torch.no_grad():
             for case in cases.values():
                 world=world_from_training_case(case)
@@ -394,17 +458,31 @@ class IndependentCheckpointEvaluator:
                 rejected += output.rejected_candidate_count
                 chosen_index=int(torch.argmax(output.candidate_scores).item())
                 chosen=output.candidate_proposals[chosen_index]
-                if _proposal_key(chosen)==_proposal_key(case.target_proposal): target_correct += 1
-                if int(torch.argmax(output.opcode_logits).item()) == _operation_index(case.target_proposal.operation): opcode_correct += 1
+                operation=case.target_proposal.operation
+                op=by_operation[operation]; op['case_count']+=1
+                if _proposal_key(chosen)==_proposal_key(case.target_proposal): target_correct += 1; op['target_correct']+=1
+                if int(torch.argmax(output.opcode_logits).item()) == _operation_index(operation): opcode_correct += 1; op['opcode_correct']+=1
                 decision=self.vm.evaluate(chosen,projected_snapshot=world.snapshot,admitted_evidence_view=world.evidence_view,identity_view=world.identity_view,authority_snapshot=world.authority_view,now_epoch_ms=world.now_epoch_ms,constitutional_epoch='evaluation')
-                if decision.disposition is VmDisposition.LEGAL: legal += 1
+                if decision.disposition is VmDisposition.LEGAL: legal += 1; op['legal']+=1
+                else: op['illegal_selection_count']+=1
                 loss_total += float(compute_ceta_loss(case,output).total.item())
         n=len(cases)
+        operation_metrics={
+            operation:{
+                'case_count':values['case_count'],
+                'target_accuracy':values['target_correct']/values['case_count'],
+                'opcode_accuracy':values['opcode_correct']/values['case_count'],
+                'legal_selection_rate':values['legal']/values['case_count'],
+                'illegal_selection_count':values['illegal_selection_count'],
+            }
+            for operation,values in sorted(by_operation.items())
+        }
         body={
             'split':split,'case_count':n,'target_accuracy':target_correct/n,'opcode_accuracy':opcode_correct/n,
             'legal_selection_rate':legal/n,'mean_transition_loss':loss_total/n,'rejected_candidate_count':rejected,
             'checkpoint_sha256':checkpoint_sha,'dataset_sha256':file_sha256(dataset_path),
             'curriculum_manifest_sha256':binding.manifest_sha256,'curriculum_splits_sha256':binding.splits_sha256,
+            'operation_metrics':operation_metrics,
         }
         return EvaluationMetrics(**body,evaluation_hash=domain_hash(body,domain='CETA/INDEPENDENT_EVALUATION/v1'))
 
