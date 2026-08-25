@@ -76,6 +76,9 @@ class CetaWorldCurriculumTests(unittest.TestCase):
         self.assertEqual(package_paths,sorted(package_paths))
         checksum_paths=[line.split('  ',1)[1] for line in (ROOT/'SHA256SUMS').read_text(encoding='utf-8').splitlines()]
         self.assertEqual(checksum_paths,sorted(checksum_paths))
+        from scripts.build_release import release_paths
+        release_names=[path.relative_to(ROOT).as_posix() for path in release_paths()]
+        self.assertEqual(release_names,sorted(release_names))
 
 
 if __name__=='__main__': unittest.main()

@@ -31,7 +31,8 @@ def main() -> None:
     for root in roots:
         if not root.exists():
             continue
-        for p in sorted(x for x in root.rglob("*") if x.is_file() and not x.is_symlink()):
+        paths = (x for x in root.rglob("*") if x.is_file() and not x.is_symlink())
+        for p in sorted(paths, key=lambda item: item.relative_to(root).as_posix()):
             entries.append({
                 "root": root.name,
                 "relative_path": p.relative_to(root).as_posix(),

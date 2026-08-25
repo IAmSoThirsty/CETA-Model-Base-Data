@@ -27,6 +27,17 @@ def sha256(path: Path) -> str:
     return h.hexdigest()
 
 
+def release_paths() -> tuple[Path,...]:
+    paths=(x for x in ROOT.rglob("*") if x.is_file() and not x.is_symlink())
+    included=[]
+    for path in paths:
+        rel=path.relative_to(ROOT)
+        if any(part in {"__pycache__",".pytest_cache",".mypy_cache",".ruff_cache",".git"} for part in rel.parts) or path.suffix in {".pyc",".pyo"}:
+            continue
+        included.append(path)
+    return tuple(sorted(included,key=lambda item:item.relative_to(ROOT).as_posix()))
+
+
 def main() -> None:
     parser=argparse.ArgumentParser()
     parser.add_argument("--output",required=True)
@@ -41,10 +52,8 @@ def main() -> None:
     out.parent.mkdir(parents=True,exist_ok=True)
     if out.exists(): out.unlink()
     with zipfile.ZipFile(out,"w",compression=zipfile.ZIP_DEFLATED,compresslevel=9) as zf:
-        for path in sorted(x for x in ROOT.rglob("*") if x.is_file() and not x.is_symlink()):
+        for path in release_paths():
             rel=path.relative_to(ROOT)
-            if any(part in {"__pycache__",".pytest_cache",".mypy_cache",".ruff_cache",".git"} for part in rel.parts) or path.suffix in {".pyc",".pyo"}:
-                continue
             info=zipfile.ZipInfo(prefix+rel.as_posix(),date_time=(1980,1,1,0,0,0))
             info.compress_type=zipfile.ZIP_DEFLATED
             info.external_attr=(0o100644 & 0xFFFF)<<16

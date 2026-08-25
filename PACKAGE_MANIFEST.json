@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 135,
-  "content_root": "sha256:0f959b74977d4d5ca75fd2833e438c275cb4652a3a19c63abb5a06c1e85a39a1",
+  "content_root": "sha256:9d6efaffe42a0a1e8656acbfac33bda3078f80f87ad321f217473784ebb612d8",
   "files": [
     {
       "path": ".gitattributes",
@@ -232,8 +232,8 @@
     },
     {
       "path": "scripts/build_local_manifest.py",
-      "size": 1874,
-      "sha256": "2a39fb2338ff9252fad1b08355b5db5af70b9e477a17d2740198e285931084fb"
+      "size": 1950,
+      "sha256": "e6a2bbd4b170136cda4ec64c46707dffe077627ac6660e10e3fb25f89eacf886"
     },
     {
       "path": "scripts/build_package_manifest.py",
@@ -242,8 +242,8 @@
     },
     {
       "path": "scripts/build_release.py",
-      "size": 2436,
-      "sha256": "4b721a51b31d0178df5c37985aca2ccb312762f2daa944d2adb665332657b1a2"
+      "size": 2679,
+      "sha256": "bd2540109b4bcb6673736fba11fdc24bdd942279fba913af2be623094d465a54"
     },
     {
       "path": "scripts/build_sha256sums.py",
@@ -632,8 +632,8 @@
     },
     {
       "path": "tests/test_ceta_world_curriculum.py",
-      "size": 3895,
-      "sha256": "ba3c449e6ffd652a85ce7ad3f75f3ae40e8ecae509eb2690f9a436fdab00dc2d"
+      "size": 4099,
+      "sha256": "2d50d688032f7d3f14ba8712d458f3b943964d9795a7ef5ccadf5b4988f8e20f"
     },
     {
       "path": "tests/test_effect_boundary.py",
