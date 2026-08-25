@@ -1,0 +1,106 @@
+{
+  "schema_version": 2,
+  "id": "OC-004",
+  "responsibility": "effect_execution",
+  "status": "RESOLVED_AT_CONTRACT_LEVEL",
+  "canonical_owner": "effect_gateway",
+  "verification_owner": "effect_verifier",
+  "authority_owner": "authority_ledger",
+  "adapter_owner": "tool_adapters",
+  "sources": [
+    "SRC-CETA-001",
+    "SRC-SR-COMPONENTS",
+    "SRC-PA-BUILDER-APPLY",
+    "SRC-GH-TAAR-EXECUTOR",
+    "SRC-GH-BUILDER-KERNEL",
+    "SRC-GH-TARL-BROKER"
+  ],
+  "decisions": [
+    {
+      "source": "StateRegister.ActuatorsAndVerifiers",
+      "decision": "PORT_MECHANISMS_REWRITE_INTERFACE",
+      "keep": [
+        "prepare exact permit",
+        "consume before effect",
+        "independent verifier",
+        "indeterminate effect state"
+      ],
+      "reject": [
+        "domain-specific actuator taxonomy as generic architecture"
+      ]
+    },
+    {
+      "source": "PersonalAssistant.BuilderApply",
+      "decision": "FIXTURE_ONLY",
+      "keep": [
+        "path confinement",
+        "bounded rollback",
+        "atomic file write",
+        "duplicate-target rejection"
+      ],
+      "reject": [
+        "direct proposal-store mutation path"
+      ]
+    },
+    {
+      "source": "TAAR.Executor",
+      "decision": "REWRITE",
+      "keep": [
+        "exact command admission",
+        "shell=False",
+        "bounded timeout",
+        "evidence capture"
+      ],
+      "reject": [
+        "admission and execution in one authority surface"
+      ]
+    },
+    {
+      "source": "ConstitutionalBuilder.Kernel",
+      "decision": "FIXTURE_ONLY",
+      "keep": [
+        "handler failure cases"
+      ],
+      "reject": [
+        "policy/capability/handler execution in one kernel"
+      ]
+    },
+    {
+      "source": "ThirstyLang.CapabilityBroker",
+      "decision": "REWRITE",
+      "keep": [
+        "single adapter mediation point",
+        "fail-closed missing runtime/authority concept",
+        "path confinement fixtures"
+      ],
+      "reject": [
+        "broker as a parallel policy/authority engine"
+      ]
+    }
+  ],
+  "contract": [
+    "EffectGateway is the only component that may invoke side-effect adapters.",
+    "AuthorityLedger must bind exact consumer identity/key, CETA operation and consequence before execution.",
+    "An Execute or Rollback transition durably prepares/reserves its exact permit intent before canonical transition commit.",
+    "A prepared permit may be resumed only for the exact persisted intent after restart; it may not reopen into general authority.",
+    "Adapter routing is validated before authority is prepared or consumed.",
+    "Authority is consumed before the adapter is invoked.",
+    "Every adapter invocation is signed by EffectGateway and bound to permit, intent, consequence, adapter identity, gateway identity and gateway key.",
+    "An exception after consumption defaults to INDETERMINATE because absence of effect cannot be inferred.",
+    "Every execution receipt is gateway-signed; its hash alone is not an identity proof.",
+    "The executor receipt is an execution claim, not proof of resulting external reality.",
+    "EffectVerifier accepts only a signed independent observation from a configured observer key distinct from the executor.",
+    "PARTIALLY_APPLIED and INDETERMINATE cannot close as verified without reconciliation.",
+    "No adapter may authorize itself, commit epistemic state, or certify its own result."
+  ],
+  "reference_implementation": [
+    "src/effects/model.py",
+    "src/effects/gateway.py",
+    "src/effects/verifier.py",
+    "src/runtime/core.py"
+  ],
+  "tests": [
+    "tests/test_effect_boundary.py",
+    "tests/test_runtime_end_to_end.py"
+  ]
+}

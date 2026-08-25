@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "id": "OC-008",
+  "responsibility": "security_detection",
+  "status": "RESOLVED_AT_CONTRACT_LEVEL",
+  "canonical_owner": "security_sensors",
+  "sources": ["SRC-CETA-001", "SRC-GH-CERBERUS-README"],
+  "contract": [
+    "Security detectors emit structured candidate observations or evidence only.",
+    "Threat confidence is not itself authority, truth, denial or execution permission.",
+    "Security observations enter the same evidence and transition path as other observations.",
+    "Security sensors cannot commit epistemic state or execute effects."
+  ],
+  "reference_implementation": ["src/security_sensors/sensors.py"]
+}

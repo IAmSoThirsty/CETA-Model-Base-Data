@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "id": "OC-005",
+  "responsibility": "memory",
+  "status": "RESOLVED_AT_CONTRACT_LEVEL",
+  "canonical_owner": "memory_projection",
+  "sources": ["SRC-PA-MEMORYGRAPH", "SRC-LOCAL-CCMA-README", "SRC-CETA-001"],
+  "decisions": [
+    {
+      "source": "PersonalAssistant.MemoryGraph",
+      "decision": "REWRITE",
+      "keep": ["semantic retrieval", "typed edges", "rebuildable embeddings"],
+      "reject": ["direct rememberExplicit creation of canonical memory state", "independent lifecycle truth"]
+    },
+    {
+      "source": "CCMA",
+      "decision": "REWRITE",
+      "keep": ["universal typed node/edge projection", "provenance-aware retrieval"],
+      "reject": ["graph as a second state authority"]
+    }
+  ],
+  "contract": [
+    "MemoryProjection is derived entirely from the active StateProjector snapshot.",
+    "MemoryProjection has no commit, remember, authorize or execute API.",
+    "Embedding and graph indexes are disposable and reconstructable.",
+    "A user declaration enters epistemic state through CETA transitions, never a memory-side write path."
+  ],
+  "reference_implementation": ["src/memory_projection/projection.py"],
+  "tests": "tests/test_memory_projection.py"
+}

@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "legacy": "PersonalAssistant.CapabilityBroker",
+      "candidate_responsibility": "authority_state",
+      "decision": "REWRITE",
+      "reason": "Retain exact resource/effect binding and confirmation fixtures; replace policy persistence and authority semantics with the canonical Authority Ledger. Empty-scope load bypass retained as HF-001."
+    },
+    {
+      "legacy": "PersonalAssistant.ConstitutionalStateStore",
+      "candidate_responsibility": "current_state_projection",
+      "decision": "REWRITE",
+      "reason": "Retain parent-digest/deterministic-lineage fixtures; remove direct state advancement. Current state is reconstructed only by StateProjector from committed TransitionLedger history."
+    },
+    {
+      "legacy": "PersonalAssistant.AuditLedger",
+      "candidate_responsibility": "canonical_history",
+      "decision": "FIXTURE_ONLY",
+      "reason": "Retain HMAC/hash-chain tamper fixtures. Audit becomes a derived view over TransitionLedger and may not persist independent canonical truth."
+    },
+    {
+      "legacy": "PersonalAssistant.MemoryGraph",
+      "candidate_responsibility": "memory",
+      "decision": "REWRITE",
+      "reason": "Useful projection behavior; memory may not own canonical epistemic truth."
+    },
+    {
+      "legacy": "PersonalAssistant.DprAlternativeEvaluator",
+      "candidate_responsibility": "alternative_transition_search",
+      "decision": "REWRITE",
+      "reason": "Counterproposal behavior maps to alternate transition search but must emit structured CETA proposals, not governance prose."
+    },
+    {
+      "legacy": "StateRegister.RuleGraph",
+      "candidate_responsibility": "transition_legality",
+      "decision": "REWRITE",
+      "reason": "Port evidence binding, failure floors, conflict precedence and hash-bound policy mechanisms into Constitutional VM; rule graph does not survive as an authority."
+    },
+    {
+      "legacy": "StateRegister.DistributedAuthority",
+      "candidate_responsibility": "authority_state",
+      "decision": "REWRITE",
+      "reason": "Port single-use nonce, exact consumer/consequence binding, lifecycle, reconciliation and anti-resurrection law into Authority Ledger; distributed implementation will be rebuilt beneath the canonical contract."
+    },
+    {
+      "legacy": "TAAR.ExecutorGate",
+      "candidate_responsibility": "tool_and_device_adaptation",
+      "decision": "REWRITE",
+      "reason": "Retain exact command/path/capability admission fixtures; execution moves behind the separate Effect Gateway and authority moves to Authority Ledger."
+    },
+    {
+      "legacy": "ConstitutionalBuilder.Kernel",
+      "candidate_responsibility": "effect_execution",
+      "decision": "FIXTURE_ONLY",
+      "reason": "Combined kernel crosses the legality/execution boundary by invoking handlers; retain stage/failure fixtures only."
+    },
+    {
+      "legacy": "ThirstyLang.TARL",
+      "candidate_responsibility": "transition_legality",
+      "decision": "REWRITE",
+      "reason": "Port condition algebra, context canonicalization, temporal policy, verdict lattice and proof trace beneath Constitutional VM; no standalone legality authority survives."
+    },
+    {
+      "legacy": "Cerberus.Guardians",
+      "candidate_responsibility": "security_detection",
+      "decision": "REWRITE",
+      "reason": "Threat detectors should emit observations/evidence and never directly own epistemic truth or execution authority."
+    },
+    {
+      "legacy": "Waterfall.PrivacyLedger",
+      "candidate_responsibility": "evidence_identity_and_provenance",
+      "decision": "RESEARCH_ONLY",
+      "reason": "Integrity and privacy mechanisms are evidence candidates; broad product surfaces do not map directly into the cognitive machine."
+    },
+    {
+      "legacy": "StateRegister.EventStore",
+      "candidate_responsibility": "canonical_history",
+      "decision": "REWRITE",
+      "reason": "Port ordered append, canonical body hashing, prior/resulting roots, transactional durability and chain verification into the CETA TransitionLedger; event-type-specific state remains legacy."
+    },
+    {
+      "legacy": "PersonalAssistant.BuilderApply",
+      "candidate_responsibility": "tool_and_device_adaptation",
+      "decision": "FIXTURE_ONLY",
+      "reason": "Retain canonical path confinement, duplicate-target rejection, bounded rollback and atomic-write fixtures; direct application becomes an EffectGateway adapter only."
+    },
+    {
+      "legacy": "StateRegister.ActuatorVerifierSplit",
+      "candidate_responsibility": "effect_execution",
+      "decision": "REWRITE",
+      "reason": "Port prepare-before-consume, consume-before-effect and independent verifier separation into EffectGateway/EffectVerifier; legacy training/deployment artifact taxonomy does not define the new generic effect API."
+    },
+    {
+      "legacy": "ThirstyLang.CapabilityBroker",
+      "candidate_responsibility": "effect_execution",
+      "decision": "REWRITE",
+      "reason": "Retain one mediation point and fail-closed adapter routing; policy/legality evaluation moves to ConstitutionalVM and authority consumption moves to AuthorityLedger."
+    }
+  ]
+}

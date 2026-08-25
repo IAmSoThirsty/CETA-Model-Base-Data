@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "conflicts": [
+    {
+      "id": "OC-001",
+      "responsibility": "transition_legality",
+      "legacy_claimants": [
+        "PersonalAssistant.AuthoritySurface",
+        "StateRegister.RuleGraph",
+        "ThirstyLang.TARL",
+        "ConstitutionalBuilder.PolicyKernel"
+      ],
+      "resolution": "constitutional_vm",
+      "rule": "Legacy policy engines may supply predicates, policy languages, fixtures or proof mechanisms but cannot survive as parallel legality authorities."
+    },
+    {
+      "id": "OC-002",
+      "responsibility": "authority_state",
+      "legacy_claimants": [
+        "PersonalAssistant.CapabilityBroker",
+        "StateRegister.ProofKernelAndDistributedAuthority",
+        "TAAR.RegistryGate",
+        "ConstitutionalBuilder.Capability"
+      ],
+      "resolution": "authority_ledger",
+      "rule": "Authority issuance/consumption/revocation has one canonical ledger; request-local gates become clients or validators."
+    },
+    {
+      "id": "OC-003",
+      "responsibility": "canonical_history",
+      "legacy_claimants": [
+        "PersonalAssistant.AuditLedger",
+        "TAAR.AuditSpine",
+        "ConstitutionalBuilder.Audit",
+        "StateRegister.EventStore"
+      ],
+      "resolution": "transition_ledger",
+      "rule": "There is one canonical transition history. Audit views are projections or receipts over it, never independent truth stores.",
+      "status": "RESOLVED_AT_CONTRACT_LEVEL",
+      "resolution_detail": {
+        "canonical_owner": "transition_ledger",
+        "state_owner": "state_projector",
+        "audit_status": "derived_projection_only",
+        "replay_requirement": "reconstruct projected state and verify every transition binding"
+      }
+    },
+    {
+      "id": "OC-004",
+      "responsibility": "effect_execution",
+      "legacy_claimants": [
+        "PersonalAssistant.ToolsAndBuilderApply",
+        "TAAR.Executor",
+        "ConstitutionalBuilder.Execution",
+        "ThirstyLang.CapabilityBroker"
+      ],
+      "resolution": "effect_gateway",
+      "rule": "Every external mutation reaches one effect boundary; adapters cannot own authority.",
+      "status": "RESOLVED_AT_CONTRACT_LEVEL",
+      "resolution_detail": {
+        "canonical_owner": "effect_gateway",
+        "verification_owner": "effect_verifier",
+        "authority_owner": "authority_ledger",
+        "adapter_owner": "tool_adapters",
+        "rule": "EffectGateway may execute but cannot authorize or verify; adapters never consume ambient authority."
+      }
+    },
+    {
+      "id": "OC-005",
+      "responsibility": "memory",
+      "legacy_claimants": [
+        "PersonalAssistant.MemoryGraph",
+        "legacy conversation/state stores",
+        "embedding indexes"
+      ],
+      "resolution": "memory_projection",
+      "rule": "Memory may be optimized and rebuilt; it cannot become a second epistemic truth owner.",
+      "status": "RESOLVED_AT_CONTRACT_LEVEL",
+      "resolution_detail": {
+        "canonical_owner": "memory_projection",
+        "rule": "derived and disposable; no direct canonical writes"
+      }
+    },
+    {
+      "id": "OC-006",
+      "responsibility": "alternative_transition_search",
+      "legacy_claimants": [
+        "PersonalAssistant.DprAlternativeEvaluator",
+        "agent counterproposal paths"
+      ],
+      "resolution": "transition_search",
+      "rule": "Alternatives are proposals only and each must independently pass ConstitutionalVM.",
+      "status": "RESOLVED_AT_CONTRACT_LEVEL"
+    },
+    {
+      "id": "OC-007",
+      "responsibility": "training_and_evaluation",
+      "legacy_claimants": [
+        "text-target SFT curriculum",
+        "StateRegister epoch controller",
+        "canonical split/evaluation policies"
+      ],
+      "resolution": "transition_training_system",
+      "rule": "Reasoning training targets structured state-to-transition behavior; evaluation and authority material remain isolated.",
+      "status": "RESOLVED_AT_REFERENCE_CONTRACT_LEVEL"
+    },
+    {
+      "id": "OC-008",
+      "responsibility": "security_detection",
+      "legacy_claimants": [
+        "Cerberus guardians",
+        "input/security threat detectors"
+      ],
+      "resolution": "security_sensors",
+      "rule": "Detection emits observations/evidence and owns no truth, authority or execution.",
+      "status": "RESOLVED_AT_CONTRACT_LEVEL"
+    }
+  ]
+}

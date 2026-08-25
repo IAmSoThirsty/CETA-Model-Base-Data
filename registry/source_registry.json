@@ -1,0 +1,292 @@
+{
+  "schema_version": 2,
+  "sources": [
+    {
+      "id": "SRC-CETA-001",
+      "kind": "user_specification",
+      "path": "corpus/CETA.md",
+      "status": "admitted"
+    },
+    {
+      "id": "SRC-PA-001",
+      "kind": "uploaded_archive",
+      "path": "PersonalAssistant-Integrated-v0.3.0.zip",
+      "status": "indexed"
+    },
+    {
+      "id": "SRC-SR-RG-001",
+      "kind": "local_release_archive",
+      "path": "The_STATE_REGISTER_Rule_Graph_Algorithm_POC_v1.0.zip",
+      "status": "indexed"
+    },
+    {
+      "id": "SRC-SR-OC-001",
+      "kind": "local_release_archive",
+      "path": "The_STATE_REGISTER_Operational_Core_v0.1.0.zip",
+      "status": "indexed"
+    },
+    {
+      "id": "SRC-SR-DA-001",
+      "kind": "local_release_archive",
+      "path": "The_STATE_REGISTER_Distributed_Authority_v0.2.0.zip",
+      "status": "indexed"
+    },
+    {
+      "id": "SRC-SR-ER-001",
+      "kind": "local_release_archive",
+      "path": "The_STATE_REGISTER_Epoch_Ready_v0.3.0.zip",
+      "status": "indexed"
+    },
+    {
+      "id": "SRC-TTS-FORMAL-001",
+      "kind": "local_release_archive",
+      "path": "TTS_Formal_Verification_Package.zip",
+      "status": "indexed"
+    },
+    {
+      "id": "SRC-GH-PAI-README",
+      "kind": "frozen_remote_source_metadata",
+      "repository": "IAmSoThirsty/Project-AI",
+      "path": "README.md",
+      "blob_sha": "3cca2eefe2a7b84d282d1067f9a26b0a86191b54",
+      "status": "frozen_reference",
+      "access": "NO_FETCH"
+    },
+    {
+      "id": "SRC-GH-CERBERUS-README",
+      "kind": "frozen_remote_source_metadata",
+      "repository": "IAmSoThirsty/Cerberus",
+      "path": "README.md",
+      "blob_sha": "e4fb2d802e99a1906e77d7e9c20d2ef76e866565",
+      "status": "frozen_reference",
+      "access": "NO_FETCH"
+    },
+    {
+      "id": "SRC-GH-TAAR-README",
+      "kind": "frozen_remote_source_metadata",
+      "repository": "IAmSoThirsty/TAAR",
+      "path": "README.md",
+      "blob_sha": "3ef818c54b0f0168a88ecb62a966184358a4346a",
+      "status": "frozen_reference",
+      "access": "NO_FETCH"
+    },
+    {
+      "id": "SRC-GH-BUILDER-README",
+      "kind": "frozen_remote_source_metadata",
+      "repository": "IAmSoThirsty/Thirstys-Builder",
+      "path": "README.md",
+      "blob_sha": "dfdaeb1ce25a26aee0370614b6eae12fe1cebe2f",
+      "status": "frozen_reference",
+      "access": "NO_FETCH"
+    },
+    {
+      "id": "SRC-GH-THIRSTYLANG-README",
+      "kind": "frozen_remote_source_metadata",
+      "repository": "IAmSoThirsty/Thirsty-lang",
+      "path": "README.md",
+      "blob_sha": "f623999bc31efd84ff569c94eb1eacbcb9632def",
+      "status": "frozen_reference",
+      "access": "NO_FETCH"
+    },
+    {
+      "id": "SRC-GH-WATERFALL-README",
+      "kind": "frozen_remote_source_metadata",
+      "repository": "IAmSoThirsty/Thirstys-waterfall",
+      "path": "README.md",
+      "blob_sha": "2f383fae7c5f5a56c68a8fe5c42a591049e5749e",
+      "status": "frozen_reference",
+      "access": "NO_FETCH"
+    },
+    {
+      "id": "SRC-GH-BUILDER-POLICY",
+      "kind": "frozen_remote_source_metadata",
+      "repository": "IAmSoThirsty/Thirstys-Builder",
+      "path": "source/constitutional_builder/policy.py",
+      "blob_sha": "f4fbc7297629d39e7030b4b9de409df806635fde",
+      "status": "frozen_reference",
+      "access": "NO_FETCH"
+    },
+    {
+      "id": "SRC-GH-BUILDER-KERNEL",
+      "kind": "frozen_remote_source_metadata",
+      "repository": "IAmSoThirsty/Thirstys-Builder",
+      "path": "source/constitutional_builder/kernel.py",
+      "blob_sha": "37a78d5d66aeaef275574c6077d975cc953a0c23",
+      "status": "frozen_reference",
+      "access": "NO_FETCH"
+    },
+    {
+      "id": "SRC-GH-TARL-CORE",
+      "kind": "frozen_remote_source_metadata",
+      "repository": "IAmSoThirsty/Thirsty-lang",
+      "path": "src/utf/tarl/core.py",
+      "blob_sha": "3e7c4fe544d02e18d0fc3f43eeca1b4cf15b6e6f",
+      "status": "frozen_reference",
+      "access": "NO_FETCH"
+    },
+    {
+      "id": "SRC-GH-TARL-SPEC",
+      "kind": "frozen_remote_source_metadata",
+      "repository": "IAmSoThirsty/Thirsty-lang",
+      "path": "src/utf/tarl/spec.py",
+      "blob_sha": "01c0c32832a539dc6555b1c2992d83302a03b0c4",
+      "status": "frozen_reference",
+      "access": "NO_FETCH"
+    },
+    {
+      "id": "SRC-GH-BUILDER-CAPABILITY",
+      "kind": "frozen_remote_source_metadata",
+      "repository": "IAmSoThirsty/Thirstys-Builder",
+      "path": "source/constitutional_builder/capability.py",
+      "blob_sha": "41beb27e47c7077562f8e64bfbd30971a4eb8eae",
+      "status": "frozen_reference",
+      "access": "NO_FETCH"
+    },
+    {
+      "id": "SRC-GH-TAAR-EXECUTOR",
+      "kind": "frozen_remote_source_metadata",
+      "repository": "IAmSoThirsty/TAAR",
+      "path": "taar/executor.py",
+      "blob_sha": "0d6fabb67b97c58c0e1b8689ab5904c3ec5a13d4",
+      "status": "frozen_reference",
+      "access": "NO_FETCH"
+    },
+    {
+      "id": "SRC-PA-STATESTORE",
+      "kind": "uploaded_archive_file",
+      "archive": "PersonalAssistant-Integrated-v0.3.0.zip",
+      "path": "PersonalAssistant-Starter/src/governance/ConstitutionalStateStore.cpp",
+      "sha256": "4bc51e7ec2cbf3d7499d47b7026e5a342ffc59f4d563666e66cc3f8824db0b5f",
+      "status": "adjudicated"
+    },
+    {
+      "id": "SRC-PA-AUDITLEDGER",
+      "kind": "uploaded_archive_file",
+      "archive": "PersonalAssistant-Integrated-v0.3.0.zip",
+      "path": "PersonalAssistant-Starter/src/evidence/AuditLedger.cpp",
+      "sha256": "89121b4c18f136e2fa8fa855373628898b9d2dab607e27b9139e2e3cb58f0e8b",
+      "status": "adjudicated"
+    },
+    {
+      "id": "SRC-SR-EVENTSTORE",
+      "kind": "local_release_file",
+      "archive": "The_STATE_REGISTER_Operational_Core_v0.1.0.zip",
+      "path": "state_register/store.py",
+      "sha256": "1f00e70cd518c172b21b645fe1022a545fb99d7ebc8c8ea17fb8fffde0f7ae54",
+      "status": "adjudicated"
+    },
+    {
+      "id": "SRC-GH-BUILDER-AUDIT",
+      "kind": "frozen_remote_source_metadata",
+      "repository": "IAmSoThirsty/Thirstys-Builder",
+      "path": "source/constitutional_builder/audit.py",
+      "blob_sha": "76834e1b352d0b15a8c84f1a719cc35ef2801b3d",
+      "status": "frozen_reference",
+      "access": "NO_FETCH"
+    },
+    {
+      "id": "SRC-GH-BUILDER-REPLAY",
+      "kind": "frozen_remote_source_metadata",
+      "repository": "IAmSoThirsty/Thirstys-Builder",
+      "path": "source/constitutional_builder/replay.py",
+      "blob_sha": "426249920f009ef4b34d3172a7bd6bfe1c70dc34",
+      "status": "frozen_reference",
+      "access": "NO_FETCH"
+    },
+    {
+      "id": "SRC-GH-TAAR-AUDIT",
+      "kind": "frozen_remote_source_metadata",
+      "repository": "IAmSoThirsty/TAAR",
+      "path": "taar/audit.py",
+      "blob_sha": "e275d8b30cb6d7b4c2ba7b1775f29061772c523d",
+      "status": "frozen_reference",
+      "access": "NO_FETCH"
+    },
+    {
+      "id": "SRC-PA-BUILDER-APPLY",
+      "kind": "uploaded_archive_file",
+      "archive": "PersonalAssistant-Integrated-v0.3.0.zip",
+      "path": "PersonalAssistant-Starter/src/builder/BuilderProposalStore.cpp",
+      "sha256": "892ba3dee4c47cf05c74eb6163a89c3c0a90aba0cb0ea6548d8d29359992f56b",
+      "status": "adjudicated"
+    },
+    {
+      "id": "SRC-SR-COMPONENTS",
+      "kind": "local_release_file",
+      "archive": "The_STATE_REGISTER_Operational_Core_v0.1.0.zip",
+      "path": "state_register/components.py",
+      "sha256": "5ca443abdcc7bf73afefda9635c2adcd33f20873a8b3aa698b9ab0706ffee718",
+      "status": "adjudicated"
+    },
+    {
+      "id": "SRC-GH-TARL-BROKER",
+      "kind": "frozen_remote_source_metadata",
+      "repository": "IAmSoThirsty/Thirsty-lang",
+      "path": "src/utf/tarl/broker.py",
+      "blob_sha": "21961d0a4f7144551a5be8d806c2e538664dc482",
+      "status": "frozen_reference",
+      "access": "NO_FETCH"
+    },
+    {
+      "id": "SRC-PA-MEMORYGRAPH",
+      "kind": "local_manifest_file",
+      "manifest_root": "uploaded",
+      "path": "PersonalAssistant-Integrated-v0.3.0/PersonalAssistant-Starter/src/memory/MemoryGraph.cpp",
+      "sha256": "49cf4a6fa8fd181956ad83fa0e779f80a3a94392709d6ec0dc98f7999bb5c2ee",
+      "status": "adjudicated"
+    },
+    {
+      "id": "SRC-PA-DPR-ALT",
+      "kind": "local_manifest_file",
+      "manifest_root": "uploaded",
+      "path": "PersonalAssistant-Integrated-v0.3.0/PersonalAssistant-Starter/src/governance/DprAlternativeEvaluator.cpp",
+      "sha256": "3d1100ba568d1e990d3436d173ede5b77a91e6052c1eacc9784529f10c0e97c4",
+      "status": "adjudicated"
+    },
+    {
+      "id": "SRC-LOCAL-CCMA-README",
+      "kind": "local_manifest_file",
+      "manifest_root": "uploaded",
+      "path": "PersonalAssistant-Integrated-v0.3.0/PersonalAssistant-Starter/knowledge/sources/ccma/ccma/README.md",
+      "sha256": "845780fd2f6e6e6fd3adc17be4181ea9640f9a96b45db612d84b939c513db394",
+      "status": "adjudicated"
+    },
+    {
+      "id": "SRC-LOCAL-V4-SPLIT",
+      "kind": "local_manifest_file",
+      "manifest_root": "uploaded",
+      "path": "PersonalAssistant-Integrated-v0.3.0/PersonalAssistant-Starter/knowledge/sources/thirstys-standard-v4/Thirstys_Standard_V4_Canonical_Source_Stack_v0.2.0-draft/indexes/SPLIT_POLICY.yaml",
+      "sha256": "a8527b9fbad7581d2547a3058bed3e227b74f22a80011b28435fbf0e89e4c488",
+      "status": "adjudicated"
+    },
+    {
+      "id": "SRC-LOCAL-V4-FAILURES",
+      "kind": "local_manifest_file",
+      "manifest_root": "uploaded",
+      "path": "PersonalAssistant-Integrated-v0.3.0/PersonalAssistant-Starter/knowledge/sources/thirstys-standard-v4/Thirstys_Standard_V4_Canonical_Source_Stack_v0.2.0-draft/authority/normative/FAILURE_TAXONOMY.yaml",
+      "sha256": "2b26283b0d5e211aa8fb7e62ac2a6952fefad28118ae93dd60734a2081388de4",
+      "status": "adjudicated"
+    },
+    {
+      "id": "SRC-LOCAL-V4-DATASET",
+      "kind": "local_manifest_file",
+      "manifest_root": "uploaded",
+      "path": "PersonalAssistant-Integrated-v0.3.0/PersonalAssistant-Starter/knowledge/sources/thirstys-standard-v4/Thirstys_Standard_V4_Canonical_Source_Stack_v0.2.0-draft/DATASET_CARD.md",
+      "sha256": "c9d531bbb69344d18ff2e8398ee53ba381291f6d649ad86054c05235d7b1ebac",
+      "status": "adjudicated"
+    },
+    {
+      "id": "SRC-LOCAL-V4-MODEL-BOUNDARY",
+      "kind": "local_manifest_file",
+      "manifest_root": "uploaded",
+      "path": "PersonalAssistant-Integrated-v0.3.0/PersonalAssistant-Starter/knowledge/sources/thirstys-standard-v4/Thirstys_Standard_V4_Canonical_Source_Stack_v0.2.0-draft/docs/ACTUAL_MODEL_INTEGRATION_BOUNDARY.md",
+      "sha256": "a7f622647cc9ceebe05195323417f24d43c94f590961dba0f2da22f257ced9ff",
+      "status": "adjudicated"
+    }
+  ],
+  "access_policy": {
+    "network_access": "PROHIBITED",
+    "remote_fetch_on_verify": false,
+    "rule": "Remote references are frozen provenance only. This package performs no network retrieval."
+  }
+}

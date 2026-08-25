@@ -1,0 +1,145 @@
+{
+  "schema_version": 2,
+  "implementations": [
+    {
+      "component": "ceta_isa",
+      "paths": [
+        "registry/ceta_operations.json",
+        "registry/operation_contracts.json"
+      ]
+    },
+    {
+      "component": "transition_policy_model",
+      "paths": [
+        "src/transition_policy/interface.py",
+        "src/transition_policy/actions.py",
+        "src/transition_policy/encoder.py",
+        "src/transition_policy/neural.py",
+        "src/transition_policy/loss.py",
+        "src/transition_policy/schema.py"
+      ]
+    },
+    {
+      "component": "constitutional_vm",
+      "paths": [
+        "src/ceta/model.py",
+        "src/ceta/vm.py"
+      ]
+    },
+    {
+      "component": "transition_ledger",
+      "paths": [
+        "src/history/ledger.py",
+        "src/history/model.py"
+      ]
+    },
+    {
+      "component": "state_projector",
+      "paths": [
+        "src/history/projector.py"
+      ]
+    },
+    {
+      "component": "evidence_registry",
+      "paths": [
+        "src/evidence_registry/model.py",
+        "src/evidence_registry/registry.py"
+      ]
+    },
+    {
+      "component": "identity_registry",
+      "paths": [
+        "src/identity_registry/assertion.py",
+        "src/identity_registry/registry.py"
+      ]
+    },
+    {
+      "component": "authority_ledger",
+      "paths": [
+        "src/authority/model.py",
+        "src/authority/context.py",
+        "src/authority/ledger.py"
+      ]
+    },
+    {
+      "component": "effect_gateway",
+      "paths": [
+        "src/effects/gateway.py",
+        "src/effects/model.py"
+      ]
+    },
+    {
+      "component": "effect_verifier",
+      "paths": [
+        "src/effects/verifier.py"
+      ]
+    },
+    {
+      "component": "memory_projection",
+      "paths": [
+        "src/memory_projection/projection.py"
+      ]
+    },
+    {
+      "component": "observation_compiler",
+      "paths": [
+        "src/observation_compiler/compiler.py"
+      ]
+    },
+    {
+      "component": "language_serializer",
+      "paths": [
+        "src/serialization/serializer.py"
+      ]
+    },
+    {
+      "component": "defeater_engine",
+      "paths": [
+        "src/reasoning/defeaters.py"
+      ]
+    },
+    {
+      "component": "transition_search",
+      "paths": [
+        "src/reasoning/search.py"
+      ]
+    },
+    {
+      "component": "security_sensors",
+      "paths": [
+        "src/security_sensors/sensors.py"
+      ]
+    },
+    {
+      "component": "tool_adapters",
+      "paths": [
+        "src/tool_adapters/adapters.py"
+      ]
+    },
+    {
+      "component": "transition_training_system",
+      "paths": [
+        "src/training/model.py",
+        "src/training/evaluator.py",
+        "src/training/dataset.py",
+        "src/training/curriculum.py",
+        "src/training/worlds.py",
+        "src/training/governed.py",
+        "src/training/source_policy.py",
+        "src/training/failure_taxonomy.py"
+      ]
+    },
+    {
+      "component": "formal_verification",
+      "paths": [
+        "src/formal_verification/checks.py"
+      ]
+    },
+    {
+      "component": "host_shell",
+      "paths": [
+        "src/host_shell/shell.py"
+      ]
+    }
+  ]
+}

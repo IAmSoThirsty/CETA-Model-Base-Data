@@ -1,0 +1,24 @@
+{
+  "checks": [
+    "mandatory_checkpoint_api",
+    "target_blind_propose_api",
+    "all_targets_recoverable_without_label_injection",
+    "location_independent_training_evidence",
+    "renamed_heldout_rejected",
+    "checkpoint_tamper_rejected",
+    "crash_tail_orphan_and_deterministic_replay",
+    "evaluation_sidecar_tamper_rejected"
+  ],
+  "claim_boundary": {
+    "general_reasoning_claimed": false,
+    "pipeline_integrity_tested": true,
+    "production_model_quality_claimed": false,
+    "real_world_grounding_claimed": false
+  },
+  "curriculum_cases_checked": 690,
+  "gate": "CETA final integrated hostile epoch gate",
+  "operation_count": 23,
+  "report_hash": "sha256:baf25aed93ec8548db9f71cb4edf502b7e90a97f4f8e76ef5cbd31c8f08c042c",
+  "schema_version": 1,
+  "status": "PASS"
+}

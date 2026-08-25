@@ -1,0 +1,85 @@
+{
+  "schema_version": 2,
+  "failures": [
+    {
+      "id": "HF-001",
+      "source": "PersonalAssistant-Integrated-v0.3.0/src/governance/CapabilityBroker.cpp",
+      "status": "verified_in_source",
+      "failure": "A persisted ALLOW policy with empty scope is admitted by load(); downstream authorization can therefore treat the capability as unrestricted.",
+      "architectural_law": "Persisted authority must be revalidated at every trust-boundary load; an invalid grant may never become broader authority by omission.",
+      "fixture_target": "authority_ledger"
+    },
+    {
+      "id": "HF-002",
+      "source": "State Register distributed authority tests and protocol",
+      "status": "fixed_and_retained_as_fixture",
+      "failure": "Compaction/recovery can destroy the original quorum evidence needed to prove idempotent authority-event retry unless snapshots retain the committed entry and certificate.",
+      "architectural_law": "Compaction may not erase proof needed to distinguish exact retry from conflicting replay.",
+      "fixture_target": "transition_ledger"
+    },
+    {
+      "id": "HF-003",
+      "source": "State Register permit recovery tests",
+      "status": "fixed_and_retained_as_fixture",
+      "failure": "A stale recovery path can resurrect consumed authority unless consumed nonces/tombstones are part of certified recoverable state.",
+      "architectural_law": "Consumed authority is monotonic across restart, snapshot, compaction, partition and recovery.",
+      "fixture_target": "authority_ledger"
+    },
+    {
+      "id": "HF-004",
+      "source": "State Register rule-graph hostile audit",
+      "status": "fixed_and_retained_as_fixture",
+      "failure": "Predicate truth can be claimed independently of the evidence record that allegedly establishes it.",
+      "architectural_law": "Every predicate evaluation must bind to exact admitted evidence identities and values.",
+      "fixture_target": "constitutional_vm"
+    },
+    {
+      "id": "HF-005",
+      "source": "State Register rule-graph hostile audit",
+      "status": "fixed_and_retained_as_fixture",
+      "failure": "Conflict handling can mask a direct failed or unknown predicate if conflict resolution is evaluated first.",
+      "architectural_law": "Direct violated preconditions and load-bearing unknowns dominate conflict resolution; conflict search cannot erase failure.",
+      "fixture_target": "constitutional_vm"
+    },
+    {
+      "id": "HF-006",
+      "source": "Architecture Rebuild hostile review v0.2",
+      "status": "fixed_and_retained_as_fixture",
+      "failure": "A runtime accepted a caller-supplied authority capability dictionary, allowing the caller to manufacture the VM authority context.",
+      "architectural_law": "Positive authority context must come only from a trusted signed assertion bound to the exact state/operation and from the Authority Ledger's own permit snapshot.",
+      "fixture_target": "authority_ledger"
+    },
+    {
+      "id": "HF-007",
+      "source": "Architecture Rebuild hostile review v0.2",
+      "status": "fixed_and_retained_as_fixture",
+      "failure": "An adapter could be invoked directly with a consequence object without proof that the Effect Gateway mediated the call.",
+      "architectural_law": "Every adapter call requires a gateway-signed invocation bound to permit, prepared intent, consequence, adapter identity and gateway key.",
+      "fixture_target": "effect_gateway"
+    },
+    {
+      "id": "HF-008",
+      "source": "Architecture Rebuild hostile review v0.2",
+      "status": "fixed_and_retained_as_fixture",
+      "failure": "Execution receipt hashes and observer names provided integrity labels but not cryptographic identity, permitting forged executor/observer claims.",
+      "architectural_law": "Execution receipts and independent observations require trusted signatures; unknown keys and executor-as-observer substitution fail closed.",
+      "fixture_target": "effect_verifier"
+    },
+    {
+      "id": "HF-009",
+      "source": "Architecture Rebuild hostile review v0.2",
+      "status": "fixed_and_retained_as_fixture",
+      "failure": "An effect transition could be committed while its permit remained ISSUED, allowing multiple pending effect transitions to reference the same authority before gateway consumption.",
+      "architectural_law": "Effect-transition commit must durably PREPARE the exact permit intent before canonical commit; restart resumes only that prepared intent.",
+      "fixture_target": "authority_ledger"
+    },
+    {
+      "id": "HF-010",
+      "source": "Architecture Rebuild hostile review v0.2",
+      "status": "fixed_and_retained_as_fixture",
+      "failure": "Evidence and identity registries initially existed only in memory, so transition history could survive restart while the proof material supporting admission and identity verification disappeared.",
+      "architectural_law": "Proof registries are append-only durable stores whose hashes/signatures must replay and verify across restart; missing proof material fails closed.",
+      "fixture_target": "evidence_registry"
+    }
+  ]
+}

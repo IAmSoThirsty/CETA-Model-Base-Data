@@ -1,0 +1,129 @@
+{
+  "claim_boundary": {
+    "epoch_pipeline_ready": true,
+    "language_generation_trained": false,
+    "normal_inference_accepts_caller_candidates": false,
+    "production_model_quality_claimed": false,
+    "real_world_fact_knowledge_trained": false,
+    "target_blind_action_space": true
+  },
+  "config": {
+    "gradient_clip_norm": 1.0,
+    "hidden_dim": 32,
+    "learning_rate": 0.003,
+    "seed": 20260824,
+    "weight_decay": 0.0
+  },
+  "config_hash": "sha256:4f1803ae6348319055e7fa4890ae9bf5d0e24c506db4b0db6563245a8ab14203",
+  "dataset": {
+    "heldout_cases": 69,
+    "heldout_sha256": "59e3c2db6700e4467be4225b3817f40f41720cee5421e3bdabe1a24180e5940e",
+    "train_cases": 552,
+    "train_sha256": "a02166a766247bd930da348b3c8ed79a7570b6bf2506296cabac170b3eb27fd6",
+    "validation_cases": 69,
+    "validation_sha256": "c7cbbe3abb1497615ad182dfe54764d5389e77e83e90d5d2a6e1653d4a7ef9b6"
+  },
+  "device": "cpu",
+  "heldout": {
+    "case_count": 69,
+    "checkpoint_sha256": "e9a3cf450911b4e3293da17c7c6908d40c6f3cfd934d08f420a46cc81ea6562e",
+    "curriculum_manifest_sha256": "48ce5df8300c0ad7973e7dc41bc9ea9db9b786316526b3141ba815d4e90b49cf",
+    "curriculum_splits_sha256": "83e229d8fc2a0bfc292979479fc1add284ce937fbdc0cab8d3e8fa19a5d2d655",
+    "dataset_sha256": "59e3c2db6700e4467be4225b3817f40f41720cee5421e3bdabe1a24180e5940e",
+    "evaluation_hash": "sha256:20a88712a7ddbc574e7c0038c1ab2a99a262f6950b310c950d4b8f99006f6c00",
+    "legal_selection_rate": 1.0,
+    "mean_transition_loss": 1.4126728282890457,
+    "opcode_accuracy": 0.782608695652174,
+    "rejected_candidate_count": 0,
+    "split": "heldout",
+    "target_accuracy": 0.8695652173913043
+  },
+  "pause": {
+    "cursor": {
+      "config_hash": "sha256:4f1803ae6348319055e7fa4890ae9bf5d0e24c506db4b0db6563245a8ab14203",
+      "curriculum_generator_id": "CETA_WORLD_CURRICULUM/v2",
+      "curriculum_manifest_sha256": "48ce5df8300c0ad7973e7dc41bc9ea9db9b786316526b3141ba815d4e90b49cf",
+      "curriculum_splits_sha256": "83e229d8fc2a0bfc292979479fc1add284ce937fbdc0cab8d3e8fa19a5d2d655",
+      "dataset_sha256": "a02166a766247bd930da348b3c8ed79a7570b6bf2506296cabac170b3eb27fd6",
+      "epoch_index": 0,
+      "global_step": 173,
+      "next_case_offset": 173,
+      "run_id": "EPOCH-READINESS-SMOKE",
+      "split": "train"
+    },
+    "model_hash": "sha256:7992895f252177d0e47e712f85a47c26d151d502402cd3697470fb305b85e0c2",
+    "optimizer_hash": "sha256:6d6374e4c491eb41122c430a14b485baf5fc756ec6a0f5f0ee83f2b88bfcecf3",
+    "path": "checkpoint-e0000-s00000173-o000173.pt",
+    "sha256": "d2ab3f3ba2a1dc1aced7ead0c5823ca35132878f1e9d296620a9e94edb545bff"
+  },
+  "promotion_gate": {
+    "note": "Smoke checkpoint quality is not a production-model claim. Strict promotion is intentionally independent of epoch-readiness.",
+    "outcome": "QUARANTINED",
+    "policy": {
+      "max_mean_transition_loss": 1.0,
+      "min_legal_selection_rate": 0.99,
+      "min_opcode_accuracy": 0.95,
+      "min_target_accuracy": 0.95
+    }
+  },
+  "readiness_target": "CETA epoch start/pause/resume/evaluate gate",
+  "report_hash": "sha256:0ee1b2710b52385050ac287b89f865260eef44b01ff10cddfd94e8b67122789d",
+  "resume": {
+    "final_checkpoint": {
+      "cursor": {
+        "config_hash": "sha256:4f1803ae6348319055e7fa4890ae9bf5d0e24c506db4b0db6563245a8ab14203",
+        "curriculum_generator_id": "CETA_WORLD_CURRICULUM/v2",
+        "curriculum_manifest_sha256": "48ce5df8300c0ad7973e7dc41bc9ea9db9b786316526b3141ba815d4e90b49cf",
+        "curriculum_splits_sha256": "83e229d8fc2a0bfc292979479fc1add284ce937fbdc0cab8d3e8fa19a5d2d655",
+        "dataset_sha256": "a02166a766247bd930da348b3c8ed79a7570b6bf2506296cabac170b3eb27fd6",
+        "epoch_index": 1,
+        "global_step": 552,
+        "next_case_offset": 0,
+        "run_id": "EPOCH-READINESS-SMOKE",
+        "split": "train"
+      },
+      "model_hash": "sha256:c3042fefa9ed1bb4cdddfcaf2743596731e114fe2d8ad37c767123d4493e0576",
+      "optimizer_hash": "sha256:daf5a2e3d62b215cac279643abadec438955a9ac48855f0460acd657cf7374f2",
+      "path": "checkpoint-e0001-s00000552-o000000.pt",
+      "sha256": "e9a3cf450911b4e3293da17c7c6908d40c6f3cfd934d08f420a46cc81ea6562e"
+    },
+    "final_epoch_index": 1,
+    "final_global_step": 552,
+    "remaining_cases": 379
+  },
+  "schema_version": 1,
+  "status": "PASS",
+  "torch_version": "2.10.0+cpu",
+  "training_evidence": {
+    "checkpoint_required_before_successful_return": true,
+    "evaluation_leakage_detected": false,
+    "event_count": 558,
+    "event_root": "sha256:0190f5bc4905d43b8c5ee4b3f670ee703db1431208683e6e4ec3c8f8cbf52f0d",
+    "event_type_counts": {
+      "CHECKPOINT_QUARANTINED": 1,
+      "CHECKPOINT_SAVED": 2,
+      "EPOCH_COMPLETED": 1,
+      "OPTIMIZER_STEP": 552,
+      "RUN_INITIALIZED": 1,
+      "RUN_RESUMED": 1
+    },
+    "exact_train_split_coverage": true,
+    "optimizer_receipts": 552,
+    "resume_authority": "append-only CHECKPOINT_SAVED ledger event",
+    "target_candidate_injection": false
+  },
+  "validation": {
+    "case_count": 69,
+    "checkpoint_sha256": "e9a3cf450911b4e3293da17c7c6908d40c6f3cfd934d08f420a46cc81ea6562e",
+    "curriculum_manifest_sha256": "48ce5df8300c0ad7973e7dc41bc9ea9db9b786316526b3141ba815d4e90b49cf",
+    "curriculum_splits_sha256": "83e229d8fc2a0bfc292979479fc1add284ce937fbdc0cab8d3e8fa19a5d2d655",
+    "dataset_sha256": "c7cbbe3abb1497615ad182dfe54764d5389e77e83e90d5d2a6e1653d4a7ef9b6",
+    "evaluation_hash": "sha256:890e82cf482a982cd9f556e86164ff360ed024220b8d053020342b44c181146a",
+    "legal_selection_rate": 1.0,
+    "mean_transition_loss": 1.4263954838548882,
+    "opcode_accuracy": 0.7391304347826086,
+    "rejected_candidate_count": 0,
+    "split": "validation",
+    "target_accuracy": 0.8695652173913043
+  }
+}

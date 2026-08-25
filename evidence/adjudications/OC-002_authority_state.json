@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "conflict_id": "OC-002",
+  "responsibility": "authority_state",
+  "canonical_owner": "authority_ledger",
+  "decision_status": "RESOLVED_AT_CONTRACT_LEVEL",
+  "source_decisions": [
+    {
+      "source": "StateRegister.PermitLedgerAndDistributedAuthority",
+      "disposition": "PORT_CORE_LAW_REWRITE_BOUNDARY",
+      "retain": ["single-use permit nonce", "exact consequence hash", "consumer component and key binding", "ISSUED-PREPARED-CONSUMED-terminal lifecycle", "persistent consumed-nonce tombstone", "expiry before consumption", "revocation only before consumption", "INDETERMINATE requires reconciliation", "completed receipt must match permitted consequence", "snapshot/recovery cannot resurrect consumed authority"],
+      "reject": ["training-specific permit taxonomy as universal CETA authority taxonomy", "authority implementation writing unrelated canonical epistemic state"]
+    },
+    {
+      "source": "PersonalAssistant.CapabilityBroker",
+      "disposition": "PORT_FIXTURES_REWRITE_STORAGE",
+      "retain": ["exact capability/resource/effect binding", "one-time confirmation concept", "scope confinement tests"],
+      "reject": ["persisted allow accepted without mandatory scope revalidation", "separate capability policy store as independent constitutional authority"]
+    },
+    {
+      "source": "TAAR.AdmissionGate",
+      "disposition": "PORT_ADMISSION_FIXTURES",
+      "retain": ["command must be both allowed and capability-granted", "output path bounds", "missing human approval channel fails closed", "invalid registry denies all"],
+      "reject": ["admission and execution in the same owner", "agent registry as universal authority ledger"]
+    },
+    {
+      "source": "ConstitutionalBuilder.CapabilityRegistry",
+      "disposition": "FIXTURE_ONLY",
+      "retain": ["subject-operation-resource binding examples", "no matching grant denies"],
+      "reject": ["wildcard grant as universal default mechanism", "static in-memory grants as canonical authority state"]
+    }
+  ],
+  "authority_ledger_contract": {
+    "owns": ["authority grants", "permit lifecycle", "revocation state", "consumed nonces", "reconciliation state"],
+    "does_not_own": ["transition legality", "external effect execution", "effect verification", "canonical epistemic history"],
+    "required_bindings": ["permit_id", "nonce", "policy_epoch", "subject_scope", "operation", "exact consequence hash", "consumer_id", "consumer_key_id", "expiry", "use_limit=1", "source transition/proof refs"]
+  }
+}

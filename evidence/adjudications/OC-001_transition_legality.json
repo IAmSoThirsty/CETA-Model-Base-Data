@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "conflict_id": "OC-001",
+  "responsibility": "transition_legality",
+  "canonical_owner": "constitutional_vm",
+  "decision_status": "RESOLVED_AT_CONTRACT_LEVEL",
+  "source_decisions": [
+    {
+      "source": "PersonalAssistant.AuthoritySurface",
+      "disposition": "FIXTURE_ONLY",
+      "retain": ["explicit mutation admission examples", "advisory-versus-operational separation examples", "failure reason-code fixtures"],
+      "reject": ["hard-coded action-string switch as constitutional law", "component-local capability grants as canonical authority", "language explanation as decision substance"]
+    },
+    {
+      "source": "StateRegister.RuleGraph",
+      "disposition": "PORT_MECHANISMS_REWRITE_INTERFACE",
+      "retain": ["one-evidence-record-per-predicate binding", "predicate/evidence value agreement", "unknown-source binding", "direct failure before conflict resolution", "load-bearing unknown before conflict resolution", "explicit consequence floors", "hash-bound rule graph/policy inputs", "irrelevant-receipt rejection"],
+      "reject": ["concept-specific rule graph as a second legality authority", "training consequence vector as universal transition semantics"]
+    },
+    {
+      "source": "ThirstyLang.TARL",
+      "disposition": "PORT_MECHANISMS_REWRITE_INTERFACE",
+      "retain": ["safe condition algebra", "canonical context resolution", "default-deny behavior", "DENY/ESCALATE/ALLOW ordering", "temporal validity and expiry", "policy composition", "evaluation trace", "integrity proof distinction"],
+      "reject": ["standalone policy verdict as final machine legality", "runtime ownership of external effect"]
+    },
+    {
+      "source": "ConstitutionalBuilder.PolicyEngineAndKernel",
+      "disposition": "PORT_SMALL_MECHANISMS_REJECT_COMBINED_KERNEL",
+      "retain": ["deny overrides allow", "explicit identity-policy-capability stages", "no-handler refusal fixture"],
+      "reject": ["legality engine invoking effect handlers", "one object owning policy, capability, execution and audit", "execution success returned as policy decision"]
+    }
+  ],
+  "constitutional_vm_contract": {
+    "inputs": ["transition_proposal", "projected_state", "admitted_evidence_view", "authority_snapshot", "constitutional_epoch"],
+    "outputs": ["legality_decision", "proof_obligations", "required_authority", "state_delta_plan", "verification_plan", "replay_plan"],
+    "forbidden_outputs": ["external_effect_result", "committed_transition", "authority_grant"],
+    "forbidden_behaviors": ["execute external effect", "append canonical history", "self-issue authority", "treat integrity proof as semantic truth"]
+  },
+  "precedence": [
+    "binding_integrity",
+    "opcode_contract_presence",
+    "state_reference_match",
+    "identity_and_scope",
+    "preconditions",
+    "evidence_binding",
+    "violated_predicates",
+    "load_bearing_unknowns",
+    "defeaters_and_conflicts",
+    "authority_requirements",
+    "proof_obligations",
+    "legal_state_delta_plan"
+  ]
+}

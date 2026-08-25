@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "constraints": {
+    "offline_build": true,
+    "remote_runtime_dependencies": false,
+    "legacy_api_compatibility_required": false,
+    "legacy_repository_imports_allowed": false,
+    "canonical_state_committer": "transition_ledger",
+    "canonical_legality_owner": "constitutional_vm",
+    "canonical_authority_owner": "authority_ledger",
+    "canonical_effect_owner": "effect_gateway",
+    "canonical_effect_verifier": "effect_verifier",
+    "source_network_access": "PROHIBITED",
+    "caller_authored_authority_context_allowed": false,
+    "effect_transition_reservation_before_commit": true,
+    "signed_effect_invocation_required": true,
+    "signed_independent_effect_observation_required": true,
+    "durable_proof_registries_required": true
+  }
+}

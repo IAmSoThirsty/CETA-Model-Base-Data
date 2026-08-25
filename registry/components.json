@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "components": [
+    {"id":"ceta_isa","class":"law","may_propose":false,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"transition_policy_model","class":"neural_proposer","may_propose":true,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"constitutional_vm","class":"legality_engine","may_propose":false,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"transition_ledger","class":"canonical_ledger","may_propose":false,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":true},
+    {"id":"state_projector","class":"derived_projection","may_propose":false,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"evidence_registry","class":"registry","may_propose":false,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"identity_registry","class":"registry","may_propose":false,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"authority_ledger","class":"authority","may_propose":false,"may_authorize":true,"may_execute":false,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"effect_gateway","class":"executor","may_propose":false,"may_authorize":false,"may_execute":true,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"effect_verifier","class":"verifier","may_propose":false,"may_authorize":false,"may_execute":false,"may_verify_effect":true,"may_commit_state":false},
+    {"id":"memory_projection","class":"derived_projection","may_propose":false,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"observation_compiler","class":"compiler","may_propose":false,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"language_serializer","class":"serializer","may_propose":false,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"defeater_engine","class":"proposal_service","may_propose":true,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"transition_search","class":"proposal_service","may_propose":true,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"security_sensors","class":"sensor","may_propose":false,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"tool_adapters","class":"adapter","may_propose":false,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"transition_training_system","class":"training","may_propose":false,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"formal_verification","class":"verification_evidence","may_propose":false,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":false},
+    {"id":"host_shell","class":"interface","may_propose":false,"may_authorize":false,"may_execute":false,"may_verify_effect":false,"may_commit_state":false}
+  ]
+}

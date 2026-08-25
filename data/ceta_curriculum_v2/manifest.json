@@ -1,0 +1,159 @@
+{
+  "case_count": 690,
+  "failure_tag_counts": {
+    "authority_failure": 30,
+    "belief_corruption": 30,
+    "illegal_authorization": 150,
+    "improper_scope": 60,
+    "invariant_violation": 60,
+    "missing_defeaters": 30,
+    "objective_substitution_failure": 60,
+    "pathway_failure": 90,
+    "provenance_corruption": 120,
+    "provenance_loss": 150,
+    "replay_fault": 690,
+    "semantic_competence_failure": 30,
+    "structural_output_failure": 690
+  },
+  "files": {
+    "heldout": {
+      "count": 69,
+      "path": "heldout.jsonl",
+      "sha256": "59e3c2db6700e4467be4225b3817f40f41720cee5421e3bdabe1a24180e5940e"
+    },
+    "train": {
+      "count": 552,
+      "path": "train.jsonl",
+      "sha256": "a02166a766247bd930da348b3c8ed79a7570b6bf2506296cabac170b3eb27fd6"
+    },
+    "validation": {
+      "count": 69,
+      "path": "validation.jsonl",
+      "sha256": "c7cbbe3abb1497615ad182dfe54764d5389e77e83e90d5d2a6e1653d4a7ef9b6"
+    }
+  },
+  "generator_id": "CETA_WORLD_CURRICULUM/v2",
+  "illegal_alternative_count": 2760,
+  "operation_count": 23,
+  "operation_counts": {
+    "Adjudicate": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "AdmitEvidence": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "Authorize": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "Contradict": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "CreateBelief": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "CreateClaim": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "Execute": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "ExpandScope": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "Expire": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "Invalidate": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "Merge": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "NarrowScope": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "Observe": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "Reevaluate": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "RejectAuthorization": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "RejectEvidence": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "Rollback": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "Split": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "Support": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "Suspend": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "Undercut": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "ValidateObservation": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    },
+    "Verify": {
+      "heldout": 3,
+      "train": 24,
+      "validation": 3
+    }
+  },
+  "schema_version": 1,
+  "splits_sha256": "83e229d8fc2a0bfc292979479fc1add284ce937fbdc0cab8d3e8fa19a5d2d655",
+  "structural_fingerprint_count": 230,
+  "world_family_count": 230
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "OC-007",
+  "responsibility": "training_and_evaluation",
+  "status": "RESOLVED_AT_REFERENCE_CONTRACT_LEVEL",
+  "canonical_owner": "transition_training_system",
+  "sources": ["SRC-CETA-001", "SRC-SR-ER-001", "SRC-LOCAL-V4-SPLIT", "SRC-LOCAL-V4-FAILURES", "SRC-LOCAL-V4-DATASET", "SRC-LOCAL-V4-MODEL-BOUNDARY"],
+  "decisions": [
+    {
+      "decision": "REWRITE_TARGET",
+      "keep": ["deterministic dataset generation", "held-out isolation", "checkpoint/evaluator binding", "pause-resume lineage", "failure taxonomy"],
+      "reject": ["language-response targets as the reasoning objective", "evaluation or authority material leaking into training", "hyperparameter guessing"]
+    }
+  ],
+  "contract": [
+    "Training cases encode projected epistemic state and a target TransitionProposal, not conversational prompt/answer text.",
+    "Evaluation executes predicted transitions through the same ConstitutionalVM used by the runtime.",
+    "Loss exposes illegal transition, missing transition, invariant violation, provenance loss, missing defeaters, improper scope, illegal authorization, belief corruption and replay mismatch separately.",
+    "Evaluation/history/authority/verification sources are never training inputs.",
+    "Specific training failure causes require evidence; otherwise classification remains unresolved_failure_cause.",
+    "Real weight mutation is not authorized until exact model, tokenizer, trainer, checkpoint, resource bounds, evaluator, competence baseline and transition path are explicitly bound."
+  ],
+  "reference_implementation": ["src/training/model.py", "src/training/evaluator.py", "src/training/source_policy.py", "src/training/failure_taxonomy.py"]
+}

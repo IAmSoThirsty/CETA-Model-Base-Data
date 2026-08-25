@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "OC-006",
+  "responsibility": "alternative_transition_search",
+  "status": "RESOLVED_AT_CONTRACT_LEVEL",
+  "canonical_owner": "transition_search",
+  "legality_owner": "constitutional_vm",
+  "sources": ["SRC-PA-DPR-ALT", "SRC-CETA-001"],
+  "contract": [
+    "Alternative search may propose or rank TransitionProposal values only.",
+    "Every alternative is evaluated independently by the same ConstitutionalVM.",
+    "A legal alternative inherits no authority from a rejected primary proposal.",
+    "TransitionSearch cannot commit state, authorize effects or execute adapters."
+  ],
+  "reference_implementation": ["src/reasoning/search.py"]
+}

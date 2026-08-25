@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "id": "OC-003",
+  "responsibility": "canonical_history",
+  "status": "RESOLVED_AT_CONTRACT_LEVEL",
+  "canonical_owner": "transition_ledger",
+  "derived_state_owner": "state_projector",
+  "sources": [
+    "SRC-CETA-001",
+    "SRC-PA-STATESTORE",
+    "SRC-PA-AUDITLEDGER",
+    "SRC-SR-EVENTSTORE",
+    "SRC-GH-BUILDER-AUDIT",
+    "SRC-GH-BUILDER-REPLAY",
+    "SRC-GH-TAAR-AUDIT"
+  ],
+  "decisions": [
+    {
+      "source": "PersonalAssistant.ConstitutionalStateStore",
+      "decision": "REWRITE",
+      "keep": [
+        "parent digest lineage",
+        "sequential verification"
+      ],
+      "reject": [
+        "direct state advancement independent of committed transitions"
+      ]
+    },
+    {
+      "source": "PersonalAssistant.AuditLedger",
+      "decision": "FIXTURE_ONLY",
+      "keep": [
+        "tamper-evident chained integrity fixture"
+      ],
+      "reject": [
+        "independent audit history as canonical truth"
+      ]
+    },
+    {
+      "source": "StateRegister.EventStore",
+      "decision": "PORT_MECHANISMS_REWRITE_INTERFACE",
+      "keep": [
+        "ordered append",
+        "canonical body hash",
+        "prior/resulting root",
+        "transactional durability",
+        "chain verification"
+      ],
+      "reject": [
+        "legacy event taxonomy as the new epistemic ISA"
+      ]
+    },
+    {
+      "source": "ConstitutionalBuilder.AuditReplay",
+      "decision": "FIXTURE_ONLY",
+      "keep": [
+        "canonical JSON hashing",
+        "prior-hash verification"
+      ],
+      "reject": [
+        "calling audit-chain verification epistemic state replay"
+      ]
+    },
+    {
+      "source": "TAAR.AuditSpine",
+      "decision": "FIXTURE_ONLY",
+      "keep": [
+        "run outcome evidence"
+      ],
+      "reject": [
+        "individually hashed records as canonical history"
+      ]
+    }
+  ],
+  "contract": [
+    "Only TransitionLedger may append committed epistemic transitions.",
+    "Committed entries are immutable and hash-linked.",
+    "Every commit input_state_ref must equal the current deterministic projection.",
+    "The ledger recomputes the proposed state delta and rejects output_state_ref mismatch.",
+    "Epistemic object IDs are globally immutable and cannot be reused.",
+    "Change is represented by creation plus explicit supersession edges, never edit-in-place.",
+    "Split and merge are represented by many-to-many supersession topology.",
+    "Proof binds the VM decision, verification binds the transition, and replay binds operation plus both state references.",
+    "StateProjector is rebuildable from ledger history and cannot commit state.",
+    "Audit is a derived read model over ledger entries and has no independent write authority."
+  ],
+  "reference_implementation": [
+    "src/history/model.py",
+    "src/history/projector.py",
+    "src/history/ledger.py"
+  ],
+  "tests": "tests/test_transition_history.py"
+}

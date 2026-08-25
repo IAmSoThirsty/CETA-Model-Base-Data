@@ -1,0 +1,129 @@
+{
+  "schema_version": 2,
+  "invariants": [
+    {
+      "id": "INV-001",
+      "text": "Every epistemic object has stable identity and immutable content; change occurs by supersession."
+    },
+    {
+      "id": "INV-002",
+      "text": "Canonical history is append-only."
+    },
+    {
+      "id": "INV-003",
+      "text": "Current epistemic state is derived only from committed transitions."
+    },
+    {
+      "id": "INV-004",
+      "text": "The neural model may propose transitions but may not authorize, execute, verify its own effects, or commit state."
+    },
+    {
+      "id": "INV-005",
+      "text": "The Constitutional VM determines transition legality; proposal components cannot self-certify legality."
+    },
+    {
+      "id": "INV-006",
+      "text": "Authority and execution are separate responsibilities and separate components."
+    },
+    {
+      "id": "INV-007",
+      "text": "An executor cannot independently certify the resulting external reality of its own effect."
+    },
+    {
+      "id": "INV-008",
+      "text": "Evidence integrity proof is not semantic truth proof."
+    },
+    {
+      "id": "INV-009",
+      "text": "Unknown, absent, contradicted, invalidated, expired and false are distinct states."
+    },
+    {
+      "id": "INV-010",
+      "text": "No high-impact external effect occurs without explicit authority bound to the exact effect."
+    },
+    {
+      "id": "INV-011",
+      "text": "Consumed authority cannot be resurrected by restart, recovery, compaction or replay."
+    },
+    {
+      "id": "INV-012",
+      "text": "Replay of the same committed transition history under the same constitutional epoch must reconstruct the same state projection."
+    },
+    {
+      "id": "INV-013",
+      "text": "Memory indexes and embeddings are derived projections and cannot become canonical state owners."
+    },
+    {
+      "id": "INV-014",
+      "text": "Language is input/output serialization and cannot be canonical epistemic state."
+    },
+    {
+      "id": "INV-015",
+      "text": "Alternative search and defeater search produce proposals/evidence only and possess no commit or effect authority."
+    },
+    {
+      "id": "INV-016",
+      "text": "Missing policy, missing authority, invalid proof or unbound effect cannot silently degrade into permission."
+    },
+    {
+      "id": "INV-017",
+      "text": "Every material failure mode has an explicit consequence and is represented as testable architecture evidence."
+    },
+    {
+      "id": "INV-018",
+      "text": "Every canonical responsibility has exactly one owner."
+    },
+    {
+      "id": "INV-019",
+      "text": "Every canonical owner is declared in the component registry."
+    },
+    {
+      "id": "INV-020",
+      "text": "Historical defects are retained as adversarial fixtures rather than erased by rewrite."
+    },
+    {
+      "id": "INV-021",
+      "text": "Caller-supplied authority context is never trusted; positive authority must derive from a cryptographically verified assertion bound to the exact input state and CETA operation plus the Authority Ledger's own state."
+    },
+    {
+      "id": "INV-022",
+      "text": "An Execute or Rollback transition must durably reserve its exact permit intent before canonical transition commit; no second pending effect may reuse the same permit."
+    },
+    {
+      "id": "INV-023",
+      "text": "Every adapter invocation and execution receipt is cryptographically bound to the Effect Gateway identity/key, permit, prepared intent, adapter and exact consequence."
+    },
+    {
+      "id": "INV-024",
+      "text": "External-effect verification requires a signed observation from a configured verifier identity distinct from the executor; executor claims alone cannot establish resulting reality."
+    },
+    {
+      "id": "INV-025",
+      "text": "Evidence and identity proof registries must survive restart and detect tampering; loss of proof material fails closed rather than reconstructing unsupported trust."
+    },
+    {
+      "id": "INV-026",
+      "text": "The supervised target transition may define loss but may not be injected into the normal inference candidate set; runtime proposal generation is target-blind."
+    },
+    {
+      "id": "INV-027",
+      "text": "Training, validation and held-out membership is bound by curriculum manifest, split hashes and structural family assignment rather than by filename."
+    },
+    {
+      "id": "INV-028",
+      "text": "Every successful governed training call durably commits a checkpoint before returning control to its caller."
+    },
+    {
+      "id": "INV-029",
+      "text": "Resume authority comes from the append-only training ledger last committed checkpoint; uncommitted optimizer tails are preserved as evidence but explicitly orphaned before replay."
+    },
+    {
+      "id": "INV-030",
+      "text": "Independent evaluation cannot mutate training state, held-out evaluation cannot authorize promotion, and promotion remains distinct from epoch completion."
+    },
+    {
+      "id": "INV-031",
+      "text": "Canonical training evidence excludes deployment-location-dependent paths so identical logical runs can reproduce the same evidence root."
+    }
+  ]
+}

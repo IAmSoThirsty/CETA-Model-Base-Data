@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "operations": [
+    "Observe","ValidateObservation","AdmitEvidence","RejectEvidence","CreateClaim","CreateBelief",
+    "Support","Contradict","Undercut","Merge","Split","NarrowScope","ExpandScope","Verify",
+    "Invalidate","Suspend","Expire","Reevaluate","Adjudicate","Authorize","RejectAuthorization",
+    "Execute","Rollback"
+  ],
+  "proposal_boundary": {
+    "network_outputs": ["input_state_ref","operation","operands"],
+    "vm_outputs": ["output_state_ref","proof","verification","replay_record"]
+  }
+}

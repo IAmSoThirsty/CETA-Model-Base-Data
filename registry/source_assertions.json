@@ -1,0 +1,232 @@
+{
+  "schema_version": 2,
+  "assertions": [
+    {
+      "source": "SRC-CETA-001",
+      "assertion": "Reasoning is transition selection over explicit epistemic state; language is serialization.",
+      "maps_to": [
+        "epistemic_instruction_set",
+        "transition_proposal",
+        "current_state_projection"
+      ]
+    },
+    {
+      "source": "SRC-CETA-001",
+      "assertion": "The network proposes transitions and the VM decides legality.",
+      "maps_to": [
+        "transition_proposal",
+        "transition_legality"
+      ]
+    },
+    {
+      "source": "SRC-GH-PAI-README",
+      "assertion": "Governance, physics, orchestration and an event ledger are modeled as distinct system concerns.",
+      "maps_to": [
+        "transition_legality",
+        "canonical_history",
+        "effect_execution"
+      ]
+    },
+    {
+      "source": "SRC-GH-CERBERUS-README",
+      "assertion": "Independent pattern, heuristic and statistical guardians detect threats and report to a coordinating hub.",
+      "maps_to": [
+        "security_detection"
+      ]
+    },
+    {
+      "source": "SRC-GH-TAAR-README",
+      "assertion": "Agent execution is registry-gated, exact-capability bounded, fail-closed and evidence-producing.",
+      "maps_to": [
+        "tool_and_device_adaptation",
+        "effect_execution",
+        "evidence_identity_and_provenance"
+      ]
+    },
+    {
+      "source": "SRC-GH-BUILDER-README",
+      "assertion": "Identity, policy, capability, deterministic planning, gated execution, audit and replay are independently testable stages.",
+      "maps_to": [
+        "identity_assertion_and_verification",
+        "transition_legality",
+        "authority_state",
+        "effect_execution",
+        "canonical_history",
+        "formal_model_evidence"
+      ]
+    },
+    {
+      "source": "SRC-GH-THIRSTYLANG-README",
+      "assertion": "Governed effects require policy evaluation, authority verification, proof and audit before effect.",
+      "maps_to": [
+        "transition_legality",
+        "authority_state",
+        "effect_execution",
+        "evidence_identity_and_provenance"
+      ]
+    },
+    {
+      "source": "SRC-GH-WATERFALL-README",
+      "assertion": "Privacy/security capability claims remain acceptance-gated until end-to-end evidence exists.",
+      "maps_to": [
+        "evidence_identity_and_provenance",
+        "formal_model_evidence"
+      ]
+    },
+    {
+      "source": "SRC-PA-001",
+      "assertion": "Model output is advisory; host-owned capability policy and effect execution remain outside the model.",
+      "maps_to": [
+        "transition_proposal",
+        "authority_state",
+        "effect_execution"
+      ]
+    },
+    {
+      "source": "SRC-SR-ER-001",
+      "assertion": "Authority, distributed mutation, permit lifecycle, execution and independent verification are separated and double-enforced.",
+      "maps_to": [
+        "authority_state",
+        "effect_execution",
+        "effect_verification",
+        "canonical_history"
+      ]
+    },
+    {
+      "source": "SRC-TTS-FORMAL-001",
+      "assertion": "Cycle, permit ledger, artifact order and authority ownership are modeled as separate invariant-bearing state machines.",
+      "maps_to": [
+        "formal_model_evidence",
+        "authority_state",
+        "canonical_history",
+        "training_and_evaluation"
+      ]
+    },
+    {
+      "source": "SRC-PA-STATESTORE",
+      "assertion": "The prior state store directly appended a second state lineage from observations and governance decisions; its hash-lineage mechanism is useful, but direct state advancement conflicts with CETA state-as-projection.",
+      "maps_to": [
+        "current_state_projection",
+        "canonical_history"
+      ]
+    },
+    {
+      "source": "SRC-PA-AUDITLEDGER",
+      "assertion": "The prior audit ledger maintained a separate HMAC-protected hash chain over audit events; tamper-evidence is useful, but an independent audit chain cannot be canonical epistemic history.",
+      "maps_to": [
+        "canonical_history",
+        "formal_model_evidence"
+      ]
+    },
+    {
+      "source": "SRC-SR-EVENTSTORE",
+      "assertion": "The State Register event store used ordered append-only events, body hashes, prior/resulting roots, transactional writes, and chain verification; these are candidate mechanisms for one canonical transition ledger.",
+      "maps_to": [
+        "canonical_history",
+        "current_state_projection"
+      ]
+    },
+    {
+      "source": "SRC-GH-BUILDER-AUDIT",
+      "assertion": "Builder audit uses canonicalized hash-linked events and verifies prior-hash continuity; this is retained as integrity/replay evidence, not as a second canonical state store.",
+      "maps_to": [
+        "canonical_history",
+        "formal_model_evidence"
+      ]
+    },
+    {
+      "source": "SRC-GH-BUILDER-REPLAY",
+      "assertion": "Builder replay verifies audit-chain integrity rather than reconstructing epistemic state, so its replay contract is insufficient for CETA state reconstruction without rewrite.",
+      "maps_to": [
+        "canonical_history",
+        "current_state_projection"
+      ]
+    },
+    {
+      "source": "SRC-GH-TAAR-AUDIT",
+      "assertion": "TAAR appends per-run audit records with individual hashes but no cross-record previous-hash chain; the records remain useful fixtures but not canonical history.",
+      "maps_to": [
+        "canonical_history"
+      ]
+    },
+    {
+      "source": "SRC-PA-BUILDER-APPLY",
+      "assertion": "The prior Builder apply path bounded workspace paths, staged rollback snapshots, rejected duplicate targets, and performed atomic file operations; these are adapter fixtures, while its direct apply API cannot remain a constitutional effect authority.",
+      "maps_to": [
+        "effect_execution",
+        "tool_and_device_adaptation"
+      ]
+    },
+    {
+      "source": "SRC-SR-COMPONENTS",
+      "assertion": "State Register actuators prepare and consume exact permits before effect and use separate optimizer/deployment verifier roles afterward; this supplies the strongest execution/verification separation mechanism in the corpus.",
+      "maps_to": [
+        "effect_execution",
+        "effect_verification",
+        "authority_state"
+      ]
+    },
+    {
+      "source": "SRC-GH-TARL-BROKER",
+      "assertion": "T.A.R.L. routes out-of-language side effects through one fail-closed mediation point before adapters act, including file, network, subprocess, FFI and tool calls; legality remains separate in the rebuild.",
+      "maps_to": [
+        "effect_execution",
+        "tool_and_device_adaptation",
+        "transition_legality"
+      ]
+    },
+    {
+      "source": "SRC-PA-MEMORYGRAPH",
+      "assertion": "Direct rememberExplicit writes a new long-term memory node, while semantic embeddings and edges provide retrieval mechanics.",
+      "maps_to": [
+        "memory"
+      ]
+    },
+    {
+      "source": "SRC-LOCAL-CCMA-README",
+      "assertion": "A universal node/edge graph can provide typed retrieval and provenance without proliferating independent memory tables.",
+      "maps_to": [
+        "memory"
+      ]
+    },
+    {
+      "source": "SRC-PA-DPR-ALT",
+      "assertion": "An alternative action is acceptable only after it independently satisfies the same governance gate rather than inheriting the primary decision.",
+      "maps_to": [
+        "alternative_transition_search",
+        "transition_legality"
+      ]
+    },
+    {
+      "source": "SRC-LOCAL-V4-SPLIT",
+      "assertion": "Evaluation, history, authority state/evidence/continuity, tests, verification and evaluation views are excluded from training material.",
+      "maps_to": [
+        "training_and_evaluation"
+      ]
+    },
+    {
+      "source": "SRC-LOCAL-V4-FAILURES",
+      "assertion": "A specific failure cause may be assigned only when evidence supports it; otherwise the cause remains unresolved.",
+      "maps_to": [
+        "training_and_evaluation",
+        "evidence_identity_and_provenance"
+      ]
+    },
+    {
+      "source": "SRC-LOCAL-V4-MODEL-BOUNDARY",
+      "assertion": "Weight changes require exact model, tokenizer, trainer, trusted checkpoint, resource bounds, evaluator, competence baseline and authorized transition path; hyperparameters may not be guessed.",
+      "maps_to": [
+        "training_and_evaluation",
+        "authority_state"
+      ]
+    },
+    {
+      "source": "SRC-LOCAL-V4-DATASET",
+      "assertion": "Training and retrieval views are source-grounded while runtime state and held-out evaluation material remain separate.",
+      "maps_to": [
+        "training_and_evaluation",
+        "current_state_projection"
+      ]
+    }
+  ]
+}
