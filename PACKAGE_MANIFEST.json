@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 164,
-  "content_root": "sha256:341bdbe8e4cc4307274181f69dad9fcd329c157a4947e40c3a70b60e20f30f20",
+  "content_root": "sha256:e63a96ecdb980292232d756100a688758b60816de99ca75fed25b886cac61710",
   "files": [
     {
       "path": ".gitattributes",
@@ -88,22 +88,22 @@
     {
       "path": "data/ceta_architecture_material_v1/manifest.json",
       "size": 7040,
-      "sha256": "2b9e381216bac53552f66ff9ddbfdc48d711d73ba1161bec490a2688d16a56d4"
+      "sha256": "1d5a8080c6bf411b4a3b1a86efc7ab7c97167e1b07f084c3788e70899e707f39"
     },
     {
       "path": "data/ceta_architecture_material_v1/maps/high_value_stewardship_section_map.csv",
-      "size": 22289,
-      "sha256": "78195e4cda948f223355e58482ceeeb55cc58e16931b5434b68dd87d299d620f"
+      "size": 21882,
+      "sha256": "8480c6b5d7b0902e56ea715fb58241ddbdbea3f1bfec3225841458652bfa4b3f"
     },
     {
       "path": "data/ceta_architecture_material_v1/maps/section_dependency_edges.csv",
-      "size": 188143,
-      "sha256": "09170b90763352302fc9de398b963cd87c9613e157afbd88edd6cd231e913534"
+      "size": 183554,
+      "sha256": "b9a8a0726a5b2d0a62e5bb56ed17dec0a15b6179d5382534b2b045060a2c4b39"
     },
     {
       "path": "data/ceta_architecture_material_v1/maps/section_role_matrix.csv",
-      "size": 81416,
-      "sha256": "03df126ba21a8624176a1acaf43a37d375a69b42f847554f96e5fa3a7e0cf9ab"
+      "size": 81009,
+      "sha256": "55cd431ecde0d33f0f4a99605789bb20109dff6b5d02b3f6c19f28bba59881e2"
     },
     {
       "path": "data/ceta_architecture_material_v1/mission/DEPLOYMENT_BOUNDARY.json",
@@ -117,13 +117,13 @@
     },
     {
       "path": "data/ceta_architecture_material_v1/provenance/defensive_license_matrix.csv",
-      "size": 1545,
-      "sha256": "a5e5fb3879d5674f3dc7bb99b1591b9b7ee63c1ac279bc041aae5d50c167e1c9"
+      "size": 1524,
+      "sha256": "ce278438d4aaf75740326a3467386209fcf00c63900162f76ff1c683680364a0"
     },
     {
       "path": "data/ceta_architecture_material_v1/provenance/defensive_remote_artifacts.csv",
-      "size": 1689,
-      "sha256": "8348c4f91762dd6e8fb5b8bb82c4a75b358865300080452622f65d322f373b5d"
+      "size": 1671,
+      "sha256": "0c32de1ed8df9e0884b48aa0ba878e43c25458a3c907e953a5e1779dc2d23863"
     },
     {
       "path": "data/ceta_architecture_material_v1/provenance/defensive_retrieval_status.json",
@@ -132,8 +132,8 @@
     },
     {
       "path": "data/ceta_architecture_material_v1/provenance/defensive_sources.csv",
-      "size": 2781,
-      "sha256": "47ada3f8eec65b27ac27e875bf908fd0048a209b720793b7fcc414e0a365cfdc"
+      "size": 2760,
+      "sha256": "a248354c158a26931b9072c0b2d369caf384d8975efb39ca8069e3d60fe281cb"
     },
     {
       "path": "data/ceta_architecture_material_v1/training/public_scenarios.jsonl",
@@ -392,8 +392,8 @@
     },
     {
       "path": "scripts/ingest_supplied_architecture_data.py",
-      "size": 16700,
-      "sha256": "3e68b4270ce6e58fd3e1abea4a2c7a45a9fecb3b6106a69cfc6c9baaebb6a12b"
+      "size": 16912,
+      "sha256": "39f4ddf62ceb13dccd7bd88d33ea6c83e369d969fcc119dec7a101eb86ff4251"
     },
     {
       "path": "scripts/run_bounded_models.py",

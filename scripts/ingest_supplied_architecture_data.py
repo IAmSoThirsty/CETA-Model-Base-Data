@@ -241,6 +241,9 @@ def copy_selected(
         payload = read_member(archive, members, f"{archive_root}/{source}")
         target = output / destination
         target.parent.mkdir(parents=True, exist_ok=True)
+        if target.suffix.lower() in {".csv", ".json", ".jsonl", ".md", ".txt"}:
+            text = payload.decode("utf-8-sig").replace("\r\n", "\n").replace("\r", "\n")
+            payload = text.encode("utf-8")
         target.write_bytes(payload)
 
 

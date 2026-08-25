@@ -64,18 +64,18 @@
     },
     {
       "path": "maps/high_value_stewardship_section_map.csv",
-      "sha256": "78195e4cda948f223355e58482ceeeb55cc58e16931b5434b68dd87d299d620f",
-      "size_bytes": 22289
+      "sha256": "8480c6b5d7b0902e56ea715fb58241ddbdbea3f1bfec3225841458652bfa4b3f",
+      "size_bytes": 21882
     },
     {
       "path": "maps/section_dependency_edges.csv",
-      "sha256": "09170b90763352302fc9de398b963cd87c9613e157afbd88edd6cd231e913534",
-      "size_bytes": 188143
+      "sha256": "b9a8a0726a5b2d0a62e5bb56ed17dec0a15b6179d5382534b2b045060a2c4b39",
+      "size_bytes": 183554
     },
     {
       "path": "maps/section_role_matrix.csv",
-      "sha256": "03df126ba21a8624176a1acaf43a37d375a69b42f847554f96e5fa3a7e0cf9ab",
-      "size_bytes": 81416
+      "sha256": "55cd431ecde0d33f0f4a99605789bb20109dff6b5d02b3f6c19f28bba59881e2",
+      "size_bytes": 81009
     },
     {
       "path": "mission/DEPLOYMENT_BOUNDARY.json",
@@ -89,13 +89,13 @@
     },
     {
       "path": "provenance/defensive_license_matrix.csv",
-      "sha256": "a5e5fb3879d5674f3dc7bb99b1591b9b7ee63c1ac279bc041aae5d50c167e1c9",
-      "size_bytes": 1545
+      "sha256": "ce278438d4aaf75740326a3467386209fcf00c63900162f76ff1c683680364a0",
+      "size_bytes": 1524
     },
     {
       "path": "provenance/defensive_remote_artifacts.csv",
-      "sha256": "8348c4f91762dd6e8fb5b8bb82c4a75b358865300080452622f65d322f373b5d",
-      "size_bytes": 1689
+      "sha256": "0c32de1ed8df9e0884b48aa0ba878e43c25458a3c907e953a5e1779dc2d23863",
+      "size_bytes": 1671
     },
     {
       "path": "provenance/defensive_retrieval_status.json",
@@ -104,8 +104,8 @@
     },
     {
       "path": "provenance/defensive_sources.csv",
-      "sha256": "47ada3f8eec65b27ac27e875bf908fd0048a209b720793b7fcc414e0a365cfdc",
-      "size_bytes": 2781
+      "sha256": "a248354c158a26931b9072c0b2d369caf384d8975efb39ca8069e3d60fe281cb",
+      "size_bytes": 2760
     },
     {
       "path": "training/public_scenarios.jsonl",
