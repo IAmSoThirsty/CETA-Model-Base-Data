@@ -2,9 +2,14 @@
   "schema_version": 1,
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
-  "file_count": 132,
-  "content_root": "sha256:10bf7454a6161608f65c28cc56dbf588776f19e533fbb79b655fea14b64bc54b",
+  "file_count": 133,
+  "content_root": "sha256:8ab3602638f5c062ef402ebb294064493670ca9bcbce1712e648e33d2a6e8cb5",
   "files": [
+    {
+      "path": ".gitattributes",
+      "size": 19,
+      "sha256": "d60f352d0db1404c70afb4bb8b2ca3fd1c610572aa40720e8a0b7baa7885418c"
+    },
     {
       "path": "corpus/CETA.md",
       "size": 2573,
@@ -107,13 +112,13 @@
     },
     {
       "path": "evidence/EPOCH_HOSTILE_GATE_REPORT.json",
-      "size": 812,
-      "sha256": "ad746c9c88d69c697e2b1e2852b644567b6a801109d386edc4da0df0337a5b28"
+      "size": 788,
+      "sha256": "3fe4238fc638b220cfc45598cb119f9dde615b31837828c318c8e64a8e7fbfc2"
     },
     {
       "path": "evidence/EPOCH_READINESS_REPORT.json",
-      "size": 5868,
-      "sha256": "5212960ae9157df70b398abc4e0281ff5a29eeb8c1b9bae7484be4ae3c97f459"
+      "size": 5739,
+      "sha256": "8a485fc1cfa8d11fa3ca42a5039aa391f9702af14202017710b01d67d767e2a7"
     },
     {
       "path": "evidence/historical_failures.json",
@@ -212,23 +217,23 @@
     },
     {
       "path": "scripts/build_local_manifest.py",
-      "size": 1860,
-      "sha256": "f7fdd22d0d5966e2bd901cacd62365537168038daae42847d3183c947055fee8"
+      "size": 1874,
+      "sha256": "2a39fb2338ff9252fad1b08355b5db5af70b9e477a17d2740198e285931084fb"
     },
     {
       "path": "scripts/build_package_manifest.py",
-      "size": 1893,
-      "sha256": "43d13ac41845d1259d6dd998c8a854289c300152b90f7529e8046c622b9a2144"
+      "size": 1907,
+      "sha256": "7077d95f91dd77730addea6a0a6675becea046e3469a2fc4c3074450692f405e"
     },
     {
       "path": "scripts/build_release.py",
-      "size": 2423,
-      "sha256": "f51ab94809e655ffc76d69a604f467042c5ea52531df711468cb9357d5032233"
+      "size": 2436,
+      "sha256": "4b721a51b31d0178df5c37985aca2ccb312762f2daa944d2adb665332657b1a2"
     },
     {
       "path": "scripts/build_sha256sums.py",
-      "size": 962,
-      "sha256": "1cf546f3c9801a3d497019d29d04a2fe27326413ed255a5f7d28cc4ab3448d18"
+      "size": 975,
+      "sha256": "8062b905604caaaf9c4db4e5584dc3cc433514d6f13eb59f3225187e7f16d407"
     },
     {
       "path": "scripts/hostile_audit.py",
@@ -237,8 +242,8 @@
     },
     {
       "path": "scripts/hostile_epoch_gate.py",
-      "size": 7382,
-      "sha256": "78fcbfdac1d4d7b5609c5f5d8f57e28113b5501d69a35267ad16681a756fed8b"
+      "size": 7408,
+      "sha256": "1375177ad3954d80c217cc4b2444db3ba303abe0f4b76d0583eedd6f3cab983d"
     },
     {
       "path": "scripts/run_bounded_models.py",
@@ -247,8 +252,8 @@
     },
     {
       "path": "scripts/run_epoch_readiness.py",
-      "size": 7007,
-      "sha256": "f88891365b380324cea6c589be3d0ea1586b0a20420237601a4a3f6f9fd0bc07"
+      "size": 7020,
+      "sha256": "9a7d446eb02f4d5cad6fcf15644bb8bfa150626213dd0d7c786b7d2c75ec4912"
     },
     {
       "path": "scripts/validate_architecture.py",
@@ -517,8 +522,8 @@
     },
     {
       "path": "src/training/dataset.py",
-      "size": 4175,
-      "sha256": "f33ab9a032dffb0e11de4a1e795fb861ed7a7a15c42babdfb09edbd5c98fcff6"
+      "size": 4201,
+      "sha256": "852ecb77bd224f660e4b165d16d299f1c2558ea21a92144cd4ea4b359fdc6fe4"
     },
     {
       "path": "src/training/evaluator.py",
@@ -612,8 +617,8 @@
     },
     {
       "path": "tests/test_ceta_world_curriculum.py",
-      "size": 3407,
-      "sha256": "5def87e6c9a6de90643c8c2c0b631e71217b543001a227ce61b79a9e799a66d1"
+      "size": 3476,
+      "sha256": "e4573d9f2a550ade91523ecf6c2b3d171b0c699b4c41b0aa84ed24c568e6cdf6"
     },
     {
       "path": "tests/test_effect_boundary.py",

@@ -48,7 +48,7 @@ def main() -> None:
         "content_root": manifest_root(files),
         "files": files,
     }
-    OUT.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    OUT.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
     print(f"PACKAGE MANIFEST WRITTEN files={len(files)} root={payload['content_root']}")
 
 

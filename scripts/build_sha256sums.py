@@ -23,7 +23,7 @@ def main() -> None:
         if rel.as_posix()=="SHA256SUMS" or any(part in EXCLUDED_PARTS for part in rel.parts) or path.suffix in {".pyc", ".pyo"}:
             continue
         rows.append(f"{sha256(path)}  {rel.as_posix()}")
-    OUT.write_text("\n".join(rows)+"\n",encoding="utf-8")
+    OUT.write_text("\n".join(rows)+"\n",encoding="utf-8",newline="\n")
     print(f"SHA256SUMS WRITTEN files={len(rows)}")
 
 

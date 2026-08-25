@@ -51,7 +51,7 @@ def main() -> None:
             zf.writestr(info,path.read_bytes(),compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)
     digest=sha256(out)
     sidecar=out.with_suffix(out.suffix+".sha256")
-    sidecar.write_text(f"{digest}  {out.name}\n",encoding="utf-8")
+    sidecar.write_text(f"{digest}  {out.name}\n",encoding="utf-8",newline="\n")
     print(f"RELEASE ZIP: {out}")
     print(f"SHA256: {digest}")
 

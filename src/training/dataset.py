@@ -89,7 +89,7 @@ class WorldCurriculumArtifactWriter:
             'family_splits':{k:list(v) for k,v in split_family_ids.items()},
         }
         split_path=destination/'splits.json'
-        split_path.write_text(json.dumps(split_map,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+        split_path.write_text(json.dumps(split_map,indent=2,sort_keys=True)+'\n',encoding='utf-8',newline='\n')
 
         manifest={
             'schema_version':1,
@@ -105,5 +105,5 @@ class WorldCurriculumArtifactWriter:
             'failure_tag_counts':dict(sorted(failure_tag_counts.items())),
         }
         manifest_path=destination/'manifest.json'
-        manifest_path.write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+        manifest_path.write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n',encoding='utf-8',newline='\n')
         return manifest

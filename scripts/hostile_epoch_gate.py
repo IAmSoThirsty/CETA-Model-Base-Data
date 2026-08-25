@@ -115,7 +115,7 @@ def main() -> None:
         ecp=evalrun.train_cases(1)
         sidecar=Path(ecp.path).with_suffix(Path(ecp.path).suffix+'.json')
         meta=json.loads(sidecar.read_text(encoding='utf-8')); meta['sha256']='0'*64
-        sidecar.write_text(json.dumps(meta),encoding='utf-8')
+        sidecar.write_text(json.dumps(meta),encoding='utf-8',newline='\n')
         must_fail(lambda: IndependentCheckpointEvaluator(config=cfg).evaluate(ecp.path,DATA/'validation.jsonl',split='validation'), 'evaluation sidecar tamper')
         checks.append('evaluation_sidecar_tamper_rejected')
 
@@ -135,7 +135,7 @@ def main() -> None:
     }
     body['report_hash']=domain_hash(body,domain='CETA/EPOCH_HOSTILE_GATE_REPORT/v1')
     REPORT.parent.mkdir(parents=True,exist_ok=True)
-    REPORT.write_text(json.dumps(body,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+    REPORT.write_text(json.dumps(body,indent=2,sort_keys=True)+'\n',encoding='utf-8',newline='\n')
     print('CETA HOSTILE EPOCH GATE: PASS')
     print(f"checks={len(checks)} curriculum_cases={recovered} report_hash={body['report_hash']}")
 

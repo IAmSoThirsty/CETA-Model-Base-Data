@@ -44,7 +44,7 @@ def main() -> None:
         "manifest_root_hash": canonical_entries_hash(entries),
         "files": entries,
     }
-    OUT.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    OUT.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(f"WROTE {OUT} ({len(entries)} files) root={payload['manifest_root_hash']}")
 
 

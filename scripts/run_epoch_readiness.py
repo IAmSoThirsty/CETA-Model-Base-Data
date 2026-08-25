@@ -118,7 +118,7 @@ def main() -> None:
         }
         report['report_hash']=domain_hash(report,domain='CETA/EPOCH_READINESS_REPORT/v1')
         REPORT.parent.mkdir(parents=True,exist_ok=True)
-        REPORT.write_text(json.dumps(report,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+        REPORT.write_text(json.dumps(report,indent=2,sort_keys=True)+'\n',encoding='utf-8',newline='\n')
 
     print('CETA EPOCH READINESS: PASS')
     print(f"train_cases={full_epoch_cases} pause_after={pause_after} optimizer_receipts={full_epoch_cases}")
