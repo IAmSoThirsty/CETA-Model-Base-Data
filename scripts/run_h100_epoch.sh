@@ -15,7 +15,10 @@ fi
 
 "${python_bin}" -c 'import torch; assert torch.cuda.is_available(), "CUDA is unavailable; activate the H100 before running this launcher"; name=torch.cuda.get_device_name(0); assert "H100" in name.upper(), f"expected an H100, found {name}"; print(f"H100 DEVICE VERIFIED: {name}")'
 
-exec "${python_bin}" "${repo_root}/scripts/run_epoch_readiness.py" \
+"${python_bin}" "${repo_root}/scripts/run_epoch_readiness.py" \
   --device cuda \
   --run-root "${run_root}" \
   --report-output "${report_output}"
+
+"${python_bin}" "${repo_root}/scripts/verify_epoch_readiness_report.py" \
+  --report "${report_output}"

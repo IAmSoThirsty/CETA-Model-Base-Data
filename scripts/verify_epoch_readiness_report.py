@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 import sys
@@ -10,7 +11,7 @@ sys.path.insert(0,str(ROOT/'src'))
 from history import domain_hash
 from training import file_sha256
 
-REPORT=ROOT/'evidence/EPOCH_READINESS_REPORT.json'
+DEFAULT_REPORT=ROOT/'evidence/EPOCH_READINESS_REPORT.json'
 DATA=ROOT/'data/ceta_curriculum_v2'
 
 
@@ -19,8 +20,12 @@ def fail(msg: str) -> None:
 
 
 def main() -> None:
-    if not REPORT.is_file(): fail('report missing')
-    report=json.loads(REPORT.read_text(encoding='utf-8'))
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--report',help='Readiness report to verify; defaults to the packaged reference report')
+    args=parser.parse_args()
+    report_path=Path(args.report).expanduser().resolve() if args.report else DEFAULT_REPORT
+    if not report_path.is_file(): fail(f'report missing: {report_path}')
+    report=json.loads(report_path.read_text(encoding='utf-8'))
     claimed=report.get('report_hash')
     body=dict(report); body.pop('report_hash',None)
     expected=domain_hash(body,domain='CETA/EPOCH_READINESS_REPORT/v1')
@@ -70,6 +75,7 @@ def main() -> None:
 
     print('EPOCH READINESS REPORT VERIFY: PASS')
     print(f"report_hash={claimed} promotion={report['promotion_gate']['outcome']} validation_target={report['validation']['target_accuracy']:.6f} heldout_target={report['heldout']['target_accuracy']:.6f}")
+    print(f"report={report_path}")
 
 
 if __name__=='__main__': main()
