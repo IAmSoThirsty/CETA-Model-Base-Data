@@ -74,6 +74,8 @@ class CetaWorldCurriculumTests(unittest.TestCase):
         package_manifest=json.loads((ROOT/'PACKAGE_MANIFEST.json').read_text(encoding='utf-8'))
         package_paths=[entry['path'] for entry in package_manifest['files']]
         self.assertEqual(package_paths,sorted(package_paths))
+        checksum_paths=[line.split('  ',1)[1] for line in (ROOT/'SHA256SUMS').read_text(encoding='utf-8').splitlines()]
+        self.assertEqual(checksum_paths,sorted(checksum_paths))
 
 
 if __name__=='__main__': unittest.main()

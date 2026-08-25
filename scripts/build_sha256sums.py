@@ -18,7 +18,8 @@ def sha256(path: Path) -> str:
 
 def main() -> None:
     rows=[]
-    for path in sorted(x for x in ROOT.rglob("*") if x.is_file() and not x.is_symlink()):
+    paths = (x for x in ROOT.rglob("*") if x.is_file() and not x.is_symlink())
+    for path in sorted(paths, key=lambda item: item.relative_to(ROOT).as_posix()):
         rel=path.relative_to(ROOT)
         if rel.as_posix()=="SHA256SUMS" or any(part in EXCLUDED_PARTS for part in rel.parts) or path.suffix in {".pyc", ".pyo"}:
             continue

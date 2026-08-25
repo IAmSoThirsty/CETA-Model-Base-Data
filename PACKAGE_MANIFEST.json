@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 133,
-  "content_root": "sha256:54b1b5f4e98d0f4740799a6170f96e2b069c2b4c3231b67b1892ac469a198585",
+  "content_root": "sha256:a339e6fb8de470c145ea694d3fb03a0582162ccb9a0aa77bf7c3f34173f8a11d",
   "files": [
     {
       "path": ".gitattributes",
@@ -242,8 +242,8 @@
     },
     {
       "path": "scripts/build_sha256sums.py",
-      "size": 975,
-      "sha256": "8062b905604caaaf9c4db4e5584dc3cc433514d6f13eb59f3225187e7f16d407"
+      "size": 1047,
+      "sha256": "85d506feb492ffadd69c7b1c5abac495a63cbc6b1182169871b75af1ae4d5a3a"
     },
     {
       "path": "scripts/hostile_audit.py",
@@ -622,8 +622,8 @@
     },
     {
       "path": "tests/test_ceta_world_curriculum.py",
-      "size": 3711,
-      "sha256": "f3728b7fda6b6cbbb04163129ca1c38eb583fde3e800bdc32bda4a1cec082d1a"
+      "size": 3895,
+      "sha256": "ba3c449e6ffd652a85ce7ad3f75f3ae40e8ecae509eb2690f9a436fdab00dc2d"
     },
     {
       "path": "tests/test_effect_boundary.py",
