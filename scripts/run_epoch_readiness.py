@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import argparse
 from collections import Counter
+from contextlib import nullcontext
 import json
 from pathlib import Path
 import sys
@@ -18,10 +20,20 @@ from training import (
 )
 
 DATA=ROOT/'data/ceta_curriculum_v2'
-REPORT=ROOT/'evidence/EPOCH_READINESS_REPORT.json'
+DEFAULT_REPORT=ROOT/'evidence/EPOCH_READINESS_REPORT.json'
 
 
 def main() -> None:
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--device',default='cpu',help='Torch device for training and independent evaluation (for example cpu or cuda)')
+    parser.add_argument('--run-root',help='Durable checkpoint/ledger directory; omitted only for the disposable reference smoke run')
+    parser.add_argument('--report-output',help='Report destination; defaults to the packaged reference report')
+    args=parser.parse_args()
+    report_path=Path(args.report_output).expanduser().resolve() if args.report_output else DEFAULT_REPORT
+    durable_root=Path(args.run_root).expanduser().resolve() if args.run_root else None
+    if durable_root and durable_root.exists() and any(durable_root.iterdir()):
+        raise SystemExit(f'EPOCH READINESS: FAIL - durable run root is not empty: {durable_root}')
+
     train_path=DATA/'train.jsonl'; validation_path=DATA/'validation.jsonl'; heldout_path=DATA/'heldout.jsonl'
     split_manifest=json.loads((DATA/'splits.json').read_text(encoding='utf-8'))
     train_ids=set(split_manifest['case_splits']['train'])
@@ -33,15 +45,16 @@ def main() -> None:
     config=TrainingConfig(seed=20260824,learning_rate=0.003,weight_decay=0.0,hidden_dim=32,gradient_clip_norm=1.0)
     pause_after=173
     full_epoch_cases=len(train_ids)
-    with tempfile.TemporaryDirectory(prefix='ceta-epoch-readiness-') as td:
-        run_root=Path(td)/'run'
-        first=GovernedEpochTrainer(run_root=run_root,dataset_path=train_path,config=config,run_id='EPOCH-READINESS-SMOKE')
+    run_context=nullcontext(None) if durable_root else tempfile.TemporaryDirectory(prefix='ceta-epoch-readiness-')
+    with run_context as td:
+        run_root=durable_root or Path(td)/'run'
+        first=GovernedEpochTrainer(run_root=run_root,dataset_path=train_path,config=config,run_id='EPOCH-READINESS-SMOKE',device=args.device)
         pause_checkpoint=first.train_cases(pause_after)
         if pause_checkpoint.cursor.global_step != pause_after or pause_checkpoint.cursor.epoch_index != 0:
             raise SystemExit('EPOCH READINESS: FAIL - pause cursor mismatch')
         first.ledger.verify()
 
-        resumed=GovernedEpochTrainer(run_root=run_root,dataset_path=train_path,config=config,run_id='EPOCH-READINESS-SMOKE',resume=True)
+        resumed=GovernedEpochTrainer(run_root=run_root,dataset_path=train_path,config=config,run_id='EPOCH-READINESS-SMOKE',resume=True,device=args.device)
         final_checkpoint=resumed.train_cases(full_epoch_cases-pause_after)
         if final_checkpoint.cursor.global_step != full_epoch_cases or final_checkpoint.cursor.epoch_index != 1 or final_checkpoint.cursor.next_case_offset != 0:
             raise SystemExit('EPOCH READINESS: FAIL - resumed epoch did not close exactly')
@@ -54,7 +67,7 @@ def main() -> None:
         if set(trained_case_ids)&validation_ids or set(trained_case_ids)&heldout_ids:
             raise SystemExit('EPOCH READINESS: FAIL - evaluation split leaked into optimizer receipts')
 
-        evaluator=IndependentCheckpointEvaluator(config=config)
+        evaluator=IndependentCheckpointEvaluator(config=config,device=args.device)
         validation=evaluator.evaluate(final_checkpoint.path,validation_path,split='validation')
         strict_policy=PromotionPolicy(
             min_target_accuracy=0.95,
@@ -72,7 +85,7 @@ def main() -> None:
             'readiness_target':'CETA epoch start/pause/resume/evaluate gate',
             'status':'PASS',
             'torch_version':torch.__version__,
-            'device':'cpu',
+            'device':str(resumed.device),
             'config':config.to_dict(),
             'config_hash':config.config_hash,
             'dataset':{
@@ -117,15 +130,16 @@ def main() -> None:
             },
         }
         report['report_hash']=domain_hash(report,domain='CETA/EPOCH_READINESS_REPORT/v1')
-        REPORT.parent.mkdir(parents=True,exist_ok=True)
-        REPORT.write_text(json.dumps(report,indent=2,sort_keys=True)+'\n',encoding='utf-8',newline='\n')
+        report_path.parent.mkdir(parents=True,exist_ok=True)
+        report_path.write_text(json.dumps(report,indent=2,sort_keys=True)+'\n',encoding='utf-8',newline='\n')
 
     print('CETA EPOCH READINESS: PASS')
     print(f"train_cases={full_epoch_cases} pause_after={pause_after} optimizer_receipts={full_epoch_cases}")
     print(f"validation_target_accuracy={validation.target_accuracy:.6f} validation_legal_rate={validation.legal_selection_rate:.6f}")
     print(f"promotion_outcome={promotion_status}")
     print(f"heldout_target_accuracy={heldout.target_accuracy:.6f} heldout_legal_rate={heldout.legal_selection_rate:.6f}")
-    print(f"report={REPORT}")
+    print(f"run_root={run_root}")
+    print(f"report={report_path}")
 
 
 if __name__=='__main__': main()

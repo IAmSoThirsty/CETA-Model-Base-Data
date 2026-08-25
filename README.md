@@ -164,6 +164,18 @@ python scripts/verify_all.py
 
 The verification path is local-only. It performs no remote fetch.
 
+### Lightning H100 handoff
+
+Keep the Studio on CPU while preparing it. After the operator explicitly switches the Studio to an H100, launch the governed epoch with:
+
+```bash
+cd ~/CETA-Model-Base-Data
+CETA_PYTHON=/teamspace/studios/this_studio/.venvs/ceta-v0.3.0-runtime/bin/python \
+  bash scripts/run_h100_epoch.sh
+```
+
+The launcher does not select or activate hardware. It fails closed unless CUDA is available and the selected device identifies as an H100. Its default checkpoint ledger, checkpoints, promotion records, and regenerated readiness report are written under `/teamspace/studios/this_studio/ceta-runs/h100-epoch-v0.3.0`, outside the immutable repository package. Supply a new run-root as the first argument for a later governed run; an existing run-root is never overwritten.
+
 ## Claim boundary
 
 Read `docs/CLAIM_BOUNDARY.md`. **Epoch-ready** here means the included abstract CETA training pipeline can start, optimize, checkpoint, interrupt, resume, independently evaluate, quarantine/promote, and reproduce its governed evidence under the included reference configuration.

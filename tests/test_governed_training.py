@@ -7,6 +7,8 @@ import sys
 import tempfile
 import unittest
 
+import torch
+
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
 
@@ -64,11 +66,16 @@ class GovernedTrainingTests(unittest.TestCase):
         import inspect
         signature=inspect.signature(GovernedEpochTrainer.train_cases)
         self.assertNotIn('checkpoint_at_end',signature.parameters)
+        self.assertIn('device',inspect.signature(GovernedEpochTrainer).parameters)
         with tempfile.TemporaryDirectory() as td:
             trainer=GovernedEpochTrainer(run_root=Path(td)/'run',dataset_path=DATA/'train.jsonl',config=self.cfg,run_id='R')
+            self.assertEqual(trainer.device,torch.device('cpu'))
             checkpoint=trainer.train_cases(1)
             self.assertTrue(Path(checkpoint.path).is_file())
             self.assertEqual(trainer.ledger.events[-1]['event_type'],'CHECKPOINT_SAVED')
+            if not torch.cuda.is_available():
+                with self.assertRaisesRegex(TrainingBindingError,'CUDA training requested'):
+                    GovernedEpochTrainer(run_root=Path(td)/'cuda',dataset_path=DATA/'train.jsonl',config=self.cfg,run_id='CUDA',device='cuda')
 
     def test_optimizer_receipts_are_hash_bound(self):
         with tempfile.TemporaryDirectory() as td:

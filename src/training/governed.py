@@ -187,7 +187,7 @@ class CheckpointStore:
         _atomic_json(sidecar,sidecar_body)
         return CheckpointRef(str(path),digest,model_hash,optimizer_hash,cursor)
 
-    def load_committed(self,checkpoint_record: Mapping[str,Any],*,expected_dataset_sha256: str,expected_config: TrainingConfig,expected_binding: CurriculumBinding) -> tuple[NeuralTransitionPolicy,torch.optim.Optimizer,CheckpointRef]:
+    def load_committed(self,checkpoint_record: Mapping[str,Any],*,expected_dataset_sha256: str,expected_config: TrainingConfig,expected_binding: CurriculumBinding,device: str|torch.device='cpu') -> tuple[NeuralTransitionPolicy,torch.optim.Optimizer,CheckpointRef]:
         recorded_path=Path(str(checkpoint_record.get("path","")))
         if not recorded_path.name:
             raise TrainingBindingError("committed checkpoint record has no path")
@@ -227,6 +227,9 @@ class CheckpointStore:
             raise TrainingBindingError("checkpoint ledger state hash mismatch")
         if meta.get("model_hash")!=model_hash or meta.get("optimizer_hash")!=optimizer_hash:
             raise TrainingBindingError("checkpoint sidecar state hash mismatch")
+        resolved_device=_resolve_device(device)
+        model.to(resolved_device)
+        _move_optimizer_state(optimizer,resolved_device)
         ref=CheckpointRef(str(path),expected_sha,model_hash,optimizer_hash,cursor)
         return model,optimizer,ref
 
@@ -238,14 +241,14 @@ class CheckpointStore:
 
 
 class GovernedEpochTrainer:
-    def __init__(self,*,run_root: str|Path,dataset_path: str|Path,config: TrainingConfig,run_id: str='RUN-0001',resume: bool=False) -> None:
+    def __init__(self,*,run_root: str|Path,dataset_path: str|Path,config: TrainingConfig,run_id: str='RUN-0001',resume: bool=False,device: str|torch.device='cpu') -> None:
         self.root=Path(run_root); self.root.mkdir(parents=True,exist_ok=True)
         self.dataset_path=Path(dataset_path)
         if self.dataset_path.name != 'train.jsonl':
             raise TrainingBindingError('governed trainer accepts only the isolated train.jsonl split')
         self.binding=resolve_curriculum_binding(self.dataset_path,split='train')
         self.dataset_sha256=file_sha256(self.dataset_path)
-        self.config=config; self.run_id=run_id
+        self.config=config; self.run_id=run_id; self.device=_resolve_device(device)
         self.cases=load_cases(self.dataset_path)
         if not self.cases: raise TrainingBindingError('training dataset is empty')
         self.ledger=TrainingEventLedger(self.root/'training-events.jsonl')
@@ -254,7 +257,7 @@ class GovernedEpochTrainer:
             checkpoint_event=self._latest_committed_checkpoint_event()
             self.model,self.optimizer,self.checkpoint=self.checkpoints.load_committed(
                 checkpoint_event['payload']['checkpoint'],expected_dataset_sha256=self.dataset_sha256,
-                expected_config=config,expected_binding=self.binding,
+                expected_config=config,expected_binding=self.binding,device=self.device,
             )
             self.cursor=self.checkpoint.cursor
             if self.cursor.run_id!=run_id: raise TrainingBindingError('resume run_id mismatch')
@@ -264,8 +267,9 @@ class GovernedEpochTrainer:
         else:
             if self.ledger.events: raise TrainingBindingError('new training run cannot reuse a non-empty run ledger')
             torch.manual_seed(config.seed)
+            if self.device.type=='cuda': torch.cuda.manual_seed_all(config.seed)
             torch.use_deterministic_algorithms(True)
-            self.model=NeuralTransitionPolicy(hidden_dim=config.hidden_dim)
+            self.model=NeuralTransitionPolicy(hidden_dim=config.hidden_dim).to(self.device)
             self.optimizer=torch.optim.AdamW(self.model.parameters(),lr=config.learning_rate,weight_decay=config.weight_decay)
             self.cursor=TrainingCursor(run_id=run_id,epoch_index=0,next_case_offset=0,global_step=0,dataset_sha256=self.dataset_sha256,split='train',config_hash=config.config_hash,curriculum_manifest_sha256=self.binding.manifest_sha256,curriculum_splits_sha256=self.binding.splits_sha256,curriculum_generator_id=self.binding.generator_id)
             self.checkpoint=None
@@ -352,8 +356,8 @@ class GovernedEpochTrainer:
 
 class IndependentCheckpointEvaluator:
     """Loads checkpoint into a fresh model and evaluates transition behavior."""
-    def __init__(self,*,config: TrainingConfig) -> None:
-        self.config=config; self.vm=ConstitutionalVM()
+    def __init__(self,*,config: TrainingConfig,device: str|torch.device='cpu') -> None:
+        self.config=config; self.device=_resolve_device(device); self.vm=ConstitutionalVM()
 
     def evaluate(self,checkpoint_path: str|Path,dataset_path: str|Path,*,split: str) -> EvaluationMetrics:
         checkpoint_path=Path(checkpoint_path); dataset_path=Path(dataset_path)
@@ -377,9 +381,10 @@ class IndependentCheckpointEvaluator:
         if cursor.curriculum_manifest_sha256!=binding.manifest_sha256 or cursor.curriculum_splits_sha256!=binding.splits_sha256 or cursor.curriculum_generator_id!=binding.generator_id:
             raise TrainingBindingError('evaluation dataset is not bound to the checkpoint curriculum')
         model=NeuralTransitionPolicy(hidden_dim=int(payload['model_hidden_dim']))
-        model.load_state_dict(payload['model_state']); model.eval()
+        model.load_state_dict(payload['model_state'])
         if hash_torch_state(model.state_dict(),domain='CETA/MODEL_STATE/v1')!=payload.get('model_hash'):
             raise TrainingBindingError('evaluation checkpoint model hash mismatch')
+        model.to(self.device); model.eval()
         cases=load_cases(dataset_path)
         target_correct=0; opcode_correct=0; legal=0; loss_total=0.0; rejected=0
         with torch.no_grad():
@@ -537,6 +542,24 @@ def hash_torch_state(value: Any,*,domain: str) -> str:
         raise TrainingBindingError(f'unsupported state type in deterministic hash: {type(x).__name__}')
     visit(value)
     return 'sha256:'+h.hexdigest()
+
+
+def _resolve_device(device: str|torch.device) -> torch.device:
+    try:
+        resolved=torch.device(device)
+    except (TypeError,RuntimeError) as exc:
+        raise TrainingBindingError(f'invalid training device: {device}') from exc
+    if resolved.type not in {'cpu','cuda'}:
+        raise TrainingBindingError(f'unsupported training device: {resolved.type}')
+    if resolved.type=='cuda' and not torch.cuda.is_available():
+        raise TrainingBindingError('CUDA training requested but torch.cuda.is_available() is false')
+    return resolved
+
+
+def _move_optimizer_state(optimizer: torch.optim.Optimizer,device: torch.device) -> None:
+    for state in optimizer.state.values():
+        for key,value in state.items():
+            if torch.is_tensor(value): state[key]=value.to(device)
 
 
 def file_sha256(path: str|Path) -> str:

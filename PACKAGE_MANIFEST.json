@@ -2,8 +2,8 @@
   "schema_version": 1,
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
-  "file_count": 133,
-  "content_root": "sha256:a339e6fb8de470c145ea694d3fb03a0582162ccb9a0aa77bf7c3f34173f8a11d",
+  "file_count": 134,
+  "content_root": "sha256:b53b6ac9e39c8509e6015cb3a1d2e31aafc553f5dc7c6c5d47ff78bda91c9f75",
   "files": [
     {
       "path": ".gitattributes",
@@ -12,8 +12,8 @@
     },
     {
       "path": "README.md",
-      "size": 8169,
-      "sha256": "edb352f5b31222c274bb3ed1daa5cb7d71065891dcdc712dfed0338513178485"
+      "size": 8961,
+      "sha256": "1c0c29bf98398b2d3cc4d6167257b2604b23bba17d2a58da954e3651b546b579"
     },
     {
       "path": "STATUS.md",
@@ -262,8 +262,13 @@
     },
     {
       "path": "scripts/run_epoch_readiness.py",
-      "size": 7020,
-      "sha256": "9a7d446eb02f4d5cad6fcf15644bb8bfa150626213dd0d7c786b7d2c75ec4912"
+      "size": 8102,
+      "sha256": "d10add7726f609b1a9ddf9e434e8357e0eef5678b7ce64cb68f2c4ae32f20fea"
+    },
+    {
+      "path": "scripts/run_h100_epoch.sh",
+      "size": 894,
+      "sha256": "3d13380974dc1266c8b272a27f6605eb6a5b581a0af8704f1b2665bf8ec1e965"
     },
     {
       "path": "scripts/validate_architecture.py",
@@ -547,8 +552,8 @@
     },
     {
       "path": "src/training/governed.py",
-      "size": 33373,
-      "sha256": "6b47a50c2bdeb11078ff28873be8891e7efdb8f01cb6910d184173acfe520b8a"
+      "size": 34618,
+      "sha256": "fe2cb510368bc33e0ec13705d17606ca9bf25b96c9da061e81d9543ffe358b87"
     },
     {
       "path": "src/training/model.py",
@@ -632,8 +637,8 @@
     },
     {
       "path": "tests/test_governed_training.py",
-      "size": 13892,
-      "sha256": "2db1c4ef548a6a50162f80f1cd7b46173dfee5b3a2740d5f02e1c32b2116fe04"
+      "size": 14336,
+      "sha256": "15c27dec549221d27d362dc17037e2b20982aa5f489559a83ff0074bfa36b818"
     },
     {
       "path": "tests/test_identity_authority_trust.py",
