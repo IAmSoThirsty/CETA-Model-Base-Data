@@ -37,7 +37,8 @@ def manifest_root(files: list[dict]) -> str:
 def main() -> None:
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     files = []
-    for path in sorted(x for x in ROOT.rglob("*") if included(x)):
+    paths = (x for x in ROOT.rglob("*") if included(x))
+    for path in sorted(paths, key=lambda item: item.relative_to(ROOT).as_posix()):
         rel = path.relative_to(ROOT).as_posix()
         files.append({"path": rel, "size": path.stat().st_size, "sha256": sha256(path)})
     payload = {

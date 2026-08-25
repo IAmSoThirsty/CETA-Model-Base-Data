@@ -71,6 +71,9 @@ class CetaWorldCurriculumTests(unittest.TestCase):
             for name in ('train.jsonl','validation.jsonl','heldout.jsonl','splits.json','manifest.json'):
                 self.assertEqual((a/name).read_bytes(),(b/name).read_bytes(),name)
                 self.assertNotIn(b'\r\n',(a/name).read_bytes(),name)
+        package_manifest=json.loads((ROOT/'PACKAGE_MANIFEST.json').read_text(encoding='utf-8'))
+        package_paths=[entry['path'] for entry in package_manifest['files']]
+        self.assertEqual(package_paths,sorted(package_paths))
 
 
 if __name__=='__main__': unittest.main()
