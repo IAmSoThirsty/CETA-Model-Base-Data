@@ -77,7 +77,11 @@ class CetaActionSpaceGenerator:
         for i, (record_id, record) in enumerate(sorted(world.evidence_view.items(), key=lambda x: str(x[0]))):
             if not isinstance(record, Mapping):
                 continue
-            if record.get("status") == "VALIDATED":
+            if (
+                record.get("status") == "VALIDATED"
+                and isinstance(record.get("record_hash"), str)
+                and isinstance(record.get("payload_hash"), str)
+            ):
                 refs = list(record.get("observation_refs", ())) if isinstance(record.get("observation_refs", ()), list) else []
                 refs = [r for r in refs if r in validated_observations]
                 add("AdmitEvidence", {
@@ -94,7 +98,7 @@ class CetaActionSpaceGenerator:
 
         # Internal epistemic transitions derived only from current state.
         for i, claim in enumerate(by_type.get("CLAIM", ())):
-            if claim.content.get("status") == "ACTIVE":
+            if claim.content.get("status") == "ACTIVE" and claim.content.get("belief_creation_allowed", True) is not False:
                 add("CreateBelief", {
                     "belief_id": self._fresh_id(world, "CreateBelief", "belief_id", i),
                     "claim_ref": claim.object_id,
@@ -104,8 +108,19 @@ class CetaActionSpaceGenerator:
             if belief.content.get("status") != "ACTIVE":
                 continue
             for ei, evidence in enumerate(admitted_state_evidence):
+                linked = set(belief.content.get("support_refs", ()))
+                linked.update(belief.content.get("contradiction_refs", ()))
+                linked.update(belief.content.get("undercut_refs", ()))
+                if evidence.object_id in linked:
+                    continue
                 ordinal = bi * max(1, len(admitted_state_evidence)) + ei
-                for operation in ("Support", "Contradict", "Undercut"):
+                declared_relation = evidence.content.get("relation_kind")
+                relation_operations = (
+                    (str(declared_relation),)
+                    if declared_relation in {"Support", "Contradict", "Undercut"}
+                    else ("Support", "Contradict", "Undercut")
+                )
+                for operation in relation_operations:
                     add(operation, {
                         "belief_ref": belief.object_id,
                         "evidence_ref": evidence.object_id,
@@ -123,6 +138,8 @@ class CetaActionSpaceGenerator:
                 "strategy": "IDENTICAL_OR_SET_UNION",
             })
         for i, source in enumerate(rules):
+            if "predicate" not in source.content or "priority" not in source.content:
+                continue
             keys = sorted(source.content)
             if len(keys) >= 2:
                 cut = max(1, len(keys) // 2)
@@ -196,7 +213,7 @@ class CetaActionSpaceGenerator:
                             "replacement_id": self._fresh_id(world, "Expire", "replacement_id", i * 100 + j),
                             "trusted_time_evidence_ref": str(record_id),
                         })
-            if content.get("status") in {"SUSPENDED", "INVALIDATED", "EXPIRED"} or content.get("epistemic_status") in {"CONTESTED", "UNDERCUT"}:
+            if content.get("status") in {"SUSPENDED", "INVALIDATED", "EXPIRED"}:
                 if evidence_ids:
                     add("Reevaluate", {
                         "target_ref": obj.object_id,

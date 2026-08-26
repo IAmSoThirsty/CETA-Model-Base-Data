@@ -312,6 +312,13 @@ class GovernedEpochTrainer:
         self.binding=resolve_curriculum_binding(self.dataset_path,split='train')
         self.dataset_sha256=file_sha256(self.dataset_path)
         self.config=config; self.run_id=run_id; self.device=_resolve_device(device)
+        self._resumed_from_checkpoint=bool(resume)
+        torch.manual_seed(config.seed)
+        if self.device.type=='cuda':
+            torch.cuda.manual_seed_all(config.seed)
+            torch.backends.cudnn.benchmark=False
+            torch.backends.cudnn.deterministic=True
+        torch.use_deterministic_algorithms(True)
         self.cases=load_cases(self.dataset_path)
         if not self.cases: raise TrainingBindingError('training dataset is empty')
         self.ledger=TrainingEventLedger(self.root/'training-events.jsonl')
@@ -329,9 +336,6 @@ class GovernedEpochTrainer:
             self.ledger.append('RUN_RESUMED',{'run_id':run_id,'checkpoint_sha256':self.checkpoint.sha256,'cursor':self.cursor.to_dict()})
         else:
             if self.ledger.events: raise TrainingBindingError('new training run cannot reuse a non-empty run ledger')
-            torch.manual_seed(config.seed)
-            if self.device.type=='cuda': torch.cuda.manual_seed_all(config.seed)
-            torch.use_deterministic_algorithms(True)
             self.model=NeuralTransitionPolicy(hidden_dim=config.hidden_dim).to(self.device)
             self.optimizer=torch.optim.AdamW(self.model.parameters(),lr=config.learning_rate,weight_decay=config.weight_decay)
             self.cursor=TrainingCursor(run_id=run_id,epoch_index=0,next_case_offset=0,global_step=0,dataset_sha256=self.dataset_sha256,split='train',config_hash=config.config_hash,curriculum_manifest_sha256=self.binding.manifest_sha256,curriculum_splits_sha256=self.binding.splits_sha256,curriculum_generator_id=self.binding.generator_id)
@@ -381,6 +385,151 @@ class GovernedEpochTrainer:
         self.ledger.append('CHECKPOINT_SAVED',{'run_id':self.run_id,'checkpoint':self.checkpoint.to_dict()})
         self.checkpoints.activate(self.checkpoint)
         return self.checkpoint
+
+    def train_additional_epochs(self,additional_epochs: int,*,expected_base_checkpoint_sha256: str|None=None) -> CheckpointRef:
+        """Finish a ledger-bound continuation plan from a committed boundary.
+
+        The plan fixes its target before the first optimizer step. A later
+        process therefore resumes toward that original target instead of
+        interpreting the same request as N more epochs from a newer checkpoint.
+        Each completed epoch is committed independently.
+        """
+        if isinstance(additional_epochs,bool) or not isinstance(additional_epochs,int) or additional_epochs < 1:
+            raise TrainingBindingError('additional_epochs must be a positive integer')
+        if not self._resumed_from_checkpoint or self.checkpoint is None:
+            raise TrainingBindingError('additional epochs require resume from an existing committed checkpoint')
+        if expected_base_checkpoint_sha256 is not None:
+            expected_base_checkpoint_sha256=str(expected_base_checkpoint_sha256).lower()
+            if re.fullmatch(r'[0-9a-f]{64}',expected_base_checkpoint_sha256) is None:
+                raise TrainingBindingError('expected base checkpoint sha256 must be 64 lowercase hexadecimal characters')
+
+        plans,completions=self._continuation_records()
+        active=[plan for continuation_id,plan in plans.items() if continuation_id not in completions]
+        if len(active)>1:
+            raise TrainingBindingError('multiple incomplete continuation plans are present')
+
+        if active:
+            plan=active[0]
+            self._validate_continuation_plan(plan,additional_epochs,expected_base_checkpoint_sha256)
+        else:
+            completed=self._completed_continuation_for_request(
+                plans,completions,additional_epochs,expected_base_checkpoint_sha256,
+            )
+            if completed is not None:
+                return self.checkpoint
+            if expected_base_checkpoint_sha256 is not None and self.checkpoint.sha256!=expected_base_checkpoint_sha256:
+                raise TrainingBindingError('latest committed checkpoint does not match requested continuation base')
+            if self.cursor.next_case_offset!=0:
+                raise TrainingBindingError('additional epochs require a checkpoint at an exact epoch boundary')
+            body={
+                'schema_version':1,'run_id':self.run_id,'base_checkpoint':self.checkpoint.to_dict(),
+                'additional_epochs':additional_epochs,'starting_epoch_index':self.cursor.epoch_index,
+                'target_epoch_index':self.cursor.epoch_index+additional_epochs,
+                'starting_global_step':self.cursor.global_step,
+                'target_global_step':self.cursor.global_step+additional_epochs*len(self.cases),
+                'train_case_count':len(self.cases),'dataset_sha256':self.dataset_sha256,
+                'config_hash':self.config.config_hash,'curriculum_binding':self.binding.to_dict(),
+                'device':str(self.device),
+            }
+            continuation_id=domain_hash(body,domain='CETA/EPOCH_CONTINUATION_PLAN/v1')
+            plan={**body,'continuation_id':continuation_id}
+            self.ledger.append('CONTINUATION_PLANNED',plan)
+
+        target_epoch=int(plan['target_epoch_index'])
+        target_step=int(plan['target_global_step'])
+        start_epoch=int(plan['starting_epoch_index'])
+        start_step=int(plan['starting_global_step'])
+        if self.cursor.next_case_offset!=0:
+            raise TrainingBindingError('continuation checkpoint is not at an exact epoch boundary')
+        if self.cursor.epoch_index>target_epoch or self.cursor.global_step>target_step:
+            raise TrainingBindingError('continuation checkpoint has advanced beyond the fixed target')
+        if self.cursor.epoch_index<start_epoch or self.cursor.global_step!=start_step+(self.cursor.epoch_index-start_epoch)*len(self.cases):
+            raise TrainingBindingError('continuation checkpoint progress does not match the fixed plan')
+        while self.cursor.epoch_index < target_epoch:
+            prior_epoch=self.cursor.epoch_index
+            self.train_cases(len(self.cases))
+            if self.cursor.epoch_index!=prior_epoch+1 or self.cursor.next_case_offset!=0:
+                raise TrainingBindingError('continuation epoch did not close at an exact boundary')
+        if self.cursor.epoch_index!=target_epoch or self.cursor.global_step!=target_step or self.checkpoint is None:
+            raise TrainingBindingError('continuation did not reach its exact fixed target')
+        self.ledger.append('CONTINUATION_COMPLETED',{
+            'continuation_id':plan['continuation_id'],'run_id':self.run_id,
+            'final_checkpoint':self.checkpoint.to_dict(),'final_epoch_index':self.cursor.epoch_index,
+            'final_global_step':self.cursor.global_step,
+        })
+        return self.checkpoint
+
+    def _continuation_records(self) -> tuple[dict[str,dict[str,Any]],dict[str,dict[str,Any]]]:
+        plans={}; completions={}
+        for event in self.ledger.events:
+            event_type=event.get('event_type')
+            if event_type not in {'CONTINUATION_PLANNED','CONTINUATION_COMPLETED'}:
+                continue
+            payload=dict(event.get('payload',{})); continuation_id=str(payload.get('continuation_id',''))
+            if not continuation_id:
+                raise TrainingBindingError(f'{event_type.lower()} has no continuation id')
+            target=plans if event_type=='CONTINUATION_PLANNED' else completions
+            if continuation_id in target:
+                raise TrainingBindingError(f'duplicate {event_type.lower()} event')
+            target[continuation_id]=payload
+        if set(completions)-set(plans):
+            raise TrainingBindingError('continuation completion has no committed plan')
+        return plans,completions
+
+    def _validate_continuation_plan(self,plan: Mapping[str,Any],additional_epochs: int,expected_base_checkpoint_sha256: str|None) -> None:
+        base=dict(plan.get('base_checkpoint',{}))
+        base_sha=str(base.get('sha256',''))
+        if int(plan.get('schema_version',0))!=1 or plan.get('run_id')!=self.run_id:
+            raise TrainingBindingError('active continuation plan identity mismatch')
+        if int(plan.get('additional_epochs',0))!=additional_epochs:
+            raise TrainingBindingError('additional epochs do not match the active continuation plan')
+        if expected_base_checkpoint_sha256 is not None and base_sha!=expected_base_checkpoint_sha256:
+            raise TrainingBindingError('requested checkpoint does not match the active continuation base')
+        expected={
+            'train_case_count':len(self.cases),'dataset_sha256':self.dataset_sha256,
+            'config_hash':self.config.config_hash,'curriculum_binding':self.binding.to_dict(),
+            'device':str(self.device),
+        }
+        if any(plan.get(key)!=value for key,value in expected.items()):
+            raise TrainingBindingError('active continuation plan binding mismatch')
+        start_epoch=int(plan.get('starting_epoch_index',-1)); target_epoch=int(plan.get('target_epoch_index',-1))
+        start_step=int(plan.get('starting_global_step',-1)); target_step=int(plan.get('target_global_step',-1))
+        base_cursor=dict(base.get('cursor',{}))
+        if (
+            base_cursor.get('run_id')!=self.run_id or base_cursor.get('epoch_index')!=start_epoch
+            or base_cursor.get('next_case_offset')!=0 or base_cursor.get('global_step')!=start_step
+            or base_cursor.get('dataset_sha256')!=self.dataset_sha256
+            or base_cursor.get('config_hash')!=self.config.config_hash
+            or base_cursor.get('curriculum_manifest_sha256')!=self.binding.manifest_sha256
+            or base_cursor.get('curriculum_splits_sha256')!=self.binding.splits_sha256
+            or base_cursor.get('curriculum_generator_id')!=self.binding.generator_id
+        ):
+            raise TrainingBindingError('active continuation base checkpoint binding mismatch')
+        if target_epoch!=start_epoch+additional_epochs or target_step!=start_step+additional_epochs*len(self.cases):
+            raise TrainingBindingError('active continuation plan target mismatch')
+        plan_body={key:value for key,value in plan.items() if key!='continuation_id'}
+        if plan.get('continuation_id')!=domain_hash(plan_body,domain='CETA/EPOCH_CONTINUATION_PLAN/v1'):
+            raise TrainingBindingError('active continuation plan id mismatch')
+
+    def _completed_continuation_for_request(
+        self,plans: Mapping[str,Mapping[str,Any]],completions: Mapping[str,Mapping[str,Any]],
+        additional_epochs: int,expected_base_checkpoint_sha256: str|None,
+    ) -> Mapping[str,Any]|None:
+        if expected_base_checkpoint_sha256 is None:
+            return None
+        matches=[]
+        for continuation_id,plan in plans.items():
+            base=dict(plan.get('base_checkpoint',{}))
+            if base.get('sha256')==expected_base_checkpoint_sha256 and plan.get('additional_epochs')==additional_epochs and continuation_id in completions:
+                self._validate_continuation_plan(plan,additional_epochs,expected_base_checkpoint_sha256)
+                matches.append(completions[continuation_id])
+        if not matches:
+            return None
+        completion=matches[-1]
+        final=dict(completion.get('final_checkpoint',{}))
+        if final.get('sha256')!=self.checkpoint.sha256 or final.get('cursor')!=self.cursor.to_dict():
+            raise TrainingBindingError('requested continuation already completed but is not the latest committed checkpoint')
+        return completion
 
     def _cursor(self,*,epoch_index: int,next_case_offset: int,global_step: int) -> TrainingCursor:
         return TrainingCursor(
@@ -560,6 +709,22 @@ def resolve_curriculum_binding(path: str|Path,*,split: str) -> CurriculumBinding
         artifact=base/filename
         if not artifact.is_file() or file_sha256(artifact)!=info.get("sha256"):
             raise TrainingBindingError(f"curriculum {name} file hash mismatch")
+    bound_artifacts=manifest.get("bound_artifacts",{})
+    if not isinstance(bound_artifacts,dict):
+        raise TrainingBindingError("curriculum bound_artifacts must be a mapping")
+    seen_bound_paths=set()
+    for artifact_id,artifact_info in sorted(bound_artifacts.items()):
+        if not isinstance(artifact_info,dict):
+            raise TrainingBindingError(f"curriculum bound artifact metadata is invalid: {artifact_id}")
+        filename=str(artifact_info.get("path",""))
+        if not filename or Path(filename).name!=filename or filename in seen_bound_paths:
+            raise TrainingBindingError(f"curriculum bound artifact path is invalid: {artifact_id}")
+        seen_bound_paths.add(filename)
+        artifact=base/filename
+        if not artifact.is_file() or file_sha256(artifact)!=artifact_info.get("sha256"):
+            raise TrainingBindingError(f"curriculum bound artifact hash mismatch: {artifact_id}")
+        if artifact.stat().st_size!=int(artifact_info.get("size_bytes",-1)):
+            raise TrainingBindingError(f"curriculum bound artifact size mismatch: {artifact_id}")
     info=files[split]
     if dataset_path.name!=info.get("path") or file_sha256(dataset_path)!=info.get("sha256"):
         raise TrainingBindingError(f"{split} dataset is not the manifest-bound split artifact")

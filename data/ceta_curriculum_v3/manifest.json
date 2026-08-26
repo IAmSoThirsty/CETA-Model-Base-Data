@@ -1,0 +1,196 @@
+{
+  "bound_artifacts": {
+    "source_assignments": {
+      "path": "source_assignments.jsonl",
+      "sha256": "6357275f4ffc51cf269aed59fd230b6cb968a7faecc21be775d6e8e39ab0d2e6",
+      "size_bytes": 765610
+    },
+    "source_catalog": {
+      "path": "source_catalog.json",
+      "sha256": "94447f9d88da125678eb5f2000f1e3ede998077e7758ec58e6552752f908d68b",
+      "size_bytes": 1860773
+    }
+  },
+  "case_count": 1380,
+  "failure_tag_counts": {
+    "authority_failure": 60,
+    "belief_corruption": 240,
+    "illegal_authorization": 300,
+    "improper_scope": 120,
+    "invariant_violation": 120,
+    "missing_defeaters": 60,
+    "objective_substitution_failure": 120,
+    "pathway_failure": 180,
+    "provenance_corruption": 240,
+    "provenance_loss": 120,
+    "replay_fault": 1380,
+    "semantic_competence_failure": 60,
+    "structural_output_failure": 1380
+  },
+  "files": {
+    "heldout": {
+      "count": 138,
+      "path": "heldout.jsonl",
+      "sha256": "209ce4963ae3cfe833cfeaa050ddf88fe62f5aca2bdf0e1f7463c931620f2338"
+    },
+    "train": {
+      "count": 1104,
+      "path": "train.jsonl",
+      "sha256": "19d13d91643e89c7ec17b90ef72f5d0840c5c527b4bc54da71c1743cdf464e4d"
+    },
+    "validation": {
+      "count": 138,
+      "path": "validation.jsonl",
+      "sha256": "8fef184d6aac3006829ba4de871e7005141e269f0cce21ff009b873d1c2c7301"
+    }
+  },
+  "generator_id": "CETA_WORLD_CURRICULUM/v3",
+  "illegal_alternative_count": 5520,
+  "operation_count": 23,
+  "operation_counts": {
+    "Adjudicate": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "AdmitEvidence": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "Authorize": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "Contradict": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "CreateBelief": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "CreateClaim": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "Execute": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "ExpandScope": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "Expire": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "Invalidate": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "Merge": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "NarrowScope": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "Observe": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "Reevaluate": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "RejectAuthorization": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "RejectEvidence": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "Rollback": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "Split": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "Support": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "Suspend": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "Undercut": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "ValidateObservation": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    },
+    "Verify": {
+      "heldout": 6,
+      "train": 48,
+      "validation": 6
+    }
+  },
+  "schema_version": 1,
+  "source_binding": {
+    "clean_unseen_evaluation_case_count": 59,
+    "controlled_evaluation_bound": true,
+    "controlled_evaluation_case_count": 60,
+    "controlled_evaluation_materialized_in_public_repo": false,
+    "known_exposed_evaluation_case_ids": [
+      "H001"
+    ],
+    "public_defensive_records_trained_on": true,
+    "public_defensive_records_unseen_benchmark_eligible": false,
+    "raw_prose_in_optimizer_records": false,
+    "source_assignment_method": "DETERMINISTIC_HASH_PARTITION",
+    "source_class_counts": {
+      "DEFENSIVE_PUBLIC": 279,
+      "HUMAN_RELATIONS_PUBLIC": 2160
+    },
+    "source_dataset_id": "CETA_ARCHITECTURE_MATERIAL/v1",
+    "source_dataset_manifest_sha256": "ecc9cc35d7efb5dde26f054f687e004381ad9f6548c1156c326e2b0c9c43c49d",
+    "source_family_count": 460,
+    "source_group_split_isolation": true,
+    "source_lineage_count": 731,
+    "source_lineage_split_isolation": true,
+    "source_record_count": 2439,
+    "source_to_operation_semantic_adjudication": false
+  },
+  "splits_sha256": "43a6aa5546b34332d4ced7f6a8ca74d35f803b9c2b7a541d0e1228ac37526a87",
+  "structural_fingerprint_count": 460,
+  "world_family_count": 460
+}

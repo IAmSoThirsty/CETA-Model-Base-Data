@@ -16,6 +16,9 @@ DEFAULT_OUTPUT = ROOT / "data" / "ceta_architecture_material_v1"
 HUMAN_ROOT = "CETA_AGI_Human_Relations_Training_Material_v1.0.0"
 DEFENSIVE_ROOT = "AI_Defensive_Knowledge_Eval_Stack_FULL"
 SHA256_RE = re.compile(r"(?i)\b[0-9a-f]{64}\b")
+STRUCTURED_DERIVATION_ELIGIBLE = "STRUCTURED_DERIVATION_ELIGIBLE"
+PROVENANCE_OR_CONSTRAINT_ONLY = "PROVENANCE_OR_CONSTRAINT_ONLY"
+CONTROLLED_EVALUATION = "CONTROLLED_EVALUATION"
 
 HUMAN_FILES = {
     "mission/MISSION_PARAGRAPH.txt": "01_MISSION/MISSION_PARAGRAPH.txt",
@@ -185,7 +188,15 @@ def verify_human_package(archive: zipfile.ZipFile, members: dict[str, zipfile.Zi
 
     return {
         "counts": counts,
-        "private_holdout": holdout_manifest,
+        "controlled_evaluation": {
+            "challenge_sha256": str(holdout_manifest["challenge_sha256"]),
+            "answer_key_sha256": str(holdout_manifest["answer_key_sha256"]),
+            "case_count": 60,
+            "answer_count": 60,
+            "archive_declared_status": str(holdout_manifest.get("status", "")),
+            "known_exposed_case_ids": ["H001"],
+            "clean_unseen_case_count": 59,
+        },
         "package_manifest_sha256": sha256_bytes(read_member(archive, members, prefix + "PACKAGE_MANIFEST.json")),
     }
 
@@ -247,16 +258,98 @@ def copy_selected(
         target.write_bytes(payload)
 
 
+def material_source_usage(relative_path: str) -> str:
+    """Return the deterministic use boundary for a materialized public source."""
+    top_level = PurePosixPath(relative_path).parts[0]
+    if top_level in {"training", "evaluation", "governance"}:
+        return STRUCTURED_DERIVATION_ELIGIBLE
+    if top_level in {"maps", "mission", "provenance"}:
+        return PROVENANCE_OR_CONSTRAINT_ONLY
+    raise ValueError(f"material path has no source-usage classification: {relative_path}")
+
+
+def materialize_controlled_evaluation(
+    archive: zipfile.ZipFile,
+    members: dict[str, zipfile.ZipInfo],
+    output: Path,
+    binding: dict,
+) -> None:
+    """Stage the supplied challenge and answer key for the evaluator, not Git."""
+    selected = {
+        "challenges.jsonl": "07_PRIVATE_HOLDOUT/PRIVATE_CHALLENGE_60_NO_ANSWERS.jsonl",
+        "answer_key.jsonl": "07_PRIVATE_HOLDOUT/ANSWER_KEY_SEPARATE.jsonl",
+    }
+    copy_selected(
+        archive,
+        members,
+        archive_root=HUMAN_ROOT,
+        selected=selected,
+        output=output,
+    )
+    challenge = output / "challenges.jsonl"
+    answers = output / "answer_key.jsonl"
+    if sha256_file(challenge) != binding["challenge_sha256"]:
+        raise ValueError("materialized controlled-evaluation challenge hash mismatch")
+    if sha256_file(answers) != binding["answer_key_sha256"]:
+        raise ValueError("materialized controlled-evaluation answer-key hash mismatch")
+    receipt = {
+        "schema_version": 1,
+        "evaluation_id": "CETA_CONTROLLED_EVALUATION/v1",
+        "usage_class": CONTROLLED_EVALUATION,
+        "challenge_path": challenge.name,
+        "challenge_sha256": binding["challenge_sha256"],
+        "answer_key_path": answers.name,
+        "answer_key_sha256": binding["answer_key_sha256"],
+        "case_count": binding["case_count"],
+        "answer_count": binding["answer_count"],
+        "known_exposed_case_ids": list(binding["known_exposed_case_ids"]),
+        "clean_unseen_case_count": binding["clean_unseen_case_count"],
+        "optimizer_input": False,
+        "git_delivery": False,
+    }
+    (output / "manifest.json").write_text(
+        json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+
+def validate_controlled_evaluation_output(path: Path, public_output: Path) -> Path:
+    resolved = path.resolve()
+    public_resolved = public_output.resolve()
+    repo_root = ROOT.resolve()
+    repo_staging = (ROOT / "data" / "ceta_controlled_evaluation").resolve()
+    if (
+        resolved == public_resolved
+        or resolved.is_relative_to(public_resolved)
+        or public_resolved.is_relative_to(resolved)
+    ):
+        raise ValueError("controlled-evaluation output must not overlap the public material output")
+    if resolved.is_relative_to(repo_root) and resolved != repo_staging:
+        raise ValueError(
+            "controlled-evaluation output inside the repository must be exactly "
+            f"{repo_staging}"
+        )
+    return resolved
+
+
 def output_manifest(output: Path, *, human_sha: str, defensive_sha: str, human: dict, defensive: dict) -> dict:
     files = []
     for path in sorted(p for p in output.rglob("*") if p.is_file() and p.name != "manifest.json"):
+        relative = path.relative_to(output).as_posix()
         files.append({
-            "path": path.relative_to(output).as_posix(),
+            "path": relative,
             "size_bytes": path.stat().st_size,
             "sha256": sha256_file(path),
+            "source_usage": material_source_usage(relative),
         })
+    source_usage_by_path = {item["path"]: item["source_usage"] for item in files}
+    source_usage_counts = {
+        usage: sum(value == usage for value in source_usage_by_path.values())
+        for usage in (STRUCTURED_DERIVATION_ELIGIBLE, PROVENANCE_OR_CONSTRAINT_ONLY)
+    }
     return {
-        "schema_version": 1,
+        "schema_version": 3,
         "dataset_id": "CETA_ARCHITECTURE_MATERIAL/v1",
         "source_archives": {
             "human_relations_training_material": {
@@ -271,22 +364,31 @@ def output_manifest(output: Path, *, human_sha: str, defensive_sha: str, human: 
         },
         "counts": human["counts"],
         "defensive_coverage": defensive,
-        "private_holdout": {
-            **human["private_holdout"],
+        "controlled_evaluation": {
+            **human["controlled_evaluation"],
+            "usage_class": CONTROLLED_EVALUATION,
             "materialized_in_repository": False,
-            "note": "Only this hash-bound exclusion manifest is materialized; challenge and answer records remain outside training and Git delivery.",
+            "bound_to_architecture": True,
+            "staging_path": "data/ceta_controlled_evaluation (gitignored)",
+            "note": "The challenge and answer records are integrated through a hash-verified evaluator staging path; they are not optimizer inputs or public Git payloads.",
         },
         "training_boundary": {
-            "current_ceta_curriculum_automatically_modified": False,
-            "reason": "Supplied prose/design records require atomic CETA transition adjudication before conversion to structured state-to-transition cases.",
+            "current_ceta_curriculum_automatically_modified": True,
+            "reason": "Public source records contribute deterministic source-derived topology and provenance assignments; only structured state-to-transition cases are optimizer inputs.",
+            "source_usage_policy_version": 2,
+            "source_usage_by_path": source_usage_by_path,
+            "source_usage_counts": source_usage_counts,
+            "optimizer_requires_derived_structured_cases": True,
             "allowed_now": [
-                "source-aware curriculum design",
-                "risk and semantic-equivalence policy derivation",
-                "role and lifecycle applicability adjudication",
+                "deterministic structured curriculum derivation from eligible public human-relations records",
+                "deterministic structured curriculum derivation from eligible public defensive records",
+                "risk and semantic-equivalence policy binding",
+                "controlled evaluation through the independent evaluator staging path",
             ],
-            "forbidden_now": [
-                "direct concatenation into ceta_curriculum_v2",
-                "training on private holdout or defensive evaluation records",
+            "optimizer_exclusions": [
+                "passing raw prose or source-content files directly to the optimizer",
+                "passing controlled evaluation questions or answer keys to the optimizer",
+                "passing evaluator outputs back into threshold tuning after freeze",
                 "treating source prose as an executable authority grant",
             ],
         },
@@ -301,12 +403,23 @@ def main() -> None:
     parser.add_argument("--defensive-stack-zip", type=Path, required=True)
     parser.add_argument("--defensive-stack-sha256", type=Path, required=True)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument(
+        "--controlled-evaluation-output",
+        type=Path,
+        help="Optional gitignored/runtime path for hash-verified evaluator challenge and answer files.",
+    )
     args = parser.parse_args()
 
     human_sha = verify_outer_digest(args.human_material_zip, args.human_material_sha256)
     defensive_sha = verify_outer_digest(args.defensive_stack_zip, args.defensive_stack_sha256)
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
+    controlled_output = None
+    if args.controlled_evaluation_output is not None:
+        controlled_output = validate_controlled_evaluation_output(
+            args.controlled_evaluation_output,
+            output,
+        )
 
     with zipfile.ZipFile(args.human_material_zip) as human_archive:
         human_members = safe_members(human_archive)
@@ -318,6 +431,13 @@ def main() -> None:
             selected=HUMAN_FILES,
             output=output,
         )
+        if controlled_output is not None:
+            materialize_controlled_evaluation(
+                human_archive,
+                human_members,
+                controlled_output,
+                human["controlled_evaluation"],
+            )
 
     with zipfile.ZipFile(args.defensive_stack_zip) as defensive_archive:
         defensive_members = safe_members(defensive_archive)
@@ -346,7 +466,9 @@ def main() -> None:
     print(f"output={output}")
     print(f"files={len(manifest['files'])} public_scenarios={manifest['counts']['public_scenarios']}")
     print(f"sections={manifest['counts']['codex_sections']} templates={manifest['counts']['section_situational_templates']}")
-    print(f"private_holdout_materialized={manifest['private_holdout']['materialized_in_repository']}")
+    print(f"controlled_evaluation_bound={manifest['controlled_evaluation']['bound_to_architecture']}")
+    if controlled_output is not None:
+        print(f"controlled_evaluation_output={controlled_output}")
 
 
 if __name__ == "__main__":

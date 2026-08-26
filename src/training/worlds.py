@@ -51,6 +51,8 @@ class CetaWorldCurriculum:
         "Suspend", "Expire", "Reevaluate", "Adjudicate", "Authorize",
         "RejectAuthorization", "Execute", "Rollback",
     )
+    CONSTITUTIONAL_EPOCH = "curriculum-v2"
+    CASE_PREFIX = "CETA"
 
     def __init__(self, *, families_per_operation: int = 10, variants_per_family: int = 3) -> None:
         if families_per_operation < 10:
@@ -83,7 +85,7 @@ class CetaWorldCurriculum:
             decision=self.vm.evaluate(
                 proposal,projected_snapshot=draft.snapshot,admitted_evidence_view=draft.evidence_view,
                 identity_view=draft.identity_view,authority_snapshot=draft.authority_view,
-                now_epoch_ms=draft.now_epoch_ms,constitutional_epoch="curriculum-v2",
+                now_epoch_ms=draft.now_epoch_ms,constitutional_epoch=self.CONSTITUTIONAL_EPOCH,
             )
             if decision.disposition is VmDisposition.LEGAL:
                 legal.append((proposal,decision))
@@ -101,7 +103,7 @@ class CetaWorldCurriculum:
                 identity_view=draft.identity_view,
                 authority_snapshot=draft.authority_view,
                 now_epoch_ms=draft.now_epoch_ms,
-                constitutional_epoch="curriculum-v2",
+                constitutional_epoch=self.CONSTITUTIONAL_EPOCH,
             )
             if decision.disposition is VmDisposition.LEGAL:
                 raise ValueError(
@@ -119,7 +121,7 @@ class CetaWorldCurriculum:
             )
 
         return TransitionTrainingCase.create(
-            case_id=f"CETA-{target.operation.upper()}-{draft.family_id.rsplit('/',1)[-1]}-{draft.variant_id}",
+            case_id=f"{self.CASE_PREFIX}-{target.operation.upper()}-{draft.family_id.rsplit('/',1)[-1]}-{draft.variant_id}",
             world_family_id=draft.family_id,
             world_variant_id=draft.variant_id,
             snapshot=draft.snapshot,

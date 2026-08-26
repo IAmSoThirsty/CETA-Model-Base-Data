@@ -11,13 +11,14 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
 
 from history import domain_hash
+from ceta import ConstitutionalVM, VmDisposition
 from training import (
     GovernedEpochTrainer, IndependentCheckpointEvaluator, TrainingBindingError,
-    TrainingConfig, effective_optimizer_events, hash_torch_state, load_cases,
+    TrainingConfig, effective_optimizer_events, file_sha256, hash_torch_state, load_cases,
 )
 from transition_policy import CetaActionSpaceGenerator, NeuralTransitionPolicy, candidate_sequence, world_from_training_case
 
-DATA=ROOT/'data/ceta_curriculum_v2'
+DATA=ROOT/'data/ceta_curriculum_v3'
 REPORT=ROOT/'evidence/EPOCH_HOSTILE_GATE_REPORT.json'
 
 
@@ -40,6 +41,10 @@ def main() -> None:
     if 'checkpoint_at_end' in train_sig.parameters:
         raise SystemExit('HOSTILE EPOCH GATE: FAIL - public checkpoint bypass remains')
     checks.append('mandatory_checkpoint_api')
+    continuation_sig=inspect.signature(GovernedEpochTrainer.train_additional_epochs)
+    if tuple(continuation_sig.parameters) != ('self','additional_epochs','expected_base_checkpoint_sha256'):
+        raise SystemExit('HOSTILE EPOCH GATE: FAIL - governed continuation API mismatch')
+    checks.append('fixed_target_epoch_continuation_api')
 
     propose_sig=tuple(inspect.signature(NeuralTransitionPolicy.propose).parameters)
     if propose_sig != ('self','world'):
@@ -49,19 +54,42 @@ def main() -> None:
     all_cases={}
     for split in ('train','validation','heldout'):
         all_cases.update(load_cases(DATA/f'{split}.jsonl'))
-    if len(all_cases)!=690:
-        raise SystemExit(f'HOSTILE EPOCH GATE: FAIL - expected 690 curriculum cases, got {len(all_cases)}')
+    manifest=json.loads((DATA/'manifest.json').read_text(encoding='utf-8'))
+    expected_cases=int(manifest['case_count'])
+    if len(all_cases)!=expected_cases:
+        raise SystemExit(f'HOSTILE EPOCH GATE: FAIL - expected {expected_cases} curriculum cases, got {len(all_cases)}')
     generator=CetaActionSpaceGenerator()
+    vm=ConstitutionalVM()
     recovered=0
     for case in all_cases.values():
         target=pkey(case.target_proposal)
         if target in {pkey(p) for p in candidate_sequence(case)}:
             raise SystemExit(f'HOSTILE EPOCH GATE: FAIL - target injected into adversarial candidates: {case.case_id}')
-        generated={pkey(p) for p in generator.generate(world_from_training_case(case))}
+        world=world_from_training_case(case)
+        generated_proposals=generator.generate(world)
+        generated={pkey(p) for p in generated_proposals}
         if target not in generated:
             raise SystemExit(f'HOSTILE EPOCH GATE: FAIL - target not recoverable without label: {case.case_id}')
+        anchors={obj.object_id for obj in world.snapshot.active_objects if obj.object_id.startswith('UNIVERSE-V3-')}
+        for proposal in generated_proposals:
+            operand_text=json.dumps(dict(proposal.operands),sort_keys=True)
+            if any(anchor in operand_text for anchor in anchors):
+                raise SystemExit(f'HOSTILE EPOCH GATE: FAIL - source anchor entered action space: {case.case_id}')
+        legal=[]
+        for proposal in generated_proposals:
+            decision=vm.evaluate(
+                proposal,projected_snapshot=world.snapshot,admitted_evidence_view=world.evidence_view,
+                identity_view=world.identity_view,authority_snapshot=world.authority_view,
+                now_epoch_ms=world.now_epoch_ms,constitutional_epoch='hostile-epoch-gate',
+            )
+            if decision.disposition is VmDisposition.LEGAL:
+                legal.append(pkey(proposal))
+        if legal != [target]:
+            raise SystemExit(f'HOSTILE EPOCH GATE: FAIL - target is not unique VM-legal generated transition: {case.case_id}')
         recovered += 1
     checks.append('all_targets_recoverable_without_label_injection')
+    checks.append('all_targets_unique_vm_legal_generated_transition')
+    checks.append('source_context_anchors_excluded_from_action_space')
 
     cfg=TrainingConfig(seed=99173,learning_rate=0.002,hidden_dim=16)
     with tempfile.TemporaryDirectory(prefix='ceta-hostile-epoch-') as td_raw:
@@ -125,6 +153,14 @@ def main() -> None:
         'gate':'CETA final integrated hostile epoch gate',
         'curriculum_cases_checked':recovered,
         'operation_count':23,
+        'curriculum_binding':{
+            'generator_id':manifest['generator_id'],
+            'manifest_sha256':file_sha256(DATA/'manifest.json'),
+            'splits_sha256':file_sha256(DATA/'splits.json'),
+            'train_sha256':file_sha256(DATA/'train.jsonl'),
+            'validation_sha256':file_sha256(DATA/'validation.jsonl'),
+            'heldout_sha256':file_sha256(DATA/'heldout.jsonl'),
+        },
         'checks':checks,
         'claim_boundary':{
             'pipeline_integrity_tested':True,

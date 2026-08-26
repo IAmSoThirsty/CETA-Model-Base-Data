@@ -28,14 +28,16 @@ The neural boundary proposes only a transition. It does not author output state,
 
 This release crosses the reference-training boundary that v0.2.0 intentionally did not cross:
 
-- deterministic CETA curriculum v2 with **690 cases / 230 structural families / 23 operations**;
-- family-isolated train/validation/held-out partitions;
+- source-bound CETA curriculum v3 with **1,380 cases / 460 structural families / 23 operations**;
+- exact-once family binding for **2,439 public human-relations and defensive source records** without placing raw prose in optimizer records;
+- family- and source-lineage-isolated train/validation/held-out partitions;
 - a structured neural transition policy with no language-response target;
 - a **target-blind action-space generator**: runtime inference never receives the correct transition or a caller-supplied candidate list;
 - structural transition/risk losses;
 - governed optimizer lifecycle with mandatory durable checkpoints;
 - hash-bound optimizer receipts and checkpoint lineage;
 - crash-tail orphaning and deterministic resume from the last committed checkpoint;
+- fixed-target, cross-process continuation for one already-active H100, with one durable checkpoint per completed epoch;
 - independent checkpoint evaluation;
 - separate promotion, quarantine, and rollback decisions;
 - curriculum/manifest/checkpoint/evaluation binding across the complete training path;
@@ -85,23 +87,26 @@ WorldView
   -> ConstitutionalVM
 ```
 
-`NeuralTransitionPolicy.propose(world)` accepts no candidate argument. The action-space generator receives only projected state, normalized evidence/identity/authority views, trusted evaluation time, and explicit structured exogenous proposal context. Every one of the 690 curriculum targets is independently recoverable from that target-blind action space.
+`NeuralTransitionPolicy.propose(world)` accepts no candidate argument. The action-space generator receives only projected state, normalized evidence/identity/authority views, trusted evaluation time, and explicit structured exogenous proposal context. Every one of the 1,380 v3 curriculum targets is independently recoverable from that target-blind action space.
 
 This reference action space is intentionally bounded. In particular, neural Merge/Split enumeration is restricted to reference RULE topologies even though the VM supports broader same-type semantics. This release does not claim exhaustive general action-space search.
 
-## Curriculum v2
+## Curriculum v3
 
-`data/ceta_curriculum_v2/` contains:
+`data/ceta_curriculum_v3/` is the default epoch target and contains:
 
-- 552 training cases;
-- 69 validation cases;
-- 69 held-out cases;
-- 230 structural world families with three identity-renamed variants each;
-- 2,760 explicit hostile alternatives;
+- 1,104 training cases;
+- 138 validation cases;
+- 138 held-out cases;
+- 460 structural world families with three identity-renamed variants each;
+- 5,520 explicit hostile alternatives;
+- 2,160 public human-relations records and 279 public defensive records bound exactly once across source groups;
 - complete 23-operation coverage;
-- deterministic family-level partitioning so variants of one family cannot cross splits.
+- deterministic family/source-group/source-lineage partitioning so variants, source records, or parent/derivative lineages cannot cross splits.
 
-The trainer does not trust filenames. It binds the split bytes, `manifest.json`, `splits.json`, generator ID, case IDs, family IDs, and hashes before optimization. A held-out file renamed to `train.jsonl` is rejected.
+The trainer does not trust filenames. It binds the split bytes, `manifest.json`, `splits.json`, generator ID, case IDs, family IDs, and the source-catalog/assignment sidecars before optimization. A held-out file renamed to `train.jsonl`, or a changed source sidecar, is rejected. Curriculum v2 remains unchanged under `data/ceta_curriculum_v2/` as a byte-reproducible regression baseline.
+
+The current neural encoder has no language tokenizer. Source records therefore affect v3 through source-derived categorical counts and encoder-visible CETA topology; source IDs and hashes provide provenance only. Operation-risk and accuracy policy remain in non-model sidecars and promotion logic, so target-derived policy is not projected into `WorldView`. The record-to-family mapping is a deterministic provenance assignment, not a claim of human semantic source-to-operation adjudication or prose understanding. The v3 hostile alternatives remain VM-authored structural negatives; they are not claimed as source-authored negatives.
 
 ## Governed training lifecycle
 
@@ -111,12 +116,14 @@ A hard crash after optimizer work but before checkpoint commit preserves those r
 
 Evaluation reloads a fresh model and accepts only validation or held-out artifacts cryptographically bound to the same curriculum as the checkpoint. Held-out evidence cannot authorize promotion.
 
+Additional governed epochs resume only from an exact committed epoch boundary. A continuation plan fixes its base checkpoint, requested epoch count, dataset/config binding, target epoch, and target optimizer step before work begins. A restarted process finishes that same target instead of silently adding another N epochs. The included launcher supports exactly one visible H100; it neither activates hardware nor implements distributed training.
+
 ## Epoch-readiness evidence
 
 `evidence/EPOCH_READINESS_REPORT.json` records a complete CPU reference epoch:
 
 - pause after step 173;
-- restart/resume to exactly 552 training cases;
+- restart/resume to exactly 1,104 training cases;
 - exact training-split optimizer-receipt coverage;
 - no validation/held-out optimizer receipts;
 - independent validation and held-out evaluation;
@@ -124,13 +131,15 @@ Evaluation reloads a fresh model and accepts only validation or held-out artifac
 
 The corrected target-blind run produced:
 
-- validation exact-target accuracy: **0.869565**;
+- validation exact-target accuracy: **1.0**;
+- validation opcode accuracy: **0.782609**;
 - validation legal-selection rate: **1.0**;
-- held-out exact-target accuracy: **0.869565**;
+- held-out exact-target accuracy: **1.0**;
+- held-out opcode accuracy: **0.739130**;
 - held-out legal-selection rate: **1.0**;
 - strict promotion outcome: **QUARANTINED**.
 
-Those are reference-smoke results, not a production model-quality claim.
+Those are reference-smoke results, not a production model-quality claim. Exact-target selection is now structurally identifiable because each v3 world exposes exactly one VM-legal transition in the target-blind generated action space; the separately measured opcode head remains below its promotion floor.
 
 `evidence/EPOCH_HOSTILE_GATE_REPORT.json` records the separate integrated hostile gate.
 
@@ -168,9 +177,29 @@ The verification path is local-only. It performs no remote fetch.
 
 The provenance-bound human-relations/stewardship corpus and defensive evaluation subset are materialized under `data/ceta_architecture_material_v1/`. They provide 406 lifecycle-section awareness records, 1,624 situational templates, 21 role contracts, 84 role-conditioned cases, 20 public scenarios, five unacceptable-failure lessons, operation-specific risk/equivalence policy, and 200 defensive behaviors.
 
-These records do not silently alter `ceta_curriculum_v2`. They are validated source material for adjudicating a future structured curriculum. Private challenge questions and their answer key remain outside the repository and are hash-bound as evaluation-only material. See `docs/SUPPLIED_DATA_INTEGRATION.md`.
+These records now drive the deterministic structured `ceta_curriculum_v3` source catalog and family assignments. All materialized public defensive records are accounted as trained-on and therefore are not claimed as unseen benchmarks. Raw prose is not copied into optimizer records. The 60 controlled challenge/answer records are cryptographically bound and can be staged through a gitignored evaluator path; they are not discarded or optimizer inputs. Because case `H001` and its answer were previously exposed during inspection, only 59 cases are currently eligible for a clean unseen-evaluation claim. See `docs/SUPPLIED_DATA_INTEGRATION.md`.
 
 The supplied 23-operation risk policy is enforced now: independent evaluation records per-operation metrics, and governed promotion applies the operation-specific accuracy and zero-illegal-selection requirements in addition to aggregate floors.
+
+## H100 handoff and continuation
+
+The launcher verifies an H100 that the operator has already selected. It does not select, start, resize, or activate Lightning hardware. This reference uses one H100; selecting two or four would add cost without being used because no DDP path is claimed.
+
+```bash
+# Fresh governed readiness epoch after the operator activates one H100.
+bash scripts/run_h100_epoch.sh /teamspace/studios/this_studio/ceta-runs/curriculum-v3
+
+# Continue exactly two more epochs from the printed committed checkpoint.
+bash scripts/run_h100_epoch.sh \
+  --additional-epochs 2 \
+  --from-checkpoint-sha256 <64-hex-checkpoint-sha256> \
+  /teamspace/studios/this_studio/ceta-runs/curriculum-v3
+
+python scripts/verify_epoch_continuation_report.py \
+  --report /teamspace/studios/this_studio/ceta-runs/curriculum-v3/EPOCH_CONTINUATION_REPORT.json
+```
+
+Continuation evaluates validation and issues a promotion/quarantine decision. It deliberately does not run held-out evaluation during iterative epoch decisions.
 
 ### Lightning H100 handoff
 
@@ -182,7 +211,7 @@ CETA_PYTHON=/teamspace/studios/this_studio/.venvs/ceta-v0.3.0-runtime/bin/python
   bash scripts/run_h100_epoch.sh
 ```
 
-The launcher does not select or activate hardware. It fails closed unless CUDA is available and the selected device identifies as an H100. Its default checkpoint ledger, checkpoints, promotion records, and regenerated readiness report are written under `/teamspace/studios/this_studio/ceta-runs/h100-epoch-v0.3.0`, outside the immutable repository package. Supply a new run-root as the first argument for a later governed run; an existing run-root is never overwritten.
+The launcher does not select or activate hardware. It fails closed unless CUDA is available and the selected device identifies as an H100. Its default checkpoint ledger, checkpoints, promotion records, and regenerated readiness report are written under `/teamspace/studios/this_studio/ceta-runs/h100-epoch-v0.3.0-curriculum-v3`, outside the immutable repository package. Supply a new run-root as the first argument for a later governed run; an existing run-root is never overwritten.
 
 ## Claim boundary
 

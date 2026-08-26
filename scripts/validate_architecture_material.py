@@ -4,11 +4,13 @@ import argparse
 import csv
 import hashlib
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ROOT = ROOT / "data" / "ceta_architecture_material_v1"
+STRUCTURED_DERIVATION_ELIGIBLE = "STRUCTURED_DERIVATION_ELIGIBLE"
+PROVENANCE_OR_CONSTRAINT_ONLY = "PROVENANCE_OR_CONSTRAINT_ONLY"
 
 
 def sha256(path: Path) -> str:
@@ -27,6 +29,15 @@ def fail(errors: list[str], message: str) -> None:
     errors.append(message)
 
 
+def expected_source_usage(relative_path: str) -> str:
+    top_level = PurePosixPath(relative_path).parts[0]
+    if top_level in {"training", "evaluation", "governance"}:
+        return STRUCTURED_DERIVATION_ELIGIBLE
+    if top_level in {"maps", "mission", "provenance"}:
+        return PROVENANCE_OR_CONSTRAINT_ONLY
+    raise ValueError(f"material path has no expected source-usage classification: {relative_path}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=DEFAULT_ROOT)
@@ -40,7 +51,10 @@ def main() -> None:
 
     if manifest.get("dataset_id") != "CETA_ARCHITECTURE_MATERIAL/v1":
         fail(errors, "dataset_id mismatch")
+    if manifest.get("schema_version") != 3:
+        fail(errors, "manifest schema_version must be 3")
     expected_paths = set()
+    declared_usage: dict[str, str] = {}
     for item in manifest.get("files", []):
         relative = str(item.get("path", ""))
         if not relative or relative in expected_paths:
@@ -55,6 +69,15 @@ def main() -> None:
             fail(errors, f"registered file size mismatch: {relative}")
         if sha256(path) != item.get("sha256"):
             fail(errors, f"registered file hash mismatch: {relative}")
+        try:
+            expected_usage = expected_source_usage(relative)
+        except ValueError as exc:
+            fail(errors, str(exc))
+        else:
+            actual_usage = str(item.get("source_usage", ""))
+            declared_usage[relative] = actual_usage
+            if actual_usage != expected_usage:
+                fail(errors, f"source-usage classification mismatch: {relative} -> {actual_usage!r}")
 
     actual_paths = {
         path.relative_to(base).as_posix()
@@ -63,6 +86,20 @@ def main() -> None:
     }
     if actual_paths != expected_paths:
         fail(errors, f"manifest/file-set mismatch: missing={sorted(expected_paths-actual_paths)} extra={sorted(actual_paths-expected_paths)}")
+
+    boundary = manifest.get("training_boundary", {})
+    if boundary.get("source_usage_policy_version") != 2:
+        fail(errors, "source-usage policy version mismatch")
+    if boundary.get("source_usage_by_path") != declared_usage:
+        fail(errors, "training-boundary source_usage_by_path does not match file records")
+    expected_usage_counts = {
+        STRUCTURED_DERIVATION_ELIGIBLE: 15,
+        PROVENANCE_OR_CONSTRAINT_ONLY: 9,
+    }
+    if boundary.get("source_usage_counts") != expected_usage_counts:
+        fail(errors, f"source-usage counts mismatch: {boundary.get('source_usage_counts')}")
+    if boundary.get("optimizer_requires_derived_structured_cases") is not True:
+        fail(errors, "optimizer boundary must require derived structured cases")
 
     counts = manifest.get("counts", {})
     expected_counts = {
@@ -102,14 +139,20 @@ def main() -> None:
             if sum(1 for _ in csv.DictReader(handle)) != 100:
                 fail(errors, f"JBB evaluation record count mismatch: {name}")
 
-    holdout = manifest.get("private_holdout", {})
-    if holdout.get("status") != "PRIVATE_EVALUATION_ONLY" or holdout.get("materialized_in_repository") is not False:
-        fail(errors, "private holdout exclusion boundary is missing")
+    controlled_evaluation = manifest.get("controlled_evaluation", {})
+    if (
+        controlled_evaluation.get("usage_class") != "CONTROLLED_EVALUATION"
+        or controlled_evaluation.get("bound_to_architecture") is not True
+        or controlled_evaluation.get("materialized_in_repository") is not False
+        or controlled_evaluation.get("known_exposed_case_ids") != ["H001"]
+        or controlled_evaluation.get("clean_unseen_case_count") != 59
+    ):
+        fail(errors, "controlled evaluation binding is missing or incomplete")
     forbidden_names = {"PRIVATE_CHALLENGE_60_NO_ANSWERS.jsonl", "ANSWER_KEY_SEPARATE.jsonl"}
     if any(path.name in forbidden_names for path in base.rglob("*")):
-        fail(errors, "private challenge or answer key was materialized")
-    if manifest.get("training_boundary", {}).get("current_ceta_curriculum_automatically_modified") is not False:
-        fail(errors, "raw supplied material must not claim automatic structured-curriculum conversion")
+        fail(errors, "controlled evaluation payload entered the public material directory")
+    if boundary.get("current_ceta_curriculum_automatically_modified") is not True:
+        fail(errors, "material manifest does not acknowledge the generated v3 curriculum")
 
     if errors:
         print("CETA ARCHITECTURE MATERIAL VALIDATION: FAIL")
@@ -118,7 +161,11 @@ def main() -> None:
         raise SystemExit(1)
     print("CETA ARCHITECTURE MATERIAL VALIDATION: PASS")
     print(f"files={len(expected_paths)} sections={record_counts['codex_sections']} templates={record_counts['section_situational_templates']}")
-    print(f"public_scenarios={record_counts['public_scenarios']} defensive_behaviors=200 private_holdout_materialized=false")
+    print(
+        f"public_scenarios={record_counts['public_scenarios']} defensive_behaviors=200 "
+        f"derivation_eligible_sources={expected_usage_counts[STRUCTURED_DERIVATION_ELIGIBLE]} "
+        "controlled_evaluation_bound=true"
+    )
 
 
 if __name__ == "__main__":

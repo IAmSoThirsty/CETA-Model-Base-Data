@@ -215,6 +215,8 @@ class ConstitutionalVM:
         claim = self._active(o["claim_ref"], c, "CLAIM")
         if claim.content.get("status") != "ACTIVE":
             raise _Deny("CLAIM_NOT_ACTIVE")
+        if claim.content.get("belief_creation_allowed", True) is not True:
+            raise _Deny("BELIEF_CREATION_NOT_ALLOWED")
         obj = EpistemicObject.create(
             object_id=o["belief_id"],
             object_type="BELIEF",
@@ -482,6 +484,14 @@ class ConstitutionalVM:
         evidence = self._active(o["evidence_ref"], c, "EVIDENCE")
         if evidence.content.get("status") != "ADMITTED":
             raise _Deny("RELATION_REQUIRES_ADMITTED_EVIDENCE")
+        declared_relation = evidence.content.get("relation_kind")
+        expected_relation = {
+            "support_refs": "Support",
+            "contradiction_refs": "Contradict",
+            "undercut_refs": "Undercut",
+        }[relation]
+        if declared_relation is not None and declared_relation != expected_relation:
+            raise _Deny("EVIDENCE_RELATION_MISMATCH")
         content = belief.content
         refs = list(content.get(relation, []))
         if evidence.object_id in refs:

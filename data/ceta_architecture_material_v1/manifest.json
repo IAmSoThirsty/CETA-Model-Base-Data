@@ -1,4 +1,20 @@
 {
+  "controlled_evaluation": {
+    "answer_count": 60,
+    "answer_key_sha256": "0976c401b94e2d99c630256ec212fd83ff1f195f5e968cecc8f2dc5a9cf2738d",
+    "archive_declared_status": "PRIVATE_EVALUATION_ONLY",
+    "bound_to_architecture": true,
+    "case_count": 60,
+    "challenge_sha256": "a2d650278c17dc015d57da6db1fa7628674035621f9a2be5972e766b5105d9d0",
+    "clean_unseen_case_count": 59,
+    "known_exposed_case_ids": [
+      "H001"
+    ],
+    "materialized_in_repository": false,
+    "note": "The challenge and answer records are integrated through a hash-verified evaluator staging path; they are not optimizer inputs or public Git payloads.",
+    "staging_path": "data/ceta_controlled_evaluation (gitignored)",
+    "usage_class": "CONTROLLED_EVALUATION"
+  },
   "counts": {
     "ceta_operations_ranked": 23,
     "codex_sections": 406,
@@ -20,142 +36,149 @@
     {
       "path": "evaluation/aegis_safety_taxonomy.json",
       "sha256": "df39a057e44b2d2621ee337035d3cbc62bbce741bca5bac867415a3fcb2ef2b0",
-      "size_bytes": 642
+      "size_bytes": 642,
+      "source_usage": "STRUCTURED_DERIVATION_ELIGIBLE"
     },
     {
       "path": "evaluation/beavertails_harm_categories.json",
       "sha256": "e1173e25ce9ab667c97b53af8eec0af0cc778b7dc532cef6707bb22320c160be",
-      "size_bytes": 487
+      "size_bytes": 487,
+      "source_usage": "STRUCTURED_DERIVATION_ELIGIBLE"
     },
     {
       "path": "evaluation/jbb_benign_behaviors.csv",
       "sha256": "b51ed0d426dfd642a0bd7c4bf7a2713a6cf58b450342d3792101c84bea05697d",
-      "size_bytes": 20571
+      "size_bytes": 20571,
+      "source_usage": "STRUCTURED_DERIVATION_ELIGIBLE"
     },
     {
       "path": "evaluation/jbb_harmful_behaviors.csv",
       "sha256": "d7ac575536c40fb97e95de54363af072e6e9293764d47f1e74afce6c6778c018",
-      "size_bytes": 23113
+      "size_bytes": 23113,
+      "source_usage": "STRUCTURED_DERIVATION_ELIGIBLE"
     },
     {
       "path": "evaluation/mitre_atlas_release_index.json",
       "sha256": "1a682d2064b83d9c2f8dac52802a02efc881cb18bbf6314a70ee8c84af8cbdc2",
-      "size_bytes": 1215
+      "size_bytes": 1215,
+      "source_usage": "STRUCTURED_DERIVATION_ELIGIBLE"
     },
     {
       "path": "evaluation/owasp_dsgai_risk_taxonomy.json",
       "sha256": "86db15a0977439b4e3bebb5a9885649d8b481c17333aacd845e7eaf87b1fc80a",
-      "size_bytes": 1823
+      "size_bytes": 1823,
+      "source_usage": "STRUCTURED_DERIVATION_ELIGIBLE"
     },
     {
       "path": "evaluation/purplellama_autopatch_samples.json",
       "sha256": "d2988eafc0bd2184b9887f73a0e31b62b3812095371fe8d851bfb3c55ed71471",
-      "size_bytes": 182
+      "size_bytes": 182,
+      "source_usage": "STRUCTURED_DERIVATION_ELIGIBLE"
     },
     {
       "path": "governance/operation_risk_ranking.json",
       "sha256": "da24a60682cc1ed5d5fb76a7a626b25d991352779aaa0afe8ba3f6d168ac7f2f",
-      "size_bytes": 8823
+      "size_bytes": 8823,
+      "source_usage": "STRUCTURED_DERIVATION_ELIGIBLE"
     },
     {
       "path": "governance/semantic_equivalence_by_operation.json",
       "sha256": "7bea4a858ea80f26cd18109041fe4405da05a6c78cdada11c2a69a594eb75156",
-      "size_bytes": 4097
+      "size_bytes": 4097,
+      "source_usage": "STRUCTURED_DERIVATION_ELIGIBLE"
     },
     {
       "path": "maps/high_value_stewardship_section_map.csv",
       "sha256": "8480c6b5d7b0902e56ea715fb58241ddbdbea3f1bfec3225841458652bfa4b3f",
-      "size_bytes": 21882
+      "size_bytes": 21882,
+      "source_usage": "PROVENANCE_OR_CONSTRAINT_ONLY"
     },
     {
       "path": "maps/section_dependency_edges.csv",
       "sha256": "b9a8a0726a5b2d0a62e5bb56ed17dec0a15b6179d5382534b2b045060a2c4b39",
-      "size_bytes": 183554
+      "size_bytes": 183554,
+      "source_usage": "PROVENANCE_OR_CONSTRAINT_ONLY"
     },
     {
       "path": "maps/section_role_matrix.csv",
       "sha256": "55cd431ecde0d33f0f4a99605789bb20109dff6b5d02b3f6c19f28bba59881e2",
-      "size_bytes": 81009
+      "size_bytes": 81009,
+      "source_usage": "PROVENANCE_OR_CONSTRAINT_ONLY"
     },
     {
       "path": "mission/DEPLOYMENT_BOUNDARY.json",
       "sha256": "b974a54d0b78ba7c859b81738f3ff7f8e69c3f2fd44a347f916f97dc82b8cfa9",
-      "size_bytes": 1360
+      "size_bytes": 1360,
+      "source_usage": "PROVENANCE_OR_CONSTRAINT_ONLY"
     },
     {
       "path": "mission/MISSION_PARAGRAPH.txt",
       "sha256": "0341bf51f8a0e850e4d9d9991578d8cd1a880f6e59dab49da2a38760d54f18f6",
-      "size_bytes": 1255
+      "size_bytes": 1255,
+      "source_usage": "PROVENANCE_OR_CONSTRAINT_ONLY"
     },
     {
       "path": "provenance/defensive_license_matrix.csv",
       "sha256": "ce278438d4aaf75740326a3467386209fcf00c63900162f76ff1c683680364a0",
-      "size_bytes": 1524
+      "size_bytes": 1524,
+      "source_usage": "PROVENANCE_OR_CONSTRAINT_ONLY"
     },
     {
       "path": "provenance/defensive_remote_artifacts.csv",
       "sha256": "0c32de1ed8df9e0884b48aa0ba878e43c25458a3c907e953a5e1779dc2d23863",
-      "size_bytes": 1671
+      "size_bytes": 1671,
+      "source_usage": "PROVENANCE_OR_CONSTRAINT_ONLY"
     },
     {
       "path": "provenance/defensive_retrieval_status.json",
       "sha256": "80e3372955f07abdfde3718514a9bb6f3d273c3312f3fdbc7d235e201944aec3",
-      "size_bytes": 1594
+      "size_bytes": 1594,
+      "source_usage": "PROVENANCE_OR_CONSTRAINT_ONLY"
     },
     {
       "path": "provenance/defensive_sources.csv",
       "sha256": "a248354c158a26931b9072c0b2d369caf384d8975efb39ca8069e3d60fe281cb",
-      "size_bytes": 2760
+      "size_bytes": 2760,
+      "source_usage": "PROVENANCE_OR_CONSTRAINT_ONLY"
     },
     {
       "path": "training/public_scenarios.jsonl",
       "sha256": "03c2434d973faedc2a1c2792874653cbc508e253576c33a6fbd52944d5411764",
-      "size_bytes": 30913
+      "size_bytes": 30913,
+      "source_usage": "STRUCTURED_DERIVATION_ELIGIBLE"
     },
     {
       "path": "training/role_conditioned_cases_84.jsonl",
       "sha256": "8a5aa70f621abcaf1406ec34c6f4240dd4f4d6c90ae4197fc1af89ba19011311",
-      "size_bytes": 73878
+      "size_bytes": 73878,
+      "source_usage": "STRUCTURED_DERIVATION_ELIGIBLE"
     },
     {
       "path": "training/role_contracts_21.json",
       "sha256": "6177fc8ed7b47b7170d958f394dc0e4ec65148caf6ac0eeab2b3c49fc4f28250",
-      "size_bytes": 37822
+      "size_bytes": 37822,
+      "source_usage": "STRUCTURED_DERIVATION_ELIGIBLE"
     },
     {
       "path": "training/section_awareness_406.jsonl",
       "sha256": "3042714eb01124650c2e6c28b3f7dd6bc401f99495a77205598e7f54bbf8ae31",
-      "size_bytes": 1641820
+      "size_bytes": 1641820,
+      "source_usage": "STRUCTURED_DERIVATION_ELIGIBLE"
     },
     {
       "path": "training/section_situational_templates_1624.jsonl",
       "sha256": "7cc44e841badbbfde069f95cc0efc59a914c1ec34925d43477e885fa315eee9b",
-      "size_bytes": 3695230
+      "size_bytes": 3695230,
+      "source_usage": "STRUCTURED_DERIVATION_ELIGIBLE"
     },
     {
       "path": "training/unacceptable_failures.json",
       "sha256": "55de636301126fb799c3f405611218e220366ed50dc7659962aad614cf7addc9",
-      "size_bytes": 3856
+      "size_bytes": 3856,
+      "source_usage": "STRUCTURED_DERIVATION_ELIGIBLE"
     }
   ],
-  "private_holdout": {
-    "allowed_use": "One-time or deliberately scheduled independent evaluation only after model, curriculum, and operation-specific thresholds are frozen.",
-    "answer_key_sha256": "0976c401b94e2d99c630256ec212fd83ff1f195f5e968cecc8f2dc5a9cf2738d",
-    "challenge_sha256": "a2d650278c17dc015d57da6db1fa7628674035621f9a2be5972e766b5105d9d0",
-    "materialized_in_repository": false,
-    "note": "Only this hash-bound exclusion manifest is materialized; challenge and answer records remain outside training and Git delivery.",
-    "prohibited_uses": [
-      "training",
-      "curriculum_generation",
-      "retrieval_augmented_training",
-      "threshold_tuning_after_freeze",
-      "prompt engineering against exact cases"
-    ],
-    "scenario_count": 60,
-    "status": "PRIVATE_EVALUATION_ONLY",
-    "structural_difference": "Cases use multi-event histories, common-cause failures, role/authority conflicts, recovery forks, measurement-vs-model defects, and legal-but-undesirable alternatives rather than copying the 20 public cases."
-  },
-  "schema_version": 1,
+  "schema_version": 3,
   "source_archives": {
     "defensive_knowledge_eval_stack": {
       "filename": "AI_Defensive_Knowledge_Eval_Stack_FULL.zip",
@@ -169,16 +192,50 @@
   },
   "training_boundary": {
     "allowed_now": [
-      "source-aware curriculum design",
-      "risk and semantic-equivalence policy derivation",
-      "role and lifecycle applicability adjudication"
+      "deterministic structured curriculum derivation from eligible public human-relations records",
+      "deterministic structured curriculum derivation from eligible public defensive records",
+      "risk and semantic-equivalence policy binding",
+      "controlled evaluation through the independent evaluator staging path"
     ],
-    "current_ceta_curriculum_automatically_modified": false,
-    "forbidden_now": [
-      "direct concatenation into ceta_curriculum_v2",
-      "training on private holdout or defensive evaluation records",
+    "current_ceta_curriculum_automatically_modified": true,
+    "optimizer_exclusions": [
+      "passing raw prose or source-content files directly to the optimizer",
+      "passing controlled evaluation questions or answer keys to the optimizer",
+      "passing evaluator outputs back into threshold tuning after freeze",
       "treating source prose as an executable authority grant"
     ],
-    "reason": "Supplied prose/design records require atomic CETA transition adjudication before conversion to structured state-to-transition cases."
+    "optimizer_requires_derived_structured_cases": true,
+    "reason": "Public source records contribute deterministic source-derived topology and provenance assignments; only structured state-to-transition cases are optimizer inputs.",
+    "source_usage_by_path": {
+      "evaluation/aegis_safety_taxonomy.json": "STRUCTURED_DERIVATION_ELIGIBLE",
+      "evaluation/beavertails_harm_categories.json": "STRUCTURED_DERIVATION_ELIGIBLE",
+      "evaluation/jbb_benign_behaviors.csv": "STRUCTURED_DERIVATION_ELIGIBLE",
+      "evaluation/jbb_harmful_behaviors.csv": "STRUCTURED_DERIVATION_ELIGIBLE",
+      "evaluation/mitre_atlas_release_index.json": "STRUCTURED_DERIVATION_ELIGIBLE",
+      "evaluation/owasp_dsgai_risk_taxonomy.json": "STRUCTURED_DERIVATION_ELIGIBLE",
+      "evaluation/purplellama_autopatch_samples.json": "STRUCTURED_DERIVATION_ELIGIBLE",
+      "governance/operation_risk_ranking.json": "STRUCTURED_DERIVATION_ELIGIBLE",
+      "governance/semantic_equivalence_by_operation.json": "STRUCTURED_DERIVATION_ELIGIBLE",
+      "maps/high_value_stewardship_section_map.csv": "PROVENANCE_OR_CONSTRAINT_ONLY",
+      "maps/section_dependency_edges.csv": "PROVENANCE_OR_CONSTRAINT_ONLY",
+      "maps/section_role_matrix.csv": "PROVENANCE_OR_CONSTRAINT_ONLY",
+      "mission/DEPLOYMENT_BOUNDARY.json": "PROVENANCE_OR_CONSTRAINT_ONLY",
+      "mission/MISSION_PARAGRAPH.txt": "PROVENANCE_OR_CONSTRAINT_ONLY",
+      "provenance/defensive_license_matrix.csv": "PROVENANCE_OR_CONSTRAINT_ONLY",
+      "provenance/defensive_remote_artifacts.csv": "PROVENANCE_OR_CONSTRAINT_ONLY",
+      "provenance/defensive_retrieval_status.json": "PROVENANCE_OR_CONSTRAINT_ONLY",
+      "provenance/defensive_sources.csv": "PROVENANCE_OR_CONSTRAINT_ONLY",
+      "training/public_scenarios.jsonl": "STRUCTURED_DERIVATION_ELIGIBLE",
+      "training/role_conditioned_cases_84.jsonl": "STRUCTURED_DERIVATION_ELIGIBLE",
+      "training/role_contracts_21.json": "STRUCTURED_DERIVATION_ELIGIBLE",
+      "training/section_awareness_406.jsonl": "STRUCTURED_DERIVATION_ELIGIBLE",
+      "training/section_situational_templates_1624.jsonl": "STRUCTURED_DERIVATION_ELIGIBLE",
+      "training/unacceptable_failures.json": "STRUCTURED_DERIVATION_ELIGIBLE"
+    },
+    "source_usage_counts": {
+      "PROVENANCE_OR_CONSTRAINT_ONLY": 9,
+      "STRUCTURED_DERIVATION_ELIGIBLE": 15
+    },
+    "source_usage_policy_version": 2
   }
 }

@@ -10,13 +10,17 @@ It does not mean the resulting model is good enough to promote. The included str
 
 The network receives structured epistemic state and ranks proposals from a deterministic target-blind CETA action space. The supervised target is used for loss only; it is not supplied as an inference candidate. The policy API does not accept caller-supplied candidate sets during normal inference.
 
+For every v3 reference world, the target-blind generator now exposes exactly one VM-legal transition. Structured relation type, belief-creation eligibility, evidence lifecycle, scope, and split preconditions eliminate arbitrary same-state labels; source-context anchors are prohibited from becoming candidates. This is a bounded reference-world property, not a claim that arbitrary future worlds always have one legal next action.
+
 This proves the reference model can be trained and evaluated as a transition-selection system. It does not prove general reasoning, unlimited compositional generalization, superior performance to LLM/neuro-symbolic baselines, or AGI.
 
 ## Curriculum claim
 
-The included v2 curriculum is synthetic and abstract. Family-level split isolation prevents identity-renamed variants of one structural family from crossing train/validation/held-out partitions. Manifest and byte hashes bind the split at training/evaluation time.
+The default v3 curriculum is structured and source-bound. It assigns every eligible public human-relations and defensive record to exactly one family-level source group, while operation targets remain explicit VM-governed recipes rather than guessed labels from prose. Parent sections/roles and their derivatives are indivisible source lineages, so neither source groups nor obvious derivative lineages cross train/validation/held-out partitions. Manifest and byte hashes bind the split and source sidecars at training/evaluation time. The unchanged v2 curriculum remains a reproducible baseline.
 
-This does not prove absence of every possible semantic similarity across different families, nor does synthetic performance establish real-world performance.
+The current encoder observes source-derived projected CETA topology, not the raw source prose. Operation-derived risk/accuracy fields are not projected into model input. The deterministic source assignments are not described as reviewed semantic adjudications, and the 5,520 VM-authored hostile alternatives are not described as source-authored. This does not prove language understanding, absence of every possible semantic similarity across different families, or real-world performance. Public defensive records used for v3 are trained-on and are not claimed as unseen evaluation.
+
+The controlled 60-case evaluation set is bound and can be staged for independent evaluation without entering public Git or optimizer input. Case `H001` is recorded as previously exposed; only the remaining 59 support a clean unseen claim until that case is replaced.
 
 ## Grounding claim
 
@@ -28,7 +32,7 @@ The included bounded state exploration exhaustively explores only its declared f
 
 ## Production claim
 
-No production HSM/TPM key custody, Byzantine consensus, distributed training control plane, production external-effect adapter set, or safety-critical certification is claimed.
+No production HSM/TPM key custody, Byzantine consensus, distributed training control plane, multi-GPU trainer, production external-effect adapter set, or safety-critical certification is claimed. The H100 launcher verifies one already-active H100 and cannot activate hardware.
 
 ## Source claim
 

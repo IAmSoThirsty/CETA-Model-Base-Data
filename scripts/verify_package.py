@@ -5,7 +5,8 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXCLUDED_PARTS = {"__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache", ".git"}
+EXCLUDED_FILES = {"data/ceta_curriculum_v3/source_adjudications.jsonl"}
+EXCLUDED_PARTS = {"__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache", ".git", "ceta_controlled_evaluation"}
 
 
 def sha256(path: Path) -> str:
@@ -27,7 +28,7 @@ def visible_files() -> set[str]:
         if not path.is_file() or path.is_symlink():
             continue
         rel=path.relative_to(ROOT)
-        if any(part in EXCLUDED_PARTS for part in rel.parts) or path.suffix in {".pyc", ".pyo"}:
+        if rel.as_posix() in EXCLUDED_FILES or any(part in EXCLUDED_PARTS for part in rel.parts) or path.suffix in {".pyc", ".pyo"}:
             continue
         result.add(rel.as_posix())
     return result
@@ -35,6 +36,9 @@ def visible_files() -> set[str]:
 
 def main() -> None:
     errors=[]
+    controlled_root=ROOT/"data"/"ceta_controlled_evaluation"
+    if not (ROOT/".git").exists() and controlled_root.exists() and any(controlled_root.rglob("*")):
+        errors.append("controlled evaluation payload is present in a release/extracted package")
     manifest_path=ROOT/"PACKAGE_MANIFEST.json"
     sums_path=ROOT/"SHA256SUMS"
     if not manifest_path.is_file() or not sums_path.is_file():

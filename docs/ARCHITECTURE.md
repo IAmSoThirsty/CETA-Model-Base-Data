@@ -102,7 +102,8 @@ Exogenous structured input that does not yet exist in canonical state is carried
 ## Governed training path
 
 ```text
-curriculum v2
+source-bound curriculum v3
+   -> source catalog + deterministic lineage-safe family assignments
    -> family/hash-bound train split
    -> target-blind action space + hostile alternatives
    -> transition losses
@@ -116,3 +117,5 @@ curriculum v2
 ```
 
 A mutable latest-checkpoint pointer is a convenience cache only. Uncheckpointed optimizer work after a crash cannot silently become committed training history.
+
+Additional epochs are represented by a ledger-bound continuation plan with a fixed base checkpoint and final epoch/optimizer-step target. The reference launcher verifies one already-active H100; hardware activation and multi-GPU orchestration remain outside this repository.

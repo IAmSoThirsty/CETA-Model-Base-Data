@@ -42,6 +42,8 @@ class WorldCurriculumArtifactWriter:
         cases: Iterable[TransitionTrainingCase],
         *,
         generator_id: str = 'CETA_WORLD_CURRICULUM/v2',
+        bound_artifacts: Mapping[str, str | Path] | None = None,
+        manifest_metadata: Mapping[str, object] | None = None,
     ) -> dict:
         destination=Path(root)
         destination.mkdir(parents=True,exist_ok=True)
@@ -104,6 +106,25 @@ class WorldCurriculumArtifactWriter:
             'operation_counts':dict(sorted(operation_counts.items())),
             'failure_tag_counts':dict(sorted(failure_tag_counts.items())),
         }
+        if bound_artifacts:
+            artifact_records={}
+            for artifact_id, artifact_value in sorted(bound_artifacts.items()):
+                artifact=Path(artifact_value)
+                if artifact.parent.resolve()!=destination.resolve():
+                    raise ValueError(f'bound curriculum artifact must be stored in the curriculum root: {artifact}')
+                if not artifact.is_file() or artifact.name in {'manifest.json','splits.json','train.jsonl','validation.jsonl','heldout.jsonl'}:
+                    raise ValueError(f'invalid bound curriculum artifact: {artifact}')
+                artifact_records[str(artifact_id)]={
+                    'path':artifact.name,
+                    'size_bytes':artifact.stat().st_size,
+                    'sha256':_sha256(artifact),
+                }
+            manifest['bound_artifacts']=artifact_records
+        if manifest_metadata:
+            overlap=set(manifest)&set(manifest_metadata)
+            if overlap:
+                raise ValueError(f'manifest metadata collides with reserved fields: {sorted(overlap)}')
+            manifest.update(dict(manifest_metadata))
         manifest_path=destination/'manifest.json'
         manifest_path.write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n',encoding='utf-8',newline='\n')
         return manifest

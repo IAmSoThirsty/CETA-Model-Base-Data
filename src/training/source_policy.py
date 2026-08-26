@@ -10,9 +10,8 @@ class TrainingSourceViolation(ValueError):
     pass
 
 
-# Bound from the locally indexed canonical split-policy evidence. These paths are
-# governance/evaluation material and may inform the runtime, but may not become
-# transition-policy training examples.
+# Evaluator/runtime paths are separate from optimizer inputs. This is a role
+# boundary, not an instruction imported from the supplied documents.
 NEVER_TRAIN_PATTERNS: tuple[str, ...] = (
     "evaluation/**",
     "history/**",
@@ -24,7 +23,23 @@ NEVER_TRAIN_PATTERNS: tuple[str, ...] = (
     "views/evaluation/**",
 )
 
-FORBIDDEN_MATERIALIZATIONS: tuple[str, ...] = (
+# Public source material is allowed to inform deterministic structured
+# derivation, but it is not itself optimizer input. Only the resulting
+# state/transition cases may be passed to the optimizer.
+ARCHITECTURE_MATERIAL_ROOT = "data/ceta_architecture_material_v1"
+STRUCTURED_DERIVATION_PATTERNS: tuple[str, ...] = (
+    f"{ARCHITECTURE_MATERIAL_ROOT}/training/**",
+    f"{ARCHITECTURE_MATERIAL_ROOT}/evaluation/**",
+    f"{ARCHITECTURE_MATERIAL_ROOT}/governance/**",
+)
+CONSTRAINT_ONLY_PATTERNS: tuple[str, ...] = (
+    f"{ARCHITECTURE_MATERIAL_ROOT}/maps/**",
+    f"{ARCHITECTURE_MATERIAL_ROOT}/mission/**",
+    f"{ARCHITECTURE_MATERIAL_ROOT}/provenance/**",
+    f"{ARCHITECTURE_MATERIAL_ROOT}/manifest.json",
+)
+
+CONTROLLED_EVALUATION_PATTERNS: tuple[str, ...] = (
     "runtime_state.jsonl",
     "stable_knowledge.jsonl",
     "implementation_reference.jsonl",
@@ -32,15 +47,43 @@ FORBIDDEN_MATERIALIZATIONS: tuple[str, ...] = (
     "implementation_code_reference.jsonl",
     "heldout_sources/**",
     "source_archive/**",
-    "data/ceta_architecture_material_v1/**",
     "**/private_holdout/**",
+    "**/PRIVATE_EVALUATION_ONLY/**",
+    "**/EVALUATOR_ONLY/**",
     "PRIVATE_CHALLENGE_60_NO_ANSWERS.jsonl",
     "ANSWER_KEY_SEPARATE.jsonl",
 )
 
+STRUCTURED_DERIVATION_ELIGIBLE = "STRUCTURED_DERIVATION_ELIGIBLE"
+PROVENANCE_OR_CONSTRAINT_ONLY = "PROVENANCE_OR_CONSTRAINT_ONLY"
+CONTROLLED_EVALUATION = "CONTROLLED_EVALUATION"
+# Backward-compatible symbol for callers; new manifests use the clearer name.
+PRIVATE_EVALUATION_ONLY = CONTROLLED_EVALUATION
+EVALUATOR_ONLY = "EVALUATOR_ONLY"
+UNCLASSIFIED = "UNCLASSIFIED"
+
 
 def _norm(path: str) -> str:
     return path.replace("\\", "/").lstrip("./")
+
+
+def source_usage_class(path: str) -> str:
+    """Classify a source path without treating public material as optimizer data."""
+    normalized = _norm(path)
+    basename = normalized.rsplit("/", 1)[-1]
+    for pattern in CONTROLLED_EVALUATION_PATTERNS:
+        if fnmatch(normalized, pattern) or fnmatch(basename, pattern):
+            return CONTROLLED_EVALUATION
+    for pattern in NEVER_TRAIN_PATTERNS:
+        if fnmatch(normalized, pattern):
+            return EVALUATOR_ONLY
+    for pattern in STRUCTURED_DERIVATION_PATTERNS:
+        if fnmatch(normalized, pattern):
+            return STRUCTURED_DERIVATION_ELIGIBLE
+    for pattern in CONSTRAINT_ONLY_PATTERNS:
+        if fnmatch(normalized, pattern):
+            return PROVENANCE_OR_CONSTRAINT_ONLY
+    return UNCLASSIFIED
 
 
 def forbidden_reason(path: str) -> str | None:
@@ -48,9 +91,15 @@ def forbidden_reason(path: str) -> str | None:
     for pattern in NEVER_TRAIN_PATTERNS:
         if fnmatch(normalized, pattern):
             return f"never_train:{pattern}"
-    for pattern in FORBIDDEN_MATERIALIZATIONS:
+    for pattern in CONTROLLED_EVALUATION_PATTERNS:
         if fnmatch(normalized, pattern) or fnmatch(normalized.rsplit("/", 1)[-1], pattern):
-            return f"forbidden_materialization:{pattern}"
+            return f"controlled_evaluation_not_optimizer_input:{pattern}"
+    for pattern in STRUCTURED_DERIVATION_PATTERNS:
+        if fnmatch(normalized, pattern):
+            return f"raw_source_requires_structured_derivation:{pattern}"
+    for pattern in CONSTRAINT_ONLY_PATTERNS:
+        if fnmatch(normalized, pattern):
+            return f"provenance_or_constraint_not_optimizer_input:{pattern}"
     return None
 
 
@@ -61,6 +110,24 @@ def validate_training_sources(paths: Iterable[str]) -> tuple[str, ...]:
     if violations:
         detail = "; ".join(f"{p} -> {r}" for p, r in violations)
         raise TrainingSourceViolation(f"training source isolation violation: {detail}")
+    return normalized
+
+
+def validate_structured_derivation_sources(paths: Iterable[str]) -> tuple[str, ...]:
+    """Accept only public records approved to derive structured curriculum cases.
+
+    This is a separate boundary from :func:`validate_training_sources`: passing
+    this check authorizes deterministic derivation, not direct optimizer use.
+    """
+    normalized = tuple(_norm(p) for p in paths)
+    violations = [
+        (path, source_usage_class(path))
+        for path in normalized
+        if source_usage_class(path) != STRUCTURED_DERIVATION_ELIGIBLE
+    ]
+    if violations:
+        detail = "; ".join(f"{path} -> {usage}" for path, usage in violations)
+        raise TrainingSourceViolation(f"structured derivation source violation: {detail}")
     return normalized
 
 

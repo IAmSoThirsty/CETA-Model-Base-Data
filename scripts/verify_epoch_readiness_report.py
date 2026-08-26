@@ -12,7 +12,7 @@ from history import domain_hash
 from training import file_sha256
 
 DEFAULT_REPORT=ROOT/'evidence/EPOCH_READINESS_REPORT.json'
-DATA=ROOT/'data/ceta_curriculum_v2'
+DATA=ROOT/'data/ceta_curriculum_v3'
 
 
 def fail(msg: str) -> None:
@@ -33,11 +33,11 @@ def main() -> None:
     if report.get('status')!='PASS': fail('status is not PASS')
 
     dataset=report.get('dataset',{})
-    required={
-        'train':('train.jsonl',552),
-        'validation':('validation.jsonl',69),
-        'heldout':('heldout.jsonl',69),
-    }
+    manifest=json.loads((DATA/'manifest.json').read_text(encoding='utf-8'))
+    required={split:(manifest['files'][split]['path'],manifest['files'][split]['count']) for split in ('train','validation','heldout')}
+    if dataset.get('generator_id')!=manifest.get('generator_id'): fail('curriculum generator mismatch')
+    if dataset.get('manifest_sha256')!=file_sha256(DATA/'manifest.json'): fail('curriculum manifest byte hash mismatch')
+    if dataset.get('splits_sha256')!=file_sha256(DATA/'splits.json'): fail('curriculum splits byte hash mismatch')
     for split,(name,count) in required.items():
         path=DATA/name
         if dataset.get(f'{split}_cases')!=count: fail(f'{split} case-count mismatch')
@@ -46,14 +46,17 @@ def main() -> None:
     claim=report.get('claim_boundary',{})
     if claim.get('epoch_pipeline_ready') is not True: fail('epoch pipeline readiness flag absent')
     if claim.get('target_blind_action_space') is not True: fail('target-blind action-space flag absent')
+    if claim.get('unique_vm_legal_generated_target') is not True: fail('unique VM-legal generated target flag absent')
     if claim.get('normal_inference_accepts_caller_candidates') is not False: fail('caller candidate inference surface not denied')
     if claim.get('production_model_quality_claimed') is not False: fail('production quality claim must remain false')
 
     evidence=report.get('training_evidence',{})
-    if evidence.get('optimizer_receipts')!=552 or evidence.get('exact_train_split_coverage') is not True:
+    if evidence.get('optimizer_receipts')!=required['train'][1] or evidence.get('exact_train_split_coverage') is not True:
         fail('optimizer receipt coverage mismatch')
     if evidence.get('evaluation_leakage_detected') is not False: fail('evaluation leakage flag is not false')
     if evidence.get('target_candidate_injection') is not False: fail('target candidate injection flag is not false')
+    if evidence.get('unique_vm_legal_generated_target') is not True: fail('unique generated-target evidence is absent')
+    if evidence.get('source_context_anchors_actionable') is not False: fail('source context anchor action-space boundary mismatch')
     if evidence.get('checkpoint_required_before_successful_return') is not True: fail('mandatory checkpoint flag absent')
     if evidence.get('resume_authority')!='append-only CHECKPOINT_SAVED ledger event': fail('resume authority mismatch')
 
@@ -65,13 +68,19 @@ def main() -> None:
 
     for split in ('validation','heldout'):
         metrics=report.get(split,{})
-        if metrics.get('case_count')!=69: fail(f'{split} evaluation case count mismatch')
+        if metrics.get('case_count')!=required[split][1]: fail(f'{split} evaluation case count mismatch')
         legal=float(metrics.get('legal_selection_rate',-1.0))
         if not 0.0 <= legal <= 1.0: fail(f'{split} legal selection rate out of range')
         if metrics.get('checkpoint_sha256')!=report['resume']['final_checkpoint']['sha256']:
             fail(f'{split} evaluation is not checkpoint-bound')
     if report.get('promotion_gate',{}).get('outcome') not in {'PROMOTED','QUARANTINED'}:
         fail('promotion outcome missing')
+    if claim.get('raw_source_prose_trained') is not False: fail('raw source prose training boundary is not explicit')
+    if claim.get('public_defensive_structural_derivatives_trained') is not True: fail('public defensive structural training is not recorded')
+    if claim.get('controlled_evaluation_bound') is not True: fail('controlled evaluation binding is absent')
+    if claim.get('controlled_evaluation_optimizer_trained') is not False: fail('controlled evaluation optimizer boundary is not explicit')
+    if claim.get('known_exposed_evaluation_case_count') != 1: fail('known exposed evaluation count mismatch')
+    if claim.get('clean_unseen_evaluation_case_count') != 59: fail('clean unseen evaluation count mismatch')
 
     policy=report.get('promotion_gate',{}).get('policy',{})
     operation_floors=policy.get('operation_target_accuracy')

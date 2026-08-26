@@ -5,7 +5,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "SHA256SUMS"
-EXCLUDED_PARTS = {"__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache", ".git"}
+EXCLUDED_FILES = {"data/ceta_curriculum_v3/source_adjudications.jsonl"}
+EXCLUDED_PARTS = {"__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache", ".git", "ceta_controlled_evaluation"}
 
 
 def sha256(path: Path) -> str:
@@ -21,7 +22,7 @@ def main() -> None:
     paths = (x for x in ROOT.rglob("*") if x.is_file() and not x.is_symlink())
     for path in sorted(paths, key=lambda item: item.relative_to(ROOT).as_posix()):
         rel=path.relative_to(ROOT)
-        if rel.as_posix()=="SHA256SUMS" or any(part in EXCLUDED_PARTS for part in rel.parts) or path.suffix in {".pyc", ".pyo"}:
+        if rel.as_posix() == "SHA256SUMS" or rel.as_posix() in EXCLUDED_FILES or any(part in EXCLUDED_PARTS for part in rel.parts) or path.suffix in {".pyc", ".pyo"}:
             continue
         rows.append(f"{sha256(path)}  {rel.as_posix()}")
     OUT.write_text("\n".join(rows)+"\n",encoding="utf-8",newline="\n")

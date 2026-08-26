@@ -1,8 +1,11 @@
 {
   "checks": [
     "mandatory_checkpoint_api",
+    "fixed_target_epoch_continuation_api",
     "target_blind_propose_api",
     "all_targets_recoverable_without_label_injection",
+    "all_targets_unique_vm_legal_generated_transition",
+    "source_context_anchors_excluded_from_action_space",
     "location_independent_training_evidence",
     "renamed_heldout_rejected",
     "checkpoint_tamper_rejected",
@@ -15,10 +18,18 @@
     "production_model_quality_claimed": false,
     "real_world_grounding_claimed": false
   },
-  "curriculum_cases_checked": 690,
+  "curriculum_binding": {
+    "generator_id": "CETA_WORLD_CURRICULUM/v3",
+    "heldout_sha256": "209ce4963ae3cfe833cfeaa050ddf88fe62f5aca2bdf0e1f7463c931620f2338",
+    "manifest_sha256": "acfe76193fa14205206bdcd570a8eb4b4f3efb7be8cc4e42dc134008e1905bc0",
+    "splits_sha256": "43a6aa5546b34332d4ced7f6a8ca74d35f803b9c2b7a541d0e1228ac37526a87",
+    "train_sha256": "19d13d91643e89c7ec17b90ef72f5d0840c5c527b4bc54da71c1743cdf464e4d",
+    "validation_sha256": "8fef184d6aac3006829ba4de871e7005141e269f0cce21ff009b873d1c2c7301"
+  },
+  "curriculum_cases_checked": 1380,
   "gate": "CETA final integrated hostile epoch gate",
   "operation_count": 23,
-  "report_hash": "sha256:baf25aed93ec8548db9f71cb4edf502b7e90a97f4f8e76ef5cbd31c8f08c042c",
+  "report_hash": "sha256:10524483f0d023d9c6c3c3c483dd3c1f859d85b8776417b118704e8e15fe96f7",
   "schema_version": 1,
   "status": "PASS"
 }
