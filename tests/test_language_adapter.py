@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ast
 import importlib.util
+import inspect
 import json
 from pathlib import Path
 import sys
@@ -146,6 +147,8 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
             )
 
     def test_h100_training_is_strictly_deterministic_and_uses_current_loading_api(self):
+        from transformers import TrainingArguments
+
         config = json.loads((ROOT / "configs/ceta-language-adapter-qwen3-4b-h100.json").read_text(encoding="utf-8"))
         contract = TRAINER.determinism_contract(config)
         self.assertEqual(contract["algorithms"], "strict_error")
@@ -155,6 +158,11 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
         self.assertNotIn("warn_only=True", training_source)
         self.assertNotIn("torch_dtype=", training_source + inference_source)
         self.assertNotIn('attn_implementation="sdpa"', training_source + inference_source)
+        argument_names = set(inspect.signature(TrainingArguments).parameters)
+        self.assertLessEqual(
+            set(TRAINER.training_arguments_kwargs(config, Path("checkpoints"), int(config["seed"]))),
+            argument_names,
+        )
         launcher = (ROOT / "scripts/run_h100_language_epoch.sh").read_text(encoding="utf-8")
         self.assertIn("--training-only", launcher)
         self.assertIn("no controlled evaluator was opened", launcher)

@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 199,
-  "content_root": "sha256:6ba81963943d231385475ca5c63f919cd4d297d32270a86d6fba631432e0d37f",
+  "content_root": "sha256:e3d9f5b0833888ecf76b180fd71de3a8b81d4690ba0818befa7ab125d8782690",
   "files": [
     {
       "path": ".gitattributes",
@@ -532,8 +532,8 @@
     },
     {
       "path": "scripts/train_language_adapter.py",
-      "size": 15721,
-      "sha256": "a7ad21a04820b18d111a4f1a30bb94c10f6c03883ec4af90b1e9da656608ffcc"
+      "size": 15938,
+      "sha256": "d3d5094c00d54e43cb92e473a1ab45012f5d924548b6f5ddf1919d177a1bfa32"
     },
     {
       "path": "scripts/validate_architecture.py",
@@ -962,8 +962,8 @@
     },
     {
       "path": "tests/test_language_adapter.py",
-      "size": 10587,
-      "sha256": "8c71226e0bb4e4ecad60807789ee1a0385cf00e8ee54564ab13091f77fb9de70"
+      "size": 10902,
+      "sha256": "39354ff00d6e4bf96b41d207da3afd82a1b8e69d25f33f86b73c5feb18359fde"
     },
     {
       "path": "tests/test_memory_projection.py",

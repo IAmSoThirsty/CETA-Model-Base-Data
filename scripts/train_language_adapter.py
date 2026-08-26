@@ -78,6 +78,35 @@ def determinism_contract(config: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def training_arguments_kwargs(config: dict[str, Any], checkpoint_root: Path, seed: int) -> dict[str, Any]:
+    return {
+        "output_dir": str(checkpoint_root),
+        "num_train_epochs": float(config["epochs"]),
+        "per_device_train_batch_size": int(config["per_device_train_batch_size"]),
+        "per_device_eval_batch_size": int(config["per_device_eval_batch_size"]),
+        "gradient_accumulation_steps": int(config["gradient_accumulation_steps"]),
+        "learning_rate": float(config["learning_rate"]),
+        "warmup_ratio": float(config["warmup_ratio"]),
+        "weight_decay": float(config["weight_decay"]),
+        "bf16": bool(config["bf16"]),
+        "tf32": False,
+        "gradient_checkpointing": bool(config["gradient_checkpointing"]),
+        "optim": "paged_adamw_8bit",
+        "logging_strategy": "steps",
+        "logging_steps": int(config["logging_every_steps"]),
+        "eval_strategy": "steps",
+        "eval_steps": int(config["evaluate_every_steps"]),
+        "save_strategy": "steps",
+        "save_steps": int(config["checkpoint_every_steps"]),
+        "save_total_limit": 4,
+        "load_best_model_at_end": False,
+        "report_to": [],
+        "seed": seed,
+        "data_seed": seed,
+        "remove_unused_columns": False,
+    }
+
+
 @dataclass
 class ChatDataset:
     rows: tuple[dict[str, Any], ...]
@@ -270,33 +299,7 @@ def main() -> None:
 
     checkpoint_root = run_root / "checkpoints"
     collator = AssistantOnlyCollator(tokenizer, max_length=int(config["max_length"]), torch_module=torch)
-    training_args = TrainingArguments(
-        output_dir=str(checkpoint_root),
-        overwrite_output_dir=False,
-        num_train_epochs=float(config["epochs"]),
-        per_device_train_batch_size=int(config["per_device_train_batch_size"]),
-        per_device_eval_batch_size=int(config["per_device_eval_batch_size"]),
-        gradient_accumulation_steps=int(config["gradient_accumulation_steps"]),
-        learning_rate=float(config["learning_rate"]),
-        warmup_ratio=float(config["warmup_ratio"]),
-        weight_decay=float(config["weight_decay"]),
-        bf16=bool(config["bf16"]),
-        tf32=False,
-        gradient_checkpointing=bool(config["gradient_checkpointing"]),
-        optim="paged_adamw_8bit",
-        logging_strategy="steps",
-        logging_steps=int(config["logging_every_steps"]),
-        eval_strategy="steps",
-        eval_steps=int(config["evaluate_every_steps"]),
-        save_strategy="steps",
-        save_steps=int(config["checkpoint_every_steps"]),
-        save_total_limit=4,
-        load_best_model_at_end=False,
-        report_to=[],
-        seed=seed,
-        data_seed=seed,
-        remove_unused_columns=False,
-    )
+    training_args = TrainingArguments(**training_arguments_kwargs(config, checkpoint_root, seed))
     trainer = Trainer(
         model=model,
         args=training_args,
