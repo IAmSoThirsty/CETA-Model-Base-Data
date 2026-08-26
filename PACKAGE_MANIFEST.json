@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 199,
-  "content_root": "sha256:aaef3e3ba13abac162d99c8bd285b3080c2c26603c36bc1aacaae2abc8f8e6ac",
+  "content_root": "sha256:5956fc6adb6548eed921f13c94b3a4f9350705cab29e9840bc3cf8e616710dfc",
   "files": [
     {
       "path": ".gitattributes",
@@ -27,8 +27,8 @@
     },
     {
       "path": "README.md",
-      "size": 16899,
-      "sha256": "9fdb39ba994b166db7791179780eb1524a8eb9e1b5db0e7c2a6b04450c7a3d3b"
+      "size": 16946,
+      "sha256": "d9a2167ff01be161bd7a2005dab4f75ed1573e887e1d60fe53cbae360d31ae12"
     },
     {
       "path": "STATUS.md",
@@ -277,8 +277,8 @@
     },
     {
       "path": "docs/LANGUAGE_ADAPTER.md",
-      "size": 6122,
-      "sha256": "144528f405e6bceded1d072942a4f1ab1940f1729e7be398de7d515437366957"
+      "size": 6146,
+      "sha256": "cade651885e3ee43df134711c21ce0689809da586777e9bf24c8a5f51121115c"
     },
     {
       "path": "docs/RESTART_AND_RECOVERY.md",
@@ -442,8 +442,8 @@
     },
     {
       "path": "scripts/bootstrap_language_adapter_env.sh",
-      "size": 779,
-      "sha256": "e8bad0d12f0dc75b2ac7f413fd38a601a57d7094843e9a266fc53979b5b28642"
+      "size": 1432,
+      "sha256": "8a735e8509dd0dc196cba96d79282a2b26db7ef77c4f9a0c4d028778fd7e0b4a"
     },
     {
       "path": "scripts/build_ceta_curriculum.py",
@@ -962,8 +962,8 @@
     },
     {
       "path": "tests/test_language_adapter.py",
-      "size": 10279,
-      "sha256": "ff374779a0053cb731dca76f5ebdbf61e87a7ca426020536285ae5d4a7462dbe"
+      "size": 10457,
+      "sha256": "bec98b346dc6c026c4555a8971d3ef797d31aa40ab2b47f0c356e28b96d23b2f"
     },
     {
       "path": "tests/test_memory_projection.py",

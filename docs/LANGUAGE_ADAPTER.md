@@ -61,7 +61,7 @@ That run also established that the staged answer key contains 59 distinct ruling
 ```bash
 python scripts/build_language_adapter_dataset.py
 python scripts/validate_language_adapter_dataset.py
-bash scripts/bootstrap_language_adapter_env.sh /teamspace/studios/this_studio/.venvs/ceta-language-adapter
+bash scripts/bootstrap_language_adapter_env.sh --target /teamspace/studios/this_studio/.ceta-packages/language-adapter-REPO_COMMIT
 
 bash scripts/run_h100_language_epoch.sh \
   /teamspace/studios/this_studio/ceta-runs/language-adapter-v1 \

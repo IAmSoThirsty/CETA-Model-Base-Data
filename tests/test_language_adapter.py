@@ -182,6 +182,9 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
         self.assertIn('python_seed="${CETA_BOOTSTRAP_PYTHON:-python3}"', source)
         self.assertIn('-m venv "${venv_root}"', source)
         self.assertIn('"${python_bin}" -m pip check', source)
+        self.assertIn('"${1:-}" == "--target"', source)
+        self.assertIn('--target "${package_root}"', source)
+        self.assertIn('PYTHONPATH="${package_root}"', source)
 
     def test_deprecated_transformers_cache_variable_is_migrated(self):
         environment = {"TRANSFORMERS_CACHE": "C:/cache/transformers"}
