@@ -43,6 +43,14 @@ The trainer requires a clean Git revision, records the Git/config/dataset/model/
 
 These metrics are intentionally bounded. Lexical overlap does not establish full semantic correctness, safety, fitness for use, or human acceptance. The automated decision is `QUALIFIED` or `QUARANTINED`; production promotion requires separate owner-authorized human/domain review.
 
+The scorer also records a non-gating ruling-label profile. If the private evaluator uses a near-unique open vocabulary of answer labels, the report makes that limitation explicit. The exact-ruling gate remains frozen and fail-closed; it is not retroactively weakened after results are seen. A near-unique private label space is calibration evidence, not an ordinary learnable closed-set classification target, unless a label ontology is independently specified before inference.
+
+## Live H100 calibration boundary
+
+The 2026-08-26 run at Git revision `90b170529b89548181aa957e5633629e5cde3f28` completed 121/121 optimizer steps on one NVIDIA H100 80 GB and passed independent artifact verification. The separate controlled evaluator returned `QUARANTINED` on 59 clean cases: parseable response rate 0.559322, exact ruling 0.000000, mean reference token F1 0.220748, and mean ROUGE-L 0.148984. No promotion occurred.
+
+That run also established that the staged answer key contains 59 distinct ruling labels across 60 cases, while answer-blind inference receives no private label list. The result is retained as a calibration receipt in `evidence/LANGUAGE_ADAPTER_H100_CALIBRATION.json`. It does not remain an unseen benchmark after this diagnosis, and repeating optimizer epochs against its scores would violate the declared no-feedback boundary.
+
 ## Commands
 
 ```bash

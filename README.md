@@ -235,6 +235,8 @@ bash scripts/run_h100_language_epoch.sh \
 
 The script requires exactly one already-visible H100. A completed epoch is not a promotion: the scorer emits `QUALIFIED` only if every frozen gate passes; otherwise it emits `QUARANTINED`. Token-overlap metrics remain bounded diagnostics and do not replace independent human review.
 
+The first live one-H100 language epoch completed 121/121 optimizer steps and passed artifact verification, then correctly remained `QUARANTINED` under the independent frozen gates. Its scrubbed receipt and interpretation limits are recorded in `evidence/LANGUAGE_ADAPTER_H100_CALIBRATION.json`; the consumed evaluator is calibration evidence, not a reusable clean-unseen benchmark for tuning.
+
 ## Claim boundary
 
 Read `docs/CLAIM_BOUNDARY.md`. **Epoch-ready** here means the included abstract CETA transition pipeline and public-data-derived language-adapter pipeline have explicit, reproducible data, training, checkpoint, evaluation, quarantine, and evidence paths under their declared configurations.

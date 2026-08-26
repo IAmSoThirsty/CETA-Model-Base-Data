@@ -109,6 +109,17 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
         self.assertAlmostEqual(SCORER.token_f1("alpha beta", "alpha gamma"), 0.5)
         self.assertAlmostEqual(SCORER.rouge_l("alpha beta gamma", "alpha gamma"), 0.8)
 
+    def test_near_unique_private_ruling_space_is_reported_without_weakening_gates(self):
+        answers = {
+            "A": {"ruling": "defer_for_boundary_evidence"},
+            "B": {"ruling": "preserve_and_escalate"},
+            "C": {"ruling": "deny_unverified_override"},
+        }
+        profile = SCORER.ruling_label_profile(answers, ["A", "B", "C"])
+        self.assertEqual(profile["unique_label_count"], 3)
+        self.assertEqual(profile["maximum_label_reuse"], 1)
+        self.assertTrue(profile["near_unique_private_label_space"])
+
 
 if __name__ == "__main__":
     unittest.main()

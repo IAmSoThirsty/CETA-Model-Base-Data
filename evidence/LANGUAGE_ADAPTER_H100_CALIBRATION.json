@@ -1,0 +1,35 @@
+{
+  "adapter_artifacts_verified": true,
+  "answer_key_accessed_during_inference": false,
+  "base_model": "Qwen/Qwen3-4B-Instruct-2507",
+  "base_model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+  "clean_case_count": 59,
+  "dataset_hash": "sha256:80427c39057504397179998375618ee4eec325a928d5c79a2b4fb62e92a69792",
+  "device": "NVIDIA H100 80GB HBM3",
+  "evaluation_metrics": {
+    "exact_ruling_accuracy": 0.0,
+    "mean_reference_rouge_l": 0.14898377600592344,
+    "mean_reference_token_f1": 0.22074836956697624,
+    "parseable_response_rate": 0.559322033898305
+  },
+  "evaluation_report_hash": "sha256:d598612acf6f543135e38a126b352a63235e122aa883741afa500a32e85a667e",
+  "evaluation_status": "QUARANTINED",
+  "expected_optimizer_steps": 121,
+  "global_step": 121,
+  "inference_hash": "sha256:a21873cb97fc4aaa6ed89bc9d881c47d73aa951d23b9e9d816e5598f182cacdd",
+  "known_exposed_case_ids_excluded": [
+    "H001"
+  ],
+  "limitations": [
+    "The controlled evaluator was consumed for calibration and later inspected during diagnosis; it is not clean-unseen for future model or prompt changes.",
+    "The answer key contains 59 distinct private ruling labels across 60 cases, so exact-ruling accuracy is an open-vocabulary diagnostic rather than an ordinary closed-set classification measure.",
+    "The H100 runtime warned that SDPA Flash Attention used a nondeterministic backward algorithm; checkpoint durability was verified, but bitwise-identical H100 optimization is not claimed."
+  ],
+  "prediction_count": 60,
+  "promotion_performed": false,
+  "repo_commit": "90b170529b89548181aa957e5633629e5cde3f28",
+  "run_date": "2026-08-26",
+  "schema_id": "CETA_LANGUAGE_ADAPTER_H100_CALIBRATION/v1",
+  "training_report_hash": "sha256:f0881338c60791bfd39dfda0429648905188b461ed46ec5825895a512bd42e66",
+  "verifier_passed": true
+}

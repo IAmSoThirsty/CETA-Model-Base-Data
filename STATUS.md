@@ -20,6 +20,8 @@
 - The neural policy operates on structured state and a fixed 23-opcode vocabulary; it has no language-response target.
 - A separate public-only language-adapter dataset contains all 2,439 eligible source records exactly once across lineage-isolated train/validation/public-held-out splits.
 - The language-adapter H100 runner pins Qwen3-4B, records durable checkpoints, and separates answer-blind prediction from frozen-policy answer-key scoring.
+- A live one-H100 language-adapter epoch completed 121/121 optimizer steps at revision `90b170529b89548181aa957e5633629e5cde3f28`; independent verification passed and the controlled evaluator correctly returned `QUARANTINED` without promotion.
+- The live calibration exposed a near-unique private ruling-label space (59 distinct labels across 60 cases). Future reports surface this as an interpretation limitation without weakening the frozen exact-ruling gate.
 - Runtime inference uses a target-blind deterministic action-space generator. `propose(world)` has no caller candidate argument.
 - Every curriculum target is recoverable from the target-blind action space without inserting the label into the candidate list.
 - Every v3 target is the unique VM-legal transition in its generated action space; source-context anchors never enter that action space.
@@ -57,6 +59,7 @@ These numbers establish only the behavior of this bounded synthetic reference ru
 - General reasoning, compositional generalization at large scale, real-world reasoning, or AGI is not established.
 - The structured source-derived curriculum does not itself solve language-to-state grounding or observation truth determination; the separate language adapter is an experimental parsing/serialization layer and cannot establish observation truth.
 - Public defensive records used by v3 are trained-on and cannot subsequently support an unseen-benchmark claim.
+- The 2026-08-26 controlled evaluator has been consumed for calibration and inspected during diagnosis; it cannot support a new clean-unseen claim for later optimizer or prompt changes.
 - The reference action-space generator is bounded and is not claimed exhaustive for arbitrary future CETA states.
 - No production-scale model architecture, distributed trainer, multi-GPU path, GPU-specific performance profile, HSM/TPM key custody, or Byzantine consensus is claimed.
 - Source assignment is deterministic provenance partitioning, not human semantic source-to-operation adjudication; v3 does not claim that source prose authored its target or hostile alternatives.

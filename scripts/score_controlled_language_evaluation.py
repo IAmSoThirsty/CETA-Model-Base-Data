@@ -68,6 +68,22 @@ def normalized_ruling(value: str) -> str:
     return "_".join(tokens(value))
 
 
+def ruling_label_profile(answers: dict[str, dict[str, Any]], scenario_ids: list[str]) -> dict[str, Any]:
+    labels = [normalized_ruling(str(answers[scenario_id].get("ruling", ""))) for scenario_id in scenario_ids]
+    counts = Counter(label for label in labels if label)
+    unique_count = len(counts)
+    case_count = len(labels)
+    unique_ratio = unique_count / case_count if case_count else 0.0
+    return {
+        "case_count": case_count,
+        "unique_label_count": unique_count,
+        "unique_label_ratio": unique_ratio,
+        "repeated_label_count": sum(1 for count in counts.values() if count > 1),
+        "maximum_label_reuse": max(counts.values(), default=0),
+        "near_unique_private_label_space": bool(case_count and unique_ratio >= 0.9),
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Score frozen controlled-language predictions against the separate answer key.")
     parser.add_argument("--training-run", type=Path, required=True)
@@ -107,8 +123,10 @@ def main() -> None:
     if excluded != set(str(item) for item in manifest.get("known_exposed_case_ids", [])):
         raise SystemExit("CONTROLLED LANGUAGE EVALUATION: FAIL - exposure exclusion mismatch")
 
+    clean_scenario_ids = sorted(set(predictions) - excluded)
+    label_profile = ruling_label_profile(answers, clean_scenario_ids)
     case_metrics: list[dict[str, Any]] = []
-    for scenario_id in sorted(set(predictions) - excluded):
+    for scenario_id in clean_scenario_ids:
         prediction = predictions[scenario_id]
         response = prediction.get("response", {})
         answer = answers[scenario_id]
@@ -154,11 +172,20 @@ def main() -> None:
         "gates": gates,
         "status": "QUALIFIED" if passed else "QUARANTINED",
         "promotion_performed": False,
+        "ruling_label_profile": label_profile,
         "case_metrics": case_metrics,
         "limitations": [
             "Token F1 and ROUGE-L measure reference overlap, not complete semantic equivalence.",
             "Owner or independent human review remains required for a production or safety claim.",
             "The controlled evaluation does not feed optimizer, prompt, or threshold changes in this frozen run.",
+            *(
+                [
+                    "Exact ruling is a private open-vocabulary diagnostic for this evaluator: near-unique answer labels "
+                    "are not disclosed to answer-blind inference and must not be interpreted as ordinary closed-set classification."
+                ]
+                if label_profile["near_unique_private_label_space"]
+                else []
+            ),
         ],
     }
     report = {**body, "report_hash": canonical_hash(body, domain="CETA/CONTROLLED_LANGUAGE_EVALUATION_REPORT/v1")}

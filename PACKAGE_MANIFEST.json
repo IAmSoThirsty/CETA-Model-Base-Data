@@ -2,8 +2,8 @@
   "schema_version": 1,
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
-  "file_count": 195,
-  "content_root": "sha256:7bac8070f1d65e87fed1ae46d2be81968da86933ec5c6a380e1ae42f78194393",
+  "file_count": 196,
+  "content_root": "sha256:975c64383ee0be6b1524cea2335c7e30599f58b83b1d8721966a248f33a241dc",
   "files": [
     {
       "path": ".gitattributes",
@@ -17,13 +17,13 @@
     },
     {
       "path": "README.md",
-      "size": 15961,
-      "sha256": "f7f26e3c80aa44f8fbfdf48fb19adfa43a81ccb4f636c8f70bea2aae9814453f"
+      "size": 16355,
+      "sha256": "67755b1d24532698704c159a3922cfb10149d1b183ec16ec06fdab91c0b98e42"
     },
     {
       "path": "STATUS.md",
-      "size": 6054,
-      "sha256": "58d04130b29b01044b3bd5ebb6ac6fead4a3d123043b54340fea63aad0f8a7b6"
+      "size": 6702,
+      "sha256": "f9b050eb46a3d501f7e3925d49f78fbf8d8a444457f4cdf36c1f21f546232bee"
     },
     {
       "path": "VERSION",
@@ -267,8 +267,8 @@
     },
     {
       "path": "docs/LANGUAGE_ADAPTER.md",
-      "size": 3833,
-      "sha256": "d32e1939c000f3b8ec9745456a9e1f8d29a41a35f89731e9c20bf252f2dd2705"
+      "size": 5178,
+      "sha256": "3887e6750a64baec7f4cdf65283af5a69b458882cef3b7e49236a0b02008486a"
     },
     {
       "path": "docs/RESTART_AND_RECOVERY.md",
@@ -294,6 +294,11 @@
       "path": "evidence/EPOCH_READINESS_REPORT.json",
       "size": 17173,
       "sha256": "4438560b5d42ad0dcddbecf9ba43cbeca91521bfd3eefb74f5fe20dc2fbbeecc"
+    },
+    {
+      "path": "evidence/LANGUAGE_ADAPTER_H100_CALIBRATION.json",
+      "size": 1835,
+      "sha256": "198bfa68b4cf7c0acd3e764daf7dd21243202144ee93a14c161ceb1dcd554110"
     },
     {
       "path": "evidence/adjudications/OC-001_transition_legality.json",
@@ -507,8 +512,8 @@
     },
     {
       "path": "scripts/score_controlled_language_evaluation.py",
-      "size": 9024,
-      "sha256": "fe11b909fdd1799a42966849977502dcc21ec2b78dc55b6b910cae9d4e90deaa"
+      "size": 10372,
+      "sha256": "196d078a2324fc72b632bc79c3263303c3917b7bdd2ae1b29c130add8699d82b"
     },
     {
       "path": "scripts/train_language_adapter.py",
@@ -942,8 +947,8 @@
     },
     {
       "path": "tests/test_language_adapter.py",
-      "size": 5629,
-      "sha256": "adf4e77a2ab6c65b305a465f3b58f01d085aad29f2b2b6664c5130ba98535ad5"
+      "size": 6179,
+      "sha256": "90e7907fa2efe4d27f1d36a937de741128ae93aef963bdb007c9ed9da2bba61a"
     },
     {
       "path": "tests/test_memory_projection.py",
