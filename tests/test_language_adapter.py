@@ -158,6 +158,8 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
         launcher = (ROOT / "scripts/run_h100_language_epoch.sh").read_text(encoding="utf-8")
         self.assertIn("--training-only", launcher)
         self.assertIn("no controlled evaluator was opened", launcher)
+        self.assertIn('CETA_PYTHON_NO_SITE', launcher)
+        self.assertIn('python_args+=("-S")', launcher)
 
     def test_torch_security_floor_is_consistent(self):
         requirements = (ROOT / "requirements-training.txt").read_text(encoding="utf-8").splitlines()
@@ -184,7 +186,7 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
         self.assertIn('"${python_bin}" -m pip check', source)
         self.assertIn('"${1:-}" == "--target"', source)
         self.assertIn('--target "${package_root}"', source)
-        self.assertIn('PYTHONPATH="${package_root}"', source)
+        self.assertIn('PYTHONPATH="${package_root}" "${python_seed}" -S', source)
 
     def test_deprecated_transformers_cache_variable_is_migrated(self):
         environment = {"TRANSFORMERS_CACHE": "C:/cache/transformers"}

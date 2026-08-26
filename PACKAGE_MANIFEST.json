@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 199,
-  "content_root": "sha256:5956fc6adb6548eed921f13c94b3a4f9350705cab29e9840bc3cf8e616710dfc",
+  "content_root": "sha256:6ba81963943d231385475ca5c63f919cd4d297d32270a86d6fba631432e0d37f",
   "files": [
     {
       "path": ".gitattributes",
@@ -27,8 +27,8 @@
     },
     {
       "path": "README.md",
-      "size": 16946,
-      "sha256": "d9a2167ff01be161bd7a2005dab4f75ed1573e887e1d60fe53cbae360d31ae12"
+      "size": 16968,
+      "sha256": "99d00fef13cb10d3377915b9311035d245f46d750231f6c1775f017ca49023a9"
     },
     {
       "path": "STATUS.md",
@@ -442,8 +442,8 @@
     },
     {
       "path": "scripts/bootstrap_language_adapter_env.sh",
-      "size": 1432,
-      "sha256": "8a735e8509dd0dc196cba96d79282a2b26db7ef77c4f9a0c4d028778fd7e0b4a"
+      "size": 1435,
+      "sha256": "b4d11a48da31e7b6a2d9f7cb35892f93b175efe974aa31a19c578f9776f0d260"
     },
     {
       "path": "scripts/build_ceta_curriculum.py",
@@ -522,8 +522,8 @@
     },
     {
       "path": "scripts/run_h100_language_epoch.sh",
-      "size": 1826,
-      "sha256": "cdcbbfbd24a02a6132959f8b0877097ffa6ba9c47d4082c2cd9ca5c36d1ddae8"
+      "size": 1947,
+      "sha256": "452faa6d13f2f32f767924ae4bf2b81a6603b558a6e94570805efc199cc1eb27"
     },
     {
       "path": "scripts/score_controlled_language_evaluation.py",
@@ -962,8 +962,8 @@
     },
     {
       "path": "tests/test_language_adapter.py",
-      "size": 10457,
-      "sha256": "bec98b346dc6c026c4555a8971d3ef797d31aa40ab2b47f0c356e28b96d23b2f"
+      "size": 10587,
+      "sha256": "8c71226e0bb4e4ecad60807789ee1a0385cf00e8ee54564ab13091f77fb9de70"
     },
     {
       "path": "tests/test_memory_projection.py",

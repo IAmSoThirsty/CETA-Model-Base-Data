@@ -3,6 +3,14 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 python_bin="${CETA_PYTHON:-python}"
+python_args=()
+if [[ "${CETA_PYTHON_NO_SITE:-0}" == "1" ]]; then
+  python_args+=("-S")
+fi
+
+run_python() {
+  "${python_bin}" "${python_args[@]}" "$@"
+}
 
 training_only=false
 if [[ $# -eq 2 && "$1" == "--training-only" ]]; then
@@ -29,23 +37,23 @@ if [[ "${training_only}" == false && ( -e "${inference_root}" || -e "${evaluatio
   exit 2
 fi
 
-"${python_bin}" "${repo_root}/scripts/validate_language_adapter_dataset.py"
+run_python "${repo_root}/scripts/validate_language_adapter_dataset.py"
 if [[ "${training_only}" == false ]]; then
-  "${python_bin}" "${repo_root}/scripts/validate_controlled_evaluation.py"
+  run_python "${repo_root}/scripts/validate_controlled_evaluation.py"
 fi
-"${python_bin}" "${repo_root}/scripts/train_language_adapter.py" --run-root "${training_run}"
+run_python "${repo_root}/scripts/train_language_adapter.py" --run-root "${training_run}"
 if [[ "${training_only}" == true ]]; then
   echo "CETA LANGUAGE H100: TRAINING COMPLETE - no controlled evaluator was opened"
   exit 0
 fi
-"${python_bin}" "${repo_root}/scripts/run_controlled_language_inference.py" \
+run_python "${repo_root}/scripts/run_controlled_language_inference.py" \
   --training-run "${training_run}" \
   --output-root "${inference_root}"
-"${python_bin}" "${repo_root}/scripts/score_controlled_language_evaluation.py" \
+run_python "${repo_root}/scripts/score_controlled_language_evaluation.py" \
   --training-run "${training_run}" \
   --inference-root "${inference_root}" \
   --report "${evaluation_report}"
-"${python_bin}" "${repo_root}/scripts/verify_language_epoch_report.py" \
+run_python "${repo_root}/scripts/verify_language_epoch_report.py" \
   --training-run "${training_run}" \
   --inference-root "${inference_root}" \
   --report "${evaluation_report}"

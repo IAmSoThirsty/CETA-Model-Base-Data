@@ -227,7 +227,7 @@ The language track uses the pinned `Qwen/Qwen3-4B-Instruct-2507` revision, train
 
 ```bash
 bash scripts/bootstrap_language_adapter_env.sh --target /teamspace/studios/this_studio/.ceta-packages/language-adapter-REPO_COMMIT
-PYTHONPATH=/teamspace/studios/this_studio/.ceta-packages/language-adapter-REPO_COMMIT CETA_PYTHON=python3 \
+PYTHONPATH=/teamspace/studios/this_studio/.ceta-packages/language-adapter-REPO_COMMIT CETA_PYTHON=python3 CETA_PYTHON_NO_SITE=1 \
 bash scripts/run_h100_language_epoch.sh --training-only /teamspace/studios/this_studio/ceta-runs/language-adapter-training
 bash scripts/run_h100_language_epoch.sh \
   /teamspace/studios/this_studio/ceta-runs/language-adapter-v1 \

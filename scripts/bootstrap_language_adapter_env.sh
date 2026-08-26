@@ -14,7 +14,7 @@ if [[ "${1:-}" == "--target" ]]; then
     --disable-pip-version-check \
     --target "${package_root}" \
     --requirement "${repo_root}/requirements-language-adapter.txt"
-  PYTHONPATH="${package_root}" "${python_seed}" -c 'import accelerate, bitsandbytes, peft, safetensors, torch, transformers; assert torch.__version__.split("+")[0] == "2.13.0"; assert transformers.__version__ == "5.5.0"; print("CETA LANGUAGE TARGET: PASS", torch.__version__, transformers.__version__)'
+  PYTHONPATH="${package_root}" "${python_seed}" -S -c 'import accelerate, bitsandbytes, peft, safetensors, torch, transformers; assert torch.__version__.split("+")[0] == "2.13.0"; assert transformers.__version__ == "5.5.0"; print("CETA LANGUAGE TARGET: PASS", torch.__version__, transformers.__version__)'
   exit 0
 fi
 
