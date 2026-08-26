@@ -128,10 +128,10 @@ class AssistantOnlyCollator:
     def _encode(self, row: dict[str, Any]) -> tuple[list[int], list[int]]:
         messages = row["messages"]
         prompt_ids = self.tokenizer.apply_chat_template(
-            messages[:2], tokenize=True, add_generation_prompt=True
+            messages[:2], tokenize=True, add_generation_prompt=True, return_dict=False
         )
         full_ids = self.tokenizer.apply_chat_template(
-            messages, tokenize=True, add_generation_prompt=False
+            messages, tokenize=True, add_generation_prompt=False, return_dict=False
         )
         if full_ids[: len(prompt_ids)] != prompt_ids:
             common = 0

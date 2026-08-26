@@ -163,6 +163,24 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
             set(TRAINER.training_arguments_kwargs(config, Path("checkpoints"), int(config["seed"]))),
             argument_names,
         )
+
+    def test_assistant_collator_requests_legacy_list_shape_explicitly(self):
+        class Tokenizer:
+            pad_token_id = 0
+
+            def __init__(self):
+                self.calls = []
+
+            def apply_chat_template(self, messages, **kwargs):
+                self.calls.append(kwargs)
+                return [1, 2] if len(messages) == 2 else [1, 2, 3]
+
+        tokenizer = Tokenizer()
+        collator = TRAINER.AssistantOnlyCollator(tokenizer, max_length=16, torch_module=None)
+        input_ids, labels = collator._encode({"messages": [{}, {}, {}], "example_id": "example"})
+        self.assertEqual(input_ids, [1, 2, 3])
+        self.assertEqual(labels, [-100, -100, 3])
+        self.assertTrue(all(call["return_dict"] is False for call in tokenizer.calls))
         launcher = (ROOT / "scripts/run_h100_language_epoch.sh").read_text(encoding="utf-8")
         self.assertIn("--training-only", launcher)
         self.assertIn("no controlled evaluator was opened", launcher)
