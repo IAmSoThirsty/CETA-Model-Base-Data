@@ -4,13 +4,12 @@ import ast
 import importlib.util
 import inspect
 import json
-from pathlib import Path
 import sys
 import tempfile
 import tomllib
 import unittest
 import warnings
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
@@ -175,6 +174,27 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
         self.assertNotIn("warmup_ratio", training_arguments)
         self.assertEqual(training_arguments["warmup_steps"], 4)
         self.assertEqual(TRAINER.expected_optimizer_steps(config, 1928), 121)
+
+    def test_adapter_config_target_modules_are_serialized_in_bound_order(self):
+        target_modules = ["q_proj", "k_proj", "v_proj", "o_proj"]
+        with tempfile.TemporaryDirectory() as root:
+            config_path = Path(root, "adapter_config.json")
+            config_path.write_text(
+                json.dumps({"target_modules": list(reversed(target_modules)), "r": 32}),
+                encoding="utf-8",
+            )
+            TRAINER.canonicalize_adapter_config(config_path, target_modules)
+            first = config_path.read_bytes()
+            self.assertEqual(json.loads(first)["target_modules"], target_modules)
+            TRAINER.canonicalize_adapter_config(config_path, target_modules)
+            self.assertEqual(config_path.read_bytes(), first)
+
+            config_path.write_text(
+                json.dumps({"target_modules": ["q_proj", "unexpected"], "r": 32}),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(RuntimeError, "bound training configuration"):
+                TRAINER.canonicalize_adapter_config(config_path, target_modules)
 
     def test_assistant_collator_requests_legacy_list_shape_explicitly(self):
         class Tokenizer:

@@ -1,20 +1,19 @@
 from __future__ import annotations
 
 import argparse
-from dataclasses import dataclass
-from datetime import datetime, timezone
 import hashlib
 import importlib.metadata
 import importlib.util
 import json
 import math
 import os
-from pathlib import Path
 import random
 import subprocess
 import sys
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any
-
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
@@ -26,7 +25,7 @@ SPEC.loader.exec_module(LANGUAGE_ADAPTER)
 
 
 def utc_now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def canonical_hash(value: Any, *, domain: str) -> str:
@@ -36,6 +35,15 @@ def canonical_hash(value: Any, *, domain: str) -> str:
 
 def write_json(path: Path, value: Any) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
+
+
+def canonicalize_adapter_config(path: Path, target_modules: list[str]) -> None:
+    config = json.loads(path.read_text(encoding="utf-8"))
+    saved_modules = config.get("target_modules")
+    if not isinstance(saved_modules, list) or sorted(saved_modules) != sorted(target_modules):
+        raise RuntimeError("saved adapter target_modules do not match the bound training configuration")
+    config["target_modules"] = list(target_modules)
+    write_json(path, config)
 
 
 def append_event(path: Path, event: dict[str, Any]) -> None:
@@ -324,6 +332,7 @@ def main() -> None:
         validation_metrics = trainer.evaluate()
         adapter_root = run_root / "adapter"
         trainer.save_model(str(adapter_root))
+        canonicalize_adapter_config(adapter_root / "adapter_config.json", list(lora["target_modules"]))
         tokenizer.save_pretrained(str(adapter_root))
         adapter_files = tree_hashes(adapter_root)
         package_versions = {
