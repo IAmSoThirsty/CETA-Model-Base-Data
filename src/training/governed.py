@@ -676,6 +676,29 @@ class CheckpointPromotionRegistry:
     def __init__(self,root: str|Path,ledger: TrainingEventLedger) -> None:
         self.root=Path(root); self.root.mkdir(parents=True,exist_ok=True); self.ledger=ledger
 
+    @staticmethod
+    def _selection_metrics(metrics: EvaluationMetrics) -> dict[str,Any]:
+        return {
+            'target_accuracy':metrics.target_accuracy,
+            'opcode_accuracy':metrics.opcode_accuracy,
+            'legal_selection_rate':metrics.legal_selection_rate,
+            'ambiguous_top_selection_count':metrics.ambiguous_top_selection_count,
+            'mean_transition_loss':metrics.mean_transition_loss,
+            'mean_target_candidate_margin':metrics.mean_target_candidate_margin,
+        }
+
+    @staticmethod
+    def _selection_score(values: Mapping[str,Any]) -> tuple[float,...]:
+        """Deterministic validation-only ordering for trusted-head replacement."""
+        return (
+            float(values['target_accuracy']),
+            float(values['opcode_accuracy']),
+            float(values['legal_selection_rate']),
+            -float(values['ambiguous_top_selection_count']),
+            -float(values['mean_transition_loss']),
+            float(values['mean_target_candidate_margin']),
+        )
+
     def decide(self,checkpoint: CheckpointRef,metrics: EvaluationMetrics,policy: PromotionPolicy) -> str:
         if metrics.split != 'validation':
             raise TrainingBindingError('checkpoint promotion may use validation evidence only; heldout is reserved for final readiness')
@@ -684,13 +707,42 @@ class CheckpointPromotionRegistry:
         if metrics.curriculum_manifest_sha256!=checkpoint.cursor.curriculum_manifest_sha256 or metrics.curriculum_splits_sha256!=checkpoint.cursor.curriculum_splits_sha256:
             raise TrainingBindingError('evaluation curriculum is not bound to the checkpoint curriculum')
         passed,failures=policy.evaluate(metrics)
-        status='PROMOTED' if passed else 'QUARANTINED'
-        record={'status':status,'checkpoint_sha256':checkpoint.sha256,'checkpoint_path':Path(checkpoint.path).name,'evaluation_hash':metrics.evaluation_hash,'failures':list(failures)}
+        selection_metrics=self._selection_metrics(metrics)
+        head_path=self.root/'trusted-head.json'
+        head_reason_code='POLICY_REJECTED'
+        status='QUARANTINED'
+        if passed:
+            status='PROMOTED'
+            head_reason_code='FIRST_QUALIFIED_CHECKPOINT'
+            if head_path.is_file():
+                current_head=json.loads(head_path.read_text(encoding='utf-8'))
+                current_sha=str(current_head.get('checkpoint_sha256',''))
+                current_metrics=current_head.get('selection_metrics')
+                if current_sha==checkpoint.sha256:
+                    head_reason_code='SAME_CHECKPOINT_EVIDENCE_REFRESH'
+                elif not isinstance(current_metrics,dict):
+                    status='QUALIFIED'
+                    head_reason_code='TRUSTED_HEAD_SELECTION_METRICS_MISSING'
+                elif self._selection_score(selection_metrics)>self._selection_score(current_metrics):
+                    head_reason_code='VALIDATION_SCORE_IMPROVED'
+                else:
+                    status='QUALIFIED'
+                    head_reason_code='VALIDATION_SCORE_NOT_IMPROVED'
+        record={
+            'status':status,'checkpoint_sha256':checkpoint.sha256,
+            'checkpoint_path':Path(checkpoint.path).name,'evaluation_hash':metrics.evaluation_hash,
+            'failures':list(failures),'selection_metrics':selection_metrics,
+            'trusted_head_updated':status=='PROMOTED','head_reason_code':head_reason_code,
+        }
         _atomic_json(self.root/f'{checkpoint.sha256}.json',record)
         self.ledger.append('CHECKPOINT_'+status,record)
-        if passed:
-            head={'checkpoint_sha256':checkpoint.sha256,'checkpoint_path':Path(checkpoint.path).name,'evaluation_hash':metrics.evaluation_hash}
-            _atomic_json(self.root/'trusted-head.json',head)
+        if status=='PROMOTED':
+            head={
+                'checkpoint_sha256':checkpoint.sha256,'checkpoint_path':Path(checkpoint.path).name,
+                'evaluation_hash':metrics.evaluation_hash,'selection_metrics':selection_metrics,
+                'head_reason_code':head_reason_code,
+            }
+            _atomic_json(head_path,head)
         return status
 
     def rollback(self,checkpoint: CheckpointRef,*,reason_code: str) -> None:
@@ -698,7 +750,12 @@ class CheckpointPromotionRegistry:
         if not record_path.is_file(): raise TrainingBindingError('rollback target checkpoint has no registry record')
         record=json.loads(record_path.read_text(encoding='utf-8'))
         if record.get('status')!='PROMOTED': raise TrainingBindingError('rollback target must have been promoted')
-        head={'checkpoint_sha256':checkpoint.sha256,'checkpoint_path':Path(checkpoint.path).name,'evaluation_hash':record['evaluation_hash'],'rollback_reason_code':reason_code}
+        head={
+            'checkpoint_sha256':checkpoint.sha256,'checkpoint_path':Path(checkpoint.path).name,
+            'evaluation_hash':record['evaluation_hash'],'rollback_reason_code':reason_code,
+        }
+        if isinstance(record.get('selection_metrics'),dict):
+            head['selection_metrics']=record['selection_metrics']
         _atomic_json(self.root/'trusted-head.json',head)
         self.ledger.append('TRUSTED_HEAD_ROLLBACK',head)
 

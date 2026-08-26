@@ -68,4 +68,4 @@ Additional epochs require an exact committed epoch boundary. The append-only led
 
 ## Promotion law
 
-Epoch completion is not model approval. Independent validation metrics are evaluated against a separate promotion policy. Failed checkpoints are quarantined. Held-out results are reserved for final evaluation and cannot promote a checkpoint.
+Epoch completion is not model approval. Independent validation metrics are evaluated against a separate promotion policy. Failed checkpoints are quarantined. A checkpoint that passes policy but does not improve the deterministic validation score is recorded as `QUALIFIED` and cannot replace the stronger trusted head. Held-out results are reserved for final evaluation and cannot promote a checkpoint.

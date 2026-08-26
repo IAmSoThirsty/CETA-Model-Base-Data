@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 179,
-  "content_root": "sha256:4f4a765546827047480ffef8a88cca40ae795131682eb91166438b26405106a5",
+  "content_root": "sha256:0c106b96626054c49ca3c29ce5208694d1979f6f3f54853d843942c39d7caf57",
   "files": [
     {
       "path": ".gitattributes",
@@ -17,8 +17,8 @@
     },
     {
       "path": "README.md",
-      "size": 13919,
-      "sha256": "ae8684dc0b2247457bc970571c703b0580531d0e7f9cefd5b8c6d0e9e752fa81"
+      "size": 14114,
+      "sha256": "b94523fb55f04bc00b578d78a3321b3f6550eb9c1b905b6de6a0439b3f0fd401"
     },
     {
       "path": "STATUS.md",
@@ -252,8 +252,8 @@
     },
     {
       "path": "docs/TRAINING_BOUNDARY.md",
-      "size": 5499,
-      "sha256": "1fc2a1e0b50a0e64037883e73722c483f5c5f763a39e00ae487f0efe5416ad8a"
+      "size": 5660,
+      "sha256": "24d181fd5c50414dc29922e393db65b43365368150390a3d1d5e46d93e9e1b72"
     },
     {
       "path": "evidence/EPOCH_HOSTILE_GATE_REPORT.json",
@@ -497,13 +497,13 @@
     },
     {
       "path": "scripts/verify_epoch_continuation_report.py",
-      "size": 4002,
-      "sha256": "3a6ee7f4f7783ab358be09c5861a96c26a4ccca7590d07ccc3c79a7d13c98765"
+      "size": 4015,
+      "sha256": "7dd4a4a494558884c80832dbd5a57c57621cc3fea548ad89620a78c7da40e009"
     },
     {
       "path": "scripts/verify_epoch_readiness_report.py",
-      "size": 7698,
-      "sha256": "15eed434c211780919dcb4aaca6343ad70706b77a4a3083cd63312f3f0aa8810"
+      "size": 7710,
+      "sha256": "9cb2944fa1062d657a20d9853eb09456713885e638bd218888aa4ed15c0499fb"
     },
     {
       "path": "scripts/verify_package.py",
@@ -757,8 +757,8 @@
     },
     {
       "path": "src/training/governed.py",
-      "size": 52969,
-      "sha256": "3dfd40506f91ea6bc70881e24b7b0dd99debc1fcf9af5ff94c0db9c2033d06a0"
+      "size": 55566,
+      "sha256": "0f7b517401a98c930291079dd12f9a453176db236877e7ec4c33c9990c5467e8"
     },
     {
       "path": "src/training/model.py",
@@ -857,8 +857,8 @@
     },
     {
       "path": "tests/test_governed_training.py",
-      "size": 16760,
-      "sha256": "fa11d699e8bd6154cac8b19ec05ecf35c25438266e02de64616ccc94bd0d8d17"
+      "size": 19003,
+      "sha256": "5da239bdd4014acf9d80f19b93af8402ce80368aaaf4e2fb3d9fdc831370a52b"
     },
     {
       "path": "tests/test_identity_authority_trust.py",

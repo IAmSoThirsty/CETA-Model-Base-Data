@@ -194,6 +194,47 @@ class GovernedTrainingTests(unittest.TestCase):
             with self.assertRaises(TrainingBindingError):
                 CheckpointPromotionRegistry(td/'registry',trainer.ledger).decide(cp,metrics,PromotionPolicy(0,0,0,99))
 
+    def test_passing_checkpoint_cannot_replace_better_trusted_head(self):
+        with tempfile.TemporaryDirectory() as td:
+            td=Path(td)
+            trainer=GovernedEpochTrainer(run_root=td/'run',dataset_path=DATA/'train.jsonl',config=self.cfg,run_id='R')
+            first=trainer.train_cases(1)
+            second=trainer.train_cases(1)
+            registry=CheckpointPromotionRegistry(td/'registry',trainer.ledger)
+            policy=PromotionPolicy(1.0,1.0,1.0,1.0)
+
+            first_body={
+                **self._metrics_body(first),'target_accuracy':1.0,'opcode_accuracy':1.0,
+                'legal_selection_rate':1.0,'mean_transition_loss':0.2,
+            }
+            first_metrics=EvaluationMetrics(
+                **first_body,evaluation_hash=domain_hash(first_body,domain='CETA/INDEPENDENT_EVALUATION/v1'),
+                mean_target_candidate_margin=10.0,
+            )
+            self.assertEqual(registry.decide(first,first_metrics,policy),'PROMOTED')
+
+            worse_body={
+                **self._metrics_body(second),'target_accuracy':1.0,'opcode_accuracy':1.0,
+                'legal_selection_rate':1.0,'mean_transition_loss':0.3,
+            }
+            worse_metrics=EvaluationMetrics(
+                **worse_body,evaluation_hash=domain_hash(worse_body,domain='CETA/INDEPENDENT_EVALUATION/v1'),
+                mean_target_candidate_margin=9.0,
+            )
+            self.assertEqual(registry.decide(second,worse_metrics,policy),'QUALIFIED')
+            head=json.loads((td/'registry/trusted-head.json').read_text())
+            self.assertEqual(head['checkpoint_sha256'],first.sha256)
+
+            better_body={**worse_body,'mean_transition_loss':0.1}
+            better_metrics=EvaluationMetrics(
+                **better_body,evaluation_hash=domain_hash(better_body,domain='CETA/INDEPENDENT_EVALUATION/v1'),
+                mean_target_candidate_margin=11.0,
+            )
+            self.assertEqual(registry.decide(second,better_metrics,policy),'PROMOTED')
+            head=json.loads((td/'registry/trusted-head.json').read_text())
+            self.assertEqual(head['checkpoint_sha256'],second.sha256)
+            self.assertEqual(head['head_reason_code'],'VALIDATION_SCORE_IMPROVED')
+
 
     def test_renamed_heldout_cannot_enter_training(self):
         with tempfile.TemporaryDirectory() as td:

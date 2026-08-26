@@ -78,7 +78,7 @@ def main() -> None:
         fail("single-H100 boundary mismatch")
     if boundary.get("controlled_evaluation_optimizer_trained") is not False:
         fail("controlled evaluation optimizer boundary mismatch")
-    if report.get("promotion_gate", {}).get("outcome") not in {"PROMOTED", "QUARANTINED"}:
+    if report.get("promotion_gate", {}).get("outcome") not in {"PROMOTED", "QUALIFIED", "QUARANTINED"}:
         fail("promotion outcome missing")
     print("EPOCH CONTINUATION REPORT VERIFY: PASS")
     print(

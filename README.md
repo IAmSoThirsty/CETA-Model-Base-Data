@@ -203,7 +203,7 @@ python scripts/verify_epoch_continuation_report.py \
   --report /teamspace/studios/this_studio/ceta-runs/curriculum-v3/EPOCH_CONTINUATION_REPORT.json
 ```
 
-Continuation evaluates validation and issues a promotion/quarantine decision. It deliberately does not run held-out evaluation during iterative epoch decisions.
+Continuation evaluates validation and issues a promotion, qualification-without-head-replacement, or quarantine decision. A policy-passing checkpoint is `QUALIFIED` rather than made trusted head when its deterministic validation score does not improve on the current head. It deliberately does not run held-out evaluation during iterative epoch decisions.
 
 ### Lightning H100 handoff
 

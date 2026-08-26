@@ -83,7 +83,7 @@ def main() -> None:
         if not 0.0 <= legal <= 1.0: fail(f'{split} legal selection rate out of range')
         if metrics.get('checkpoint_sha256')!=report['resume']['final_checkpoint']['sha256']:
             fail(f'{split} evaluation is not checkpoint-bound')
-    if report.get('promotion_gate',{}).get('outcome') not in {'PROMOTED','QUARANTINED'}:
+    if report.get('promotion_gate',{}).get('outcome') not in {'PROMOTED','QUALIFIED','QUARANTINED'}:
         fail('promotion outcome missing')
     if claim.get('raw_source_prose_trained') is not False: fail('raw source prose training boundary is not explicit')
     if claim.get('public_defensive_structural_derivatives_trained') is not True: fail('public defensive structural training is not recorded')
