@@ -40,6 +40,8 @@ CONSTRAINT_ONLY_PATTERNS: tuple[str, ...] = (
 )
 
 CONTROLLED_EVALUATION_PATTERNS: tuple[str, ...] = (
+    "data/ceta_controlled_evaluation/**",
+    "**/ceta_controlled_evaluation/**",
     "runtime_state.jsonl",
     "stable_knowledge.jsonl",
     "implementation_reference.jsonl",

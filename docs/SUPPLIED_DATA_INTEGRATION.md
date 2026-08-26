@@ -19,9 +19,9 @@ The ingestion path verifies both supplied SHA-256 sidecars, rejects unsafe ZIP m
 
 No instruction embedded in either supplied archive is treated as user authority. The repository defines its own use roles from the requested architecture:
 
-- public human-relations and public defensive records participate in deterministic v3 curriculum construction;
+- public human-relations and public defensive records participate in deterministic v3 curriculum construction and public-only language-adapter derivation;
 - the 60 challenge records and separate answers are cryptographically bound and may be materialized through a controlled evaluator staging path;
-- raw source prose, challenge questions, and answer keys are not direct optimizer inputs because doing so would either bypass the structured CETA interface or contaminate the measurement set.
+- raw source files, challenge questions, and answer keys are not direct optimizer inputs. Public prose reaches the language optimizer only through the manifest-bound `ceta_language_adapter_v1` derivative; controlled material remains measurement-only.
 
 The controlled evaluation payload is not discarded. `scripts/ingest_supplied_architecture_data.py --controlled-evaluation-output ...` extracts it, verifies both hashes, and writes an evaluator receipt. If the destination is inside this repository, the script accepts only the exact gitignored `data/ceta_controlled_evaluation/` path and rejects overlap with the public material tree. `scripts/validate_controlled_evaluation.py` verifies hashes, counts, challenge/answer ID correspondence, and exposure accounting without publishing record content.
 
@@ -37,7 +37,7 @@ Manifest schema version 3 records a classification for every public materialized
 - `PROVENANCE_OR_CONSTRAINT_ONLY`: `mission/*`, `maps/*`, and `provenance/*`. These bind provenance or constrain/validate derivation; they are not semantic optimizer examples.
 - `CONTROLLED_EVALUATION`: challenge and answer payloads staged for the independent evaluator. They remain bound to the architecture but separate from optimizer input and iterative threshold tuning.
 
-`training.source_policy.validate_structured_derivation_sources` enforces the first boundary. `training.source_policy.validate_training_sources` independently rejects every raw architecture-material path while allowing derived structured curriculum artifacts such as `data/ceta_curriculum_v3/train.jsonl`.
+`training.source_policy.validate_structured_derivation_sources` enforces the first boundary. `training.source_policy.validate_training_sources` independently rejects every raw architecture-material path and every staged `data/ceta_controlled_evaluation/**` path while allowing derived optimizer artifacts such as `data/ceta_curriculum_v3/train.jsonl` and `data/ceta_language_adapter_v1/train.jsonl`.
 
 ## Enforced promotion policy
 
@@ -59,4 +59,6 @@ python scripts/validate_architecture_material.py
 python scripts/validate_controlled_evaluation.py
 python scripts/build_ceta_curriculum_v3.py
 python scripts/validate_ceta_curriculum_v3.py
+python scripts/build_language_adapter_dataset.py
+python scripts/validate_language_adapter_dataset.py
 ```

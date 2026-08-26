@@ -24,9 +24,15 @@ The current encoder observes source-derived projected CETA topology, not the raw
 
 The controlled 60-case evaluation set is bound and can be staged for independent evaluation without entering public Git or optimizer input. Case `H001` is recorded as previously exposed; only the remaining 59 support a clean unseen claim until that case is replaced.
 
+## Language-adapter claim
+
+The repository now includes a separate language-adapter training and controlled-evaluation path. Its 2,439 chat examples are deterministic derivatives of public material only, and their source lineages remain isolated across train/validation/public-held-out splits. The pinned Qwen3-4B adapter is outside the structural transition head: it may parse or serialize governed judgments, but the Constitutional VM remains the transition-legality authority.
+
+Controlled inference is answer-blind and produces frozen predictions before a different scoring process opens the answer key. The declared lexical metrics measure exact ruling and reference overlap only. They do not prove complete semantic equivalence, language understanding across unsupported populations, alignment, safety, or human acceptance. Passing the automated policy can produce `QUALIFIED`, not deployment promotion; failure produces `QUARANTINED`.
+
 ## Grounding claim
 
-CETA receives normalized structured state and explicit structured exogenous proposal context where information must enter from outside the current state. This architecture makes the grounding boundary explicit; it does not solve the general problem of converting ambiguous language/sensors into correct epistemic objects.
+CETA receives normalized structured state and explicit structured exogenous proposal context where information must enter from outside the current state. The language adapter adds a governed language-processing experiment and controlled benchmark path; it does not solve the general problem of converting arbitrary ambiguous language or sensors into truthful epistemic objects.
 
 ## Formal claim
 
@@ -38,4 +44,4 @@ No production HSM/TPM key custody, Byzantine consensus, distributed training con
 
 ## Source claim
 
-Verification is local-only. The release performs no remote fetch and depends only on the corpus/evidence embedded in the package plus declared Python dependencies.
+Core package verification is local-only. Language-adapter execution additionally fetches the exact pinned base-model revision unless it is already cached; the run binding records that revision and all resulting adapter hashes.

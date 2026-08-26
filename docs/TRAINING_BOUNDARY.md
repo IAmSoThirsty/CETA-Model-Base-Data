@@ -1,6 +1,6 @@
 # CETA Training Boundary — v0.3.0
 
-The reasoner is trained to select structured transitions, not generate language.
+The core CETA reasoner is trained to select structured transitions, not generate language. A separate language adapter may parse and serialize human-language material around this boundary; it does not replace the Constitutional VM or acquire authority from fluency.
 
 ## Input
 
@@ -15,7 +15,18 @@ A `WorldView` contains only the structured material needed by the transition sub
 
 Exogenous proposal context is input, not a hidden target channel. Examples include a new observation payload awaiting `Observe`, claim material awaiting `CreateClaim`, or an external authorization request awaiting adjudication.
 
-Operational secrets, signatures, live permit internals, governance histories, evaluator outputs, controlled evaluation answers, verification artifacts, and source archives are separate from optimizer inputs. Public human-relations and defensive records may drive deterministic structured derivation; the raw source files are not direct optimizer datasets. Controlled evaluation is integrated through a hash-verified evaluator staging path rather than discarded.
+Operational secrets, signatures, live permit internals, governance histories, evaluator outputs, controlled evaluation answers, verification artifacts, and source archives are separate from optimizer inputs. Public human-relations and defensive records may drive deterministic derivation; the raw source files are not direct optimizer datasets. The structured head consumes `data/ceta_curriculum_v3/`. The language adapter consumes only `data/ceta_language_adapter_v1/`, a public-only chat derivative with manifest-bound source identity and lineage splits. Controlled evaluation is integrated through a hash-verified evaluator staging path rather than discarded.
+
+## Language-adapter boundary
+
+The language-adapter training process is bound to a clean Git revision, a pinned base-model revision, the derived-dataset hash, a fixed seed/configuration, one H100, durable Trainer checkpoints, and a predeclared controlled-evaluation policy. Its optimizer process cannot open the gitignored challenge or answer files.
+
+Controlled evaluation has two processes:
+
+1. challenge-only inference verifies and opens `challenges.jsonl`, writes durable predictions, and records `answer_key_accessed: false`;
+2. independent scoring verifies the frozen predictions and policy before opening `answer_key.jsonl`.
+
+The scorer excludes the recorded exposed case `H001`. Evaluation results cannot feed that run's optimizer, prompt, or thresholds. A failed gate produces `QUARANTINED`; a passing result is only `QUALIFIED` and still does not establish production or safety approval.
 
 ## Target
 

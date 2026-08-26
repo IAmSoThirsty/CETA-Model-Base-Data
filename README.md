@@ -32,6 +32,8 @@ This release crosses the reference-training boundary that v0.2.0 intentionally d
 - exact-once family binding for **2,439 public human-relations and defensive source records** without placing raw prose in optimizer records;
 - family- and source-lineage-isolated train/validation/held-out partitions;
 - a structured neural transition policy with no language-response target;
+- a separate Qwen3-4B language-adapter track derived from all **2,439 public records**, with the same source-lineage split isolation;
+- answer-blind controlled-challenge inference and a separate frozen-policy scoring phase for the 59 clean unseen cases;
 - a **target-blind action-space generator**: runtime inference never receives the correct transition or a caller-supplied candidate list;
 - structural transition/risk losses;
 - governed optimizer lifecycle with mandatory durable checkpoints;
@@ -60,7 +62,7 @@ The architecture registry assigns one owner to each fundamental responsibility. 
 - `effect_gateway` — the only side-effect invocation boundary.
 - `effect_verifier` — independent signed observation of resulting external reality.
 - `memory_projection` — disposable derived search/index view.
-- `transition_training_system` — curriculum, optimization evidence, checkpointing, independent evaluation, and promotion state.
+- `transition_training_system` — structured and derived-language curricula, optimization evidence, checkpointing, independent evaluation, and promotion state.
 
 Ownership is machine-validated from `registry/responsibilities.json` and `registry/components.json`.
 
@@ -107,6 +109,8 @@ This reference action space is intentionally bounded. In particular, neural Merg
 The trainer does not trust filenames. It binds the split bytes, `manifest.json`, `splits.json`, generator ID, case IDs, family IDs, and the source-catalog/assignment sidecars before optimization. A held-out file renamed to `train.jsonl`, or a changed source sidecar, is rejected. Curriculum v2 remains unchanged under `data/ceta_curriculum_v2/` as a byte-reproducible regression baseline.
 
 The current neural encoder has no language tokenizer. Source records therefore affect v3 through source-derived categorical counts and encoder-visible CETA topology; source IDs and hashes provide provenance only. Operation-risk and accuracy policy remain in non-model sidecars and promotion logic, so target-derived policy is not projected into `WorldView`. The record-to-family mapping is a deterministic provenance assignment, not a claim of human semantic source-to-operation adjudication or prose understanding. The v3 hostile alternatives remain VM-authored structural negatives; they are not claimed as source-authored negatives.
+
+That boundary now applies specifically to the structured transition head. `data/ceta_language_adapter_v1/` provides a separate, deterministic public-prose derivative for a Qwen3-4B LoRA adapter. It contains 1,928 training, 249 validation, and 262 public held-out chat records. Every public source record appears exactly once, and the existing v3 family/source-lineage partition determines its split. The private controlled challenges and answer key never enter these records.
 
 ## Governed training lifecycle
 
@@ -181,7 +185,7 @@ The verification path is local-only. It performs no remote fetch.
 
 The provenance-bound human-relations/stewardship corpus and defensive evaluation subset are materialized under `data/ceta_architecture_material_v1/`. They provide 406 lifecycle-section awareness records, 1,624 situational templates, 21 role contracts, 84 role-conditioned cases, 20 public scenarios, five unacceptable-failure lessons, operation-specific risk/equivalence policy, and 200 defensive behaviors.
 
-These records now drive the deterministic structured `ceta_curriculum_v3` source catalog and family assignments. All materialized public defensive records are accounted as trained-on and therefore are not claimed as unseen benchmarks. Raw prose is not copied into optimizer records. The 60 controlled challenge/answer records are cryptographically bound and can be staged through a gitignored evaluator path; they are not discarded or optimizer inputs. Because case `H001` and its answer were previously exposed during inspection, only 59 cases are currently eligible for a clean unseen-evaluation claim. See `docs/SUPPLIED_DATA_INTEGRATION.md`.
+These records drive both the deterministic structured `ceta_curriculum_v3` source catalog and the separately derived `ceta_language_adapter_v1` chat dataset. Raw public files are never passed directly to either optimizer. All materialized public defensive records are accounted as trained-on and therefore are not claimed as unseen benchmarks. The 60 controlled challenge/answer records are cryptographically bound and can be staged through a gitignored evaluator path; they are not discarded or optimizer inputs. Because case `H001` and its answer were previously exposed during inspection, only 59 cases are currently eligible for a clean unseen-evaluation claim. See `docs/SUPPLIED_DATA_INTEGRATION.md` and `docs/LANGUAGE_ADAPTER.md`.
 
 The supplied 23-operation risk policy is enforced now: independent evaluation records per-operation metrics, and governed promotion applies the operation-specific accuracy and zero-illegal-selection requirements in addition to aggregate floors.
 
@@ -217,8 +221,22 @@ CETA_PYTHON=/teamspace/studios/this_studio/.venvs/ceta-v0.3.0-runtime/bin/python
 
 The launcher does not select or activate hardware. It fails closed unless CUDA is available and the selected device identifies as an H100. Its default checkpoint ledger, checkpoints, promotion records, and regenerated readiness report are written under `/teamspace/studios/this_studio/ceta-runs/h100-epoch-v0.3.0-curriculum-v3`, outside the immutable repository package. Supply a new run-root as the first argument for a later governed run; an existing run-root is never overwritten.
 
+### Governed language-adapter epoch and controlled evaluation
+
+The language track uses the pinned `Qwen/Qwen3-4B-Instruct-2507` revision, trains a LoRA adapter from the derived public dataset, freezes the evaluation policy before training, performs challenge-only inference, and only then opens the separate answer key in the scoring process:
+
+```bash
+python -m pip install -r requirements-language-adapter.txt
+bash scripts/run_h100_language_epoch.sh \
+  /teamspace/studios/this_studio/ceta-runs/language-adapter-v1 \
+  /teamspace/studios/this_studio/ceta-runs/language-controlled-inference-v1 \
+  /teamspace/studios/this_studio/ceta-runs/LANGUAGE_CONTROLLED_EVALUATION_REPORT.json
+```
+
+The script requires exactly one already-visible H100. A completed epoch is not a promotion: the scorer emits `QUALIFIED` only if every frozen gate passes; otherwise it emits `QUARANTINED`. Token-overlap metrics remain bounded diagnostics and do not replace independent human review.
+
 ## Claim boundary
 
-Read `docs/CLAIM_BOUNDARY.md`. **Epoch-ready** here means the included abstract CETA training pipeline can start, optimize, checkpoint, interrupt, resume, independently evaluate, quarantine/promote, and reproduce its governed evidence under the included reference configuration.
+Read `docs/CLAIM_BOUNDARY.md`. **Epoch-ready** here means the included abstract CETA transition pipeline and public-data-derived language-adapter pipeline have explicit, reproducible data, training, checkpoint, evaluation, quarantine, and evidence paths under their declared configurations.
 
-It does **not** mean the smoke checkpoint is promoted, that general reasoning has been demonstrated, that the system is AGI, that real-world language grounding is solved, or that the architecture is certified for production/safety-critical deployment.
+It does **not** mean either checkpoint is promoted, that general reasoning has been demonstrated, that the system is AGI, that unrestricted real-world language grounding is solved, or that the architecture is certified for production/safety-critical deployment.

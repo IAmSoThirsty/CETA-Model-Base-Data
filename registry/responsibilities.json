@@ -18,7 +18,7 @@
     {"id":"alternative_transition_search","owner":"transition_search","status":"canonical","purpose":"Searches neighboring candidate transitions after denial or uncertainty; has no commit authority."},
     {"id":"security_detection","owner":"security_sensors","status":"canonical","purpose":"Produces threat observations/evidence; does not own constitutional verdicts."},
     {"id":"tool_and_device_adaptation","owner":"tool_adapters","status":"canonical","purpose":"Maps exact permitted effects to concrete tools/devices under the effect gateway."},
-    {"id":"training_and_evaluation","owner":"transition_training_system","status":"canonical","purpose":"Builds CETA worlds, trains proposal policy, evaluates executable transition behavior and governs checkpoint candidacy."},
+    {"id":"training_and_evaluation","owner":"transition_training_system","status":"canonical","purpose":"Builds CETA worlds and derived public language records, trains transition and language-adapter policies, independently evaluates their bounded behavior, and governs checkpoint candidacy."},
     {"id":"formal_model_evidence","owner":"formal_verification","status":"canonical","purpose":"Maintains executable models and proof obligations for architecture invariants."},
     {"id":"operator_interface","owner":"host_shell","status":"canonical","purpose":"Owns UI/voice/local product surfaces without epistemic or execution authority."}
   ]

@@ -124,7 +124,9 @@
         "src/training/dataset.py",
         "src/training/curriculum.py",
         "src/training/worlds.py",
+        "src/training/worlds_v3.py",
         "src/training/governed.py",
+        "src/training/language_adapter.py",
         "src/training/source_policy.py",
         "src/training/failure_taxonomy.py"
       ]

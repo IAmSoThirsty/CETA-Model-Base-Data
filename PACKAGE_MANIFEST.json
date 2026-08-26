@@ -2,8 +2,8 @@
   "schema_version": 1,
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
-  "file_count": 179,
-  "content_root": "sha256:0c106b96626054c49ca3c29ce5208694d1979f6f3f54853d843942c39d7caf57",
+  "file_count": 195,
+  "content_root": "sha256:7bac8070f1d65e87fed1ae46d2be81968da86933ec5c6a380e1ae42f78194393",
   "files": [
     {
       "path": ".gitattributes",
@@ -17,18 +17,23 @@
     },
     {
       "path": "README.md",
-      "size": 14114,
-      "sha256": "b94523fb55f04bc00b578d78a3321b3f6550eb9c1b905b6de6a0439b3f0fd401"
+      "size": 15961,
+      "sha256": "f7f26e3c80aa44f8fbfdf48fb19adfa43a81ccb4f636c8f70bea2aae9814453f"
     },
     {
       "path": "STATUS.md",
-      "size": 5626,
-      "sha256": "cd6aaed5bd2a610add7d37bf0c56c9b72a212135ea356e1f8f72a5793b63f18b"
+      "size": 6054,
+      "sha256": "58d04130b29b01044b3bd5ebb6ac6fead4a3d123043b54340fea63aad0f8a7b6"
     },
     {
       "path": "VERSION",
       "size": 6,
       "sha256": "d915cc95d6ca8f47ae297713ed46d4e5c5d99ddd29fc3c61e263bdf305f2b5b0"
+    },
+    {
+      "path": "configs/ceta-language-adapter-qwen3-4b-h100.json",
+      "size": 1283,
+      "sha256": "9003f9476c60b89516aa424e380f21ee866446c1196c1513c6183097c34a5beb"
     },
     {
       "path": "corpus/CETA.md",
@@ -226,19 +231,44 @@
       "sha256": "8fef184d6aac3006829ba4de871e7005141e269f0cce21ff009b873d1c2c7301"
     },
     {
+      "path": "data/ceta_language_adapter_v1/heldout.jsonl",
+      "size": 762244,
+      "sha256": "09db6d056658c6bcb3cfdf00b991bd054f8371fbfd381473f8d374b4e9222da2"
+    },
+    {
+      "path": "data/ceta_language_adapter_v1/manifest.json",
+      "size": 1948,
+      "sha256": "c6d3ee1b8d8ab5e565c5b01498a11553fc38ee9fe3693d38bb475a860990db0d"
+    },
+    {
+      "path": "data/ceta_language_adapter_v1/train.jsonl",
+      "size": 5609937,
+      "sha256": "e4fce37710c98de9750a075d8b80fdaabf45160eac1890abc3ed8e5488d09368"
+    },
+    {
+      "path": "data/ceta_language_adapter_v1/validation.jsonl",
+      "size": 746525,
+      "sha256": "9ef52e5cdf8c1a93affe5426de69ce2d4605d348de5fd31695d4d0b074b74b22"
+    },
+    {
       "path": "docs/ARCHITECTURE.md",
       "size": 4085,
       "sha256": "ccffb4d2ad47546fedc4d99e70335514b190c1bb8e3721bfc19d770bdd685aa6"
     },
     {
       "path": "docs/CLAIM_BOUNDARY.md",
-      "size": 4544,
-      "sha256": "9d18a97043093981833742941f69af09b53cdd9f481f5d3dffd6bc74eb20f901"
+      "size": 5604,
+      "sha256": "9202d48db327d60824045371ed90c5380ce167641860380de6499c65f756661b"
     },
     {
       "path": "docs/HOSTILE_REVIEW.md",
       "size": 3362,
       "sha256": "e9a9d8efeb0a298da87626c5bd30b4f843c6ae2801c9596edbb2a78ef02955ad"
+    },
+    {
+      "path": "docs/LANGUAGE_ADAPTER.md",
+      "size": 3833,
+      "sha256": "d32e1939c000f3b8ec9745456a9e1f8d29a41a35f89731e9c20bf252f2dd2705"
     },
     {
       "path": "docs/RESTART_AND_RECOVERY.md",
@@ -247,13 +277,13 @@
     },
     {
       "path": "docs/SUPPLIED_DATA_INTEGRATION.md",
-      "size": 6256,
-      "sha256": "4d33c5764e00a9d085d0bf5c5a12536ee222a1a5bff0503f4d0dbd327db0a0e4"
+      "size": 6555,
+      "sha256": "b5089771bda264e7ad12d5ef2618c55643482332009e5423fd5a2d5c85e2a835"
     },
     {
       "path": "docs/TRAINING_BOUNDARY.md",
-      "size": 5660,
-      "sha256": "24d181fd5c50414dc29922e393db65b43365368150390a3d1d5e46d93e9e1b72"
+      "size": 6943,
+      "sha256": "4eedfe813a7bb942a23e7cd9546acd4a26eb10aa5d0fec75efcd7b0211ce6d5b"
     },
     {
       "path": "evidence/EPOCH_HOSTILE_GATE_REPORT.json",
@@ -347,8 +377,8 @@
     },
     {
       "path": "registry/implementation_map.json",
-      "size": 3144,
-      "sha256": "0e85bccfdb3b1226a3bcf8fb4a398ccdb2ea05840a94976e66e024a8f3935036"
+      "size": 3225,
+      "sha256": "4c19fbadbb6ea9ea46c2915084a9ec06c1ae95c8f13dcf3cff1bc8780b9bb9ab"
     },
     {
       "path": "registry/invariants.json",
@@ -367,8 +397,8 @@
     },
     {
       "path": "registry/responsibilities.json",
-      "size": 3549,
-      "sha256": "a84a50b0fb7ef2a8735790241c3e2af62c05ae70375faffd1f314c8bfef2105d"
+      "size": 3617,
+      "sha256": "b4dee2ffdf0723583c50ca1294c15f2c3ac771071fdbb9eeaaa4c5cdccd128bb"
     },
     {
       "path": "registry/source_assertions.json",
@@ -379,6 +409,11 @@
       "path": "registry/source_registry.json",
       "size": 10795,
       "sha256": "827f4df4dd80ae338d910fa7bc59d90d1daae2bc0a102d57cf9a848fa4b6e159"
+    },
+    {
+      "path": "requirements-language-adapter.txt",
+      "size": 126,
+      "sha256": "8742e2fc87ae0b34d3690eadf78a49b990c58ee40c561a36f0281781141a6e8f"
     },
     {
       "path": "requirements-training.txt",
@@ -399,6 +434,11 @@
       "path": "scripts/build_ceta_curriculum_v3.py",
       "size": 3662,
       "sha256": "62e3ae3ffa26c72746d5f4fe8f41605eb8be0d68981746216a8c2f4dcce6a802"
+    },
+    {
+      "path": "scripts/build_language_adapter_dataset.py",
+      "size": 1606,
+      "sha256": "2432c8de56d66e03740313feeabed9df55e521d36bc419bb8d2029d0dd2a829f"
     },
     {
       "path": "scripts/build_local_manifest.py",
@@ -446,6 +486,11 @@
       "sha256": "229b53f4bd653c7248e215b55a3f99c17826f8cfb1c9e501e6f13ecc2bce0813"
     },
     {
+      "path": "scripts/run_controlled_language_inference.py",
+      "size": 10066,
+      "sha256": "d86ce31b4a6cfe782694e481ecab384e36d36d90364241db74792f00cc214734"
+    },
+    {
       "path": "scripts/run_epoch_readiness.py",
       "size": 17515,
       "sha256": "ea1e0e9bcffa2a61da0a02d60773aef690dcfe560e88e29aadb9beddb6a4401a"
@@ -454,6 +499,21 @@
       "path": "scripts/run_h100_epoch.sh",
       "size": 2958,
       "sha256": "06cfd20a501d9f368e7aa1bc227ec4ba8f574099c84f617ac66e6231acd9741f"
+    },
+    {
+      "path": "scripts/run_h100_language_epoch.sh",
+      "size": 1302,
+      "sha256": "c8927676de684a9fe6dca44abb84c7cdf7c411f51d98523e719078262b61e1d8"
+    },
+    {
+      "path": "scripts/score_controlled_language_evaluation.py",
+      "size": 9024,
+      "sha256": "fe11b909fdd1799a42966849977502dcc21ec2b78dc55b6b910cae9d4e90deaa"
+    },
+    {
+      "path": "scripts/train_language_adapter.py",
+      "size": 14534,
+      "sha256": "03c3563c17104b284c387b79ff8521fad4009c57bcb25d6653999df6f24e4032"
     },
     {
       "path": "scripts/validate_architecture.py",
@@ -486,9 +546,14 @@
       "sha256": "47c0a4d2585bc3026e85871c980a70368bf74ebe43de67a5ecf8f9e196b0ccfb"
     },
     {
+      "path": "scripts/validate_language_adapter_dataset.py",
+      "size": 1622,
+      "sha256": "1d71cb079e2ef90730263c8605b2715ee00dd7d23dac1a6b3e113be8b5441646"
+    },
+    {
       "path": "scripts/verify_all.py",
-      "size": 1325,
-      "sha256": "5832e83304846f05d125446c70236c6f0e826216dbfbfcee917a6327a9e92cbd"
+      "size": 1407,
+      "sha256": "7169d87b70a099672dae9b7f4400b8472d1856bbd32a1959e08aa0767f854051"
     },
     {
       "path": "scripts/verify_corpus_manifest.py",
@@ -504,6 +569,11 @@
       "path": "scripts/verify_epoch_readiness_report.py",
       "size": 7710,
       "sha256": "9cb2944fa1062d657a20d9853eb09456713885e638bd218888aa4ed15c0499fb"
+    },
+    {
+      "path": "scripts/verify_language_epoch_report.py",
+      "size": 5567,
+      "sha256": "08a861b2a3b45cc0094108f62c68c04e59406e222799556fe8b0b7baba6a758d"
     },
     {
       "path": "scripts/verify_package.py",
@@ -761,14 +831,19 @@
       "sha256": "0f7b517401a98c930291079dd12f9a453176db236877e7ec4c33c9990c5467e8"
     },
     {
+      "path": "src/training/language_adapter.py",
+      "size": 23764,
+      "sha256": "d7ff301aac105a6f0e394ce1b6dc995b294a87bc602922808718ad433714bc66"
+    },
+    {
       "path": "src/training/model.py",
       "size": 12998,
       "sha256": "0d5fd4b0b9baae082f4abfeea51f0da71ce75679b0a2663785a658867a29bea2"
     },
     {
       "path": "src/training/source_policy.py",
-      "size": 10742,
-      "sha256": "b8d8a5ec4e9c3d11b48e2c07ac7a763032439bd55c8095b7b981e711991e0064"
+      "size": 10824,
+      "sha256": "57ce237e70cc2b2ec0bef0c20bd12c14e7b053ec7becee174680f0dab4d9ddab"
     },
     {
       "path": "src/training/worlds.py",
@@ -864,6 +939,11 @@
       "path": "tests/test_identity_authority_trust.py",
       "size": 6338,
       "sha256": "54c992c5778acb98a18ceaf19b1dd493585b3fa5c8354d1328c6b0bff642a5fa"
+    },
+    {
+      "path": "tests/test_language_adapter.py",
+      "size": 5629,
+      "sha256": "adf4e77a2ab6c65b305a465f3b58f01d085aad29f2b2b6664c5130ba98535ad5"
     },
     {
       "path": "tests/test_memory_projection.py",

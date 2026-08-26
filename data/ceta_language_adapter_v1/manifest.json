@@ -1,0 +1,65 @@
+{
+  "curriculum_manifest_sha256": "acfe76193fa14205206bdcd570a8eb4b4f3efb7be8cc4e42dc134008e1905bc0",
+  "dataset_hash": "sha256:80427c39057504397179998375618ee4eec325a928d5c79a2b4fb62e92a69792",
+  "dataset_id": "CETA_LANGUAGE_ADAPTER_DATASET/v1",
+  "files": {
+    "heldout": {
+      "count": 262,
+      "path": "heldout.jsonl",
+      "sha256": "09db6d056658c6bcb3cfdf00b991bd054f8371fbfd381473f8d374b4e9222da2"
+    },
+    "train": {
+      "count": 1928,
+      "path": "train.jsonl",
+      "sha256": "e4fce37710c98de9750a075d8b80fdaabf45160eac1890abc3ed8e5488d09368"
+    },
+    "validation": {
+      "count": 249,
+      "path": "validation.jsonl",
+      "sha256": "9ef52e5cdf8c1a93affe5426de69ce2d4605d348de5fd31695d4d0b074b74b22"
+    }
+  },
+  "license_counts": {
+    "CC-BY-4.0": 23,
+    "CC-BY-NC-4.0": 14,
+    "CC-BY-SA-4.0": 21,
+    "MIT": 200,
+    "MIT_AND_UPSTREAM_MODEL_TERMS": 20,
+    "UPSTREAM_TERMS": 1,
+    "USER_SUPPLIED": 2160
+  },
+  "material_manifest_sha256": "ecc9cc35d7efb5dde26f054f687e004381ad9f6548c1156c326e2b0c9c43c49d",
+  "record_count": 2439,
+  "record_kind_counts": {
+    "aegis_category": 23,
+    "beavertails_category": 14,
+    "jbb_behavior": 200,
+    "mitre_release": 1,
+    "owasp_risk": 21,
+    "public_scenario": 20,
+    "purplellama_sample": 20,
+    "role_case": 84,
+    "role_contract": 21,
+    "section_awareness": 406,
+    "section_template": 1624,
+    "unacceptable_failure": 5
+  },
+  "schema_version": 1,
+  "source_class_counts": {
+    "DEFENSIVE_PUBLIC": 279,
+    "HUMAN_RELATIONS_PUBLIC": 2160
+  },
+  "source_lineage_count": 731,
+  "split_counts": {
+    "heldout": 262,
+    "train": 1928,
+    "validation": 249
+  },
+  "training_boundary": {
+    "controlled_evaluation_answer_access": false,
+    "controlled_evaluation_optimizer_input": false,
+    "derived_public_records_only": true,
+    "raw_source_files_direct_optimizer_input": false,
+    "split_unit": "source_lineage_via_ceta_curriculum_v3_family"
+  }
+}
