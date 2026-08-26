@@ -78,7 +78,15 @@ def determinism_contract(config: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def training_arguments_kwargs(config: dict[str, Any], checkpoint_root: Path, seed: int) -> dict[str, Any]:
+def expected_optimizer_steps(config: dict[str, Any], train_size: int) -> int:
+    examples_per_step = int(config["per_device_train_batch_size"]) * int(config["gradient_accumulation_steps"])
+    return math.ceil(train_size / examples_per_step) * int(config["epochs"])
+
+
+def training_arguments_kwargs(
+    config: dict[str, Any], checkpoint_root: Path, seed: int, train_size: int
+) -> dict[str, Any]:
+    optimizer_steps = expected_optimizer_steps(config, train_size)
     return {
         "output_dir": str(checkpoint_root),
         "num_train_epochs": float(config["epochs"]),
@@ -86,7 +94,7 @@ def training_arguments_kwargs(config: dict[str, Any], checkpoint_root: Path, see
         "per_device_eval_batch_size": int(config["per_device_eval_batch_size"]),
         "gradient_accumulation_steps": int(config["gradient_accumulation_steps"]),
         "learning_rate": float(config["learning_rate"]),
-        "warmup_ratio": float(config["warmup_ratio"]),
+        "warmup_steps": math.ceil(optimizer_steps * float(config["warmup_ratio"])),
         "weight_decay": float(config["weight_decay"]),
         "bf16": bool(config["bf16"]),
         "tf32": False,
@@ -299,7 +307,9 @@ def main() -> None:
 
     checkpoint_root = run_root / "checkpoints"
     collator = AssistantOnlyCollator(tokenizer, max_length=int(config["max_length"]), torch_module=torch)
-    training_args = TrainingArguments(**training_arguments_kwargs(config, checkpoint_root, seed))
+    training_args = TrainingArguments(
+        **training_arguments_kwargs(config, checkpoint_root, seed, len(splits["train"]))
+    )
     trainer = Trainer(
         model=model,
         args=training_args,
@@ -333,7 +343,7 @@ def main() -> None:
             "device": device_name,
             "determinism": deterministic,
             "global_step": int(trainer.state.global_step),
-            "expected_optimizer_steps": math.ceil(len(splits["train"]) / int(config["per_device_train_batch_size"]) / int(config["gradient_accumulation_steps"])) * int(config["epochs"]),
+            "expected_optimizer_steps": expected_optimizer_steps(config, len(splits["train"])),
             "train_metrics": train_result.metrics,
             "validation_metrics": validation_metrics,
             "truncated_collation_events": collator.truncated_examples,

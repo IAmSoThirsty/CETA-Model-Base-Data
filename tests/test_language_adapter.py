@@ -9,6 +9,7 @@ import sys
 import tempfile
 import tomllib
 import unittest
+import warnings
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -147,7 +148,9 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
             )
 
     def test_h100_training_is_strictly_deterministic_and_uses_current_loading_api(self):
-        from transformers import TrainingArguments
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", message=".*torch.jit.script_method.*", category=DeprecationWarning)
+            from transformers import TrainingArguments
 
         config = json.loads((ROOT / "configs/ceta-language-adapter-qwen3-4b-h100.json").read_text(encoding="utf-8"))
         contract = TRAINER.determinism_contract(config)
@@ -159,10 +162,19 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
         self.assertNotIn("torch_dtype=", training_source + inference_source)
         self.assertNotIn('attn_implementation="sdpa"', training_source + inference_source)
         argument_names = set(inspect.signature(TrainingArguments).parameters)
+        training_arguments = TRAINER.training_arguments_kwargs(
+            config,
+            Path("checkpoints"),
+            int(config["seed"]),
+            1928,
+        )
         self.assertLessEqual(
-            set(TRAINER.training_arguments_kwargs(config, Path("checkpoints"), int(config["seed"]))),
+            set(training_arguments),
             argument_names,
         )
+        self.assertNotIn("warmup_ratio", training_arguments)
+        self.assertEqual(training_arguments["warmup_steps"], 4)
+        self.assertEqual(TRAINER.expected_optimizer_steps(config, 1928), 121)
 
     def test_assistant_collator_requests_legacy_list_shape_explicitly(self):
         class Tokenizer:
