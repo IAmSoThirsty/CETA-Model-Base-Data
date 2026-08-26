@@ -69,6 +69,12 @@ def main() -> None:
     for split in ('validation','heldout'):
         metrics=report.get(split,{})
         if metrics.get('case_count')!=required[split][1]: fail(f'{split} evaluation case count mismatch')
+        if int(metrics.get('hostile_candidate_count',0)) < int(metrics.get('case_count',0)):
+            fail(f'{split} hostile candidates were not exercised')
+        if int(metrics.get('candidate_count_total',0)) <= int(metrics.get('case_count',0)):
+            fail(f'{split} evaluation candidate sets are not competitive')
+        if int(metrics.get('singleton_candidate_case_count',-1)) != 0:
+            fail(f'{split} evaluation contains singleton candidate cases')
         legal=float(metrics.get('legal_selection_rate',-1.0))
         if not 0.0 <= legal <= 1.0: fail(f'{split} legal selection rate out of range')
         if metrics.get('checkpoint_sha256')!=report['resume']['final_checkpoint']['sha256']:

@@ -106,6 +106,31 @@ class CetaWorldCurriculumV3Tests(unittest.TestCase):
                 profile["source_count"],
             )
 
+    def test_operation_discriminators_are_visible_to_the_structured_encoder(self):
+        encoder = StructuredStateEncoder()
+        by_operation = {}
+        for case in self.cases:
+            by_operation.setdefault(case.target_proposal.operation, case)
+
+        expected_relations = {
+            "Support": (1.0, 0.0, 0.0),
+            "Contradict": (0.0, 1.0, 0.0),
+            "Undercut": (0.0, 0.0, 1.0),
+        }
+        for operation, expected in expected_relations.items():
+            encoded = encoder.encode_world(world_from_training_case(by_operation[operation]))
+            actual = tuple(float(x) for x in encoded.node_numeric[:, 8:11].max(dim=0).values)
+            self.assertEqual(actual, expected)
+
+        expected_effects = {
+            "Execute": (1.0, 0.0),
+            "Rollback": (0.0, 1.0),
+        }
+        for operation, expected in expected_effects.items():
+            encoded = encoder.encode_world(world_from_training_case(by_operation[operation]))
+            actual = tuple(float(x) for x in encoded.node_numeric[:, 11:13].max(dim=0).values)
+            self.assertEqual(actual, expected)
+
     def test_source_context_anchors_never_enter_the_action_space(self):
         generator = CetaActionSpaceGenerator()
         for case in self.cases:

@@ -126,6 +126,9 @@ class GovernedTrainingTests(unittest.TestCase):
             self.assertLessEqual(metrics.legal_selection_rate,1.0)
             self.assertEqual(len(metrics.operation_metrics),23)
             self.assertTrue(all(item['case_count']==3 for item in metrics.operation_metrics.values()))
+            self.assertGreater(metrics.hostile_candidate_count,0)
+            self.assertGreater(metrics.candidate_count_total,metrics.case_count)
+            self.assertEqual(metrics.singleton_candidate_case_count,0)
 
     def test_supplied_operation_risk_policy_is_machine_enforced(self):
         path=ROOT/'data/ceta_architecture_material_v1/governance/operation_risk_ranking.json'

@@ -48,7 +48,12 @@ class EncodedCandidate:
 class StructuredStateEncoder:
     """Converts CETA structures to numeric tensors without language tokenization."""
 
-    NODE_NUMERIC_DIM=8
+    # The action-space generator and Constitutional VM both consume
+    # ``relation_kind`` and the effect operation bound into an AUTHORITY
+    # object.  These features must also be visible to the neural state encoder;
+    # otherwise Support/Contradict/Undercut and Execute/Rollback collapse onto
+    # the same model input even though the runtime can distinguish them.
+    NODE_NUMERIC_DIM=13
     GLOBAL_NUMERIC_DIM=16
     OPERAND_NUMERIC_DIM=5
 
@@ -68,6 +73,10 @@ class StructuredStateEncoder:
                 float(len(scope)),float(scope_card),float(len(content.get('support_refs',[]) or [])),
                 float(len(content.get('contradiction_refs',[]) or [])),float(len(content.get('undercut_refs',[]) or [])),
                 float(isinstance(content.get('expires_at_epoch_ms'),int)),float(obj.object_type=='AUTHORITY'),float(obj.object_type=='ACTION'),
+                float(content.get('relation_kind')=='Support'),float(content.get('relation_kind')=='Contradict'),
+                float(content.get('relation_kind')=='Undercut'),
+                float(obj.object_type=='AUTHORITY' and content.get('operation')=='Execute'),
+                float(obj.object_type=='AUTHORITY' and content.get('operation')=='Rollback'),
             ])
         if not objects:
             # A zero node is padding only. It carries no object identity and cannot

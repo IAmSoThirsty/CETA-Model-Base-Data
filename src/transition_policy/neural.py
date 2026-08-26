@@ -36,6 +36,7 @@ class NeuralTransitionPolicy(nn.Module):
     """
 
     model_id='ceta-neural-transition-policy-v1'
+    model_schema_version=2
 
     def __init__(self, *, hidden_dim: int = 64) -> None:
         super().__init__()

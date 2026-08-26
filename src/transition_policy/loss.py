@@ -98,7 +98,7 @@ def compute_ceta_loss(case: Any, output: PolicyOutput, *, weights: CetaLossWeigh
 
 
 def candidate_sequence(case: Any) -> tuple:
-    """Training-only adversarial candidates; never inserts the target label."""
+    """Training/evaluation adversarial candidates; never inserts the target label."""
     return tuple(alt.proposal for alt in case.illegal_alternatives)
 
 

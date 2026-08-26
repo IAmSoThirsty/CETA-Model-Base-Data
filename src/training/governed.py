@@ -90,6 +90,9 @@ class EvaluationMetrics:
     curriculum_splits_sha256: str
     evaluation_hash: str
     operation_metrics: Mapping[str,Mapping[str,Any]] = field(default_factory=dict)
+    candidate_count_total: int = 0
+    hostile_candidate_count: int = 0
+    singleton_candidate_case_count: int = 0
 
     def body(self) -> dict[str,Any]:
         body={
@@ -101,6 +104,10 @@ class EvaluationMetrics:
         }
         if self.operation_metrics:
             body['operation_metrics']={str(op):dict(metrics) for op,metrics in sorted(self.operation_metrics.items())}
+        if self.candidate_count_total or self.hostile_candidate_count or self.singleton_candidate_case_count:
+            body['candidate_count_total']=self.candidate_count_total
+            body['hostile_candidate_count']=self.hostile_candidate_count
+            body['singleton_candidate_case_count']=self.singleton_candidate_case_count
         return body
 
 
@@ -236,6 +243,7 @@ class CheckpointStore:
         optimizer_hash=hash_torch_state(optimizer.state_dict(),domain='CETA/OPTIMIZER_STATE/v1')
         payload={
             'schema_version':1,'model_class':'NeuralTransitionPolicy','model_hidden_dim':model.hidden_dim,
+            'model_schema_version':model.model_schema_version,
             'model_state':model.state_dict(),'optimizer_state':optimizer.state_dict(),
             'cursor':cursor.to_dict(),'config':config.to_dict(),'model_hash':model_hash,'optimizer_hash':optimizer_hash,
         }
@@ -246,7 +254,7 @@ class CheckpointStore:
         os.replace(temp,path); _fsync_dir(self.root)
         digest=file_sha256(path)
         sidecar=path.with_suffix(path.suffix+'.json')
-        sidecar_body={'schema_version':1,'checkpoint':path.name,'sha256':digest,'model_hash':model_hash,'optimizer_hash':optimizer_hash,'cursor':cursor.to_dict(),'config_hash':config.config_hash}
+        sidecar_body={'schema_version':1,'checkpoint':path.name,'sha256':digest,'model_hash':model_hash,'optimizer_hash':optimizer_hash,'cursor':cursor.to_dict(),'config_hash':config.config_hash,'model_schema_version':model.model_schema_version}
         _atomic_json(sidecar,sidecar_body)
         return CheckpointRef(str(path),digest,model_hash,optimizer_hash,cursor)
 
@@ -267,6 +275,8 @@ class CheckpointStore:
         payload=torch.load(path,map_location="cpu",weights_only=True)
         if payload.get("schema_version") != 1 or payload.get("model_class") != "NeuralTransitionPolicy":
             raise TrainingBindingError("unsupported checkpoint schema or model class")
+        if payload.get("model_schema_version") != NeuralTransitionPolicy.model_schema_version or meta.get("model_schema_version") != NeuralTransitionPolicy.model_schema_version:
+            raise TrainingBindingError("checkpoint neural model schema mismatch")
         if int(payload.get("model_hidden_dim", -1)) != expected_config.hidden_dim:
             raise TrainingBindingError("checkpoint model dimension does not match training config")
         cursor=TrainingCursor(**payload["cursor"])
@@ -585,6 +595,8 @@ class IndependentCheckpointEvaluator:
         payload=torch.load(checkpoint_path,map_location='cpu',weights_only=True)
         if payload.get('schema_version') != 1 or payload.get('model_class') != 'NeuralTransitionPolicy':
             raise TrainingBindingError('unsupported evaluation checkpoint schema or model class')
+        if payload.get('model_schema_version') != NeuralTransitionPolicy.model_schema_version or meta.get('model_schema_version') != NeuralTransitionPolicy.model_schema_version:
+            raise TrainingBindingError('evaluation checkpoint neural model schema mismatch')
         if int(payload.get('model_hidden_dim', -1)) != self.config.hidden_dim:
             raise TrainingBindingError('evaluation checkpoint model dimension mismatch')
         cursor=TrainingCursor(**payload['cursor'])
@@ -599,12 +611,17 @@ class IndependentCheckpointEvaluator:
         model.to(self.device); model.eval()
         cases=load_cases(dataset_path)
         target_correct=0; opcode_correct=0; legal=0; loss_total=0.0; rejected=0
+        candidate_count_total=0; hostile_candidate_count=0; singleton_candidate_case_count=0
         by_operation=defaultdict(lambda:{'case_count':0,'target_correct':0,'opcode_correct':0,'legal':0,'illegal_selection_count':0})
         with torch.no_grad():
             for case in cases.values():
                 world=world_from_training_case(case)
-                output=model.forward_world(world)
+                hostile_candidates=candidate_sequence(case)
+                output=model.forward_world(world,extra_candidates=hostile_candidates)
                 rejected += output.rejected_candidate_count
+                candidate_count_total += len(output.candidate_proposals)
+                hostile_candidate_count += len(hostile_candidates)
+                if len(output.candidate_proposals)==1: singleton_candidate_case_count += 1
                 chosen_index=int(torch.argmax(output.candidate_scores).item())
                 chosen=output.candidate_proposals[chosen_index]
                 operation=case.target_proposal.operation
@@ -632,6 +649,8 @@ class IndependentCheckpointEvaluator:
             'checkpoint_sha256':checkpoint_sha,'dataset_sha256':file_sha256(dataset_path),
             'curriculum_manifest_sha256':binding.manifest_sha256,'curriculum_splits_sha256':binding.splits_sha256,
             'operation_metrics':operation_metrics,
+            'candidate_count_total':candidate_count_total,'hostile_candidate_count':hostile_candidate_count,
+            'singleton_candidate_case_count':singleton_candidate_case_count,
         }
         return EvaluationMetrics(**body,evaluation_hash=domain_hash(body,domain='CETA/INDEPENDENT_EVALUATION/v1'))
 

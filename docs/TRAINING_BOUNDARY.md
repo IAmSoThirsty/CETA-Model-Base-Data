@@ -34,7 +34,7 @@ The target is a supervised loss label. It is never inserted into the normal infe
 
 `CetaActionSpaceGenerator.generate(world)` receives no target. It deterministically enumerates structured candidate transitions from the current `WorldView`. `NeuralTransitionPolicy.propose(world)` accepts no candidate parameter and ranks only that generated action space.
 
-Training may append explicit hostile alternatives to the generated action space to teach failure discrimination. `candidate_sequence(case)` contains only those adversarial alternatives and never the target.
+Training and manifest-bound evaluation append explicit hostile alternatives to the generated action space to test failure discrimination. `candidate_sequence(case)` contains only those adversarial alternatives and never the target. Normal runtime `propose(world)` remains caller-candidate-free and ranks only the target-blind generated action space.
 
 ## Loss
 
@@ -54,7 +54,7 @@ Curriculum v3 also binds `source_catalog.json` and `source_assignments.jsonl`. E
 
 Only categorical/hash metadata is retained as provenance inside the curriculum. Source-derived context counts are projected into encoder-visible object status, scope cardinality, and topology. Operation-risk/accuracy policy is kept out of `WorldView` and used only in sidecars/promotion. The encoder does not tokenize or learn opaque source strings.
 
-The evaluator independently reloads a checkpoint and accepts only manifest-bound validation or held-out artifacts from that same curriculum. Held-out evaluation cannot authorize promotion.
+The evaluator independently reloads a checkpoint and accepts only manifest-bound validation or held-out artifacts from that same curriculum. It records hostile and surviving candidate counts and fails the package gate if evaluation collapses to singleton candidate sets. Held-out evaluation cannot authorize promotion.
 
 ## Checkpoint law
 
