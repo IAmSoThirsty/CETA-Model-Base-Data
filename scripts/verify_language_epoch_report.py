@@ -53,6 +53,19 @@ def main() -> None:
         fail("optimizer did not finish the bound epoch")
     if LANGUAGE_ADAPTER.sha256_file(binding_path) != training.get("run_binding_sha256"):
         fail("run binding hash mismatch")
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    determinism = training.get("determinism", {})
+    if determinism != binding.get("determinism"):
+        fail("training determinism does not match the immutable run binding")
+    if determinism != {
+        "algorithms": "strict_error",
+        "attention_implementation": "eager",
+        "cublas_workspace_config": ":4096:8",
+        "cudnn_benchmark": False,
+        "cudnn_deterministic": True,
+        "tf32": False,
+    }:
+        fail("training determinism contract is not strict")
     adapter = training_root / "adapter"
     actual_adapter_files = {
         path.relative_to(adapter).as_posix(): LANGUAGE_ADAPTER.sha256_file(path)
@@ -86,6 +99,9 @@ def main() -> None:
         fail("controlled-evaluation lineage mismatch")
     if report.get("promotion_performed") is not False:
         fail("controlled evaluator performed unauthorized promotion")
+    benchmark_status = report.get("benchmark_status", {})
+    if report.get("status") == "QUALIFIED" and benchmark_status.get("clean_unseen") is not True:
+        fail("consumed evaluator cannot qualify a model")
     gates = report.get("gates", {})
     expected_status = "QUALIFIED" if gates and all(value is True for value in gates.values()) else "QUARANTINED"
     if report.get("status") != expected_status:

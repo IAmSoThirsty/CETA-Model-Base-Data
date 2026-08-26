@@ -4,23 +4,40 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 python_bin="${CETA_PYTHON:-python}"
 
-if [[ $# -ne 3 ]]; then
+training_only=false
+if [[ $# -eq 2 && "$1" == "--training-only" ]]; then
+  training_only=true
+  shift
+elif [[ $# -ne 3 ]]; then
   echo "usage: $0 TRAINING_RUN_ROOT CONTROLLED_INFERENCE_ROOT EVALUATION_REPORT" >&2
+  echo "   or: $0 --training-only TRAINING_RUN_ROOT" >&2
   exit 2
 fi
 
 training_run="$1"
-inference_root="$2"
-evaluation_report="$3"
+if [[ "${training_only}" == false ]]; then
+  inference_root="$2"
+  evaluation_report="$3"
+fi
 
-if [[ -e "${training_run}" || -e "${inference_root}" || -e "${evaluation_report}" ]]; then
+if [[ -e "${training_run}" ]]; then
+  echo "CETA LANGUAGE H100: FAIL - output paths must not exist" >&2
+  exit 2
+fi
+if [[ "${training_only}" == false && ( -e "${inference_root}" || -e "${evaluation_report}" ) ]]; then
   echo "CETA LANGUAGE H100: FAIL - output paths must not exist" >&2
   exit 2
 fi
 
 "${python_bin}" "${repo_root}/scripts/validate_language_adapter_dataset.py"
-"${python_bin}" "${repo_root}/scripts/validate_controlled_evaluation.py"
+if [[ "${training_only}" == false ]]; then
+  "${python_bin}" "${repo_root}/scripts/validate_controlled_evaluation.py"
+fi
 "${python_bin}" "${repo_root}/scripts/train_language_adapter.py" --run-root "${training_run}"
+if [[ "${training_only}" == true ]]; then
+  echo "CETA LANGUAGE H100: TRAINING COMPLETE - no controlled evaluator was opened"
+  exit 0
+fi
 "${python_bin}" "${repo_root}/scripts/run_controlled_language_inference.py" \
   --training-run "${training_run}" \
   --output-root "${inference_root}"

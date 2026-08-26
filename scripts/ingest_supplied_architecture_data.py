@@ -7,7 +7,6 @@ import io
 import json
 from pathlib import Path, PurePosixPath
 import re
-import shutil
 import zipfile
 
 

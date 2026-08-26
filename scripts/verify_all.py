@@ -16,7 +16,7 @@ commands = [
     [sys.executable, str(ROOT / "scripts/validate_language_adapter_dataset.py")],
     [sys.executable, str(ROOT / "scripts/hostile_audit.py")],
     [sys.executable, str(ROOT / "scripts/run_bounded_models.py")],
-    [sys.executable, "-m", "unittest", "discover", "-s", str(ROOT / "tests"), "-v"],
+    [sys.executable, "-m", "unittest", "discover", "-s", str(ROOT / "tests"), "-q"],
     [sys.executable, str(ROOT / "scripts/hostile_epoch_gate.py")],
     [sys.executable, str(ROOT / "scripts/verify_epoch_readiness_report.py")],
     [sys.executable, str(ROOT / "examples/reference_runtime_demo.py")],

@@ -14,7 +14,6 @@ from history import (  # noqa: E402
     EpistemicObject,
     HistoryBindingError,
     StateDelta,
-    StateProjector,
     Supersession,
     TransitionLedger,
 )

@@ -61,6 +61,23 @@ def tree_hashes(root: Path) -> dict[str, str]:
     }
 
 
+def determinism_contract(config: dict[str, Any]) -> dict[str, Any]:
+    attention = str(config.get("attention_implementation", ""))
+    strict = config.get("strict_determinism") is True
+    if not strict:
+        raise ValueError("strict_determinism must be true")
+    if attention != "eager":
+        raise ValueError("strict deterministic training requires eager attention")
+    return {
+        "algorithms": "strict_error",
+        "attention_implementation": attention,
+        "cublas_workspace_config": ":4096:8",
+        "cudnn_benchmark": False,
+        "cudnn_deterministic": True,
+        "tf32": False,
+    }
+
+
 @dataclass
 class ChatDataset:
     rows: tuple[dict[str, Any], ...]
@@ -139,6 +156,12 @@ def main() -> None:
         raise SystemExit("LANGUAGE ADAPTER TRAINING: FAIL - configuration identity mismatch")
     if config.get("evaluation_policy", {}).get("heldout_feedback_to_optimizer") is not False:
         raise SystemExit("LANGUAGE ADAPTER TRAINING: FAIL - held-out feedback boundary is not fail-closed")
+    try:
+        deterministic = determinism_contract(config)
+    except ValueError as exc:
+        raise SystemExit(f"LANGUAGE ADAPTER TRAINING: FAIL - {exc}") from exc
+    LANGUAGE_ADAPTER.normalize_huggingface_cache_environment(os.environ)
+    os.environ["CUBLAS_WORKSPACE_CONFIG"] = deterministic["cublas_workspace_config"]
     dataset_root = (ROOT / config["dataset_root"]).resolve()
     dataset_manifest, splits = LANGUAGE_ADAPTER.load_verified_language_dataset(dataset_root)
     config_hash = canonical_hash(config, domain="CETA/LANGUAGE_ADAPTER_CONFIG/v1")
@@ -189,6 +212,7 @@ def main() -> None:
         "base_model_revision": config["base_model_revision"],
         "device": device_name,
         "cuda_device_count": torch.cuda.device_count(),
+        "determinism": deterministic,
     }
     if binding_path.exists():
         existing = json.loads(binding_path.read_text(encoding="utf-8"))
@@ -203,11 +227,14 @@ def main() -> None:
     seed = int(config["seed"])
     random.seed(seed)
     torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
     set_seed(seed)
     torch.backends.cuda.matmul.allow_tf32 = False
     torch.backends.cudnn.allow_tf32 = False
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
     if hasattr(torch, "use_deterministic_algorithms"):
-        torch.use_deterministic_algorithms(True, warn_only=True)
+        torch.use_deterministic_algorithms(True, warn_only=False)
 
     tokenizer = AutoTokenizer.from_pretrained(
         config["base_model"], revision=config["base_model_revision"], trust_remote_code=False
@@ -224,10 +251,10 @@ def main() -> None:
         config["base_model"],
         revision=config["base_model_revision"],
         trust_remote_code=False,
-        torch_dtype=torch.bfloat16,
+        dtype=torch.bfloat16,
         quantization_config=quantization,
         device_map={"": 0},
-        attn_implementation="sdpa",
+        attn_implementation=deterministic["attention_implementation"],
     )
     model.config.use_cache = False
     model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=bool(config["gradient_checkpointing"]))
@@ -301,6 +328,7 @@ def main() -> None:
             "base_model": config["base_model"],
             "base_model_revision": config["base_model_revision"],
             "device": device_name,
+            "determinism": deterministic,
             "global_step": int(trainer.state.global_step),
             "expected_optimizer_steps": math.ceil(len(splits["train"]) / int(config["per_device_train_batch_size"]) / int(config["gradient_accumulation_steps"])) * int(config["epochs"]),
             "train_metrics": train_result.metrics,

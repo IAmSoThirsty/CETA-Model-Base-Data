@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-from typing import Any
 
 from ceta import ConstitutionalVM, TransitionProposal, VmDisposition
 from history import EpistemicObject, ProjectionSnapshot, Supersession

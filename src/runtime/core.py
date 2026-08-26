@@ -8,7 +8,6 @@ from authority import (
     AuthorityAssertionError,
     AuthorityLedger,
     Permit,
-    PermitStatus,
     TrustedAuthorityVerifier,
     canonical_hash,
 )

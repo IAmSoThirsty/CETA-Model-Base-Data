@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Iterable, Mapping
 
 from .model import TransitionTrainingCase
-from .source_policy import WorldDatasetPartition, partition_world_families
+from .source_policy import partition_world_families
 
 
 def _sha256(path: Path) -> str:

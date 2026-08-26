@@ -125,6 +125,15 @@ def main() -> None:
 
     clean_scenario_ids = sorted(set(predictions) - excluded)
     label_profile = ruling_label_profile(answers, clean_scenario_ids)
+    consumed_receipt = LANGUAGE_ADAPTER.consumed_evaluator_receipt(
+        ROOT / "evidence",
+        challenge_sha256=str(manifest["challenge_sha256"]),
+        answer_key_sha256=str(manifest["answer_key_sha256"]),
+    )
+    benchmark_status = {
+        "clean_unseen": consumed_receipt is None,
+        "consumption_receipt": consumed_receipt,
+    }
     case_metrics: list[dict[str, Any]] = []
     for scenario_id in clean_scenario_ids:
         prediction = predictions[scenario_id]
@@ -146,6 +155,7 @@ def main() -> None:
     mean_rouge = sum(item["reference_rouge_l"] for item in case_metrics) / count
     gates = {
         "clean_case_count": count == int(policy["minimum_clean_case_count"]),
+        "clean_unseen_benchmark": benchmark_status["clean_unseen"],
         "parseable_response_rate": parseable_rate >= float(policy["minimum_parseable_response_rate"]),
         "exact_ruling_accuracy": ruling_accuracy >= float(policy["minimum_exact_ruling_accuracy"]),
         "mean_reference_token_f1": mean_f1 >= float(policy["minimum_mean_reference_token_f1"]),
@@ -172,6 +182,7 @@ def main() -> None:
         "gates": gates,
         "status": "QUALIFIED" if passed else "QUARANTINED",
         "promotion_performed": False,
+        "benchmark_status": benchmark_status,
         "ruling_label_profile": label_profile,
         "case_metrics": case_metrics,
         "limitations": [

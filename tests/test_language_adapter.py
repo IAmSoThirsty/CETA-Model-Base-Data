@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import sys
 import tempfile
+import tomllib
 import unittest
 
 
@@ -25,6 +26,7 @@ def load_module(name: str, path: Path):
 LANGUAGE = load_module("ceta_language_adapter_tests", ROOT / "src/training/language_adapter.py")
 SCORER = load_module("ceta_language_adapter_scorer_tests", ROOT / "scripts/score_controlled_language_evaluation.py")
 SOURCE_POLICY = load_module("ceta_language_adapter_source_policy_tests", ROOT / "src/training/source_policy.py")
+TRAINER = load_module("ceta_language_adapter_trainer_tests", ROOT / "scripts/train_language_adapter.py")
 
 
 class LanguageAdapterDatasetTests(unittest.TestCase):
@@ -119,6 +121,64 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
         self.assertEqual(profile["unique_label_count"], 3)
         self.assertEqual(profile["maximum_label_reuse"], 1)
         self.assertTrue(profile["near_unique_private_label_space"])
+
+    def test_consumed_evaluator_receipt_is_hash_bound(self):
+        with tempfile.TemporaryDirectory() as root:
+            receipt = {
+                "schema_id": "CETA_LANGUAGE_ADAPTER_H100_CALIBRATION/v1",
+                "challenge_sha256": "challenge-hash",
+                "answer_key_sha256": "answer-hash",
+                "run_date": "2026-08-26",
+            }
+            Path(root, "receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+            found = LANGUAGE.consumed_evaluator_receipt(
+                Path(root),
+                challenge_sha256="challenge-hash",
+                answer_key_sha256="answer-hash",
+            )
+            self.assertEqual(found, {"receipt": "receipt.json", "run_date": "2026-08-26"})
+            self.assertIsNone(
+                LANGUAGE.consumed_evaluator_receipt(
+                    Path(root),
+                    challenge_sha256="different",
+                    answer_key_sha256="answer-hash",
+                )
+            )
+
+    def test_h100_training_is_strictly_deterministic_and_uses_current_loading_api(self):
+        config = json.loads((ROOT / "configs/ceta-language-adapter-qwen3-4b-h100.json").read_text(encoding="utf-8"))
+        contract = TRAINER.determinism_contract(config)
+        self.assertEqual(contract["algorithms"], "strict_error")
+        self.assertEqual(contract["attention_implementation"], "eager")
+        training_source = (ROOT / "scripts/train_language_adapter.py").read_text(encoding="utf-8")
+        inference_source = (ROOT / "scripts/run_controlled_language_inference.py").read_text(encoding="utf-8")
+        self.assertNotIn("warn_only=True", training_source)
+        self.assertNotIn("torch_dtype=", training_source + inference_source)
+        self.assertNotIn('attn_implementation="sdpa"', training_source + inference_source)
+        launcher = (ROOT / "scripts/run_h100_language_epoch.sh").read_text(encoding="utf-8")
+        self.assertIn("--training-only", launcher)
+        self.assertIn("no controlled evaluator was opened", launcher)
+
+    def test_torch_security_floor_is_consistent(self):
+        requirements = (ROOT / "requirements-training.txt").read_text(encoding="utf-8").splitlines()
+        self.assertIn("torch==2.13.0", requirements)
+        language_requirements = (ROOT / "requirements-language-adapter.txt").read_text(encoding="utf-8").splitlines()
+        self.assertIn("transformers>=5.5,<6", language_requirements)
+        project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+        self.assertEqual(project["project"]["optional-dependencies"]["training"], ["torch>=2.13,<2.14"])
+
+    def test_deprecated_transformers_cache_variable_is_migrated(self):
+        environment = {"TRANSFORMERS_CACHE": "C:/cache/transformers"}
+        self.assertTrue(LANGUAGE.normalize_huggingface_cache_environment(environment))
+        self.assertEqual(environment, {"HF_HOME": "C:/cache/transformers"})
+
+        environment = {"TRANSFORMERS_CACHE": "C:/legacy", "HF_HOME": "C:/current"}
+        self.assertTrue(LANGUAGE.normalize_huggingface_cache_environment(environment))
+        self.assertEqual(environment, {"HF_HOME": "C:/current"})
+
+        environment = {}
+        self.assertFalse(LANGUAGE.normalize_huggingface_cache_environment(environment))
+        self.assertEqual(environment, {})
 
 
 if __name__ == "__main__":

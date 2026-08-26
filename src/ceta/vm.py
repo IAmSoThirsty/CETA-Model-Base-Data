@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Mapping, Iterable
+from typing import Any, Mapping
 
 from history import EpistemicObject, ProjectionSnapshot, StateDelta, Supersession, domain_hash
 from .model import TransitionProposal, VmDecision, VmDisposition

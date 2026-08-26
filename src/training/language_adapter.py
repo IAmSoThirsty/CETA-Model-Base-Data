@@ -5,9 +5,9 @@ from dataclasses import dataclass
 import hashlib
 import json
 from pathlib import Path
-from typing import Any, Iterable, Mapping
+from typing import Any, Iterable, Mapping, MutableMapping
 
-from history import canonical_json, domain_hash
+from history import domain_hash
 
 
 DATASET_ID = "CETA_LANGUAGE_ADAPTER_DATASET/v1"
@@ -48,12 +48,46 @@ class LanguageAdapterBindingError(ValueError):
     pass
 
 
+def normalize_huggingface_cache_environment(environment: MutableMapping[str, str]) -> bool:
+    """Migrate the removed Transformers cache variable without discarding its path."""
+    legacy_cache = environment.pop("TRANSFORMERS_CACHE", None)
+    if legacy_cache:
+        environment.setdefault("HF_HOME", legacy_cache)
+        return True
+    return False
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def consumed_evaluator_receipt(
+    evidence_root: Path,
+    *,
+    challenge_sha256: str,
+    answer_key_sha256: str,
+) -> dict[str, str] | None:
+    """Return the public receipt that proves an evaluator is no longer clean-unseen."""
+    for path in sorted(evidence_root.glob("*.json")):
+        try:
+            value = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+            continue
+        if value.get("schema_id") != "CETA_LANGUAGE_ADAPTER_H100_CALIBRATION/v1":
+            continue
+        if (
+            value.get("challenge_sha256") == challenge_sha256
+            and value.get("answer_key_sha256") == answer_key_sha256
+        ):
+            return {
+                "receipt": path.name,
+                "run_date": str(value.get("run_date", "")),
+            }
+    return None
 
 
 def _read_records(path: Path, spec: _SourceSpec) -> list[tuple[str, Any, str | None]]:

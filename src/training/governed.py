@@ -7,7 +7,7 @@ import json
 import os
 from pathlib import Path
 import re
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 import torch
 

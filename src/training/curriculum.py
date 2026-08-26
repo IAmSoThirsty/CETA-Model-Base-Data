@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from ceta import TransitionProposal
-from evidence_registry import EvidenceRegistry
 from history import EpistemicObject, StateDelta, StateProjector
-from identity_registry import IdentityRegistry
 from .model import TransitionTrainingCase
 
 

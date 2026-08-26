@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from copy import deepcopy
 from datetime import datetime, timezone
 import hashlib
 import importlib.util
@@ -86,6 +87,9 @@ def verify_training_report(run_root: Path) -> tuple[dict[str, Any], dict[str, An
     binding = json.loads(binding_path.read_text(encoding="utf-8"))
     if LANGUAGE_ADAPTER.sha256_file(binding_path) != report.get("run_binding_sha256"):
         raise RuntimeError("language-adapter run binding mismatch")
+    determinism = binding.get("determinism", {})
+    if report.get("determinism") != determinism or determinism.get("algorithms") != "strict_error":
+        raise RuntimeError("language-adapter strict-determinism binding mismatch")
     adapter = run_root / "adapter"
     actual = {
         path.relative_to(adapter).as_posix(): LANGUAGE_ADAPTER.sha256_file(path)
@@ -107,6 +111,7 @@ def main() -> None:
 
     training_run = args.training_run.resolve()
     report, binding = verify_training_report(training_run)
+    determinism = binding["determinism"]
     controlled = args.controlled_root.resolve()
     manifest = json.loads((controlled / "manifest.json").read_text(encoding="utf-8"))
     if manifest.get("evaluation_id") != "CETA_CONTROLLED_EVALUATION/v1" or manifest.get("optimizer_input") is not False:
@@ -122,6 +127,7 @@ def main() -> None:
     if os.environ.get("WORLD_SIZE", "1") != "1":
         raise SystemExit("CONTROLLED LANGUAGE INFERENCE: FAIL - distributed inference is not permitted")
 
+    LANGUAGE_ADAPTER.normalize_huggingface_cache_environment(os.environ)
     import torch
     from peft import PeftModel
     from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
@@ -141,13 +147,21 @@ def main() -> None:
         report["base_model"],
         revision=report["base_model_revision"],
         trust_remote_code=False,
-        torch_dtype=torch.bfloat16,
+        dtype=torch.bfloat16,
         quantization_config=quantization,
         device_map={"": 0},
-        attn_implementation="sdpa",
+        attn_implementation=str(determinism.get("attention_implementation", "")),
     )
     model = PeftModel.from_pretrained(base, training_run / "adapter", is_trainable=False)
     model.eval()
+    generation_config = deepcopy(model.generation_config)
+    generation_config.do_sample = False
+    generation_config.temperature = None
+    generation_config.top_p = None
+    generation_config.top_k = None
+    generation_config.max_new_tokens = args.max_new_tokens
+    generation_config.pad_token_id = tokenizer.pad_token_id
+    generation_config.eos_token_id = tokenizer.eos_token_id
 
     output = args.output_root.resolve()
     if output.exists():
@@ -170,10 +184,7 @@ def main() -> None:
             ).to(model.device)
             generated = model.generate(
                 **inputs,
-                do_sample=False,
-                max_new_tokens=args.max_new_tokens,
-                pad_token_id=tokenizer.pad_token_id,
-                eos_token_id=tokenizer.eos_token_id,
+                generation_config=generation_config,
             )
             raw = tokenizer.decode(generated[0][inputs["input_ids"].shape[-1] :], skip_special_tokens=True)
             parseable, response = parse_json_response(raw)

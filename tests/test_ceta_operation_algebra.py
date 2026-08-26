@@ -118,7 +118,7 @@ class CetaOperationAlgebraTests(unittest.TestCase):
         d=self.decide('AdmitEvidence',{'evidence_id':'EX','evidence_record_id':'ERX','observation_refs':[]})
         self.assertEqual(d.disposition,VmDisposition.DENY)
         self.assertEqual(d.reason_code,'EVIDENCE_RECORD_NOT_VALIDATED')
-        d2=self.apply_legal('RejectEvidence',{'evidence_id':'EXR','evidence_record_id':'ERX','reason_code':'BAD'})
+        self.apply_legal('RejectEvidence',{'evidence_id':'EXR','evidence_record_id':'ERX','reason_code':'BAD'})
         ex={x.object_id:x for x in self.state.snapshot().active_objects}['EXR']
         self.assertEqual(ex.content['status'],'REJECTED')
 

@@ -233,9 +233,9 @@ bash scripts/run_h100_language_epoch.sh \
   /teamspace/studios/this_studio/ceta-runs/LANGUAGE_CONTROLLED_EVALUATION_REPORT.json
 ```
 
-The script requires exactly one already-visible H100. A completed epoch is not a promotion: the scorer emits `QUALIFIED` only if every frozen gate passes; otherwise it emits `QUARANTINED`. Token-overlap metrics remain bounded diagnostics and do not replace independent human review.
+The script requires exactly one already-visible H100. Use `scripts/run_h100_language_epoch.sh --training-only TRAINING_RUN_ROOT` when no new clean-unseen evaluator is staged; this runs the governed optimizer epoch without opening controlled evaluation. A completed epoch is not a promotion: the scorer emits `QUALIFIED` only if every frozen gate passes; otherwise it emits `QUARANTINED`. Token-overlap metrics remain bounded diagnostics and do not replace independent human review.
 
-The first live one-H100 language epoch completed 121/121 optimizer steps and passed artifact verification, then correctly remained `QUARANTINED` under the independent frozen gates. Its scrubbed receipt and interpretation limits are recorded in `evidence/LANGUAGE_ADAPTER_H100_CALIBRATION.json`; the consumed evaluator is calibration evidence, not a reusable clean-unseen benchmark for tuning.
+The first live one-H100 language epoch completed 121/121 optimizer steps and passed artifact verification, then correctly remained `QUARANTINED` under the independent frozen gates. Its scrubbed receipt and interpretation limits are recorded in `evidence/LANGUAGE_ADAPTER_H100_CALIBRATION.json`. The current validator rejects that consumed evaluator before future paid training, and the scorer/verifier prevent it from qualifying a model even when explicitly opened for calibration.
 
 ## Claim boundary
 

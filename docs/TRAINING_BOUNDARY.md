@@ -19,7 +19,7 @@ Operational secrets, signatures, live permit internals, governance histories, ev
 
 ## Language-adapter boundary
 
-The language-adapter training process is bound to a clean Git revision, a pinned base-model revision, the derived-dataset hash, a fixed seed/configuration, one H100, durable Trainer checkpoints, and a predeclared controlled-evaluation policy. Its optimizer process cannot open the gitignored challenge or answer files.
+The language-adapter training process is bound to a clean Git revision, a pinned base-model revision, the derived-dataset hash, a fixed seed/configuration, one H100, durable Trainer checkpoints, a strict deterministic execution contract, and a predeclared controlled-evaluation policy. Its optimizer process cannot open the gitignored challenge or answer files. A public calibration receipt permanently prevents the same evaluator hashes from being treated as clean-unseen again.
 
 Controlled evaluation has two processes:
 

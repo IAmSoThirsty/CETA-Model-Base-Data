@@ -56,7 +56,7 @@ python scripts/ingest_supplied_architecture_data.py `
   --controlled-evaluation-output data\ceta_controlled_evaluation
 
 python scripts/validate_architecture_material.py
-python scripts/validate_controlled_evaluation.py
+python scripts/validate_controlled_evaluation.py --allow-consumed-calibration
 python scripts/build_ceta_curriculum_v3.py
 python scripts/validate_ceta_curriculum_v3.py
 python scripts/build_language_adapter_dataset.py

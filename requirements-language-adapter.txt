@@ -3,4 +3,4 @@ accelerate>=1.7,<2
 bitsandbytes>=0.46,<1
 peft>=0.16,<1
 safetensors>=0.5,<1
-transformers>=4.51,<5
+transformers>=5.5,<6

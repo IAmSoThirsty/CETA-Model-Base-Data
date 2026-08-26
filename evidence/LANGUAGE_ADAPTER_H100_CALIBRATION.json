@@ -3,6 +3,8 @@
   "answer_key_accessed_during_inference": false,
   "base_model": "Qwen/Qwen3-4B-Instruct-2507",
   "base_model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+  "answer_key_sha256": "0976c401b94e2d99c630256ec212fd83ff1f195f5e968cecc8f2dc5a9cf2738d",
+  "challenge_sha256": "a2d650278c17dc015d57da6db1fa7628674035621f9a2be5972e766b5105d9d0",
   "clean_case_count": 59,
   "dataset_hash": "sha256:80427c39057504397179998375618ee4eec325a928d5c79a2b4fb62e92a69792",
   "device": "NVIDIA H100 80GB HBM3",

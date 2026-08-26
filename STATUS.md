@@ -22,6 +22,8 @@
 - The language-adapter H100 runner pins Qwen3-4B, records durable checkpoints, and separates answer-blind prediction from frozen-policy answer-key scoring.
 - A live one-H100 language-adapter epoch completed 121/121 optimizer steps at revision `90b170529b89548181aa957e5633629e5cde3f28`; independent verification passed and the controlled evaluator correctly returned `QUARANTINED` without promotion.
 - The live calibration exposed a near-unique private ruling-label space (59 distinct labels across 60 cases). Future reports surface this as an interpretation limitation without weakening the frozen exact-ruling gate.
+- Evaluator-consumption receipts now fail closed before paid training and remain a mandatory failing gate if explicitly reused for calibration.
+- Language training now requires the security-fixed PyTorch 2.13 and Transformers 5.5 lines plus a strict deterministic H100 contract; warning-only Flash Attention execution is rejected.
 - Runtime inference uses a target-blind deterministic action-space generator. `propose(world)` has no caller candidate argument.
 - Every curriculum target is recoverable from the target-blind action space without inserting the label into the candidate list.
 - Every v3 target is the unique VM-legal transition in its generated action space; source-context anchors never enter that action space.

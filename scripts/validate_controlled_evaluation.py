@@ -2,13 +2,24 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
+import sys
 from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ROOT = ROOT / "data" / "ceta_controlled_evaluation"
+sys.path.insert(0, str(ROOT / "src"))
+SPEC = importlib.util.spec_from_file_location(
+    "ceta_controlled_evaluation_status",
+    ROOT / "src" / "training" / "language_adapter.py",
+)
+assert SPEC is not None and SPEC.loader is not None
+LANGUAGE_ADAPTER = importlib.util.module_from_spec(SPEC)
+sys.modules[SPEC.name] = LANGUAGE_ADAPTER
+SPEC.loader.exec_module(LANGUAGE_ADAPTER)
 
 
 def sha256(path: Path) -> str:
@@ -80,6 +91,11 @@ def validate(root: Path) -> list[str]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=DEFAULT_ROOT)
+    parser.add_argument(
+        "--allow-consumed-calibration",
+        action="store_true",
+        help="Validate an already-consumed evaluator for calibration only; it remains ineligible for clean-unseen use.",
+    )
     args = parser.parse_args()
     errors = validate(args.root.resolve())
     if errors:
@@ -88,11 +104,22 @@ def main() -> None:
             print(" -", error)
         raise SystemExit(1)
     manifest = json.loads((args.root.resolve() / "manifest.json").read_text(encoding="utf-8"))
+    consumed = LANGUAGE_ADAPTER.consumed_evaluator_receipt(
+        ROOT / "evidence",
+        challenge_sha256=str(manifest["challenge_sha256"]),
+        answer_key_sha256=str(manifest["answer_key_sha256"]),
+    )
+    if consumed and not args.allow_consumed_calibration:
+        print("CETA CONTROLLED EVALUATION VALIDATION: FAIL")
+        print(f" - evaluator was consumed by {consumed['receipt']}; a new clean evaluator is required")
+        raise SystemExit(1)
     print("CETA CONTROLLED EVALUATION VALIDATION: PASS")
     print(
         f"cases={manifest['case_count']} known_exposed={len(manifest['known_exposed_case_ids'])} "
         f"clean_unseen={manifest['clean_unseen_case_count']}"
     )
+    if consumed:
+        print(f"benchmark_clean_unseen=false receipt={consumed['receipt']} calibration_only=true")
 
 
 if __name__ == "__main__":
