@@ -163,9 +163,25 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
         requirements = (ROOT / "requirements-training.txt").read_text(encoding="utf-8").splitlines()
         self.assertIn("torch==2.13.0", requirements)
         language_requirements = (ROOT / "requirements-language-adapter.txt").read_text(encoding="utf-8").splitlines()
-        self.assertIn("transformers>=5.5,<6", language_requirements)
+        self.assertEqual(
+            language_requirements,
+            [
+                "-r requirements-training.txt",
+                "accelerate==1.14.0",
+                "bitsandbytes==0.50.1",
+                "peft==0.20.0",
+                "safetensors==0.8.0",
+                "transformers==5.5.0",
+            ],
+        )
         project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
         self.assertEqual(project["project"]["optional-dependencies"]["training"], ["torch>=2.13,<2.14"])
+
+    def test_language_environment_bootstrap_is_isolated_and_pinned(self):
+        source = (ROOT / "scripts/bootstrap_language_adapter_env.sh").read_text(encoding="utf-8")
+        self.assertIn('python_seed="${CETA_BOOTSTRAP_PYTHON:-python3}"', source)
+        self.assertIn('-m venv "${venv_root}"', source)
+        self.assertIn('"${python_bin}" -m pip check', source)
 
     def test_deprecated_transformers_cache_variable_is_migrated(self):
         environment = {"TRANSFORMERS_CACHE": "C:/cache/transformers"}

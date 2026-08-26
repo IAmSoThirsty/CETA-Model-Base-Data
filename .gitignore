@@ -3,5 +3,6 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.venv-language-adapter/
 data/ceta_controlled_evaluation/
 data/ceta_curriculum_v3/source_adjudications.jsonl

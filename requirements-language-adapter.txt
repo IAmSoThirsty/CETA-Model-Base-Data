@@ -1,6 +1,6 @@
 -r requirements-training.txt
-accelerate>=1.7,<2
-bitsandbytes>=0.46,<1
-peft>=0.16,<1
-safetensors>=0.5,<1
-transformers>=5.5,<6
+accelerate==1.14.0
+bitsandbytes==0.50.1
+peft==0.20.0
+safetensors==0.8.0
+transformers==5.5.0
