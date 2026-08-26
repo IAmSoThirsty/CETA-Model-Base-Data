@@ -35,15 +35,19 @@
   },
   "device": "cpu",
   "heldout": {
+    "ambiguous_top_selection_count": 0,
+    "candidate_count_total": 552,
     "case_count": 138,
-    "checkpoint_sha256": "f768131929ade1a8f8413f2ac3d92f462df0811fdff0e84a34603173df26a059",
+    "checkpoint_sha256": "c0cffca32d5a5fb86a6a7240bffabd889c65e0401f32c33cdbfedbd504d1d2cf",
     "curriculum_manifest_sha256": "acfe76193fa14205206bdcd570a8eb4b4f3efb7be8cc4e42dc134008e1905bc0",
     "curriculum_splits_sha256": "43a6aa5546b34332d4ced7f6a8ca74d35f803b9c2b7a541d0e1228ac37526a87",
     "dataset_sha256": "209ce4963ae3cfe833cfeaa050ddf88fe62f5aca2bdf0e1f7463c931620f2338",
-    "evaluation_hash": "sha256:55a4b3f0074b10f1bd039a83d54dee8bf2ad2a263cc89c6aef8db85c0866d985",
+    "evaluation_hash": "sha256:0961c4792a8d0442354c188bee426696e333bbe8ee8e2fa5b3034389c0b3c89d",
+    "hostile_candidate_count": 552,
     "legal_selection_rate": 1.0,
-    "mean_transition_loss": 0.7694698671499888,
-    "opcode_accuracy": 0.7391304347826086,
+    "mean_target_candidate_margin": 11.128567372543225,
+    "mean_transition_loss": 0.23981037201440852,
+    "opcode_accuracy": 0.9565217391304348,
     "operation_metrics": {
       "Adjudicate": {
         "case_count": 6,
@@ -56,7 +60,7 @@
         "case_count": 6,
         "illegal_selection_count": 0,
         "legal_selection_rate": 1.0,
-        "opcode_accuracy": 0.0,
+        "opcode_accuracy": 1.0,
         "target_accuracy": 1.0
       },
       "Authorize": {
@@ -70,7 +74,7 @@
         "case_count": 6,
         "illegal_selection_count": 0,
         "legal_selection_rate": 1.0,
-        "opcode_accuracy": 0.0,
+        "opcode_accuracy": 1.0,
         "target_accuracy": 1.0
       },
       "CreateBelief": {
@@ -91,7 +95,7 @@
         "case_count": 6,
         "illegal_selection_count": 0,
         "legal_selection_rate": 1.0,
-        "opcode_accuracy": 0.0,
+        "opcode_accuracy": 1.0,
         "target_accuracy": 1.0
       },
       "ExpandScope": {
@@ -161,7 +165,7 @@
         "case_count": 6,
         "illegal_selection_count": 0,
         "legal_selection_rate": 1.0,
-        "opcode_accuracy": 0.0,
+        "opcode_accuracy": 1.0,
         "target_accuracy": 1.0
       },
       "Split": {
@@ -189,7 +193,7 @@
         "case_count": 6,
         "illegal_selection_count": 0,
         "legal_selection_rate": 1.0,
-        "opcode_accuracy": 0.0,
+        "opcode_accuracy": 1.0,
         "target_accuracy": 1.0
       },
       "ValidateObservation": {
@@ -207,7 +211,8 @@
         "target_accuracy": 1.0
       }
     },
-    "rejected_candidate_count": 0,
+    "rejected_candidate_count": 138,
+    "singleton_candidate_case_count": 0,
     "split": "heldout",
     "target_accuracy": 1.0
   },
@@ -224,14 +229,14 @@
       "run_id": "EPOCH-READINESS-SMOKE",
       "split": "train"
     },
-    "model_hash": "sha256:311eb23f8b9e0f230427c7e52d19d285a82458439c2302cc25f31138b37b29a1",
-    "optimizer_hash": "sha256:9b634bf2489a264b79b90a5fa855b857ee32745212579c70742f112f146a21a6",
+    "model_hash": "sha256:69074c43c72d4fe9cdf19b3dab3ec5c03803aecedd929fd039b2579bc369f46c",
+    "optimizer_hash": "sha256:6cefa07f492af7c2f6232896396489dff585824b263908b11d68be4e3cf30c8e",
     "path": "checkpoint-e0000-s00000173-o000173.pt",
-    "sha256": "fd84ac412b20ddd496f23a293785eefc268d742f0e448b82f37710c8eefa04c1"
+    "sha256": "2da8160d132966c38183bf58f76de456860639bc98decaaa7b1f93079a23072e"
   },
   "promotion_gate": {
     "note": "Smoke checkpoint quality is not a production-model claim. Strict promotion is intentionally independent of epoch-readiness.",
-    "outcome": "QUARANTINED",
+    "outcome": "PROMOTED",
     "policy": {
       "max_mean_transition_loss": 1.0,
       "min_legal_selection_rate": 0.99,
@@ -289,7 +294,7 @@
     }
   },
   "readiness_target": "CETA epoch start/pause/resume/evaluate gate",
-  "report_hash": "sha256:b609cab268aab3b571b7efbd84efb59dd668354f0ff0917f66695add14f2c6a1",
+  "report_hash": "sha256:19aabb70cb4ba960d06550040661bb6fbcc9f0a9e7ce8e8ccd7908445737ac09",
   "resume": {
     "final_checkpoint": {
       "cursor": {
@@ -304,10 +309,10 @@
         "run_id": "EPOCH-READINESS-SMOKE",
         "split": "train"
       },
-      "model_hash": "sha256:fb461ffdd88fcc76e386cdbe5d1754ed657b3eab20ab96b422541f913c964f96",
-      "optimizer_hash": "sha256:9213ac1c113325ae5be5e45fe016e186f9869ac706c026c064b4a5a829550ed7",
+      "model_hash": "sha256:388735137079035f36fa283cb427932077d49cf9e988e57e45ebd01b81747b9a",
+      "optimizer_hash": "sha256:55a10836aeb83a88984b0e5f07ef9c72d0a483beebc43180879faa1dcff65539",
       "path": "checkpoint-e0001-s00001104-o000000.pt",
-      "sha256": "f768131929ade1a8f8413f2ac3d92f462df0811fdff0e84a34603173df26a059"
+      "sha256": "c0cffca32d5a5fb86a6a7240bffabd889c65e0401f32c33cdbfedbd504d1d2cf"
     },
     "final_epoch_index": 1,
     "final_global_step": 1104,
@@ -315,14 +320,14 @@
   },
   "schema_version": 1,
   "status": "PASS",
-  "torch_version": "2.10.0+cpu",
+  "torch_version": "2.10.0+cu128",
   "training_evidence": {
     "checkpoint_required_before_successful_return": true,
     "evaluation_leakage_detected": false,
     "event_count": 1110,
-    "event_root": "sha256:b543d7907d0e6f1c56901d1a2a24b2c6b54f304aafe60c77519cee2ab4eaa454",
+    "event_root": "sha256:fb4b709346d47bd5515134ab15340077c3a5f3dd7de8084f1c0f8bad3995e834",
     "event_type_counts": {
-      "CHECKPOINT_QUARANTINED": 1,
+      "CHECKPOINT_PROMOTED": 1,
       "CHECKPOINT_SAVED": 2,
       "EPOCH_COMPLETED": 1,
       "OPTIMIZER_STEP": 1104,
@@ -337,15 +342,19 @@
     "unique_vm_legal_generated_target": true
   },
   "validation": {
+    "ambiguous_top_selection_count": 0,
+    "candidate_count_total": 552,
     "case_count": 138,
-    "checkpoint_sha256": "f768131929ade1a8f8413f2ac3d92f462df0811fdff0e84a34603173df26a059",
+    "checkpoint_sha256": "c0cffca32d5a5fb86a6a7240bffabd889c65e0401f32c33cdbfedbd504d1d2cf",
     "curriculum_manifest_sha256": "acfe76193fa14205206bdcd570a8eb4b4f3efb7be8cc4e42dc134008e1905bc0",
     "curriculum_splits_sha256": "43a6aa5546b34332d4ced7f6a8ca74d35f803b9c2b7a541d0e1228ac37526a87",
     "dataset_sha256": "8fef184d6aac3006829ba4de871e7005141e269f0cce21ff009b873d1c2c7301",
-    "evaluation_hash": "sha256:ec010706f68f3547e91780ba5c81e5468177240b26b58e11e2565ea7d0880013",
+    "evaluation_hash": "sha256:3dda275c4c313cf4543d328315fc3eec528b494fdf79447279223a85eb6d8001",
+    "hostile_candidate_count": 552,
     "legal_selection_rate": 1.0,
-    "mean_transition_loss": 0.7664071729649669,
-    "opcode_accuracy": 0.782608695652174,
+    "mean_target_candidate_margin": 11.097910200340161,
+    "mean_transition_loss": 0.2420289922721576,
+    "opcode_accuracy": 0.9782608695652174,
     "operation_metrics": {
       "Adjudicate": {
         "case_count": 6,
@@ -358,7 +367,7 @@
         "case_count": 6,
         "illegal_selection_count": 0,
         "legal_selection_rate": 1.0,
-        "opcode_accuracy": 0.0,
+        "opcode_accuracy": 1.0,
         "target_accuracy": 1.0
       },
       "Authorize": {
@@ -372,14 +381,14 @@
         "case_count": 6,
         "illegal_selection_count": 0,
         "legal_selection_rate": 1.0,
-        "opcode_accuracy": 0.0,
+        "opcode_accuracy": 1.0,
         "target_accuracy": 1.0
       },
       "CreateBelief": {
         "case_count": 6,
         "illegal_selection_count": 0,
         "legal_selection_rate": 1.0,
-        "opcode_accuracy": 0.0,
+        "opcode_accuracy": 0.5,
         "target_accuracy": 1.0
       },
       "CreateClaim": {
@@ -393,7 +402,7 @@
         "case_count": 6,
         "illegal_selection_count": 0,
         "legal_selection_rate": 1.0,
-        "opcode_accuracy": 0.5,
+        "opcode_accuracy": 1.0,
         "target_accuracy": 1.0
       },
       "ExpandScope": {
@@ -463,7 +472,7 @@
         "case_count": 6,
         "illegal_selection_count": 0,
         "legal_selection_rate": 1.0,
-        "opcode_accuracy": 0.5,
+        "opcode_accuracy": 1.0,
         "target_accuracy": 1.0
       },
       "Split": {
@@ -491,7 +500,7 @@
         "case_count": 6,
         "illegal_selection_count": 0,
         "legal_selection_rate": 1.0,
-        "opcode_accuracy": 0.0,
+        "opcode_accuracy": 1.0,
         "target_accuracy": 1.0
       },
       "ValidateObservation": {
@@ -509,7 +518,8 @@
         "target_accuracy": 1.0
       }
     },
-    "rejected_candidate_count": 0,
+    "rejected_candidate_count": 138,
+    "singleton_candidate_case_count": 0,
     "split": "validation",
     "target_accuracy": 1.0
   }
