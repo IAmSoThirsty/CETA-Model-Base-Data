@@ -93,6 +93,8 @@ class EvaluationMetrics:
     candidate_count_total: int = 0
     hostile_candidate_count: int = 0
     singleton_candidate_case_count: int = 0
+    ambiguous_top_selection_count: int = 0
+    mean_target_candidate_margin: float = 0.0
 
     def body(self) -> dict[str,Any]:
         body={
@@ -108,6 +110,8 @@ class EvaluationMetrics:
             body['candidate_count_total']=self.candidate_count_total
             body['hostile_candidate_count']=self.hostile_candidate_count
             body['singleton_candidate_case_count']=self.singleton_candidate_case_count
+            body['ambiguous_top_selection_count']=self.ambiguous_top_selection_count
+            body['mean_target_candidate_margin']=self.mean_target_candidate_margin
         return body
 
 
@@ -135,6 +139,7 @@ class PromotionPolicy:
         if metrics.opcode_accuracy < self.min_opcode_accuracy: failures.append('OPCODE_ACCURACY_FLOOR')
         if metrics.legal_selection_rate < self.min_legal_selection_rate: failures.append('LEGAL_SELECTION_FLOOR')
         if metrics.mean_transition_loss > self.max_mean_transition_loss: failures.append('TRANSITION_LOSS_CEILING')
+        if metrics.ambiguous_top_selection_count != 0: failures.append('AMBIGUOUS_TOP_SELECTION')
         for operation,floor in sorted(self.operation_target_accuracy.items()):
             operation_metrics=metrics.operation_metrics.get(operation)
             if not operation_metrics:
@@ -612,6 +617,7 @@ class IndependentCheckpointEvaluator:
         cases=load_cases(dataset_path)
         target_correct=0; opcode_correct=0; legal=0; loss_total=0.0; rejected=0
         candidate_count_total=0; hostile_candidate_count=0; singleton_candidate_case_count=0
+        ambiguous_top_selection_count=0; target_candidate_margin_total=0.0
         by_operation=defaultdict(lambda:{'case_count':0,'target_correct':0,'opcode_correct':0,'legal':0,'illegal_selection_count':0})
         with torch.no_grad():
             for case in cases.values():
@@ -625,6 +631,14 @@ class IndependentCheckpointEvaluator:
                 chosen_index=int(torch.argmax(output.candidate_scores).item())
                 chosen=output.candidate_proposals[chosen_index]
                 operation=case.target_proposal.operation
+                target_key=_proposal_key(case.target_proposal)
+                target_candidate_index=next(i for i,p in enumerate(output.candidate_proposals) if _proposal_key(p)==target_key)
+                target_score=output.candidate_scores[target_candidate_index]
+                other_scores=torch.cat((output.candidate_scores[:target_candidate_index],output.candidate_scores[target_candidate_index+1:]))
+                target_candidate_margin_total += float((target_score-torch.max(other_scores)).item()) if len(other_scores) else 1.0
+                top_score=torch.max(output.candidate_scores)
+                if int(torch.isclose(output.candidate_scores,top_score,rtol=1e-7,atol=1e-8).sum().item())>1:
+                    ambiguous_top_selection_count += 1
                 op=by_operation[operation]; op['case_count']+=1
                 if _proposal_key(chosen)==_proposal_key(case.target_proposal): target_correct += 1; op['target_correct']+=1
                 if int(torch.argmax(output.opcode_logits).item()) == _operation_index(operation): opcode_correct += 1; op['opcode_correct']+=1
@@ -651,6 +665,8 @@ class IndependentCheckpointEvaluator:
             'operation_metrics':operation_metrics,
             'candidate_count_total':candidate_count_total,'hostile_candidate_count':hostile_candidate_count,
             'singleton_candidate_case_count':singleton_candidate_case_count,
+            'ambiguous_top_selection_count':ambiguous_top_selection_count,
+            'mean_target_candidate_margin':target_candidate_margin_total/n,
         }
         return EvaluationMetrics(**body,evaluation_hash=domain_hash(body,domain='CETA/INDEPENDENT_EVALUATION/v1'))
 

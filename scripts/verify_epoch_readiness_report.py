@@ -75,6 +75,10 @@ def main() -> None:
             fail(f'{split} evaluation candidate sets are not competitive')
         if int(metrics.get('singleton_candidate_case_count',-1)) != 0:
             fail(f'{split} evaluation contains singleton candidate cases')
+        if int(metrics.get('ambiguous_top_selection_count',-1)) != 0:
+            fail(f'{split} evaluation contains ambiguous top-ranked candidates')
+        if float(metrics.get('mean_target_candidate_margin',0.0)) <= 0.0:
+            fail(f'{split} target candidate margin is not positive')
         legal=float(metrics.get('legal_selection_rate',-1.0))
         if not 0.0 <= legal <= 1.0: fail(f'{split} legal selection rate out of range')
         if metrics.get('checkpoint_sha256')!=report['resume']['final_checkpoint']['sha256']:

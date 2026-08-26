@@ -129,6 +129,8 @@ class GovernedTrainingTests(unittest.TestCase):
             self.assertGreater(metrics.hostile_candidate_count,0)
             self.assertGreater(metrics.candidate_count_total,metrics.case_count)
             self.assertEqual(metrics.singleton_candidate_case_count,0)
+            self.assertGreaterEqual(metrics.ambiguous_top_selection_count,0)
+            self.assertTrue(torch.isfinite(torch.tensor(metrics.mean_target_candidate_margin)))
 
     def test_supplied_operation_risk_policy_is_machine_enforced(self):
         path=ROOT/'data/ceta_architecture_material_v1/governance/operation_risk_ranking.json'
@@ -153,6 +155,14 @@ class GovernedTrainingTests(unittest.TestCase):
         passed,failures=policy.evaluate(metrics)
         self.assertFalse(passed)
         self.assertIn('OPERATION_ILLEGAL_SELECTION:Execute',failures)
+
+        ambiguous=EvaluationMetrics(
+            **body,evaluation_hash=domain_hash(body,domain='CETA/INDEPENDENT_EVALUATION/v1'),
+            ambiguous_top_selection_count=1,
+        )
+        passed,failures=policy.evaluate(ambiguous)
+        self.assertFalse(passed)
+        self.assertIn('AMBIGUOUS_TOP_SELECTION',failures)
 
     def test_promotion_quarantine_and_rollback_are_explicit(self):
         with tempfile.TemporaryDirectory() as td:

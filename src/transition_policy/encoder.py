@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
 import json
 from typing import Any, Mapping, Sequence
 
 import torch
 
 from ceta import TransitionProposal
-from history import EpistemicObject, ProjectionSnapshot
+from history import EpistemicObject, ProjectionSnapshot, domain_hash
 from .schema import (
     EPISTEMIC_STATUS_TO_INDEX, ENUM_VALUES, OBJECT_TYPE_TO_INDEX, OPERAND_KIND_TO_INDEX,
     OPERAND_ROLE_TO_INDEX, STATUS_TO_INDEX, VERIFICATION_TO_INDEX,
@@ -26,7 +27,10 @@ class WorldView:
 
 @dataclass
 class EncodedWorld:
+    state_ref: str
     object_ids: tuple[str, ...]
+    object_content: Mapping[str, Mapping[str, Any]]
+    evidence_view: Mapping[str, Any]
     node_type: torch.Tensor
     node_status: torch.Tensor
     node_verification: torch.Tensor
@@ -39,6 +43,7 @@ class EncodedWorld:
 class EncodedCandidate:
     proposal: TransitionProposal
     operation_index: int
+    structural_numeric: torch.Tensor
     operand_role: torch.Tensor
     operand_kind: torch.Tensor
     operand_numeric: torch.Tensor
@@ -56,6 +61,7 @@ class StructuredStateEncoder:
     NODE_NUMERIC_DIM=13
     GLOBAL_NUMERIC_DIM=16
     OPERAND_NUMERIC_DIM=5
+    CANDIDATE_STRUCTURAL_DIM=6
 
     def encode_world(self, world: WorldView) -> EncodedWorld:
         objects=tuple(sorted(world.snapshot.active_objects,key=lambda x:x.object_id))
@@ -101,7 +107,10 @@ class StructuredStateEncoder:
             float(len(context.get('authorization_rejections',[]) or [])),
         ],dtype=torch.float32)
         return EncodedWorld(
+            state_ref=world.snapshot.state_ref,
             object_ids=ids,
+            object_content={obj.object_id:dict(obj.content) for obj in objects},
+            evidence_view=dict(world.evidence_view),
             node_type=torch.tensor(types,dtype=torch.long),
             node_status=torch.tensor(statuses,dtype=torch.long),
             node_verification=torch.tensor(verifications,dtype=torch.long),
@@ -125,11 +134,67 @@ class StructuredStateEncoder:
         return EncodedCandidate(
             proposal=proposal,
             operation_index=operation_to_index[proposal.operation],
+            structural_numeric=torch.tensor(self._candidate_structural_features(proposal,encoded_world),dtype=torch.float32),
             operand_role=torch.tensor(roles,dtype=torch.long),
             operand_kind=torch.tensor(kinds,dtype=torch.long),
             operand_numeric=torch.tensor(numeric,dtype=torch.float32),
             operand_ref_indices=tuple(refs),
         )
+
+    def _candidate_structural_features(self, proposal: TransitionProposal, world: EncodedWorld) -> list[float]:
+        """Expose deterministic cross-field relationships without tokenizing IDs."""
+        operands=dict(proposal.operands)
+        payload_hash_consistent=False
+        if proposal.operation=='Observe' and isinstance(operands.get('payload'),Mapping):
+            payload_hash_consistent=(
+                operands.get('payload_hash')
+                == domain_hash(dict(operands['payload']),domain='CETA/OBSERVATION_PAYLOAD/v1')
+            )
+
+        scope_relation_valid=False
+        if proposal.operation in {'NarrowScope','ExpandScope'}:
+            target=world.object_content.get(str(operands.get('target_ref','')),{})
+            old_scope=target.get('scope')
+            new_scope=operands.get('scope')
+            if isinstance(old_scope,Mapping) and isinstance(new_scope,Mapping):
+                scope_relation_valid=_is_strict_scope_relation(
+                    new_scope,old_scope,narrow=proposal.operation=='NarrowScope',
+                )
+
+        trusted_time_valid=False
+        if proposal.operation=='Expire':
+            target=world.object_content.get(str(operands.get('target_ref','')),{})
+            expiry=target.get('expires_at_epoch_ms')
+            record=world.evidence_view.get(str(operands.get('trusted_time_evidence_ref','')))
+            payload=record.get('payload') if isinstance(record,Mapping) else None
+            trusted_time_valid=(
+                isinstance(expiry,int) and isinstance(record,Mapping) and record.get('status')=='VALIDATED'
+                and isinstance(payload,Mapping) and payload.get('kind')=='trusted_time'
+                and isinstance(payload.get('epoch_ms'),int) and payload['epoch_ms']>=expiry
+            )
+
+        consequence_matches_authority=False
+        if proposal.operation in {'Execute','Rollback'}:
+            authority=world.object_content.get(str(operands.get('authorization_ref','')),{})
+            consequence=operands.get('consequence')
+            consequence_matches_authority=(
+                isinstance(consequence,Mapping)
+                and _canonical_mapping_hash(consequence)==authority.get('consequence_hash')
+            )
+
+        partitions_valid=False
+        if proposal.operation=='Split':
+            source=world.object_content.get(str(operands.get('object_ref','')),{})
+            partitions_valid=_partitions_preserve_source(operands.get('partitions'),set(source))
+
+        return [
+            float(proposal.input_state_ref==world.state_ref),
+            float(payload_hash_consistent),
+            float(scope_relation_valid),
+            float(trusted_time_valid),
+            float(consequence_matches_authority),
+            float(partitions_valid),
+        ]
 
     def _operand_features(self, value: Any, object_index: Mapping[str,int]) -> tuple[str,tuple[int,...],list[float]]:
         refs: tuple[int,...]=()
@@ -153,6 +218,49 @@ class StructuredStateEncoder:
         elif value is None: kind='NULL'
         else: kind='OPAQUE_SYMBOL'
         return kind,refs,[float(list_len),float(mapping_size),numeric_value,is_existing_ref,is_enum]
+
+
+def _canonical_mapping_hash(value: Mapping[str,Any]) -> str:
+    raw=json.dumps(dict(value),sort_keys=True,separators=(',',':'),ensure_ascii=False).encode('utf-8')
+    return hashlib.sha256(raw).hexdigest()
+
+
+def _scope_sets(scope: Mapping[str,Any]) -> dict[str,set[str]]|None:
+    if not scope or any(not isinstance(values,list) or not values for values in scope.values()):
+        return None
+    return {
+        str(key):{json.dumps(item,sort_keys=True,separators=(',',':')) for item in values}
+        for key,values in scope.items()
+    }
+
+
+def _is_strict_scope_relation(new: Mapping[str,Any],old: Mapping[str,Any],*,narrow: bool) -> bool:
+    if new==old:
+        return False
+    ns=_scope_sets(new); os=_scope_sets(old)
+    if ns is None or os is None:
+        return False
+    outer,inner=(os,ns) if narrow else (ns,os)
+    for dimension,outer_values in outer.items():
+        if dimension not in inner:
+            return False
+        if '"*"' not in outer_values and not inner[dimension].issubset(outer_values):
+            return False
+    return True
+
+
+def _partitions_preserve_source(partitions: Any,source_keys: set[str]) -> bool:
+    if not isinstance(partitions,list) or len(partitions)<2 or not source_keys:
+        return False
+    used=set()
+    for part in partitions:
+        if not isinstance(part,Mapping) or set(part)!={'object_id','keys'} or not isinstance(part.get('keys'),list):
+            return False
+        keys=set(part['keys'])
+        if not keys or not keys.issubset(source_keys) or used.intersection(keys):
+            return False
+        used.update(keys)
+    return used==source_keys
 
 
 def world_from_training_case(case: Any) -> WorldView:

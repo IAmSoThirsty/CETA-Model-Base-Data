@@ -36,7 +36,7 @@ class NeuralTransitionPolicy(nn.Module):
     """
 
     model_id='ceta-neural-transition-policy-v1'
-    model_schema_version=2
+    model_schema_version=3
 
     def __init__(self, *, hidden_dim: int = 64) -> None:
         super().__init__()
@@ -58,7 +58,8 @@ class NeuralTransitionPolicy(nn.Module):
         self.operand_kind_emb=nn.Embedding(len(OPERAND_KIND_TO_INDEX),10)
         self.operand_numeric=nn.Linear(self.encoder.OPERAND_NUMERIC_DIM,10)
         self.operand_project=nn.Sequential(nn.Linear(20+10+10+hidden_dim,hidden_dim),nn.GELU())
-        candidate_in=hidden_dim+24+hidden_dim
+        self.candidate_structural=nn.Linear(self.encoder.CANDIDATE_STRUCTURAL_DIM,12)
+        candidate_in=hidden_dim+24+hidden_dim+12
         self.candidate_project=nn.Sequential(nn.Linear(candidate_in,hidden_dim),nn.GELU(),nn.LayerNorm(hidden_dim))
         self.candidate_score=nn.Linear(hidden_dim,1)
         self.failure_head=nn.Linear(hidden_dim,len(FAILURE_HEADS))
@@ -93,7 +94,8 @@ class NeuralTransitionPolicy(nn.Module):
             ],dim=-1))
         operands=self.operand_project(torch.stack(operand_vectors)).mean(dim=0)
         op=self.operation_emb(torch.tensor(candidate.operation_index,dtype=torch.long,device=state.device))
-        return self.candidate_project(torch.cat([state,op,operands],dim=-1))
+        structural=self.candidate_structural(candidate.structural_numeric)
+        return self.candidate_project(torch.cat([state,op,operands,structural],dim=-1))
 
     def forward_world(self, world: WorldView, *, extra_candidates: Sequence[TransitionProposal]=()) -> PolicyOutput:
         base_candidates=self.action_space.generate(world)
@@ -117,7 +119,7 @@ class NeuralTransitionPolicy(nn.Module):
             except ValueError:
                 rejected += 1
                 continue
-            candidate.operand_role=candidate.operand_role.to(device); candidate.operand_kind=candidate.operand_kind.to(device); candidate.operand_numeric=candidate.operand_numeric.to(device)
+            candidate.structural_numeric=candidate.structural_numeric.to(device); candidate.operand_role=candidate.operand_role.to(device); candidate.operand_kind=candidate.operand_kind.to(device); candidate.operand_numeric=candidate.operand_numeric.to(device)
             vectors.append(self.encode_candidate(candidate,state,nodes)); proposals.append(proposal)
         if not vectors:
             raise ValueError('no candidate survives constrained CETA decoder')

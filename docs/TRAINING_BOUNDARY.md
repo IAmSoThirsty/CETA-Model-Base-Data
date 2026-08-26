@@ -54,7 +54,7 @@ Curriculum v3 also binds `source_catalog.json` and `source_assignments.jsonl`. E
 
 Only categorical/hash metadata is retained as provenance inside the curriculum. Source-derived context counts are projected into encoder-visible object status, scope cardinality, and topology. Operation-risk/accuracy policy is kept out of `WorldView` and used only in sidecars/promotion. The encoder does not tokenize or learn opaque source strings.
 
-The evaluator independently reloads a checkpoint and accepts only manifest-bound validation or held-out artifacts from that same curriculum. It records hostile and surviving candidate counts and fails the package gate if evaluation collapses to singleton candidate sets. Held-out evaluation cannot authorize promotion.
+The evaluator independently reloads a checkpoint and accepts only manifest-bound validation or held-out artifacts from that same curriculum. It records hostile and surviving candidate counts, target margins, and ambiguous top-ranked selections. The package gate rejects singleton candidate sets, tie-order selection, and non-positive mean target margins. Held-out evaluation cannot authorize promotion.
 
 ## Checkpoint law
 

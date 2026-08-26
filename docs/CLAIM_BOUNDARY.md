@@ -10,7 +10,7 @@ It does not mean the resulting model is good enough to promote. The included str
 
 The network receives structured epistemic state and ranks proposals from a deterministic target-blind CETA action space. The supervised target is used for loss only; it is not supplied as an inference candidate. The policy API does not accept caller-supplied candidate sets during normal inference.
 
-Manifest-bound validation and held-out evaluation add only the recorded target-free hostile alternatives. This makes exact-target and VM-legal selection competitive metrics instead of accepting singleton generated action spaces as sufficient quality evidence.
+Manifest-bound validation and held-out evaluation add only the recorded target-free hostile alternatives. This makes exact-target and VM-legal selection competitive metrics instead of accepting singleton generated action spaces as sufficient quality evidence. A target chosen only because it appears first in a tied score set is recorded as ambiguous and cannot pass promotion or the package evidence gate.
 
 For every v3 reference world, the target-blind generator now exposes exactly one VM-legal transition. Structured relation type, belief-creation eligibility, evidence lifecycle, scope, and split preconditions eliminate arbitrary same-state labels; source-context anchors are prohibited from becoming candidates. This is a bounded reference-world property, not a claim that arbitrary future worlds always have one legal next action.
 

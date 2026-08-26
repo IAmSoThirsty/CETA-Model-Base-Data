@@ -21,7 +21,7 @@ from training import (
     resolve_curriculum_binding,
     write_source_sidecars,
 )
-from transition_policy import CetaActionSpaceGenerator, StructuredStateEncoder, world_from_training_case
+from transition_policy import CetaActionSpaceGenerator, OPERATION_TO_INDEX, StructuredStateEncoder, world_from_training_case
 from ceta import ConstitutionalVM, VmDisposition
 
 
@@ -130,6 +130,32 @@ class CetaWorldCurriculumV3Tests(unittest.TestCase):
             encoded = encoder.encode_world(world_from_training_case(by_operation[operation]))
             actual = tuple(float(x) for x in encoded.node_numeric[:, 11:13].max(dim=0).values)
             self.assertEqual(actual, expected)
+
+    def test_known_hostile_candidates_have_distinct_structural_encodings(self):
+        encoder = StructuredStateEncoder()
+
+        def signature(candidate):
+            return (
+                candidate.operation_index,
+                tuple(candidate.structural_numeric.tolist()),
+                tuple(candidate.operand_role.tolist()),
+                tuple(candidate.operand_kind.tolist()),
+                tuple(tuple(row) for row in candidate.operand_numeric.tolist()),
+                candidate.operand_ref_indices,
+            )
+
+        for case in self.cases:
+            world = encoder.encode_world(world_from_training_case(case))
+            target = encoder.encode_candidate(case.target_proposal, world, operation_to_index=OPERATION_TO_INDEX)
+            target_signature = signature(target)
+            for alternative in case.illegal_alternatives:
+                if alternative.proposal.operation not in OPERATION_TO_INDEX:
+                    continue
+                encoded = encoder.encode_candidate(alternative.proposal, world, operation_to_index=OPERATION_TO_INDEX)
+                self.assertNotEqual(
+                    signature(encoded), target_signature,
+                    f"hostile candidate collapsed onto target encoding: {case.case_id}/{alternative.alternative_id}",
+                )
 
     def test_source_context_anchors_never_enter_the_action_space(self):
         generator = CetaActionSpaceGenerator()
