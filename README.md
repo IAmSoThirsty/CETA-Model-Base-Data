@@ -129,17 +129,21 @@ Additional governed epochs resume only from an exact committed epoch boundary. A
 - independent validation and held-out evaluation;
 - strict promotion decision.
 
-The corrected target-blind run produced:
+The repaired target-blind adversarial run produced:
 
 - validation exact-target accuracy: **1.0**;
-- validation opcode accuracy: **0.782609**;
+- validation opcode accuracy: **0.978261**;
 - validation legal-selection rate: **1.0**;
+- validation mean transition loss: **0.242029**;
 - held-out exact-target accuracy: **1.0**;
-- held-out opcode accuracy: **0.739130**;
+- held-out opcode accuracy: **0.956522**;
 - held-out legal-selection rate: **1.0**;
-- strict promotion outcome: **QUARANTINED**.
+- held-out mean transition loss: **0.239810**;
+- **552** surviving candidates and **552** target-free hostile inputs per evaluation split;
+- **zero** singleton candidate cases and **zero** ambiguous top-ranked selections;
+- strict validation promotion outcome: **PROMOTED**.
 
-Those are reference-smoke results, not a production model-quality claim. Exact-target selection is now structurally identifiable because each v3 world exposes exactly one VM-legal transition in the target-blind generated action space; the separately measured opcode head remains below its promotion floor.
+Those are reference-smoke results, not a production model-quality claim. Exact-target selection is measured against the generated target plus manifest-bound hostile alternatives, none of which contains the target label. The structured encoder exposes the relation, effect-authority, state-binding, hash-binding, scope, trusted-time, consequence, and split-conservation relationships needed to distinguish those candidates. Tie-order selection is independently counted and cannot pass the package or promotion gate.
 
 `evidence/EPOCH_HOSTILE_GATE_REPORT.json` records the separate integrated hostile gate.
 
