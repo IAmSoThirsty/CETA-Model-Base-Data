@@ -196,6 +196,26 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "bound training configuration"):
                 TRAINER.canonicalize_adapter_config(config_path, target_modules)
 
+    def test_strict_h100_training_receipt_is_complete_and_fail_closed(self):
+        receipt = json.loads(
+            (ROOT / "evidence/LANGUAGE_ADAPTER_H100_STRICT_TRAINING.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(receipt["schema_id"], "CETA_LANGUAGE_ADAPTER_H100_STRICT_TRAINING/v1")
+        self.assertEqual(receipt["global_step"], receipt["expected_optimizer_steps"])
+        self.assertEqual(receipt["checkpoint_names"][-1], "checkpoint-121")
+        self.assertTrue(receipt["independent_verifier_passed"])
+        self.assertFalse(receipt["controlled_evaluation_used_for_training"])
+        self.assertFalse(receipt["controlled_evaluation_run"])
+        self.assertFalse(receipt["promotion_performed"])
+        self.assertEqual(receipt["determinism"]["algorithms"], "strict_error")
+        self.assertTrue(receipt["serialized_target_modules_match_bound_order"])
+        self.assertTrue(receipt["cross_run_verification"]["model_weights_byte_identical"])
+        self.assertEqual(receipt["post_run_studio_machine"], "CPU")
+        for key in ("training_report_file_sha256", "training_report_hash"):
+            self.assertRegex(receipt[key], r"^sha256:[0-9a-f]{64}$")
+        for digest in receipt["adapter_artifacts"].values():
+            self.assertRegex(digest, r"^[0-9a-f]{64}$")
+
     def test_assistant_collator_requests_legacy_list_shape_explicitly(self):
         class Tokenizer:
             pad_token_id = 0

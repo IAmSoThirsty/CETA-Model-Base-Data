@@ -239,8 +239,10 @@ The script requires exactly one already-visible H100. Use `scripts/run_h100_lang
 
 The first live one-H100 language epoch completed 121/121 optimizer steps and passed artifact verification, then correctly remained `QUARANTINED` under the independent frozen gates. Its scrubbed receipt and interpretation limits are recorded in `evidence/LANGUAGE_ADAPTER_H100_CALIBRATION.json`. The current validator rejects that consumed evaluator before future paid training, and the scorer/verifier prevent it from qualifying a model even when explicitly opened for calibration.
 
+A later strict training-only proof at revision `4de687e73cdefc75ff8bd65717a3dde2529f7cbc` completed 121/121 optimizer steps under the pinned PyTorch 2.13/Transformers 5.5 stack. The independent verifier passed, four durable checkpoints were present, and the final adapter weights were byte-identical to the prior strict run. The adapter configuration is now serialized in its bound target-module order. The consumed evaluator was not opened, so no new evaluation or promotion claim is made. The scrubbed proof is `evidence/LANGUAGE_ADAPTER_H100_STRICT_TRAINING.json`.
+
 ## Claim boundary
 
 Read `docs/CLAIM_BOUNDARY.md`. **Epoch-ready** here means the included abstract CETA transition pipeline and public-data-derived language-adapter pipeline have explicit, reproducible data, training, checkpoint, evaluation, quarantine, and evidence paths under their declared configurations.
 
-It does **not** mean either checkpoint is promoted, that general reasoning has been demonstrated, that the system is AGI, that unrestricted real-world language grounding is solved, or that the architecture is certified for production/safety-critical deployment.
+It does **not** mean the language adapter is promoted, that the structured smoke checkpoint's bounded promotion is production approval, that general reasoning has been demonstrated, that the system is AGI, that unrestricted real-world language grounding is solved, or that the architecture is certified for production/safety-critical deployment.

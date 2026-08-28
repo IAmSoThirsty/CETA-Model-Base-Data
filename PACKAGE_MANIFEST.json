@@ -2,8 +2,8 @@
   "schema_version": 1,
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
-  "file_count": 199,
-  "content_root": "sha256:dc5e540cc68a7ea544a7067207e4679665b40812afaf438042ebb945e07f2e8b",
+  "file_count": 200,
+  "content_root": "sha256:2daf547fd2405700cbadbb123245f79d81e95c170d111efc11c88adb2242bc0d",
   "files": [
     {
       "path": ".gitattributes",
@@ -27,13 +27,13 @@
     },
     {
       "path": "README.md",
-      "size": 16968,
-      "sha256": "99d00fef13cb10d3377915b9311035d245f46d750231f6c1775f017ca49023a9"
+      "size": 17621,
+      "sha256": "b2ad0863f490eba853cbe3fbf4ff1950adc2d676bfdbf53583f69780fd34f961"
     },
     {
       "path": "STATUS.md",
-      "size": 7033,
-      "sha256": "5541b1e2427995fe7ed6a914730181c967fc9880211fe34ffaafa69188c93d64"
+      "size": 7485,
+      "sha256": "c0ac4fe149cf9a1cd8bfc5db662825903364d1c4738b0b003d4a263c8ad7208f"
     },
     {
       "path": "VERSION",
@@ -277,8 +277,8 @@
     },
     {
       "path": "docs/LANGUAGE_ADAPTER.md",
-      "size": 6146,
-      "sha256": "cade651885e3ee43df134711c21ce0689809da586777e9bf24c8a5f51121115c"
+      "size": 7118,
+      "sha256": "8d53c1a79404a82eaa008f069d689233d6472a5d7117da66bd6673b79bb4fd26"
     },
     {
       "path": "docs/RESTART_AND_RECOVERY.md",
@@ -309,6 +309,11 @@
       "path": "evidence/LANGUAGE_ADAPTER_H100_CALIBRATION.json",
       "size": 2016,
       "sha256": "f85edb351ffc79c69040c5c9cecbbe2d46bcdbe189453f520ec3c91e8b2a4b7f"
+    },
+    {
+      "path": "evidence/LANGUAGE_ADAPTER_H100_STRICT_TRAINING.json",
+      "size": 3393,
+      "sha256": "b7376af3f3e40c17886c5a016fdae6a02ecdd20dd44c928e888e27d0cb1fc6d8"
     },
     {
       "path": "evidence/adjudications/OC-001_transition_legality.json",
@@ -962,8 +967,8 @@
     },
     {
       "path": "tests/test_language_adapter.py",
-      "size": 13281,
-      "sha256": "651264083ae19bcccf0c8f89549e91807fd7e6f451f483d4389fff4f513e659f"
+      "size": 14601,
+      "sha256": "ab0cc34ba291110c2ffe9cbfa9729ea9d414a3f316e5cdb0989593c87e401d20"
     },
     {
       "path": "tests/test_memory_projection.py",

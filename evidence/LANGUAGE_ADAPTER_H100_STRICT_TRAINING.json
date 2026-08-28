@@ -1,0 +1,79 @@
+{
+  "adapter_artifacts": {
+    "README.md": "833350230a1599060ba1d87743ea747d06f1db5f36ee7827c6bd26182e65672a",
+    "adapter_config.json": "fd3b9bf064b2de84cb2722645c7705fab1eac9b80bc1b611cd919d67b2b29f94",
+    "adapter_model.safetensors": "785b7b5da99105d95ea18c155cf0ba5055c54ab1efce3ce316aaf9df001daab8",
+    "chat_template.jinja": "64f85b198065d0fba2a81f37e10ed68161ce2c19a754c7100e67e0ca2ee9c326",
+    "tokenizer.json": "be75606093db2094d7cd20f3c2f385c212750648bd6ea4fb2bf507a6a4c55506",
+    "tokenizer_config.json": "7b0782d0e37e9c9ddfe57912414e06b12c8de2fdd85c713c29cbe64f967182d3",
+    "training_args.bin": "ba90eaed02c9ba9bc8ff6049e8c1618bf983045fe7db94a323718f456c87f181"
+  },
+  "base_model": "Qwen/Qwen3-4B-Instruct-2507",
+  "base_model_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+  "checkpoint_names": [
+    "checkpoint-50",
+    "checkpoint-75",
+    "checkpoint-100",
+    "checkpoint-121"
+  ],
+  "config_hash": "sha256:06a6753d7539388336acfe572f9ab43f2dc488a130bf62a6a27422f8bad5f6a4",
+  "controlled_evaluation_run": false,
+  "controlled_evaluation_used_for_training": false,
+  "cross_run_verification": {
+    "comparison_commit": "23645bf50246262389e01f15a021aa05ed299daf",
+    "model_weights_byte_identical": true,
+    "normalized_adapter_config_identical": true,
+    "portable_model_and_tokenizer_files_byte_identical": true,
+    "training_args_byte_identical": false,
+    "training_args_note": "TrainingArguments serializes the run-root-specific output directory; it is not a portable model artifact."
+  },
+  "dataset_hash": "sha256:80427c39057504397179998375618ee4eec325a928d5c79a2b4fb62e92a69792",
+  "determinism": {
+    "algorithms": "strict_error",
+    "attention_implementation": "eager",
+    "cublas_workspace_config": ":4096:8",
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": true,
+    "tf32": false
+  },
+  "device": "NVIDIA H100 80GB HBM3",
+  "expected_optimizer_steps": 121,
+  "global_step": 121,
+  "independent_verifier_passed": true,
+  "limitations": [
+    "Training completion is not model promotion.",
+    "The consumed controlled evaluator was not opened; this run makes no new evaluation or promotion claim.",
+    "Runtime and throughput fields are operational diagnostics and are not expected to be byte-identical across runs."
+  ],
+  "metrics": {
+    "train_loss": 1.1810666199558038,
+    "validation_eval_loss": 0.6912598013877869
+  },
+  "package_versions": {
+    "accelerate": "1.14.0",
+    "bitsandbytes": "0.50.1",
+    "peft": "0.20.0",
+    "safetensors": "0.8.0",
+    "torch": "2.13.0",
+    "transformers": "5.5.0"
+  },
+  "post_run_studio_machine": "CPU",
+  "promotion_performed": false,
+  "repo_commit": "4de687e73cdefc75ff8bd65717a3dde2529f7cbc",
+  "run_date": "2026-08-26",
+  "run_root": "/teamspace/studios/this_studio/ceta-runs/language-adapter-strict-4de687e",
+  "schema_id": "CETA_LANGUAGE_ADAPTER_H100_STRICT_TRAINING/v1",
+  "serialized_target_modules": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+  ],
+  "serialized_target_modules_match_bound_order": true,
+  "studio": "thirstys-projects-llc/governed-ai-constitutional-systems/ceta-epoch-ready-v0-3-0",
+  "training_report_file_sha256": "sha256:b43761818e90310e6586a4b539b5a6a71c68799b444b0bb1d238c239ec25a0cd",
+  "training_report_hash": "sha256:08dbaa16f9b1d9cd38da3b3992fb517edd2c56f4ba4cb29e1bca86156e3ff079"
+}

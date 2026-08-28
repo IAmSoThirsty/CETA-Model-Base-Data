@@ -56,6 +56,12 @@ The 2026-08-26 run at Git revision `90b170529b89548181aa957e5633629e5cde3f28` co
 
 That run also established that the staged answer key contains 59 distinct ruling labels across 60 cases, while answer-blind inference receives no private label list. The result is retained as a calibration receipt in `evidence/LANGUAGE_ADAPTER_H100_CALIBRATION.json`. It does not remain an unseen benchmark after this diagnosis. The current launcher now refuses this consumed evaluator before beginning a paid epoch.
 
+## Strict training-only H100 proof
+
+The 2026-08-26 training-only run at Git revision `4de687e73cdefc75ff8bd65717a3dde2529f7cbc` completed 121/121 optimizer steps on one NVIDIA H100 80 GB under PyTorch 2.13.0, Transformers 5.5.0, eager attention, strict deterministic algorithms, disabled TF32, deterministic cuDNN, and the bound cuBLAS workspace configuration. Four durable checkpoints were present and the independent artifact verifier passed.
+
+The final `adapter_model.safetensors` hash was `785b7b5da99105d95ea18c155cf0ba5055c54ab1efce3ce316aaf9df001daab8`, byte-identical to the prior strict run. A discovered PEFT serialization-order variation in `target_modules` was fixed by validating the saved module set and rewriting it in the configuration-bound order before hashing the adapter. The consumed evaluator was not opened, no evaluation report was created, and no promotion occurred. The scrubbed receipt is `evidence/LANGUAGE_ADAPTER_H100_STRICT_TRAINING.json`.
+
 ## Commands
 
 ```bash

@@ -20,7 +20,8 @@
 - The neural policy operates on structured state and a fixed 23-opcode vocabulary; it has no language-response target.
 - A separate public-only language-adapter dataset contains all 2,439 eligible source records exactly once across lineage-isolated train/validation/public-held-out splits.
 - The language-adapter H100 runner pins Qwen3-4B, records durable checkpoints, and separates answer-blind prediction from frozen-policy answer-key scoring.
-- A live one-H100 language-adapter epoch completed 121/121 optimizer steps at revision `90b170529b89548181aa957e5633629e5cde3f28`; independent verification passed and the controlled evaluator correctly returned `QUARANTINED` without promotion.
+- The first live one-H100 language-adapter calibration completed 121/121 optimizer steps at revision `90b170529b89548181aa957e5633629e5cde3f28`; independent verification passed and the controlled evaluator correctly returned `QUARANTINED` without promotion.
+- A later strict training-only run completed 121/121 optimizer steps at revision `4de687e73cdefc75ff8bd65717a3dde2529f7cbc`; its model weights were byte-identical to the prior strict run, its adapter metadata was canonicalized in the bound order, and the consumed evaluator was not opened. This run made no promotion decision.
 - The live calibration exposed a near-unique private ruling-label space (59 distinct labels across 60 cases). Future reports surface this as an interpretation limitation without weakening the frozen exact-ruling gate.
 - Evaluator-consumption receipts now fail closed before paid training and remain a mandatory failing gate if explicitly reused for calibration.
 - Language training now requires the security-fixed PyTorch 2.13 and Transformers 5.5 lines plus a strict deterministic H100 contract; warning-only Flash Attention execution is rejected.
@@ -38,7 +39,7 @@
 - Canonical training evidence is filesystem-location independent for identical logical runs.
 - A full 1,104-case CPU reference epoch completed across pause/restart/resume with exact training split coverage.
 - The corrected target-blind epoch selected VM-legal transitions on 100% of validation and held-out cases in the reference run.
-- Strict model promotion correctly quarantined the smoke checkpoint rather than conflating epoch completion with model quality.
+- The current structured smoke checkpoint satisfies the declared strict policy and is recorded as `PROMOTED`; that bounded synthetic promotion is not a production-model claim.
 - The integrated hostile epoch gate passes all registered final-gate attacks.
 
 ## Current smoke-result boundary
@@ -46,18 +47,18 @@
 The recorded reference run in `evidence/EPOCH_READINESS_REPORT.json` reports:
 
 - validation exact-target accuracy: 1.000000;
-- validation opcode accuracy: 0.782609;
+- validation opcode accuracy: 0.978261;
 - validation legal-selection rate: 1.000000;
 - held-out exact-target accuracy: 1.000000;
-- held-out opcode accuracy: 0.739130;
+- held-out opcode accuracy: 0.956522;
 - held-out legal-selection rate: 1.000000;
-- promotion status: `QUARANTINED` under the strict reference promotion policy.
+- promotion status: `PROMOTED` under the strict reference promotion policy.
 
 These numbers establish only the behavior of this bounded synthetic reference run.
 
 ## Not proven / not claimed
 
-- The quarantined smoke checkpoint is **not** a promoted model.
+- The structurally `PROMOTED` smoke checkpoint is **not** a production model, deployment approval, or language-adapter promotion.
 - General reasoning, compositional generalization at large scale, real-world reasoning, or AGI is not established.
 - The structured source-derived curriculum does not itself solve language-to-state grounding or observation truth determination; the separate language adapter is an experimental parsing/serialization layer and cannot establish observation truth.
 - Public defensive records used by v3 are trained-on and cannot subsequently support an unseen-benchmark claim.
