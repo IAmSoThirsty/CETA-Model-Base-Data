@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 200,
-  "content_root": "sha256:2daf547fd2405700cbadbb123245f79d81e95c170d111efc11c88adb2242bc0d",
+  "content_root": "sha256:af877e10803be8ae47b73a9836eefd52a39ab293a100fc5b0ce1d48694909472",
   "files": [
     {
       "path": ".gitattributes",
@@ -12,13 +12,13 @@
     },
     {
       "path": ".github/workflows/codeql.yml",
-      "size": 576,
-      "sha256": "c0e77a5c04e2a01115d5f7fdf01ceab1c96fce6820fbda80baa53055df3d712c"
+      "size": 590,
+      "sha256": "3c26f91cc03f42edd2a6ff0fbf3c53d54859b109e5181cfef731f0672f30b70e"
     },
     {
       "path": ".github/workflows/verify.yml",
-      "size": 910,
-      "sha256": "f5a61a93869830ba8e879a37a8442f34ca7adc8bcef20c9b6d2e9bcaf55e1958"
+      "size": 918,
+      "sha256": "12764f1ef40b9fba19a909bcc31f4dd12a0051a94466bacd4602eb341637ede0"
     },
     {
       "path": ".gitignore",
