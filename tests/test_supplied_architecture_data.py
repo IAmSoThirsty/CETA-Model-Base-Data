@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_POLICY_PATH = ROOT / "src" / "training" / "source_policy.py"
 INGEST_PATH = ROOT / "scripts" / "ingest_supplied_architecture_data.py"
 PACKAGE_BUILDER_PATH = ROOT / "scripts" / "build_package_manifest.py"
+PACKAGE_SUMS_PATH = ROOT / "scripts" / "build_sha256sums.py"
 PACKAGE_VERIFY_PATH = ROOT / "scripts" / "verify_package.py"
 SPEC = importlib.util.spec_from_file_location("ceta_source_policy_for_test", SOURCE_POLICY_PATH)
 assert SPEC is not None and SPEC.loader is not None
@@ -26,6 +27,10 @@ PACKAGE_BUILDER_SPEC = importlib.util.spec_from_file_location("ceta_package_buil
 assert PACKAGE_BUILDER_SPEC is not None and PACKAGE_BUILDER_SPEC.loader is not None
 PACKAGE_BUILDER = importlib.util.module_from_spec(PACKAGE_BUILDER_SPEC)
 PACKAGE_BUILDER_SPEC.loader.exec_module(PACKAGE_BUILDER)
+PACKAGE_SUMS_SPEC = importlib.util.spec_from_file_location("ceta_package_sums_for_test", PACKAGE_SUMS_PATH)
+assert PACKAGE_SUMS_SPEC is not None and PACKAGE_SUMS_SPEC.loader is not None
+PACKAGE_SUMS = importlib.util.module_from_spec(PACKAGE_SUMS_SPEC)
+PACKAGE_SUMS_SPEC.loader.exec_module(PACKAGE_SUMS)
 PACKAGE_VERIFY_SPEC = importlib.util.spec_from_file_location("ceta_package_verify_for_test", PACKAGE_VERIFY_PATH)
 assert PACKAGE_VERIFY_SPEC is not None and PACKAGE_VERIFY_SPEC.loader is not None
 PACKAGE_VERIFY = importlib.util.module_from_spec(PACKAGE_VERIFY_SPEC)
@@ -145,10 +150,15 @@ class SuppliedArchitectureDataTests(unittest.TestCase):
     def test_environment_metadata_is_excluded_from_release_payload(self):
         metadata_path = ROOT / "src" / "architecture_rebuild_ceta_reference_core.egg-info" / "PKG-INFO"
         self.assertFalse(PACKAGE_BUILDER.included(metadata_path))
+        self.assertFalse(PACKAGE_SUMS.included(metadata_path))
         self.assertNotIn(
             "src/architecture_rebuild_ceta_reference_core.egg-info/PKG-INFO",
             PACKAGE_VERIFY.visible_files(),
         )
+        virtualenv_path = ROOT / ".venv" / "pyvenv.cfg"
+        self.assertFalse(PACKAGE_BUILDER.included(virtualenv_path))
+        self.assertFalse(PACKAGE_SUMS.included(virtualenv_path))
+        self.assertNotIn(".venv/pyvenv.cfg", PACKAGE_VERIFY.visible_files())
 
     def test_supplied_input_files_are_confined_to_trusted_roots(self):
         with tempfile.TemporaryDirectory() as allowed, tempfile.TemporaryDirectory() as outside:

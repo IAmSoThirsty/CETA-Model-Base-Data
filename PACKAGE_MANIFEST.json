@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 201,
-  "content_root": "sha256:9b94af837a0a1fc039644aa591c479d2be3f48601452ead9c2f455f5ce569a38",
+  "content_root": "sha256:6a51639782658183f98ab1b093bf7158623180e8b83082dd936bbb8b21ce7bf5",
   "files": [
     {
       "path": ".gitattributes",
@@ -22,8 +22,8 @@
     },
     {
       "path": ".gitignore",
-      "size": 184,
-      "sha256": "2eb3f7a35a353d1a91ec53bd0fe0f747f96d4c4f91dd13746ef0c29d01e21149"
+      "size": 191,
+      "sha256": "00930c78fa65ead5bc0a9b58c73389d02912095790e4c2c8fa2840a05be02387"
     },
     {
       "path": "README.md",
@@ -472,13 +472,13 @@
     },
     {
       "path": "scripts/build_package_manifest.py",
-      "size": 2161,
-      "sha256": "eb3fb616602787f055171f7f2156679bcf22f3f270e9bd4fc29b4fdabb73765c"
+      "size": 2608,
+      "sha256": "8425ebb5d7e5a05ce4dda31c9dd5068124de8abbe9ae9965d1893f2a82f8beef"
     },
     {
       "path": "scripts/build_release.py",
-      "size": 2782,
-      "sha256": "6f4622d7bdc4e27b9dbcf07df70f16f01f76b79b9467998f1004b160cd67c6dc"
+      "size": 3109,
+      "sha256": "d13d0c19a633b13c70bdecc9c7a91638710ffd22178765cd491f4f6fc5008dae"
     },
     {
       "path": "scripts/build_release_zip.py",
@@ -487,8 +487,8 @@
     },
     {
       "path": "scripts/build_sha256sums.py",
-      "size": 1187,
-      "sha256": "7d0fd35cedb657be4b8b963e46c606c63833916cd09a3c749e4ad0302e9314a4"
+      "size": 1804,
+      "sha256": "2d77c4c4db3e4cb1ed0ca85fc8158b1cc075b59e3224f0cdb2ab02253754fbe2"
     },
     {
       "path": "scripts/hostile_audit.py",
@@ -602,8 +602,8 @@
     },
     {
       "path": "scripts/verify_package.py",
-      "size": 4250,
-      "sha256": "799ca3923aa38c6775ae59c264d8532e8ae12461746cae87303596cf593e836d"
+      "size": 4512,
+      "sha256": "3737817cef1733aa537eb589b5809b31eda1263e643e2b92b4148b7d1156bf79"
     },
     {
       "path": "spec/ADMISSION_RULES.md",
@@ -992,8 +992,8 @@
     },
     {
       "path": "tests/test_supplied_architecture_data.py",
-      "size": 8834,
-      "sha256": "a5000375ea7a7d516206cce84bca5a50b0162773a0a03ff16366bb56032b914a"
+      "size": 9527,
+      "sha256": "a5e9c55ea148026d903460112137c86f3ed1929ec8b3f494e0c20befc5d772ac"
     },
     {
       "path": "tests/test_transition_history.py",

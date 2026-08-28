@@ -32,7 +32,22 @@ def release_paths() -> tuple[Path,...]:
     included=[]
     for path in paths:
         rel=path.relative_to(ROOT)
-        if any(part in {"__pycache__",".pytest_cache",".mypy_cache",".ruff_cache",".git"} for part in rel.parts) or path.suffix in {".pyc",".pyo"}:
+        if (
+            any(
+                part in {
+                    "__pycache__",
+                    ".pytest_cache",
+                    ".mypy_cache",
+                    ".ruff_cache",
+                    ".git",
+                    ".venv",
+                    ".venv-language-adapter",
+                }
+                or part.endswith(".egg-info")
+                for part in rel.parts
+            )
+            or path.suffix in {".pyc", ".pyo"}
+        ):
             continue
         included.append(path)
     return tuple(sorted(included,key=lambda item:item.relative_to(ROOT).as_posix()))

@@ -2,11 +2,21 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EXCLUDED_FILES = {"data/ceta_curriculum_v3/source_adjudications.jsonl"}
-EXCLUDED_PARTS = {"__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache", ".git", "ceta_controlled_evaluation"}
+EXCLUDED_PARTS = {
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".git",
+    ".venv",
+    ".venv-language-adapter",
+    "ceta_controlled_evaluation",
+}
 
 
 def sha256(path: Path) -> str:
@@ -24,17 +34,21 @@ def manifest_root(files: list[dict]) -> str:
 
 def visible_files() -> set[str]:
     result=set()
-    for path in ROOT.rglob("*"):
-        if not path.is_file() or path.is_symlink():
-            continue
-        rel=path.relative_to(ROOT)
-        if (
-            rel.as_posix() in EXCLUDED_FILES
-            or any(part in EXCLUDED_PARTS or part.endswith(".egg-info") for part in rel.parts)
-            or path.suffix in {".pyc", ".pyo"}
-        ):
-            continue
-        result.add(rel.as_posix())
+    for directory, directories, filenames in os.walk(ROOT):
+        directories[:] = [
+            name
+            for name in directories
+            if name not in EXCLUDED_PARTS and not name.endswith(".egg-info")
+        ]
+        base=Path(directory)
+        for filename in filenames:
+            path=base/filename
+            if not path.is_file() or path.is_symlink():
+                continue
+            rel=path.relative_to(ROOT)
+            if rel.as_posix() in EXCLUDED_FILES or path.suffix in {".pyc", ".pyo"}:
+                continue
+            result.add(rel.as_posix())
     return result
 
 

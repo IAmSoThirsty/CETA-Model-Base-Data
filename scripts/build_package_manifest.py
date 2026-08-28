@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -11,7 +12,16 @@ EXCLUDED_FILES = {
     "SHA256SUMS",
     "data/ceta_curriculum_v3/source_adjudications.jsonl",
 }
-EXCLUDED_PARTS = {"__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache", ".git", "ceta_controlled_evaluation"}
+EXCLUDED_PARTS = {
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".git",
+    ".venv",
+    ".venv-language-adapter",
+    "ceta_controlled_evaluation",
+}
 
 
 def sha256(path: Path) -> str:
@@ -35,6 +45,20 @@ def included(path: Path) -> bool:
     return path.is_file() and not path.is_symlink()
 
 
+def candidate_files():
+    for directory, directories, filenames in os.walk(ROOT):
+        directories[:] = [
+            name
+            for name in directories
+            if name not in EXCLUDED_PARTS and not name.endswith(".egg-info")
+        ]
+        base = Path(directory)
+        for filename in filenames:
+            path = base / filename
+            if included(path):
+                yield path
+
+
 def manifest_root(files: list[dict]) -> str:
     raw = json.dumps(files, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
     return "sha256:" + hashlib.sha256(b"ARCHITECTURE_REBUILD/PACKAGE_MANIFEST/v1\n" + raw).hexdigest()
@@ -43,8 +67,7 @@ def manifest_root(files: list[dict]) -> str:
 def main() -> None:
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     files = []
-    paths = (x for x in ROOT.rglob("*") if included(x))
-    for path in sorted(paths, key=lambda item: item.relative_to(ROOT).as_posix()):
+    for path in sorted(candidate_files(), key=lambda item: item.relative_to(ROOT).as_posix()):
         rel = path.relative_to(ROOT).as_posix()
         files.append({"path": rel, "size": path.stat().st_size, "sha256": sha256(path)})
     payload = {
