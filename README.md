@@ -171,7 +171,17 @@ legal proposal
 
 ## Verify
 
-Install training dependencies, then run from repository root:
+The CI and reproducible local verification path uses the committed `uv.lock`:
+
+```bash
+uv sync --locked --extra training --extra language-adapter --group ci
+uv run --no-sync python -m pip_audit --local --progress-spinner off
+uv run --no-sync ruff check --select F,E9 src scripts tests examples
+uv run --no-sync python scripts/verify_all.py
+uv run --no-sync python scripts/verify_package.py
+```
+
+The minimal structured-reference path remains available when language-adapter dependencies are not required:
 
 ```bash
 python -m pip install -r requirements-training.txt

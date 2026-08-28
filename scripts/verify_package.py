@@ -28,7 +28,11 @@ def visible_files() -> set[str]:
         if not path.is_file() or path.is_symlink():
             continue
         rel=path.relative_to(ROOT)
-        if rel.as_posix() in EXCLUDED_FILES or any(part in EXCLUDED_PARTS for part in rel.parts) or path.suffix in {".pyc", ".pyo"}:
+        if (
+            rel.as_posix() in EXCLUDED_FILES
+            or any(part in EXCLUDED_PARTS or part.endswith(".egg-info") for part in rel.parts)
+            or path.suffix in {".pyc", ".pyo"}
+        ):
             continue
         result.add(rel.as_posix())
     return result

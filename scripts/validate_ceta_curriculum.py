@@ -9,6 +9,7 @@ import sys
 from typing import Any, Mapping
 
 ROOT=Path(__file__).resolve().parents[1]
+DATA_ROOT=(ROOT/'data').resolve()
 sys.path.insert(0,str(ROOT/'src'))
 
 from ceta import ConstitutionalVM, VmDisposition
@@ -25,7 +26,27 @@ REQUIRED_FAILURE_SURFACES=frozenset({
 })
 
 
-def sha256(path: Path) -> str:
+def confined_data_root(path: Path) -> Path:
+    candidate=path.resolve(strict=True)
+    if path.is_symlink() or not candidate.is_dir():
+        raise ValueError(f'curriculum root must be a regular directory: {path}')
+    if candidate==DATA_ROOT or not candidate.is_relative_to(DATA_ROOT):
+        raise ValueError(f'curriculum root must be a child of {DATA_ROOT}: {candidate}')
+    return candidate
+
+
+def confined_file(base: Path, relative: str) -> Path:
+    fragment=Path(relative)
+    if fragment.is_absolute() or '..' in fragment.parts:
+        raise ValueError(f'curriculum manifest path is unsafe: {relative}')
+    candidate=(base/fragment).resolve(strict=True)
+    if candidate==base or not candidate.is_relative_to(base) or candidate.is_symlink() or not candidate.is_file():
+        raise ValueError(f'curriculum file is outside the bound root: {relative}')
+    return candidate
+
+
+def sha256(base: Path, relative: str) -> str:
+    path=confined_file(base,relative)
     h=hashlib.sha256()
     with path.open('rb') as handle:
         for chunk in iter(lambda:handle.read(1024*1024),b''):
@@ -86,9 +107,9 @@ def main() -> None:
     parser=argparse.ArgumentParser()
     parser.add_argument('--root',default=str(ROOT/'data/ceta_curriculum_v2'))
     args=parser.parse_args()
-    base=Path(args.root)
-    manifest=json.loads((base/'manifest.json').read_text(encoding='utf-8'))
-    splits=json.loads((base/'splits.json').read_text(encoding='utf-8'))
+    base=confined_data_root(Path(args.root))
+    manifest=json.loads(confined_file(base,'manifest.json').read_text(encoding='utf-8'))
+    splits=json.loads(confined_file(base,'splits.json').read_text(encoding='utf-8'))
     errors=[]
 
     if manifest.get('generator_id')!='CETA_WORLD_CURRICULUM/v2': errors.append('generator_id mismatch')
@@ -96,15 +117,15 @@ def main() -> None:
     if manifest.get('world_family_count')!=230: errors.append('world_family_count is not 230')
     if manifest.get('case_count')!=690: errors.append('case_count is not 690')
     if manifest.get('illegal_alternative_count')!=2760: errors.append('illegal_alternative_count is not 2760')
-    if manifest.get('splits_sha256')!=sha256(base/'splits.json'): errors.append('splits.json hash mismatch')
+    if manifest.get('splits_sha256')!=sha256(base,'splits.json'): errors.append('splits.json hash mismatch')
 
     all_cases={}; split_of_case={}; split_of_family={}; fingerprint_family={}; family_fingerprints=defaultdict(set); family_state_refs=defaultdict(set)
     failure_tags=set(); operation_split_counts=defaultdict(lambda:defaultdict(int))
     vm=ConstitutionalVM()
 
     for split in ('train','validation','heldout'):
-        info=manifest['files'][split]; path=base/info['path']
-        if sha256(path)!=info['sha256']: errors.append(f'{split} file hash mismatch')
+        info=manifest['files'][split]; path=confined_file(base,str(info['path']))
+        if sha256(base,str(info['path']))!=info['sha256']: errors.append(f'{split} file hash mismatch')
         records=[json.loads(line) for line in path.read_text(encoding='utf-8').splitlines() if line.strip()]
         if len(records)!=info['count']: errors.append(f'{split} count mismatch')
         for raw in records:

@@ -183,10 +183,10 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
                 json.dumps({"target_modules": list(reversed(target_modules)), "r": 32}),
                 encoding="utf-8",
             )
-            TRAINER.canonicalize_adapter_config(config_path, target_modules)
+            TRAINER.canonicalize_adapter_config(config_path, target_modules, root=Path(root))
             first = config_path.read_bytes()
             self.assertEqual(json.loads(first)["target_modules"], target_modules)
-            TRAINER.canonicalize_adapter_config(config_path, target_modules)
+            TRAINER.canonicalize_adapter_config(config_path, target_modules, root=Path(root))
             self.assertEqual(config_path.read_bytes(), first)
 
             config_path.write_text(
@@ -194,7 +194,16 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
                 encoding="utf-8",
             )
             with self.assertRaisesRegex(RuntimeError, "bound training configuration"):
-                TRAINER.canonicalize_adapter_config(config_path, target_modules)
+                TRAINER.canonicalize_adapter_config(config_path, target_modules, root=Path(root))
+
+    def test_training_writes_are_confined_to_the_bound_run_root(self):
+        with tempfile.TemporaryDirectory() as root, tempfile.TemporaryDirectory() as outside:
+            run_root = Path(root)
+            inside = run_root / "report.json"
+            TRAINER.write_json(inside, {"status": "PASS"}, root=run_root)
+            self.assertEqual(json.loads(inside.read_text(encoding="utf-8")), {"status": "PASS"})
+            with self.assertRaisesRegex(ValueError, "trusted root"):
+                TRAINER.write_json(Path(outside, "escape.json"), {}, root=run_root)
 
     def test_strict_h100_training_receipt_is_complete_and_fail_closed(self):
         receipt = json.loads(
@@ -256,6 +265,19 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
         )
         project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
         self.assertEqual(project["project"]["optional-dependencies"]["training"], ["torch>=2.13,<2.14"])
+        self.assertEqual(
+            set(project["project"]["optional-dependencies"]["language-adapter"]),
+            {
+                "accelerate==1.14.0",
+                "bitsandbytes==0.50.1",
+                "numpy==2.4.2",
+                "peft==0.20.0",
+                "safetensors==0.8.0",
+                "transformers==5.5.0",
+            },
+        )
+        self.assertEqual(set(project["dependency-groups"]["ci"]), {"pip-audit==2.10.1", "ruff==0.16.4"})
+        self.assertTrue((ROOT / "uv.lock").is_file())
 
     def test_language_environment_bootstrap_is_isolated_and_pinned(self):
         source = (ROOT / "scripts/bootstrap_language_adapter_env.sh").read_text(encoding="utf-8")

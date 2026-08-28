@@ -28,6 +28,8 @@ def included(path: Path) -> bool:
         return False
     if any(part in EXCLUDED_PARTS for part in rel.parts):
         return False
+    if any(part.endswith(".egg-info") for part in rel.parts):
+        return False
     if path.suffix in {".pyc", ".pyo"}:
         return False
     return path.is_file() and not path.is_symlink()

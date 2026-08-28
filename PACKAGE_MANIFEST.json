@@ -2,8 +2,8 @@
   "schema_version": 1,
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
-  "file_count": 200,
-  "content_root": "sha256:af877e10803be8ae47b73a9836eefd52a39ab293a100fc5b0ce1d48694909472",
+  "file_count": 201,
+  "content_root": "sha256:30104f903f7e4716a02e87cc5a0ae4241f1f349c690de73d0348ddf269ba2f0d",
   "files": [
     {
       "path": ".gitattributes",
@@ -17,18 +17,18 @@
     },
     {
       "path": ".github/workflows/verify.yml",
-      "size": 918,
-      "sha256": "12764f1ef40b9fba19a909bcc31f4dd12a0051a94466bacd4602eb341637ede0"
+      "size": 1079,
+      "sha256": "eddf45c6ea7eecc67f8d663375657a73dfbb332d6c28a6fbeb06fc0b6fdf4a6a"
     },
     {
       "path": ".gitignore",
-      "size": 172,
-      "sha256": "a79d9ddcb3e18e4c0370408c4c525e1d987abe9ae88e709d55845be8a28e4061"
+      "size": 184,
+      "sha256": "2eb3f7a35a353d1a91ec53bd0fe0f747f96d4c4f91dd13746ef0c29d01e21149"
     },
     {
       "path": "README.md",
-      "size": 17621,
-      "sha256": "b2ad0863f490eba853cbe3fbf4ff1950adc2d676bfdbf53583f69780fd34f961"
+      "size": 18063,
+      "sha256": "29cdb55eb1bc563db2aae34df1893b21664f570c356a31149da8df1229d2a180"
     },
     {
       "path": "STATUS.md",
@@ -377,8 +377,8 @@
     },
     {
       "path": "pyproject.toml",
-      "size": 443,
-      "sha256": "d4db3a74be0a334428ed07756a6252964162a3941802bc35f2337bc978b1475b"
+      "size": 694,
+      "sha256": "58e29b7af7363f10f54b91bbddb33f848981c351fc9a718e2caed94f2527f277"
     },
     {
       "path": "registry/build_constraints.json",
@@ -472,8 +472,8 @@
     },
     {
       "path": "scripts/build_package_manifest.py",
-      "size": 2078,
-      "sha256": "39d67be4c3e10b447da8186013be61e1a3b456b9f2ce0c39c9d424b9e315c5ce"
+      "size": 2161,
+      "sha256": "eb3fb616602787f055171f7f2156679bcf22f3f270e9bd4fc29b4fdabb73765c"
     },
     {
       "path": "scripts/build_release.py",
@@ -497,13 +497,13 @@
     },
     {
       "path": "scripts/hostile_epoch_gate.py",
-      "size": 9684,
-      "sha256": "e719ea13544ca596f0aac71abf3efae407a774b2c7bed7f54a7c89565a8a857c"
+      "size": 10260,
+      "sha256": "d2c58fc5520fd819231aec25278799151168d7df539f6304e11fc8d490fcc17b"
     },
     {
       "path": "scripts/ingest_supplied_architecture_data.py",
-      "size": 22407,
-      "sha256": "d84faa832d834fd877902c4fbe4776928b461f59be136bf5fdbaf10919018974"
+      "size": 24740,
+      "sha256": "bdfae3f2a1f45903d34e1d0a554be3c7b1c1c98d09041de8b8331b55a9d7614d"
     },
     {
       "path": "scripts/run_bounded_models.py",
@@ -537,8 +537,8 @@
     },
     {
       "path": "scripts/train_language_adapter.py",
-      "size": 16868,
-      "sha256": "ac1fc0b80a75cb5a395e4cdef9ab6e2c8faf133f70811da612c0ba1fbf28e580"
+      "size": 17777,
+      "sha256": "fee05cb75c9ec2bac039d19c5c57f3308a860f954065e4219c1efdbb93cc4530"
     },
     {
       "path": "scripts/validate_architecture.py",
@@ -552,8 +552,8 @@
     },
     {
       "path": "scripts/validate_ceta_curriculum.py",
-      "size": 11335,
-      "sha256": "b5c2136d3220dbc28d4f72b3f634daaaa7f2bc6b15a6bbfe29e4fc2d271ef4b5"
+      "size": 12394,
+      "sha256": "fee44b0d26731088bfdb6cdc0eea10bbb048bf80e2c3a5bd2f40cc58e589b075"
     },
     {
       "path": "scripts/validate_ceta_curriculum_v3.py",
@@ -602,8 +602,8 @@
     },
     {
       "path": "scripts/verify_package.py",
-      "size": 4172,
-      "sha256": "40b1142e9b5dba14553c1c472bb259b03abce7f908d48d57370ceb8110ebadd1"
+      "size": 4250,
+      "sha256": "799ca3923aa38c6775ae59c264d8532e8ae12461746cae87303596cf593e836d"
     },
     {
       "path": "spec/ADMISSION_RULES.md",
@@ -967,8 +967,8 @@
     },
     {
       "path": "tests/test_language_adapter.py",
-      "size": 14601,
-      "sha256": "ab0cc34ba291110c2ffe9cbfa9729ea9d414a3f316e5cdb0989593c87e401d20"
+      "size": 15747,
+      "sha256": "b1ec48be2092e232e7211fc1378518d373f6e08bdfb2df0fe44a2ff314f4a727"
     },
     {
       "path": "tests/test_memory_projection.py",
@@ -992,8 +992,8 @@
     },
     {
       "path": "tests/test_supplied_architecture_data.py",
-      "size": 7712,
-      "sha256": "70c0170f0b2bb3c8aa55b5a9f128f18c711bb1122af5312dbde7317f40ba3ad7"
+      "size": 8834,
+      "sha256": "a5000375ea7a7d516206cce84bca5a50b0162773a0a03ff16366bb56032b914a"
     },
     {
       "path": "tests/test_transition_history.py",
@@ -1004,6 +1004,11 @@
       "path": "tests/test_transition_training.py",
       "size": 4402,
       "sha256": "f8f6f45b217e3d05ff0816111b56f402162105a4f7bd01a450df7c0085808285"
+    },
+    {
+      "path": "uv.lock",
+      "size": 217632,
+      "sha256": "9ddb94810340b87d518ac43a365c9d69f87c1ebea8943fc4f100a71bd1091b03"
     }
   ]
 }

@@ -16,6 +16,8 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+CONFIG_ROOT = (ROOT / "configs").resolve()
+RUNS_ROOT = (ROOT.parent / "ceta-runs").resolve()
 sys.path.insert(0, str(ROOT / "src"))
 SPEC = importlib.util.spec_from_file_location("ceta_language_adapter_training", ROOT / "src/training/language_adapter.py")
 assert SPEC is not None and SPEC.loader is not None
@@ -33,17 +35,29 @@ def canonical_hash(value: Any, *, domain: str) -> str:
     return "sha256:" + hashlib.sha256(domain.encode("utf-8") + b"\n" + payload).hexdigest()
 
 
-def write_json(path: Path, value: Any) -> None:
-    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
+def confined_path(path: Path, *, root: Path, must_exist: bool = False) -> Path:
+    trusted_root = root.resolve(strict=must_exist)
+    candidate = path.resolve(strict=must_exist)
+    if candidate == trusted_root or not candidate.is_relative_to(trusted_root):
+        raise ValueError(f"path must be a child of the trusted root {trusted_root}: {candidate}")
+    if path.is_symlink():
+        raise ValueError(f"symbolic-link paths are not permitted: {path}")
+    return candidate
 
 
-def canonicalize_adapter_config(path: Path, target_modules: list[str]) -> None:
-    config = json.loads(path.read_text(encoding="utf-8"))
+def write_json(path: Path, value: Any, *, root: Path) -> None:
+    target = confined_path(path, root=root)
+    target.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
+
+
+def canonicalize_adapter_config(path: Path, target_modules: list[str], *, root: Path) -> None:
+    target = confined_path(path, root=root, must_exist=True)
+    config = json.loads(target.read_text(encoding="utf-8"))
     saved_modules = config.get("target_modules")
     if not isinstance(saved_modules, list) or sorted(saved_modules) != sorted(target_modules):
         raise RuntimeError("saved adapter target_modules do not match the bound training configuration")
     config["target_modules"] = list(target_modules)
-    write_json(path, config)
+    write_json(target, config, root=root)
 
 
 def append_event(path: Path, event: dict[str, Any]) -> None:
@@ -196,7 +210,8 @@ def main() -> None:
     parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
 
-    config = json.loads(args.config.read_text(encoding="utf-8"))
+    config_path = confined_path(args.config, root=CONFIG_ROOT, must_exist=True)
+    config = json.loads(config_path.read_text(encoding="utf-8"))
     if config.get("schema_id") != "CETA_LANGUAGE_ADAPTER_TRAINING/v1":
         raise SystemExit("LANGUAGE ADAPTER TRAINING: FAIL - configuration identity mismatch")
     if config.get("evaluation_policy", {}).get("heldout_feedback_to_optimizer") is not False:
@@ -235,7 +250,7 @@ def main() -> None:
     if not torch.cuda.is_bf16_supported():
         raise SystemExit("LANGUAGE ADAPTER TRAINING: FAIL - bf16 is unavailable")
 
-    run_root = args.run_root.resolve()
+    run_root = confined_path(args.run_root, root=RUNS_ROOT)
     binding_path = run_root / "RUN_BINDING.json"
     events_path = run_root / "EVENTS.jsonl"
     if run_root.exists() and not args.resume:
@@ -246,8 +261,8 @@ def main() -> None:
         "created_at": utc_now(),
         "repo_commit": git["commit"],
         "worktree_clean": True,
-        "config_path": args.config.resolve().as_posix(),
-        "config_sha256": LANGUAGE_ADAPTER.sha256_file(args.config),
+        "config_path": config_path.as_posix(),
+        "config_sha256": LANGUAGE_ADAPTER.sha256_file(config_path),
         "config_hash": config_hash,
         "evaluation_policy_hash": policy_hash,
         "dataset_root": dataset_root.as_posix(),
@@ -266,7 +281,7 @@ def main() -> None:
         if immutable != old_immutable:
             raise SystemExit("LANGUAGE ADAPTER TRAINING: FAIL - resume binding mismatch")
     else:
-        write_json(binding_path, binding)
+        write_json(binding_path, binding, root=run_root)
         append_event(events_path, {"event": "RUN_BOUND", "at": utc_now(), "binding_hash": canonical_hash(binding, domain="CETA/LANGUAGE_ADAPTER_RUN_BINDING/v1")})
 
     seed = int(config["seed"])
@@ -332,7 +347,11 @@ def main() -> None:
         validation_metrics = trainer.evaluate()
         adapter_root = run_root / "adapter"
         trainer.save_model(str(adapter_root))
-        canonicalize_adapter_config(adapter_root / "adapter_config.json", list(lora["target_modules"]))
+        canonicalize_adapter_config(
+            adapter_root / "adapter_config.json",
+            list(lora["target_modules"]),
+            root=run_root,
+        )
         tokenizer.save_pretrained(str(adapter_root))
         adapter_files = tree_hashes(adapter_root)
         package_versions = {
@@ -362,7 +381,7 @@ def main() -> None:
             "controlled_evaluation_run": False,
         }
         report = {**report_body, "report_hash": canonical_hash(report_body, domain="CETA/LANGUAGE_ADAPTER_TRAINING_REPORT/v1")}
-        write_json(run_root / "TRAINING_REPORT.json", report)
+        write_json(run_root / "TRAINING_REPORT.json", report, root=run_root)
         append_event(events_path, {"event": "TRAINING_COMPLETE", "at": utc_now(), "report_hash": report["report_hash"]})
         (run_root / "TRAINING_COMPLETE").write_text(report["report_hash"] + "\n", encoding="utf-8", newline="\n")
         print(f"CETA LANGUAGE ADAPTER TRAINING: PASS steps={report['global_step']} report={report['report_hash']}")

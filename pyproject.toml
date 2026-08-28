@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "architecture-rebuild-ceta-reference-core"
 version = "0.3.0"
 description = "Offline epoch-ready reference for Constitutional Epistemic Transition Algebra (CETA)"
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.14"
 dependencies = ["cryptography>=42"]
 
 [tool.setuptools.packages.find]
@@ -14,3 +14,17 @@ where = ["src"]
 
 [project.optional-dependencies]
 training = ["torch>=2.13,<2.14"]
+language-adapter = [
+    "accelerate==1.14.0",
+    "bitsandbytes==0.50.1",
+    "numpy==2.4.2",
+    "peft==0.20.0",
+    "safetensors==0.8.0",
+    "transformers==5.5.0",
+]
+
+[dependency-groups]
+ci = [
+    "pip-audit==2.10.1",
+    "ruff==0.16.4",
+]

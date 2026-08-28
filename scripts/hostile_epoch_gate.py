@@ -34,6 +34,16 @@ def must_fail(fn, label: str) -> None:
     raise RuntimeError(f'{label}: expected TrainingBindingError')
 
 
+def confined_run_file(path: Path, run_root: Path) -> Path:
+    trusted_root=run_root.resolve(strict=True)
+    candidate=path.resolve(strict=True)
+    if candidate==trusted_root or not candidate.is_relative_to(trusted_root):
+        raise RuntimeError(f'checkpoint file escaped the bound run root: {candidate}')
+    if path.is_symlink() or not candidate.is_file():
+        raise RuntimeError(f'checkpoint path is not a regular file: {path}')
+    return candidate
+
+
 def main() -> None:
     checks=[]
 
@@ -139,9 +149,11 @@ def main() -> None:
 
         # Evaluator must reject a forged sidecar even when checkpoint bytes are
         # unchanged.
-        evalrun=GovernedEpochTrainer(run_root=td/'eval',dataset_path=DATA/'train.jsonl',config=cfg,run_id='E')
+        eval_root=td/'eval'
+        evalrun=GovernedEpochTrainer(run_root=eval_root,dataset_path=DATA/'train.jsonl',config=cfg,run_id='E')
         ecp=evalrun.train_cases(1)
-        sidecar=Path(ecp.path).with_suffix(Path(ecp.path).suffix+'.json')
+        checkpoint=confined_run_file(Path(ecp.path),eval_root)
+        sidecar=confined_run_file(checkpoint.with_suffix(checkpoint.suffix+'.json'),eval_root)
         meta=json.loads(sidecar.read_text(encoding='utf-8')); meta['sha256']='0'*64
         sidecar.write_text(json.dumps(meta),encoding='utf-8',newline='\n')
         must_fail(lambda: IndependentCheckpointEvaluator(config=cfg).evaluate(ecp.path,DATA/'validation.jsonl',split='validation'), 'evaluation sidecar tamper')

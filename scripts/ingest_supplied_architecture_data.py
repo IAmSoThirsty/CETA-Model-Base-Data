@@ -12,6 +12,9 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "data" / "ceta_architecture_material_v1"
+PUBLIC_OUTPUT_ROOT = (ROOT / "data").resolve()
+TRUSTED_INPUT_ROOTS = (Path.home().resolve(), ROOT.parent.resolve())
+TRUSTED_EXTERNAL_OUTPUT_ROOTS = (Path.home().resolve(), ROOT.parent.resolve())
 HUMAN_ROOT = "CETA_AGI_Human_Relations_Training_Material_v1.0.0"
 DEFENSIVE_ROOT = "AI_Defensive_Knowledge_Eval_Stack_FULL"
 SHA256_RE = re.compile(r"(?i)\b[0-9a-f]{64}\b")
@@ -54,24 +57,36 @@ def sha256_bytes(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
-def sha256_file(path: Path) -> str:
+def confined_regular_file(path: Path, *, roots: tuple[Path, ...]) -> Path:
+    candidate = path.resolve(strict=True)
+    trusted_roots = tuple(root.resolve(strict=True) for root in roots)
+    if path.is_symlink() or not candidate.is_file():
+        raise ValueError(f"input must be a regular non-symlink file: {path}")
+    if not any(candidate.is_relative_to(root) for root in trusted_roots):
+        raise ValueError(f"input is outside the trusted source roots: {candidate}")
+    return candidate
+
+
+def sha256_file(path: Path, *, roots: tuple[Path, ...]) -> str:
+    source = confined_regular_file(path, roots=roots)
     digest = hashlib.sha256()
-    with path.open("rb") as handle:
+    with source.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
 
 
-def expected_sha256(sidecar: Path) -> str:
-    match = SHA256_RE.search(sidecar.read_text(encoding="utf-8"))
+def expected_sha256(sidecar: Path, *, roots: tuple[Path, ...]) -> str:
+    source = confined_regular_file(sidecar, roots=roots)
+    match = SHA256_RE.search(source.read_text(encoding="utf-8"))
     if match is None:
         raise ValueError(f"SHA-256 sidecar contains no digest: {sidecar}")
     return match.group(0).lower()
 
 
-def verify_outer_digest(archive: Path, sidecar: Path) -> str:
-    expected = expected_sha256(sidecar)
-    actual = sha256_file(archive)
+def verify_outer_digest(archive: Path, sidecar: Path, *, roots: tuple[Path, ...]) -> str:
+    expected = expected_sha256(sidecar, roots=roots)
+    actual = sha256_file(archive, roots=roots)
     if actual != expected:
         raise ValueError(f"archive SHA-256 mismatch for {archive.name}: expected {expected}, got {actual}")
     return actual
@@ -287,9 +302,9 @@ def materialize_controlled_evaluation(
     )
     challenge = output / "challenges.jsonl"
     answers = output / "answer_key.jsonl"
-    if sha256_file(challenge) != binding["challenge_sha256"]:
+    if sha256_file(challenge, roots=(output,)) != binding["challenge_sha256"]:
         raise ValueError("materialized controlled-evaluation challenge hash mismatch")
-    if sha256_file(answers) != binding["answer_key_sha256"]:
+    if sha256_file(answers, roots=(output,)) != binding["answer_key_sha256"]:
         raise ValueError("materialized controlled-evaluation answer-key hash mismatch")
     receipt = {
         "schema_version": 1,
@@ -329,6 +344,19 @@ def validate_controlled_evaluation_output(path: Path, public_output: Path) -> Pa
             "controlled-evaluation output inside the repository must be exactly "
             f"{repo_staging}"
         )
+    if not resolved.is_relative_to(repo_root) and not any(
+        resolved.is_relative_to(root) for root in TRUSTED_EXTERNAL_OUTPUT_ROOTS
+    ):
+        raise ValueError("controlled-evaluation output is outside the trusted output roots")
+    return resolved
+
+
+def validate_public_output(path: Path) -> Path:
+    resolved = path.resolve()
+    if resolved == PUBLIC_OUTPUT_ROOT or not resolved.is_relative_to(PUBLIC_OUTPUT_ROOT):
+        raise ValueError(f"public output must be a child of {PUBLIC_OUTPUT_ROOT}: {resolved}")
+    if path.is_symlink():
+        raise ValueError(f"symbolic-link output paths are not permitted: {path}")
     return resolved
 
 
@@ -339,7 +367,7 @@ def output_manifest(output: Path, *, human_sha: str, defensive_sha: str, human: 
         files.append({
             "path": relative,
             "size_bytes": path.stat().st_size,
-            "sha256": sha256_file(path),
+            "sha256": sha256_file(path, roots=(output,)),
             "source_usage": material_source_usage(relative),
         })
     source_usage_by_path = {item["path"]: item["source_usage"] for item in files}
@@ -409,9 +437,17 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    human_sha = verify_outer_digest(args.human_material_zip, args.human_material_sha256)
-    defensive_sha = verify_outer_digest(args.defensive_stack_zip, args.defensive_stack_sha256)
-    output = args.output.resolve()
+    human_zip = confined_regular_file(args.human_material_zip, roots=TRUSTED_INPUT_ROOTS)
+    human_sidecar = confined_regular_file(args.human_material_sha256, roots=TRUSTED_INPUT_ROOTS)
+    defensive_zip = confined_regular_file(args.defensive_stack_zip, roots=TRUSTED_INPUT_ROOTS)
+    defensive_sidecar = confined_regular_file(args.defensive_stack_sha256, roots=TRUSTED_INPUT_ROOTS)
+    if human_zip.suffix.lower() != ".zip" or defensive_zip.suffix.lower() != ".zip":
+        raise ValueError("supplied architecture archives must use the .zip extension")
+    if human_sidecar.suffix.lower() != ".sha256" or defensive_sidecar.suffix.lower() != ".sha256":
+        raise ValueError("archive digest sidecars must use the .sha256 extension")
+    human_sha = verify_outer_digest(human_zip, human_sidecar, roots=TRUSTED_INPUT_ROOTS)
+    defensive_sha = verify_outer_digest(defensive_zip, defensive_sidecar, roots=TRUSTED_INPUT_ROOTS)
+    output = validate_public_output(args.output)
     output.mkdir(parents=True, exist_ok=True)
     controlled_output = None
     if args.controlled_evaluation_output is not None:
@@ -420,7 +456,7 @@ def main() -> None:
             output,
         )
 
-    with zipfile.ZipFile(args.human_material_zip) as human_archive:
+    with zipfile.ZipFile(human_zip) as human_archive:
         human_members = safe_members(human_archive)
         human = verify_human_package(human_archive, human_members)
         copy_selected(
@@ -438,7 +474,7 @@ def main() -> None:
                 human["controlled_evaluation"],
             )
 
-    with zipfile.ZipFile(args.defensive_stack_zip) as defensive_archive:
+    with zipfile.ZipFile(defensive_zip) as defensive_archive:
         defensive_members = safe_members(defensive_archive)
         defensive = verify_defensive_package(defensive_archive, defensive_members)
         copy_selected(

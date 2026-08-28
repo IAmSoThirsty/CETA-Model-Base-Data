@@ -4,6 +4,7 @@ import json
 import importlib.util
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 
 
@@ -140,6 +141,28 @@ class SuppliedArchitectureDataTests(unittest.TestCase):
         answer_path = ROOT / "data" / "ceta_controlled_evaluation" / "answer_key.jsonl"
         self.assertFalse(PACKAGE_BUILDER.included(answer_path))
         self.assertNotIn("data/ceta_controlled_evaluation/answer_key.jsonl", PACKAGE_VERIFY.visible_files())
+
+    def test_environment_metadata_is_excluded_from_release_payload(self):
+        metadata_path = ROOT / "src" / "architecture_rebuild_ceta_reference_core.egg-info" / "PKG-INFO"
+        self.assertFalse(PACKAGE_BUILDER.included(metadata_path))
+        self.assertNotIn(
+            "src/architecture_rebuild_ceta_reference_core.egg-info/PKG-INFO",
+            PACKAGE_VERIFY.visible_files(),
+        )
+
+    def test_supplied_input_files_are_confined_to_trusted_roots(self):
+        with tempfile.TemporaryDirectory() as allowed, tempfile.TemporaryDirectory() as outside:
+            allowed_root = Path(allowed)
+            inside = allowed_root / "source.zip"
+            inside.write_bytes(b"source")
+            escaped = Path(outside, "source.zip")
+            escaped.write_bytes(b"source")
+            self.assertEqual(
+                INGEST.confined_regular_file(inside, roots=(allowed_root,)),
+                inside.resolve(),
+            )
+            with self.assertRaisesRegex(ValueError, "trusted source roots"):
+                INGEST.confined_regular_file(escaped, roots=(allowed_root,))
 
 
 if __name__ == "__main__":
