@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 201,
-  "content_root": "sha256:30104f903f7e4716a02e87cc5a0ae4241f1f349c690de73d0348ddf269ba2f0d",
+  "content_root": "sha256:9b94af837a0a1fc039644aa591c479d2be3f48601452ead9c2f455f5ce569a38",
   "files": [
     {
       "path": ".gitattributes",
@@ -17,8 +17,8 @@
     },
     {
       "path": ".github/workflows/verify.yml",
-      "size": 1079,
-      "sha256": "eddf45c6ea7eecc67f8d663375657a73dfbb332d6c28a6fbeb06fc0b6fdf4a6a"
+      "size": 1155,
+      "sha256": "b69114854e746687ab8d4e29c974edf645d06b5c9bb17780ede684f877a66c86"
     },
     {
       "path": ".gitignore",
@@ -27,8 +27,8 @@
     },
     {
       "path": "README.md",
-      "size": 18063,
-      "sha256": "29cdb55eb1bc563db2aae34df1893b21664f570c356a31149da8df1229d2a180"
+      "size": 18139,
+      "sha256": "794c3ffcb2ed859fbd6a10539b20c482e4886b9b1fcef00490d0daf5c0edee1a"
     },
     {
       "path": "STATUS.md",
@@ -497,8 +497,8 @@
     },
     {
       "path": "scripts/hostile_epoch_gate.py",
-      "size": 10260,
-      "sha256": "d2c58fc5520fd819231aec25278799151168d7df539f6304e11fc8d490fcc17b"
+      "size": 10286,
+      "sha256": "85fc4ed0837dbd7b9f45ac610fe35fc762d5407afe76afe935762ac6cc983e86"
     },
     {
       "path": "scripts/ingest_supplied_architecture_data.py",
@@ -537,8 +537,8 @@
     },
     {
       "path": "scripts/train_language_adapter.py",
-      "size": 17777,
-      "sha256": "fee05cb75c9ec2bac039d19c5c57f3308a860f954065e4219c1efdbb93cc4530"
+      "size": 17835,
+      "sha256": "76c812ae0cab645b7a8da7acf175a8eb54aa0709a9459985c4f5a3385b7bcf1e"
     },
     {
       "path": "scripts/validate_architecture.py",

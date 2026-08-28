@@ -47,7 +47,9 @@ def confined_path(path: Path, *, root: Path, must_exist: bool = False) -> Path:
 
 def write_json(path: Path, value: Any, *, root: Path) -> None:
     target = confined_path(path, root=root)
-    target.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
+    payload = json.dumps(value, indent=2, sort_keys=True) + "\n"
+    with target.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(payload)
 
 
 def canonicalize_adapter_config(path: Path, target_modules: list[str], *, root: Path) -> None:

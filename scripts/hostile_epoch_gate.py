@@ -154,8 +154,9 @@ def main() -> None:
         ecp=evalrun.train_cases(1)
         checkpoint=confined_run_file(Path(ecp.path),eval_root)
         sidecar=confined_run_file(checkpoint.with_suffix(checkpoint.suffix+'.json'),eval_root)
-        meta=json.loads(sidecar.read_text(encoding='utf-8')); meta['sha256']='0'*64
-        sidecar.write_text(json.dumps(meta),encoding='utf-8',newline='\n')
+        forged_meta={'checkpoint':'forged.pt','sha256':'0'*64}
+        with sidecar.open('w',encoding='utf-8',newline='\n') as handle:
+            handle.write(json.dumps(forged_meta))
         must_fail(lambda: IndependentCheckpointEvaluator(config=cfg).evaluate(ecp.path,DATA/'validation.jsonl',split='validation'), 'evaluation sidecar tamper')
         checks.append('evaluation_sidecar_tamper_rejected')
 
