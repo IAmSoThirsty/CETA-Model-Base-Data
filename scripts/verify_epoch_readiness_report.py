@@ -19,6 +19,36 @@ def fail(msg: str) -> None:
     raise SystemExit(f'EPOCH READINESS REPORT VERIFY: FAIL - {msg}')
 
 
+def verify_metric_contract(metrics: dict, *, split: str) -> None:
+    contract=metrics.get('metric_contract',{})
+    expected={
+        'target_accuracy':'exact selected full transition matches target',
+        'opcode_accuracy':'selected transition operation matches target operation',
+        'state_only_auxiliary_opcode_head':False,
+        'operation_selection_objective':'maximum candidate score grouped by operation',
+    }
+    if contract!=expected: fail(f'{split} metric contract mismatch')
+    target=float(metrics.get('target_accuracy',-1.0)); opcode=float(metrics.get('opcode_accuracy',-1.0))
+    if not 0.0 <= target <= opcode <= 1.0: fail(f'{split} target/opcode accuracy invariant failed')
+    errors=metrics.get('selection_errors')
+    if not isinstance(errors,list): fail(f'{split} selection errors are missing')
+    if int(metrics.get('selection_error_count',-1))!=len(errors): fail(f'{split} selection-error count mismatch')
+    expected_errors=round(int(metrics.get('case_count',0))*(1.0-target))
+    if len(errors)!=expected_errors: fail(f'{split} selection errors do not reconcile to target accuracy')
+    opcode_errors=[error for error in errors if error.get('opcode_correct') is False]
+    if int(metrics.get('opcode_error_count',-1))!=len(opcode_errors): fail(f'{split} opcode-error count mismatch')
+    family_count=len({str(error.get('world_family_id')) for error in errors})
+    opcode_family_count=len({str(error.get('world_family_id')) for error in opcode_errors})
+    if int(metrics.get('selection_error_family_count',-1))!=family_count: fail(f'{split} selection-error family count mismatch')
+    if int(metrics.get('opcode_error_family_count',-1))!=opcode_family_count: fail(f'{split} opcode-error family count mismatch')
+    required={'case_id','world_family_id','world_variant_id','target_operation','selected_operation','exact_target_correct','opcode_correct','vm_disposition','target_candidate_margin','total_loss','operation_selection_loss','transition_rank_loss','failure_surface_loss'}
+    for error in errors:
+        if not isinstance(error,dict) or not required <= set(error): fail(f'{split} selection-error diagnostic is incomplete')
+        if error.get('exact_target_correct') is not False: fail(f'{split} selection-error exact-target flag mismatch')
+        if error.get('opcode_correct') is not (error.get('selected_operation')==error.get('target_operation')):
+            fail(f'{split} selection-error opcode flag mismatch')
+
+
 def main() -> None:
     parser=argparse.ArgumentParser()
     parser.add_argument('--report',help='Readiness report to verify; defaults to the packaged reference report')
@@ -28,7 +58,8 @@ def main() -> None:
     report=json.loads(report_path.read_text(encoding='utf-8'))
     claimed=report.get('report_hash')
     body=dict(report); body.pop('report_hash',None)
-    expected=domain_hash(body,domain='CETA/EPOCH_READINESS_REPORT/v1')
+    if report.get('schema_version')!=2: fail('unsupported report schema')
+    expected=domain_hash(body,domain='CETA/EPOCH_READINESS_REPORT/v2')
     if claimed!=expected: fail('report hash mismatch')
     if report.get('status')!='PASS': fail('status is not PASS')
 
@@ -68,6 +99,7 @@ def main() -> None:
 
     for split in ('validation','heldout'):
         metrics=report.get(split,{})
+        verify_metric_contract(metrics,split=split)
         if metrics.get('case_count')!=required[split][1]: fail(f'{split} evaluation case count mismatch')
         if int(metrics.get('hostile_candidate_count',0)) < int(metrics.get('case_count',0)):
             fail(f'{split} hostile candidates were not exercised')
@@ -93,6 +125,8 @@ def main() -> None:
     if claim.get('clean_unseen_evaluation_case_count') != 59: fail('clean unseen evaluation count mismatch')
 
     policy=report.get('promotion_gate',{}).get('policy',{})
+    if policy.get('opcode_accuracy_semantics')!='selected transition operation matches target operation':
+        fail('promotion opcode-accuracy semantics mismatch')
     operation_floors=policy.get('operation_target_accuracy')
     if operation_floors is not None:
         canonical=set(json.loads((ROOT/'registry/ceta_operations.json').read_text(encoding='utf-8'))['operations'])

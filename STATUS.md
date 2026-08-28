@@ -39,26 +39,27 @@
 - Canonical training evidence is filesystem-location independent for identical logical runs.
 - A full 1,104-case CPU reference epoch completed across pause/restart/resume with exact training split coverage.
 - The corrected target-blind epoch selected VM-legal transitions on 100% of validation and held-out cases in the reference run.
-- The current structured smoke checkpoint satisfies the declared strict policy and is recorded as `PROMOTED`; that bounded synthetic promotion is not a production-model claim.
+- The current schema-v2 structured smoke checkpoint is correctly `QUARANTINED`; epoch-pipeline readiness is independent of model promotion.
 - The integrated hostile epoch gate passes all registered final-gate attacks.
 
 ## Current smoke-result boundary
 
 The recorded reference run in `evidence/EPOCH_READINESS_REPORT.json` reports:
 
-- validation exact-target accuracy: 1.000000;
-- validation opcode accuracy: 0.978261;
-- validation legal-selection rate: 1.000000;
-- held-out exact-target accuracy: 1.000000;
-- held-out opcode accuracy: 0.956522;
-- held-out legal-selection rate: 1.000000;
-- promotion status: `PROMOTED` under the strict reference promotion policy.
+- validation exact-target accuracy: 0.913043;
+- validation selected-operation accuracy: 0.913043;
+- validation legal-selection rate: 0.913043;
+- held-out exact-target accuracy: 0.913043;
+- held-out selected-operation accuracy: 0.913043;
+- held-out legal-selection rate: 0.913043;
+- 12 exact-selection errors across 4 structural families per evaluation split;
+- promotion status: `QUARANTINED` under the strict reference promotion policy.
 
-These numbers establish only the behavior of this bounded synthetic reference run.
+These numbers establish only the behavior of this bounded synthetic reference run. Report schema v2 measures the operation of the selected transition, not the separate state-only auxiliary head used by historical schema-v1 checkpoints. Model schema v4 removes that head, derives operation loss from deployed candidate scores, and refuses to resume schema-v3 checkpoints.
 
 ## Not proven / not claimed
 
-- The structurally `PROMOTED` smoke checkpoint is **not** a production model, deployment approval, or language-adapter promotion.
+- The structurally `QUARANTINED` smoke checkpoint is **not** a production model, deployment approval, or language-adapter promotion.
 - General reasoning, compositional generalization at large scale, real-world reasoning, or AGI is not established.
 - The structured source-derived curriculum does not itself solve language-to-state grounding or observation truth determination; the separate language adapter is an experimental parsing/serialization layer and cannot establish observation truth.
 - Public defensive records used by v3 are trained-on and cannot subsequently support an unseen-benchmark claim.

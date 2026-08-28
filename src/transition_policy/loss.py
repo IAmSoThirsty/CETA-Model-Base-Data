@@ -9,12 +9,12 @@ import torch.nn.functional as F
 from ceta import ConstitutionalVM, VmDisposition
 from .encoder import world_from_training_case
 from .neural import PolicyOutput
-from .schema import FAILURE_HEADS, OPERATION_TO_INDEX
+from .schema import CETA_OPERATION_VOCAB, FAILURE_HEADS, OPERATION_TO_INDEX
 
 
 @dataclass(frozen=True)
 class CetaLossWeights:
-    opcode: float = 1.0
+    operation_selection: float = 1.0
     transition_rank: float = 2.0
     failure_surface: float = 1.0
 
@@ -22,7 +22,7 @@ class CetaLossWeights:
 @dataclass
 class CetaLossResult:
     total: torch.Tensor
-    opcode_loss: torch.Tensor
+    operation_selection_loss: torch.Tensor
     transition_rank_loss: torch.Tensor
     failure_surface_loss: torch.Tensor
 
@@ -79,9 +79,22 @@ def failure_labels(case: Any, output: PolicyOutput) -> torch.Tensor:
     return torch.tensor(rows,dtype=torch.float32,device=output.candidate_failure_logits.device)
 
 
+def operation_selection_logits(output: PolicyOutput) -> torch.Tensor:
+    """Return the best deployed candidate score for each CETA operation."""
+    logits=[]
+    for operation in CETA_OPERATION_VOCAB:
+        indices=[i for i,proposal in enumerate(output.candidate_proposals) if proposal.operation==operation]
+        if indices:
+            index=torch.tensor(indices,dtype=torch.long,device=output.candidate_scores.device)
+            logits.append(torch.max(output.candidate_scores.index_select(0,index),dim=0).values)
+        else:
+            logits.append(output.candidate_scores.new_tensor(float('-inf')))
+    return torch.stack(logits)
+
+
 def compute_ceta_loss(case: Any, output: PolicyOutput, *, weights: CetaLossWeights=CetaLossWeights()) -> CetaLossResult:
-    target_op=torch.tensor([OPERATION_TO_INDEX[case.target_proposal.operation]],dtype=torch.long,device=output.opcode_logits.device)
-    opcode_loss=F.cross_entropy(output.opcode_logits.unsqueeze(0),target_op)
+    target_op=torch.tensor([OPERATION_TO_INDEX[case.target_proposal.operation]],dtype=torch.long,device=output.candidate_scores.device)
+    operation_selection_loss=F.cross_entropy(operation_selection_logits(output).unsqueeze(0),target_op)
     target_index=None
     target_json=_proposal_json(case.target_proposal)
     for i,p in enumerate(output.candidate_proposals):
@@ -93,8 +106,12 @@ def compute_ceta_loss(case: Any, output: PolicyOutput, *, weights: CetaLossWeigh
     transition_rank_loss=F.cross_entropy(output.candidate_scores.unsqueeze(0),torch.tensor([target_index],dtype=torch.long,device=output.candidate_scores.device))
     labels=failure_labels(case,output)
     failure_surface_loss=F.binary_cross_entropy_with_logits(output.candidate_failure_logits,labels)
-    total=weights.opcode*opcode_loss+weights.transition_rank*transition_rank_loss+weights.failure_surface*failure_surface_loss
-    return CetaLossResult(total,opcode_loss,transition_rank_loss,failure_surface_loss)
+    total=(
+        weights.operation_selection*operation_selection_loss
+        + weights.transition_rank*transition_rank_loss
+        + weights.failure_surface*failure_surface_loss
+    )
+    return CetaLossResult(total,operation_selection_loss,transition_rank_loss,failure_surface_loss)
 
 
 def candidate_sequence(case: Any) -> tuple:

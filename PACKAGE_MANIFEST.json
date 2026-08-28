@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 201,
-  "content_root": "sha256:6a51639782658183f98ab1b093bf7158623180e8b83082dd936bbb8b21ce7bf5",
+  "content_root": "sha256:c438787bbca9801d0131f0dac75412fd8f1bcda9271c1f600510e2411af32d86",
   "files": [
     {
       "path": ".gitattributes",
@@ -27,13 +27,13 @@
     },
     {
       "path": "README.md",
-      "size": 18139,
-      "sha256": "794c3ffcb2ed859fbd6a10539b20c482e4886b9b1fcef00490d0daf5c0edee1a"
+      "size": 19025,
+      "sha256": "94f3d7ec98f4827bcbd3793b02dc620b098d72bd0f4245235c5491857f64fe6a"
     },
     {
       "path": "STATUS.md",
-      "size": 7485,
-      "sha256": "c0ac4fe149cf9a1cd8bfc5db662825903364d1c4738b0b003d4a263c8ad7208f"
+      "size": 7846,
+      "sha256": "6e304f5535d0e8610a9ba0c52e60e27da52cd3e1aa8cb4ce96eb69cbd0ed5ef0"
     },
     {
       "path": "VERSION",
@@ -287,8 +287,8 @@
     },
     {
       "path": "docs/SUPPLIED_DATA_INTEGRATION.md",
-      "size": 6584,
-      "sha256": "7c8546732d909d7660ee57e3e3a9150156c13f1240f9dc3d7c0c956a70027ecb"
+      "size": 6677,
+      "sha256": "30c18c9543fe49ea4af58800ec5d85412932bc4712d0656840b93e47434ede88"
     },
     {
       "path": "docs/TRAINING_BOUNDARY.md",
@@ -302,8 +302,8 @@
     },
     {
       "path": "evidence/EPOCH_READINESS_REPORT.json",
-      "size": 17173,
-      "sha256": "4438560b5d42ad0dcddbecf9ba43cbeca91521bfd3eefb74f5fe20dc2fbbeecc"
+      "size": 32965,
+      "sha256": "2e6136d182d927a46c54c19843689cb5b04bc86de65aa4e70538a6328a7044e0"
     },
     {
       "path": "evidence/LANGUAGE_ADAPTER_H100_CALIBRATION.json",
@@ -517,8 +517,8 @@
     },
     {
       "path": "scripts/run_epoch_readiness.py",
-      "size": 17515,
-      "sha256": "ea1e0e9bcffa2a61da0a02d60773aef690dcfe560e88e29aadb9beddb6a4401a"
+      "size": 17415,
+      "sha256": "0ba5c9d504922071580cf9416fc62d5f0b9007058b50d572e55cdd8abbbe4a86"
     },
     {
       "path": "scripts/run_h100_epoch.sh",
@@ -587,13 +587,13 @@
     },
     {
       "path": "scripts/verify_epoch_continuation_report.py",
-      "size": 4015,
-      "sha256": "7dd4a4a494558884c80832dbd5a57c57621cc3fea548ad89620a78c7da40e009"
+      "size": 6279,
+      "sha256": "84978b0262a5c3ab1b5a9fc9fc58ac1658b0ca3b4df62ce9002129fbe689e4de"
     },
     {
       "path": "scripts/verify_epoch_readiness_report.py",
-      "size": 7710,
-      "sha256": "9cb2944fa1062d657a20d9853eb09456713885e638bd218888aa4ed15c0499fb"
+      "size": 10479,
+      "sha256": "75b92eed3eb11ed42b9e0389000d4b1d891cacfd0ad57434e903daba857a9e6b"
     },
     {
       "path": "scripts/verify_language_epoch_report.py",
@@ -852,8 +852,8 @@
     },
     {
       "path": "src/training/governed.py",
-      "size": 55556,
-      "sha256": "ea5a036000ea1fbde420beb7483d48c7ef283a47ebac13ea67c423a20f6f6adc"
+      "size": 57779,
+      "sha256": "8c9dc899809df00cfe0d2f791c819a5852885385879945e7596fc7909704d8fe"
     },
     {
       "path": "src/training/language_adapter.py",
@@ -882,8 +882,8 @@
     },
     {
       "path": "src/transition_policy/__init__.py",
-      "size": 854,
-      "sha256": "4a9af9006175a74fd6c49f41dfd0d1db1750226d9ee932e419bdb463939d425f"
+      "size": 924,
+      "sha256": "37116320d8669eb5828481c1d5fc6a3e9dc340cc761cff43a80516e6eb8fd3b7"
     },
     {
       "path": "src/transition_policy/actions.py",
@@ -902,13 +902,13 @@
     },
     {
       "path": "src/transition_policy/loss.py",
-      "size": 4677,
-      "sha256": "411d8b227cd0b311173c159d1d762ca06eb8dbcc5b3da3b7862facf5cc2afefe"
+      "size": 5478,
+      "sha256": "851a8bc25a3c7a9abe2d14aef218287360710a21519b2d23cf181a26a4e275c6"
     },
     {
       "path": "src/transition_policy/neural.py",
-      "size": 7259,
-      "sha256": "a7b4dbd74ff83e91dc330139367e9f826e915e2fdab5340172b29e8e9667ab9a"
+      "size": 7094,
+      "sha256": "a0d022560b0761ce2799f5aa704496a9724831dc07ce0ecc9818635424953c0f"
     },
     {
       "path": "src/transition_policy/schema.py",
@@ -957,8 +957,8 @@
     },
     {
       "path": "tests/test_governed_training.py",
-      "size": 19003,
-      "sha256": "5da239bdd4014acf9d80f19b93af8402ce80368aaaf4e2fb3d9fdc831370a52b"
+      "size": 19607,
+      "sha256": "30ccba95743070febff3fa5ecf478e7024efc0cedf435b1f6c4a444d4bd0b99f"
     },
     {
       "path": "tests/test_identity_authority_trust.py",
@@ -977,8 +977,8 @@
     },
     {
       "path": "tests/test_neural_transition_policy.py",
-      "size": 5030,
-      "sha256": "50b3caf45e68450df622f6e457910c283a2e807a148ab70b0fee79589ee4e7b1"
+      "size": 5842,
+      "sha256": "a3915e61f3074984ccd74fadb2fd673d3044defb5d3397cc7d7c39952be8bd13"
     },
     {
       "path": "tests/test_runtime_end_to_end.py",

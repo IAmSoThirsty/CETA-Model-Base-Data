@@ -18,7 +18,6 @@ from .schema import (
 
 @dataclass(frozen=True)
 class PolicyOutput:
-    opcode_logits: torch.Tensor
     candidate_scores: torch.Tensor
     candidate_failure_logits: torch.Tensor
     candidate_proposals: tuple[TransitionProposal, ...]
@@ -36,7 +35,7 @@ class NeuralTransitionPolicy(nn.Module):
     """
 
     model_id='ceta-neural-transition-policy-v1'
-    model_schema_version=3
+    model_schema_version=4
 
     def __init__(self, *, hidden_dim: int = 64) -> None:
         super().__init__()
@@ -63,7 +62,6 @@ class NeuralTransitionPolicy(nn.Module):
         self.candidate_project=nn.Sequential(nn.Linear(candidate_in,hidden_dim),nn.GELU(),nn.LayerNorm(hidden_dim))
         self.candidate_score=nn.Linear(hidden_dim,1)
         self.failure_head=nn.Linear(hidden_dim,len(FAILURE_HEADS))
-        self.opcode_head=nn.Linear(hidden_dim,len(CETA_OPERATION_VOCAB))
 
     def encode_state(self, encoded: EncodedWorld) -> tuple[torch.Tensor,torch.Tensor]:
         node=torch.cat([
@@ -106,7 +104,6 @@ class NeuralTransitionPolicy(nn.Module):
         encoded.node_verification=encoded.node_verification.to(device); encoded.node_epistemic=encoded.node_epistemic.to(device)
         encoded.node_numeric=encoded.node_numeric.to(device); encoded.global_numeric=encoded.global_numeric.to(device)
         state,nodes=self.encode_state(encoded)
-        opcode_logits=self.opcode_head(state)
         vectors=[]; proposals=[]; rejected=0
         deduped=[]; seen=set()
         for proposal in candidates:
@@ -126,7 +123,7 @@ class NeuralTransitionPolicy(nn.Module):
         matrix=torch.stack(vectors)
         scores=self.candidate_score(matrix).squeeze(-1)
         failures=self.failure_head(matrix)
-        return PolicyOutput(opcode_logits,scores,failures,tuple(proposals),rejected)
+        return PolicyOutput(scores,failures,tuple(proposals),rejected)
 
     @torch.no_grad()
     def propose(self, world: WorldView) -> TransitionProposal:

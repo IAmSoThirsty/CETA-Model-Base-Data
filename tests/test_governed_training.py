@@ -124,6 +124,15 @@ class GovernedTrainingTests(unittest.TestCase):
             self.assertEqual(metrics.case_count,69)
             self.assertGreaterEqual(metrics.legal_selection_rate,0.0)
             self.assertLessEqual(metrics.legal_selection_rate,1.0)
+            self.assertLessEqual(metrics.target_accuracy,metrics.opcode_accuracy)
+            body=metrics.body()
+            self.assertFalse(body['metric_contract']['state_only_auxiliary_opcode_head'])
+            self.assertEqual(
+                body['metric_contract']['operation_selection_objective'],
+                'maximum candidate score grouped by operation',
+            )
+            self.assertEqual(body['selection_error_count'],len(body['selection_errors']))
+            self.assertEqual(body['opcode_error_count'],sum(not error['opcode_correct'] for error in body['selection_errors']))
             self.assertEqual(len(metrics.operation_metrics),23)
             self.assertTrue(all(item['case_count']==3 for item in metrics.operation_metrics.values()))
             self.assertGreater(metrics.hostile_candidate_count,0)

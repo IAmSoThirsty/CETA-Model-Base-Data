@@ -62,6 +62,7 @@ def _training_config() -> TrainingConfig:
 def _policy_record(policy) -> dict[str,object]:
     return {
         'min_target_accuracy':policy.min_target_accuracy,'min_opcode_accuracy':policy.min_opcode_accuracy,
+        'opcode_accuracy_semantics':'selected transition operation matches target operation',
         'min_legal_selection_rate':policy.min_legal_selection_rate,'max_mean_transition_loss':policy.max_mean_transition_loss,
         'operation_target_accuracy':dict(policy.operation_target_accuracy),
         'zero_illegal_selection_operations':list(policy.zero_illegal_selection_operations),
@@ -100,7 +101,7 @@ def _run_continuation(
     trainer.ledger.verify()
     event_counts=Counter(event['event_type'] for event in trainer.ledger.events)
     report={
-        'schema_version':1,
+        'schema_version':2,
         'report_type':'CETA_EPOCH_CONTINUATION',
         'status':'PASS',
         'torch_version':torch.__version__,
@@ -132,7 +133,7 @@ def _run_continuation(
             'controlled_evaluation_optimizer_trained':False,'production_model_quality_claimed':False,
         },
     }
-    report['report_hash']=domain_hash(report,domain='CETA/EPOCH_CONTINUATION_REPORT/v1')
+    report['report_hash']=domain_hash(report,domain='CETA/EPOCH_CONTINUATION_REPORT/v2')
     report_path.parent.mkdir(parents=True,exist_ok=True)
     report_path.write_text(json.dumps(report,indent=2,sort_keys=True)+'\n',encoding='utf-8',newline='\n')
     print('CETA EPOCH CONTINUATION: PASS')
@@ -140,7 +141,11 @@ def _run_continuation(
     print(f'final_checkpoint_sha256={final_checkpoint.sha256}')
     print(f'curriculum_manifest_sha256={final_checkpoint.cursor.curriculum_manifest_sha256}')
     print(f'curriculum_splits_sha256={final_checkpoint.cursor.curriculum_splits_sha256}')
-    print(f'validation_target_accuracy={validation.target_accuracy:.6f} validation_legal_rate={validation.legal_selection_rate:.6f}')
+    print(
+        f'validation_target_accuracy={validation.target_accuracy:.6f} '
+        f'validation_opcode_accuracy={validation.opcode_accuracy:.6f} '
+        f'validation_legal_rate={validation.legal_selection_rate:.6f}'
+    )
     print(f'promotion_outcome={promotion_status}')
     print('visible_cuda_devices=1 distributed_training=false')
     print(f'run_root={run_root}')
@@ -232,7 +237,7 @@ def main() -> None:
 
         event_counts=Counter(e['event_type'] for e in resumed.ledger.events)
         report={
-            'schema_version':1,
+            'schema_version':2,
             'readiness_target':'CETA epoch start/pause/resume/evaluate gate',
             'status':'PASS',
             'torch_version':torch.__version__,
@@ -267,12 +272,7 @@ def main() -> None:
             },
             'validation':{**validation.body(),'evaluation_hash':validation.evaluation_hash},
             'promotion_gate':{
-                'policy':{
-                    'min_target_accuracy':strict_policy.min_target_accuracy,'min_opcode_accuracy':strict_policy.min_opcode_accuracy,
-                    'min_legal_selection_rate':strict_policy.min_legal_selection_rate,'max_mean_transition_loss':strict_policy.max_mean_transition_loss,
-                    'operation_target_accuracy':dict(strict_policy.operation_target_accuracy),
-                    'zero_illegal_selection_operations':list(strict_policy.zero_illegal_selection_operations),
-                },
+                'policy':_policy_record(strict_policy),
                 'outcome':promotion_status,
                 'note':'Smoke checkpoint quality is not a production-model claim. Strict promotion is intentionally independent of epoch-readiness.',
             },
@@ -293,15 +293,23 @@ def main() -> None:
                 'clean_unseen_evaluation_case_count':59,
             },
         }
-        report['report_hash']=domain_hash(report,domain='CETA/EPOCH_READINESS_REPORT/v1')
+        report['report_hash']=domain_hash(report,domain='CETA/EPOCH_READINESS_REPORT/v2')
         report_path.parent.mkdir(parents=True,exist_ok=True)
         report_path.write_text(json.dumps(report,indent=2,sort_keys=True)+'\n',encoding='utf-8',newline='\n')
 
     print('CETA EPOCH READINESS: PASS')
     print(f"train_cases={full_epoch_cases} pause_after={pause_after} optimizer_receipts={full_epoch_cases}")
-    print(f"validation_target_accuracy={validation.target_accuracy:.6f} validation_legal_rate={validation.legal_selection_rate:.6f}")
+    print(
+        f"validation_target_accuracy={validation.target_accuracy:.6f} "
+        f"validation_opcode_accuracy={validation.opcode_accuracy:.6f} "
+        f"validation_legal_rate={validation.legal_selection_rate:.6f}"
+    )
     print(f"promotion_outcome={promotion_status}")
-    print(f"heldout_target_accuracy={heldout.target_accuracy:.6f} heldout_legal_rate={heldout.legal_selection_rate:.6f}")
+    print(
+        f"heldout_target_accuracy={heldout.target_accuracy:.6f} "
+        f"heldout_opcode_accuracy={heldout.opcode_accuracy:.6f} "
+        f"heldout_legal_rate={heldout.legal_selection_rate:.6f}"
+    )
     print(f"run_root={run_root}")
     print(f"report={report_path}")
 

@@ -15,7 +15,8 @@ from ceta import TransitionProposal
 from training import CetaWorldCurriculum
 from transition_policy import (
     CETA_OPERATION_VOCAB, CetaActionSpaceGenerator, NeuralTransitionPolicy, OPERATION_TO_INDEX,
-    StructuredStateEncoder, candidate_sequence, compute_ceta_loss, world_from_training_case,
+    StructuredStateEncoder, candidate_sequence, compute_ceta_loss, operation_selection_logits,
+    world_from_training_case,
 )
 
 
@@ -37,17 +38,31 @@ class NeuralTransitionPolicyTests(unittest.TestCase):
         self.assertEqual(set(CETA_OPERATION_VOCAB),set(registry))
         self.assertEqual(len(CETA_OPERATION_VOCAB),23)
 
-    def test_forward_has_opcode_candidate_and_failure_heads(self):
+    def test_forward_has_candidate_and_failure_heads_only(self):
         case=self.cases[0]
         out=self.model.forward_world(
             world_from_training_case(case),
             extra_candidates=candidate_sequence(case),
         )
-        self.assertEqual(tuple(out.opcode_logits.shape),(23,))
+        self.assertFalse(hasattr(out,'opcode_logits'))
         self.assertEqual(out.candidate_scores.ndim,1)
         self.assertEqual(out.candidate_failure_logits.shape[0],out.candidate_scores.shape[0])
         self.assertEqual(out.candidate_failure_logits.shape[1],9)
         self.assertGreaterEqual(out.rejected_candidate_count,1)  # unknown-op hostile candidate is structurally impossible
+
+    def test_operation_objective_is_derived_from_deployed_candidate_scores(self):
+        case=self.cases[0]
+        out=self.model.forward_world(world_from_training_case(case),extra_candidates=candidate_sequence(case))
+        logits=operation_selection_logits(out)
+        self.assertEqual(tuple(logits.shape),(23,))
+        target_index=OPERATION_TO_INDEX[case.target_proposal.operation]
+        self.assertTrue(torch.isfinite(logits[target_index]))
+        matching=torch.tensor(
+            [i for i,p in enumerate(out.candidate_proposals) if p.operation==case.target_proposal.operation],
+            dtype=torch.long,
+        )
+        expected=torch.max(out.candidate_scores.index_select(0,matching),dim=0).values
+        self.assertTrue(torch.equal(logits[target_index],expected))
 
     def test_unknown_opcode_cannot_be_emitted(self):
         case=self.cases[0]

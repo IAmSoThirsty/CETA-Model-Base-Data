@@ -20,6 +20,34 @@ def fail(message: str) -> None:
     raise SystemExit(f"EPOCH CONTINUATION REPORT VERIFY: FAIL - {message}")
 
 
+def verify_metric_contract(metrics: dict) -> None:
+    expected={
+        "target_accuracy":"exact selected full transition matches target",
+        "opcode_accuracy":"selected transition operation matches target operation",
+        "state_only_auxiliary_opcode_head":False,
+        "operation_selection_objective":"maximum candidate score grouped by operation",
+    }
+    if metrics.get("metric_contract") != expected:
+        fail("validation metric contract mismatch")
+    target=float(metrics.get("target_accuracy",-1.0)); opcode=float(metrics.get("opcode_accuracy",-1.0))
+    if not 0.0 <= target <= opcode <= 1.0:
+        fail("validation target/opcode accuracy invariant failed")
+    errors=metrics.get("selection_errors")
+    if not isinstance(errors,list) or int(metrics.get("selection_error_count",-1)) != len(errors):
+        fail("validation selection-error evidence mismatch")
+    if len(errors) != round(int(metrics.get("case_count",0))*(1.0-target)):
+        fail("validation selection errors do not reconcile to target accuracy")
+    opcode_errors=[error for error in errors if error.get("opcode_correct") is False]
+    if int(metrics.get("opcode_error_count",-1)) != len(opcode_errors):
+        fail("validation opcode-error count mismatch")
+    required={"case_id","world_family_id","world_variant_id","target_operation","selected_operation","exact_target_correct","opcode_correct","vm_disposition","target_candidate_margin","total_loss","operation_selection_loss","transition_rank_loss","failure_surface_loss"}
+    for error in errors:
+        if not isinstance(error,dict) or not required <= set(error) or error.get("exact_target_correct") is not False:
+            fail("validation selection-error diagnostic is incomplete")
+        if error.get("opcode_correct") is not (error.get("selected_operation")==error.get("target_operation")):
+            fail("validation selection-error opcode flag mismatch")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--report", type=Path, required=True)
@@ -31,7 +59,9 @@ def main() -> None:
     claimed = report.get("report_hash")
     body = dict(report)
     body.pop("report_hash", None)
-    if claimed != domain_hash(body, domain="CETA/EPOCH_CONTINUATION_REPORT/v1"):
+    if report.get("schema_version") != 2:
+        fail("unsupported report schema")
+    if claimed != domain_hash(body, domain="CETA/EPOCH_CONTINUATION_REPORT/v2"):
         fail("report hash mismatch")
     if report.get("status") != "PASS" or report.get("report_type") != "CETA_EPOCH_CONTINUATION":
         fail("report status or type mismatch")
@@ -65,6 +95,7 @@ def main() -> None:
     if final.get("next_case_offset") != 0:
         fail("final checkpoint is not at an epoch boundary")
     validation = report.get("validation", {})
+    verify_metric_contract(validation)
     if validation.get("checkpoint_sha256") != report.get("final_checkpoint", {}).get("sha256"):
         fail("validation is not final-checkpoint bound")
     if validation.get("dataset_sha256") != file_sha256(DATA / "validation.jsonl"):
@@ -80,6 +111,8 @@ def main() -> None:
         fail("controlled evaluation optimizer boundary mismatch")
     if report.get("promotion_gate", {}).get("outcome") not in {"PROMOTED", "QUALIFIED", "QUARANTINED"}:
         fail("promotion outcome missing")
+    if report.get("promotion_gate", {}).get("policy", {}).get("opcode_accuracy_semantics") != "selected transition operation matches target operation":
+        fail("promotion opcode-accuracy semantics mismatch")
     print("EPOCH CONTINUATION REPORT VERIFY: PASS")
     print(
         f"report_hash={claimed} additional_epochs={additional} "

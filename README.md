@@ -118,7 +118,7 @@ Normal training cannot disable end-of-call durable checkpointing. The append-onl
 
 A hard crash after optimizer work but before checkpoint commit preserves those receipts as evidence but marks the uncommitted tail orphaned before deterministic replay. Checkpoint deserialization uses restricted `torch.load(..., weights_only=True)` and verifies schema, model class, dimensions, configuration, curriculum binding, model hash, optimizer hash, sidecar, and ledger commitment.
 
-Evaluation reloads a fresh model and accepts only validation or held-out artifacts cryptographically bound to the same curriculum as the checkpoint. Held-out evidence cannot authorize promotion.
+Evaluation reloads a fresh model and accepts only validation or held-out artifacts cryptographically bound to the same curriculum as the checkpoint. Held-out evidence cannot authorize promotion. In report schema v2, `target_accuracy` means the exact selected full transition and `opcode_accuracy` means the operation of that same selected transition. The operation-selection objective is computed from the maximum deployed candidate score per operation; there is no separate state-only opcode head.
 
 Additional governed epochs resume only from an exact committed epoch boundary. A continuation plan fixes its base checkpoint, requested epoch count, dataset/config binding, target epoch, and target optimizer step before work begins. A restarted process finishes that same target instead of silently adding another N epochs. The included launcher supports exactly one visible H100; it neither activates hardware nor implements distributed training.
 
@@ -133,17 +133,21 @@ Additional governed epochs resume only from an exact committed epoch boundary. A
 - independent validation and held-out evaluation;
 - strict promotion decision.
 
-The repaired target-blind adversarial run produced:
+The schema-v2 target-blind adversarial CPU reference run produced:
 
-- validation exact-target accuracy: **1.0**;
-- validation opcode accuracy: **0.978261**;
-- validation legal-selection rate: **1.0**;
-- validation mean transition loss: **0.242029**;
-- held-out exact-target accuracy: **1.0**;
-- held-out opcode accuracy: **0.956522**;
-- held-out legal-selection rate: **1.0**;
-- held-out mean transition loss: **0.239810**;
+- validation exact-target accuracy: **0.913043**;
+- validation selected-operation accuracy: **0.913043**;
+- validation legal-selection rate: **0.913043**;
+- validation mean transition loss: **0.611091**;
+- held-out exact-target accuracy: **0.913043**;
+- held-out selected-operation accuracy: **0.913043**;
+- held-out legal-selection rate: **0.913043**;
+- held-out mean transition loss: **0.611520**;
+- **12** exact-selection errors across **4** structural families in each evaluation split, recorded case by case;
 - **552** surviving candidates and **552** target-free hostile inputs per evaluation split;
+- strict promotion result: **QUARANTINED**.
+
+Earlier schema-v1 reports called a separate state-only auxiliary classifier's result “opcode accuracy,” even though deployed inference selected from candidate scores. Those historical figures are not selected-transition accuracy and must not be compared to schema-v2 `opcode_accuracy`. Model schema v4 rejects those older checkpoints and requires a fresh run.
 - **zero** singleton candidate cases and **zero** ambiguous top-ranked selections;
 - strict validation promotion outcome: **PROMOTED**.
 

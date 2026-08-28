@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 import hashlib
 import json
 import os
@@ -95,14 +95,27 @@ class EvaluationMetrics:
     singleton_candidate_case_count: int = 0
     ambiguous_top_selection_count: int = 0
     mean_target_candidate_margin: float = 0.0
+    selection_errors: tuple[Mapping[str,Any], ...] = ()
 
     def body(self) -> dict[str,Any]:
+        opcode_errors=[error for error in self.selection_errors if not bool(error.get('opcode_correct'))]
         body={
             'split':self.split,'case_count':self.case_count,'target_accuracy':self.target_accuracy,
             'opcode_accuracy':self.opcode_accuracy,'legal_selection_rate':self.legal_selection_rate,
             'mean_transition_loss':self.mean_transition_loss,'rejected_candidate_count':self.rejected_candidate_count,
             'checkpoint_sha256':self.checkpoint_sha256,'dataset_sha256':self.dataset_sha256,
             'curriculum_manifest_sha256':self.curriculum_manifest_sha256,'curriculum_splits_sha256':self.curriculum_splits_sha256,
+            'metric_contract':{
+                'target_accuracy':'exact selected full transition matches target',
+                'opcode_accuracy':'selected transition operation matches target operation',
+                'state_only_auxiliary_opcode_head':False,
+                'operation_selection_objective':'maximum candidate score grouped by operation',
+            },
+            'selection_error_count':len(self.selection_errors),
+            'selection_error_family_count':len({str(error.get('world_family_id')) for error in self.selection_errors}),
+            'opcode_error_count':len(opcode_errors),
+            'opcode_error_family_count':len({str(error.get('world_family_id')) for error in opcode_errors}),
+            'selection_errors':[dict(error) for error in self.selection_errors],
         }
         if self.operation_metrics:
             body['operation_metrics']={str(op):dict(metrics) for op,metrics in sorted(self.operation_metrics.items())}
@@ -568,7 +581,8 @@ class GovernedEpochTrainer:
         receipt={
             'run_id':self.run_id,'epoch_index':self.cursor.epoch_index,'case_offset':self.cursor.next_case_offset,
             'global_step_before':self.cursor.global_step,'case_id':case.case_id,
-            'loss':float(losses.total.detach().cpu().item()),'opcode_loss':float(losses.opcode_loss.detach().cpu().item()),
+            'loss':float(losses.total.detach().cpu().item()),
+            'operation_selection_loss':float(losses.operation_selection_loss.detach().cpu().item()),
             'transition_rank_loss':float(losses.transition_rank_loss.detach().cpu().item()),
             'failure_surface_loss':float(losses.failure_surface_loss.detach().cpu().item()),
             'gradient_norm':grad_norm,'model_hash_before':before,'model_hash_after':after,'optimizer_hash_after':optimizer_hash,
@@ -617,7 +631,7 @@ class IndependentCheckpointEvaluator:
         cases=load_cases(dataset_path)
         target_correct=0; opcode_correct=0; legal=0; loss_total=0.0; rejected=0
         candidate_count_total=0; hostile_candidate_count=0; singleton_candidate_case_count=0
-        ambiguous_top_selection_count=0; target_candidate_margin_total=0.0
+        ambiguous_top_selection_count=0; target_candidate_margin_total=0.0; selection_errors=[]
         by_operation=defaultdict(lambda:{'case_count':0,'target_correct':0,'opcode_correct':0,'legal':0,'illegal_selection_count':0})
         with torch.no_grad():
             for case in cases.values():
@@ -635,17 +649,34 @@ class IndependentCheckpointEvaluator:
                 target_candidate_index=next(i for i,p in enumerate(output.candidate_proposals) if _proposal_key(p)==target_key)
                 target_score=output.candidate_scores[target_candidate_index]
                 other_scores=torch.cat((output.candidate_scores[:target_candidate_index],output.candidate_scores[target_candidate_index+1:]))
-                target_candidate_margin_total += float((target_score-torch.max(other_scores)).item()) if len(other_scores) else 1.0
+                target_margin=float((target_score-torch.max(other_scores)).item()) if len(other_scores) else 1.0
+                target_candidate_margin_total += target_margin
                 top_score=torch.max(output.candidate_scores)
                 if int(torch.isclose(output.candidate_scores,top_score,rtol=1e-7,atol=1e-8).sum().item())>1:
                     ambiguous_top_selection_count += 1
                 op=by_operation[operation]; op['case_count']+=1
-                if _proposal_key(chosen)==_proposal_key(case.target_proposal): target_correct += 1; op['target_correct']+=1
-                if int(torch.argmax(output.opcode_logits).item()) == _operation_index(operation): opcode_correct += 1; op['opcode_correct']+=1
+                exact_target_correct=_proposal_key(chosen)==_proposal_key(case.target_proposal)
+                selected_opcode_correct=chosen.operation==operation
+                if exact_target_correct: target_correct += 1; op['target_correct']+=1
+                if selected_opcode_correct: opcode_correct += 1; op['opcode_correct']+=1
+                if exact_target_correct and not selected_opcode_correct:
+                    raise TrainingBindingError('exact selected target cannot disagree with selected operation')
                 decision=self.vm.evaluate(chosen,projected_snapshot=world.snapshot,admitted_evidence_view=world.evidence_view,identity_view=world.identity_view,authority_snapshot=world.authority_view,now_epoch_ms=world.now_epoch_ms,constitutional_epoch='evaluation')
                 if decision.disposition is VmDisposition.LEGAL: legal += 1; op['legal']+=1
                 else: op['illegal_selection_count']+=1
-                loss_total += float(compute_ceta_loss(case,output).total.item())
+                losses=compute_ceta_loss(case,output)
+                loss_total += float(losses.total.item())
+                if not exact_target_correct:
+                    selection_errors.append({
+                        'case_id':case.case_id,'world_family_id':case.world_family_id,
+                        'world_variant_id':case.world_variant_id,'target_operation':operation,
+                        'selected_operation':chosen.operation,'exact_target_correct':False,
+                        'opcode_correct':selected_opcode_correct,'vm_disposition':decision.disposition.value,
+                        'target_candidate_margin':target_margin,'total_loss':float(losses.total.item()),
+                        'operation_selection_loss':float(losses.operation_selection_loss.item()),
+                        'transition_rank_loss':float(losses.transition_rank_loss.item()),
+                        'failure_surface_loss':float(losses.failure_surface_loss.item()),
+                    })
         n=len(cases)
         operation_metrics={
             operation:{
@@ -667,8 +698,10 @@ class IndependentCheckpointEvaluator:
             'singleton_candidate_case_count':singleton_candidate_case_count,
             'ambiguous_top_selection_count':ambiguous_top_selection_count,
             'mean_target_candidate_margin':target_candidate_margin_total/n,
+            'selection_errors':tuple(selection_errors),
         }
-        return EvaluationMetrics(**body,evaluation_hash=domain_hash(body,domain='CETA/INDEPENDENT_EVALUATION/v1'))
+        metrics=EvaluationMetrics(**body,evaluation_hash='')
+        return replace(metrics,evaluation_hash=domain_hash(metrics.body(),domain='CETA/INDEPENDENT_EVALUATION/v2'))
 
 
 class CheckpointPromotionRegistry:
@@ -922,8 +955,3 @@ def _fsync_dir(path: Path) -> None:
 
 def _proposal_key(proposal) -> str:
     return canonical_json({'input_state_ref':proposal.input_state_ref,'operation':proposal.operation,'operands':dict(proposal.operands)})
-
-
-def _operation_index(operation: str) -> int:
-    from transition_policy import OPERATION_TO_INDEX
-    return OPERATION_TO_INDEX[operation]
