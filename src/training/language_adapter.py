@@ -18,6 +18,10 @@ SYSTEM_PROMPT = (
     "inventing identity, authority, evidence, consent, or certainty. Preserve human "
     "decision authority. Return only the requested JSON object."
 )
+STARTING_STATE_LABEL = "Starting state"
+AVAILABLE_EVIDENCE_LABEL = "Available evidence"
+MISSING_EVIDENCE_LABEL = "Missing or uncertain evidence"
+MANIFEST_FILENAME = "manifest.json"
 
 
 @dataclass(frozen=True)
@@ -140,11 +144,11 @@ def _text(value: Any) -> str:
 def _scenario_prompt(record: Mapping[str, Any], *, title_key: str, action_key: str) -> str:
     fields = (
         ("Scenario", title_key),
-        ("Starting state", "Starting state" if "Starting state" in record else "starting_state"),
-        ("Available evidence", "Available evidence" if "Available evidence" in record else "available_evidence"),
+        (STARTING_STATE_LABEL, STARTING_STATE_LABEL if STARTING_STATE_LABEL in record else "starting_state"),
+        (AVAILABLE_EVIDENCE_LABEL, AVAILABLE_EVIDENCE_LABEL if AVAILABLE_EVIDENCE_LABEL in record else "available_evidence"),
         (
-            "Missing or uncertain evidence",
-            "Missing or uncertain evidence" if "Missing or uncertain evidence" in record else "missing_or_uncertain_evidence",
+            MISSING_EVIDENCE_LABEL,
+            MISSING_EVIDENCE_LABEL if MISSING_EVIDENCE_LABEL in record else "missing_or_uncertain_evidence",
         ),
         ("Identity", "Identity involved" if "Identity involved" in record else "identity_involved"),
         ("Authority", "Authority granted" if "Authority granted" in record else "authority_granted"),
@@ -164,7 +168,7 @@ def _messages_for_record(kind: str, value: Any, *, path: str, group: str | None)
         assistant = {
             "decision": value.get("Correct outcome", ""),
             "reasoning": value.get("Why it is correct", ""),
-            "missing_evidence": value.get("Missing or uncertain evidence", []),
+            "missing_evidence": value.get(MISSING_EVIDENCE_LABEL, []),
             "wrong_decision_risks": value.get("Consequences of a wrong decision", []),
         }
     elif kind == "section_template":
@@ -328,7 +332,7 @@ def build_language_adapter_examples(
     catalog = json.loads((curriculum / "source_catalog.json").read_text(encoding="utf-8"))
     if catalog.get("catalog_id") != "CETA_PUBLIC_SOURCE_CATALOG/v3" or catalog.get("source_record_count") != 2439:
         raise LanguageAdapterBindingError("public source catalog identity mismatch")
-    if catalog.get("source_dataset_manifest_sha256") != sha256_file(material / "manifest.json"):
+    if catalog.get("source_dataset_manifest_sha256") != sha256_file(material / MANIFEST_FILENAME):
         raise LanguageAdapterBindingError("public source catalog material-manifest binding mismatch")
     boundary = catalog.get("controlled_evaluation", {})
     if boundary.get("usage_class") != "CONTROLLED_EVALUATION" or boundary.get("materialized_in_repository") is not False:
@@ -460,13 +464,13 @@ def write_language_adapter_dataset(
         },
     }
     manifest = {**body, "dataset_hash": domain_hash(body, domain="CETA/LANGUAGE_ADAPTER_DATASET/v1")}
-    (output / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
+    (output / MANIFEST_FILENAME).write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
     return manifest
 
 
 def load_verified_language_dataset(root: str | Path) -> tuple[dict[str, Any], dict[str, tuple[dict[str, Any], ...]]]:
     base = Path(root)
-    manifest = json.loads((base / "manifest.json").read_text(encoding="utf-8"))
+    manifest = json.loads((base / MANIFEST_FILENAME).read_text(encoding="utf-8"))
     if manifest.get("dataset_id") != DATASET_ID or manifest.get("schema_version") != SCHEMA_VERSION:
         raise LanguageAdapterBindingError("language-adapter dataset identity mismatch")
     boundary = manifest.get("training_boundary", {})

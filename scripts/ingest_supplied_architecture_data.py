@@ -21,6 +21,7 @@ SHA256_RE = re.compile(r"(?i)\b[0-9a-f]{64}\b")
 STRUCTURED_DERIVATION_ELIGIBLE = "STRUCTURED_DERIVATION_ELIGIBLE"
 PROVENANCE_OR_CONSTRAINT_ONLY = "PROVENANCE_OR_CONSTRAINT_ONLY"
 CONTROLLED_EVALUATION = "CONTROLLED_EVALUATION"
+MANIFEST_FILENAME = "manifest.json"
 
 HUMAN_FILES = {
     "mission/MISSION_PARAGRAPH.txt": "01_MISSION/MISSION_PARAGRAPH.txt",
@@ -321,7 +322,7 @@ def materialize_controlled_evaluation(
         "optimizer_input": False,
         "git_delivery": False,
     }
-    (output / "manifest.json").write_text(
+    (output / MANIFEST_FILENAME).write_text(
         json.dumps(receipt, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
         newline="\n",
@@ -362,7 +363,7 @@ def validate_public_output(path: Path) -> Path:
 
 def output_manifest(output: Path, *, human_sha: str, defensive_sha: str, human: dict, defensive: dict) -> dict:
     files = []
-    for path in sorted(p for p in output.rglob("*") if p.is_file() and p.name != "manifest.json"):
+    for path in sorted(p for p in output.rglob("*") if p.is_file() and p.name != MANIFEST_FILENAME):
         relative = path.relative_to(output).as_posix()
         files.append({
             "path": relative,
@@ -492,7 +493,7 @@ def main() -> None:
         human=human,
         defensive=defensive,
     )
-    (output / "manifest.json").write_text(
+    (output / MANIFEST_FILENAME).write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
         newline="\n",

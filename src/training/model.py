@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
-from typing import Any, Mapping
+from typing import Any, Mapping, TypedDict, Unpack
 
 from ceta import TransitionProposal
 from history import ProjectionSnapshot, domain_hash
@@ -10,6 +10,11 @@ from history import ProjectionSnapshot, domain_hash
 
 def _enc(value: Any) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+
+
+class WorldCaseMetadata(TypedDict, total=False):
+    world_variant_id: str
+    structural_fingerprint: str | None
 
 
 @dataclass(frozen=True)
@@ -100,9 +105,10 @@ class TransitionTrainingCase:
         required_defeater_refs: tuple[str, ...] = (),
         failure_surface_tags: tuple[str, ...] = (),
         world_family_id: str | None = None,
-        world_variant_id: str = "V000",
-        structural_fingerprint: str | None = None,
+        **world_metadata: Unpack[WorldCaseMetadata],
     ) -> "TransitionTrainingCase":
+        world_variant_id = world_metadata.get("world_variant_id", "V000")
+        structural_fingerprint = world_metadata.get("structural_fingerprint")
         state = {
             "state_ref": snapshot.state_ref,
             "active_objects": [obj.to_dict() for obj in snapshot.active_objects],

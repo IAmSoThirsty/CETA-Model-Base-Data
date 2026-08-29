@@ -20,6 +20,7 @@ from transition_policy import CetaActionSpaceGenerator, NeuralTransitionPolicy, 
 
 DATA=ROOT/'data/ceta_curriculum_v3'
 REPORT=ROOT/'evidence/EPOCH_HOSTILE_GATE_REPORT.json'
+TRAIN_FILENAME='train.jsonl'
 
 
 def pkey(p) -> tuple[str,str]:
@@ -107,8 +108,8 @@ def main() -> None:
 
         # Same logical run in different filesystem roots must have identical
         # checkpoint bytes, model state, and canonical evidence root.
-        a=GovernedEpochTrainer(run_root=td/'location-a',dataset_path=DATA/'train.jsonl',config=cfg,run_id='LOCATION-INVARIANT')
-        b=GovernedEpochTrainer(run_root=td/'location-b',dataset_path=DATA/'train.jsonl',config=cfg,run_id='LOCATION-INVARIANT')
+        a=GovernedEpochTrainer(run_root=td/'location-a',dataset_path=DATA/TRAIN_FILENAME,config=cfg,run_id='LOCATION-INVARIANT')
+        b=GovernedEpochTrainer(run_root=td/'location-b',dataset_path=DATA/TRAIN_FILENAME,config=cfg,run_id='LOCATION-INVARIANT')
         ca=a.train_cases(4); cb=b.train_cases(4)
         if (ca.sha256,ca.model_hash,a.ledger.current_root)!=(cb.sha256,cb.model_hash,b.ledger.current_root):
             raise SystemExit('HOSTILE EPOCH GATE: FAIL - training evidence depends on filesystem location')
@@ -117,28 +118,28 @@ def main() -> None:
         # A held-out payload renamed to train must still be rejected by the
         # manifest/hash/family binding, not trusted by filename.
         poisoned=td/'poisoned-curriculum'; shutil.copytree(DATA,poisoned)
-        shutil.copyfile(poisoned/'heldout.jsonl',poisoned/'train.jsonl')
-        must_fail(lambda: GovernedEpochTrainer(run_root=td/'poisoned-run',dataset_path=poisoned/'train.jsonl',config=cfg,run_id='P'), 'renamed heldout')
+        shutil.copyfile(poisoned/'heldout.jsonl',poisoned/TRAIN_FILENAME)
+        must_fail(lambda: GovernedEpochTrainer(run_root=td/'poisoned-run',dataset_path=poisoned/TRAIN_FILENAME,config=cfg,run_id='P'), 'renamed heldout')
         checks.append('renamed_heldout_rejected')
 
         # Checkpoint bytes are bound by the append-only training ledger.
-        tamper=GovernedEpochTrainer(run_root=td/'tamper',dataset_path=DATA/'train.jsonl',config=cfg,run_id='T')
+        tamper=GovernedEpochTrainer(run_root=td/'tamper',dataset_path=DATA/TRAIN_FILENAME,config=cfg,run_id='T')
         cp=tamper.train_cases(1); path=Path(cp.path)
         raw=bytearray(path.read_bytes()); raw[len(raw)//2]^=1; path.write_bytes(raw)
-        must_fail(lambda: GovernedEpochTrainer(run_root=td/'tamper',dataset_path=DATA/'train.jsonl',config=cfg,run_id='T',resume=True), 'checkpoint tamper')
+        must_fail(lambda: GovernedEpochTrainer(run_root=td/'tamper',dataset_path=DATA/TRAIN_FILENAME,config=cfg,run_id='T',resume=True), 'checkpoint tamper')
         checks.append('checkpoint_tamper_rejected')
 
         # Simulated hard crash after an optimizer receipt but before cursor /
         # checkpoint commit. The tail must be orphaned, then deterministic replay
         # must converge to the uninterrupted model state.
-        baseline=GovernedEpochTrainer(run_root=td/'baseline',dataset_path=DATA/'train.jsonl',config=cfg,run_id='CRASH')
+        baseline=GovernedEpochTrainer(run_root=td/'baseline',dataset_path=DATA/TRAIN_FILENAME,config=cfg,run_id='CRASH')
         baseline.train_cases(5)
         expected=hash_torch_state(baseline.model.state_dict(),domain='CETA/MODEL_STATE/v1')
-        crashed=GovernedEpochTrainer(run_root=td/'crash',dataset_path=DATA/'train.jsonl',config=cfg,run_id='CRASH')
+        crashed=GovernedEpochTrainer(run_root=td/'crash',dataset_path=DATA/TRAIN_FILENAME,config=cfg,run_id='CRASH')
         crashed.train_cases(3)
         order=crashed._epoch_order(crashed.cursor.epoch_index)
         crashed._train_one(crashed.cases[order[crashed.cursor.next_case_offset]])
-        resumed=GovernedEpochTrainer(run_root=td/'crash',dataset_path=DATA/'train.jsonl',config=cfg,run_id='CRASH',resume=True)
+        resumed=GovernedEpochTrainer(run_root=td/'crash',dataset_path=DATA/TRAIN_FILENAME,config=cfg,run_id='CRASH',resume=True)
         resumed.train_cases(2)
         actual=hash_torch_state(resumed.model.state_dict(),domain='CETA/MODEL_STATE/v1')
         if actual!=expected or len(effective_optimizer_events(resumed.ledger.events))!=5:
@@ -150,7 +151,7 @@ def main() -> None:
         # Evaluator must reject a forged sidecar even when checkpoint bytes are
         # unchanged.
         eval_root=td/'eval'
-        evalrun=GovernedEpochTrainer(run_root=eval_root,dataset_path=DATA/'train.jsonl',config=cfg,run_id='E')
+        evalrun=GovernedEpochTrainer(run_root=eval_root,dataset_path=DATA/TRAIN_FILENAME,config=cfg,run_id='E')
         ecp=evalrun.train_cases(1)
         checkpoint=confined_run_file(Path(ecp.path),eval_root)
         sidecar=confined_run_file(checkpoint.with_suffix(checkpoint.suffix+'.json'),eval_root)
@@ -170,7 +171,7 @@ def main() -> None:
             'generator_id':manifest['generator_id'],
             'manifest_sha256':file_sha256(DATA/'manifest.json'),
             'splits_sha256':file_sha256(DATA/'splits.json'),
-            'train_sha256':file_sha256(DATA/'train.jsonl'),
+            'train_sha256':file_sha256(DATA/TRAIN_FILENAME),
             'validation_sha256':file_sha256(DATA/'validation.jsonl'),
             'heldout_sha256':file_sha256(DATA/'heldout.jsonl'),
         },

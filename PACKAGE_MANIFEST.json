@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 207,
-  "content_root": "sha256:1c10131cfa8e5e37ccdc93a73dad3ff358789ef8253e901882faeddcd57dd2c0",
+  "content_root": "sha256:922a8bd875942479d1ec0577c4cb61800d0d82c15d8b3876d298df233b76a706",
   "files": [
     {
       "path": ".gitattributes",
@@ -517,13 +517,13 @@
     },
     {
       "path": "scripts/hostile_epoch_gate.py",
-      "size": 10286,
-      "sha256": "85fc4ed0837dbd7b9f45ac610fe35fc762d5407afe76afe935762ac6cc983e86"
+      "size": 10326,
+      "sha256": "1e744b7d9b6241e5414da97a5b62f9e0f494cc6f8ccc1ace9025c9cda7219000"
     },
     {
       "path": "scripts/ingest_supplied_architecture_data.py",
-      "size": 24740,
-      "sha256": "bdfae3f2a1f45903d34e1d0a554be3c7b1c1c98d09041de8b8331b55a9d7614d"
+      "size": 24782,
+      "sha256": "487af6c6f11252c589277450a5c67ee299e3f6ffd33c1ff933eb9527b3d1d6a3"
     },
     {
       "path": "scripts/run_bounded_models.py",
@@ -577,8 +577,8 @@
     },
     {
       "path": "scripts/validate_ceta_curriculum_v3.py",
-      "size": 24629,
-      "sha256": "6035d39c4aa5a2c280473b6631d92b56321dc295743af56279abbffba0ba2e9d"
+      "size": 24681,
+      "sha256": "14b7852f35eef1e19c8d4088b623ed714c3d7a63702d7d87f04b616fd6185bd4"
     },
     {
       "path": "scripts/validate_controlled_evaluation.py",
@@ -882,13 +882,13 @@
     },
     {
       "path": "src/training/language_adapter.py",
-      "size": 24986,
-      "sha256": "07059467a9c73178fefbe603362d63de3acfed49db2e26fdbb7b35b33379882f"
+      "size": 25161,
+      "sha256": "1d10eff2dfe4c3e0ca11cb84c054b26cf7d265256500c9d8a28193fee84b39a7"
     },
     {
       "path": "src/training/model.py",
-      "size": 12998,
-      "sha256": "0d5fd4b0b9baae082f4abfeea51f0da71ce75679b0a2663785a658867a29bea2"
+      "size": 13247,
+      "sha256": "683430d9942eedee87d2d63dc3bb80d40ee8985918abedd81007304fa62d2ccd"
     },
     {
       "path": "src/training/source_policy.py",

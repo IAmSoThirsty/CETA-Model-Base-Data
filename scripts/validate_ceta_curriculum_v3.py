@@ -34,6 +34,7 @@ FORBIDDEN_LANGUAGE_KEYS = frozenset({
     "prompt", "response", "answer", "completion", "expected_output", "expected_text",
     "assistant_message", "user_message", "correct_outcome", "why", "scenario",
 })
+SPLITS_FILENAME = "splits.json"
 REQUIRED_FAILURE_SURFACES = frozenset({
     "replay_fault", "provenance_corruption", "missing_defeaters", "improper_scope",
     "illegal_authorization", "authority_failure", "belief_corruption", "objective_substitution_failure",
@@ -123,7 +124,7 @@ def main() -> None:
     errors: list[str] = []
 
     manifest = json.loads((base / "manifest.json").read_text(encoding="utf-8"))
-    splits = json.loads((base / "splits.json").read_text(encoding="utf-8"))
+    splits = json.loads((base / SPLITS_FILENAME).read_text(encoding="utf-8"))
     catalog = PublicSourceCatalog.load(material_root)
     expected_assignments = build_source_family_assignments(catalog, material_root, families_per_operation=20)
     expected_catalog_text = json.dumps(catalog.to_record(), indent=2, sort_keys=True) + "\n"
@@ -172,8 +173,8 @@ def main() -> None:
         errors.append("case_count mismatch")
     if manifest.get("illegal_alternative_count") != expected_negative_count:
         errors.append("illegal_alternative_count mismatch")
-    if manifest.get("splits_sha256") != sha256(base / "splits.json"):
-        errors.append("splits.json hash mismatch")
+    if manifest.get("splits_sha256") != sha256(base / SPLITS_FILENAME):
+        errors.append(f"{SPLITS_FILENAME} hash mismatch")
     bound = manifest.get("bound_artifacts", {})
     required_bound = {
         "source_catalog": catalog_path,
@@ -363,7 +364,7 @@ def main() -> None:
 
     expected_cases = set().union(*(set(values) for values in splits.get("case_splits", {}).values()))
     if expected_cases != set(all_cases):
-        errors.append("splits.json case set mismatch")
+        errors.append(f"{SPLITS_FILENAME} case set mismatch")
     if set(assignments) != set(split_of_family):
         errors.append("assignment/family set mismatch")
     lineage_split: dict[str, str] = {}
@@ -431,7 +432,7 @@ def main() -> None:
             },
         )
         for name in (
-            "train.jsonl", "validation.jsonl", "heldout.jsonl", "splits.json",
+            "train.jsonl", "validation.jsonl", "heldout.jsonl", SPLITS_FILENAME,
             "manifest.json", "source_catalog.json", "source_assignments.jsonl",
         ):
             if (base / name).read_bytes() != (regenerated / name).read_bytes():
