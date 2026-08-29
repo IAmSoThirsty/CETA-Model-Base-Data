@@ -2,8 +2,8 @@
   "schema_version": 1,
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
-  "file_count": 201,
-  "content_root": "sha256:c438787bbca9801d0131f0dac75412fd8f1bcda9271c1f600510e2411af32d86",
+  "file_count": 207,
+  "content_root": "sha256:2a9c7aba7112cdff20b5d76445728af5e5d82e91f81b07a141e809deb38d5364",
   "files": [
     {
       "path": ".gitattributes",
@@ -27,13 +27,13 @@
     },
     {
       "path": "README.md",
-      "size": 19025,
-      "sha256": "94f3d7ec98f4827bcbd3793b02dc620b098d72bd0f4245235c5491857f64fe6a"
+      "size": 20927,
+      "sha256": "0bb4d6a86f69e96812a6850aa7a2b11cdb47adffc670371a017c9079da2f7d19"
     },
     {
       "path": "STATUS.md",
-      "size": 7846,
-      "sha256": "6e304f5535d0e8610a9ba0c52e60e27da52cd3e1aa8cb4ce96eb69cbd0ed5ef0"
+      "size": 8739,
+      "sha256": "e4e12bc84fbfd21a00dc48c8e34522eacd83cd0521af5a61fe42e08a388d6e0d"
     },
     {
       "path": "VERSION",
@@ -316,6 +316,26 @@
       "sha256": "b7376af3f3e40c17886c5a016fdae6a02ecdd20dd44c928e888e27d0cb1fc6d8"
     },
     {
+      "path": "evidence/STRUCTURED_POLICY_H100_SCHEMA_V4_EPOCH_3.json",
+      "size": 13321,
+      "sha256": "b94d8e29e8d5d142f966960eed4cb7244363b467589b17fedd5027f4d98393d4"
+    },
+    {
+      "path": "evidence/STRUCTURED_POLICY_H100_SCHEMA_V4_EPOCH_5.json",
+      "size": 11448,
+      "sha256": "e8b1281060867ec8b79290e1f7c1c90826b1e6b661438d2077824b84bd2dbebb"
+    },
+    {
+      "path": "evidence/STRUCTURED_POLICY_H100_SCHEMA_V4_FINAL_HELDOUT.json",
+      "size": 6988,
+      "sha256": "d6432b5cb1843138ffb767c0a89cd31f4614019647e09073f1282a70fb8e6520"
+    },
+    {
+      "path": "evidence/STRUCTURED_POLICY_H100_SCHEMA_V4_READINESS.json",
+      "size": 32854,
+      "sha256": "84e522cfbb94f77275e7cdab493a0b1a19a30a35bc73357ff7d0cafe44e80601"
+    },
+    {
       "path": "evidence/adjudications/OC-001_transition_legality.json",
       "size": 3019,
       "sha256": "6ddd2d75118580eae658b10497a9bb76b01bb13a05447918eb0fe42424113017"
@@ -577,8 +597,8 @@
     },
     {
       "path": "scripts/verify_all.py",
-      "size": 1407,
-      "sha256": "92052085cbffb1ad17abbe79c31c0c95530865e8d6fd623c44b5e7365a7ea265"
+      "size": 1971,
+      "sha256": "bf701c46d9fc26018ad0efccea1718de5c27fcdc16baf29884e4c9383f606d60"
     },
     {
       "path": "scripts/verify_corpus_manifest.py",
@@ -594,6 +614,11 @@
       "path": "scripts/verify_epoch_readiness_report.py",
       "size": 10479,
       "sha256": "75b92eed3eb11ed42b9e0389000d4b1d891cacfd0ad57434e903daba857a9e6b"
+    },
+    {
+      "path": "scripts/verify_final_heldout_report.py",
+      "size": 8072,
+      "sha256": "e133743d55d3a389326d3ef957c48c56f8b7b01b5a6aa75e6aae4f11f9ed57e1"
     },
     {
       "path": "scripts/verify_language_epoch_report.py",
@@ -959,6 +984,11 @@
       "path": "tests/test_governed_training.py",
       "size": 19607,
       "sha256": "30ccba95743070febff3fa5ecf478e7024efc0cedf435b1f6c4a444d4bd0b99f"
+    },
+    {
+      "path": "tests/test_h100_evidence.py",
+      "size": 1709,
+      "sha256": "01abfc6c3962798b0b1ceefdff27c5b9d92a1e1fb74c31675481a0fc8c2bc307"
     },
     {
       "path": "tests/test_identity_authority_trust.py",

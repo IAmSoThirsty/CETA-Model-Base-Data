@@ -148,6 +148,25 @@ The schema-v2 target-blind adversarial CPU reference run produced:
 - strict promotion result: **QUARANTINED**.
 
 Earlier schema-v1 reports called a separate state-only auxiliary classifier's result “opcode accuracy,” even though deployed inference selected from candidate scores. Those historical figures are not selected-transition accuracy and must not be compared to schema-v2 `opcode_accuracy`. Model schema v4 rejects those older checkpoints and requires a fresh run.
+
+### Verified schema-v4 H100 run
+
+The governed single-H100 run bound to training-code commit `effdf231d0b310b9b2eb511d9e443295f22c1ee8` completed five full epochs and 5,520 committed optimizer steps:
+
+- epoch 1: 91.3043% validation exact/operation/legal selection, correctly `QUARANTINED`;
+- epoch 3: 97.8261%, with three `AdmitEvidence/F19` selections incorrectly choosing `RejectEvidence`, correctly `QUARANTINED`;
+- epoch 5: 100% validation exact-target, selected-operation, and VM-legal selection, zero selection errors, mean transition loss 0.0101404, strictly `PROMOTED`;
+- final independent held-out: 100% exact-target, selected-operation, and VM-legal selection, zero selection errors, mean transition loss 0.0102312;
+- optimizer receipts remained exactly 5,520 before and after final held-out evaluation; held-out results did not authorize promotion and were not fed back to optimization.
+
+The promoted checkpoint SHA-256 is `b095fc3af9cb3fa6d1bc34ba52d13b55d47da5478e8c88ea92fab2f8a27857ff`. The byte-exact reports are:
+
+- [`STRUCTURED_POLICY_H100_SCHEMA_V4_READINESS.json`](evidence/STRUCTURED_POLICY_H100_SCHEMA_V4_READINESS.json) — fresh epoch-1 gate;
+- [`STRUCTURED_POLICY_H100_SCHEMA_V4_EPOCH_3.json`](evidence/STRUCTURED_POLICY_H100_SCHEMA_V4_EPOCH_3.json) — checkpoint-bound epoch-3 continuation;
+- [`STRUCTURED_POLICY_H100_SCHEMA_V4_EPOCH_5.json`](evidence/STRUCTURED_POLICY_H100_SCHEMA_V4_EPOCH_5.json) — promoted epoch-5 continuation;
+- [`STRUCTURED_POLICY_H100_SCHEMA_V4_FINAL_HELDOUT.json`](evidence/STRUCTURED_POLICY_H100_SCHEMA_V4_FINAL_HELDOUT.json) — final independent held-out evaluation.
+
+`scripts/verify_final_heldout_report.py` fails closed on report/hash/lineage disagreement, non-H100 or multi-device evidence, checkpoint mismatch, optimizer feedback, imperfect aggregate or per-operation results, illegal selections, or held-out use during iterative promotion.
 - **zero** singleton candidate cases and **zero** ambiguous top-ranked selections;
 - strict validation promotion outcome: **PROMOTED**.
 

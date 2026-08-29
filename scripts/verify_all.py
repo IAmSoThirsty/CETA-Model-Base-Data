@@ -19,6 +19,10 @@ commands = [
     [sys.executable, "-m", "unittest", "discover", "-s", str(ROOT / "tests"), "-q"],
     [sys.executable, str(ROOT / "scripts/hostile_epoch_gate.py")],
     [sys.executable, str(ROOT / "scripts/verify_epoch_readiness_report.py")],
+    [sys.executable, str(ROOT / "scripts/verify_epoch_readiness_report.py"), "--report", str(ROOT / "evidence/STRUCTURED_POLICY_H100_SCHEMA_V4_READINESS.json")],
+    [sys.executable, str(ROOT / "scripts/verify_epoch_continuation_report.py"), "--report", str(ROOT / "evidence/STRUCTURED_POLICY_H100_SCHEMA_V4_EPOCH_3.json")],
+    [sys.executable, str(ROOT / "scripts/verify_epoch_continuation_report.py"), "--report", str(ROOT / "evidence/STRUCTURED_POLICY_H100_SCHEMA_V4_EPOCH_5.json")],
+    [sys.executable, str(ROOT / "scripts/verify_final_heldout_report.py")],
     [sys.executable, str(ROOT / "examples/reference_runtime_demo.py")],
 ]
 for cmd in commands:

@@ -57,6 +57,18 @@ The recorded reference run in `evidence/EPOCH_READINESS_REPORT.json` reports:
 
 These numbers establish only the behavior of this bounded synthetic reference run. Report schema v2 measures the operation of the selected transition, not the separate state-only auxiliary head used by historical schema-v1 checkpoints. Model schema v4 removes that head, derives operation loss from deployed candidate scores, and refuses to resume schema-v3 checkpoints.
 
+## Verified H100 result
+
+A fresh single-H100 schema-v4 run bound to commit `effdf231d0b310b9b2eb511d9e443295f22c1ee8` completed five epochs and 5,520 committed optimizer steps. The gates remained fail-closed throughout:
+
+- epoch 1: 0.913043 validation exact/operation/legal selection, `QUARANTINED`;
+- epoch 3: 0.978261, with three errors in `AdmitEvidence/F19`, `QUARANTINED`;
+- epoch 5: 1.000000 exact-target, selected-operation, and VM-legal selection, zero errors, `PROMOTED`;
+- final independent held-out: 1.000000 exact-target, selected-operation, and VM-legal selection, zero errors;
+- optimizer-step count before/after held-out evaluation: 5,520 / 5,520.
+
+Promoted checkpoint: `b095fc3af9cb3fa6d1bc34ba52d13b55d47da5478e8c88ea92fab2f8a27857ff`. All H100 reports are package-tracked under `evidence/STRUCTURED_POLICY_H100_SCHEMA_V4_*.json` and are verified by the normal package gate.
+
 ## Not proven / not claimed
 
 - The structurally `QUARANTINED` smoke checkpoint is **not** a production model, deployment approval, or language-adapter promotion.

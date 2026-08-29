@@ -1,0 +1,226 @@
+{
+  "checkpoint": {
+    "epoch_index": 5,
+    "global_step": 5520,
+    "path": "checkpoint-e0005-s00005520-o000000.pt",
+    "sha256": "b095fc3af9cb3fa6d1bc34ba52d13b55d47da5478e8c88ea92fab2f8a27857ff"
+  },
+  "claim_boundary": {
+    "heldout_authorized_promotion": false,
+    "post_heldout_optimizer_steps": 0,
+    "production_model_quality_claimed": false
+  },
+  "device_attestation": {
+    "device": "cuda:0",
+    "device_name": "NVIDIA H100 80GB HBM3",
+    "distributed_training": false,
+    "visible_cuda_devices": 1
+  },
+  "git_commit": "effdf231d0b310b9b2eb511d9e443295f22c1ee8",
+  "heldout": {
+    "ambiguous_top_selection_count": 0,
+    "candidate_count_total": 552,
+    "case_count": 138,
+    "checkpoint_sha256": "b095fc3af9cb3fa6d1bc34ba52d13b55d47da5478e8c88ea92fab2f8a27857ff",
+    "curriculum_manifest_sha256": "acfe76193fa14205206bdcd570a8eb4b4f3efb7be8cc4e42dc134008e1905bc0",
+    "curriculum_splits_sha256": "43a6aa5546b34332d4ced7f6a8ca74d35f803b9c2b7a541d0e1228ac37526a87",
+    "dataset_sha256": "209ce4963ae3cfe833cfeaa050ddf88fe62f5aca2bdf0e1f7463c931620f2338",
+    "evaluation_hash": "sha256:4d1e50f164b332f71e457b3466613b5583d9db7f1503cd7434b54f047f6f760c",
+    "hostile_candidate_count": 552,
+    "legal_selection_rate": 1.0,
+    "mean_target_candidate_margin": 28.349047418953717,
+    "mean_transition_loss": 0.010231171119983997,
+    "metric_contract": {
+      "opcode_accuracy": "selected transition operation matches target operation",
+      "operation_selection_objective": "maximum candidate score grouped by operation",
+      "state_only_auxiliary_opcode_head": false,
+      "target_accuracy": "exact selected full transition matches target"
+    },
+    "opcode_accuracy": 1.0,
+    "opcode_error_count": 0,
+    "opcode_error_family_count": 0,
+    "operation_metrics": {
+      "Adjudicate": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "AdmitEvidence": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Authorize": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Contradict": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "CreateBelief": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "CreateClaim": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Execute": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "ExpandScope": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Expire": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Invalidate": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Merge": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "NarrowScope": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Observe": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Reevaluate": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "RejectAuthorization": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "RejectEvidence": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Rollback": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Split": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Support": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Suspend": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Undercut": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "ValidateObservation": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Verify": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      }
+    },
+    "rejected_candidate_count": 138,
+    "selection_error_count": 0,
+    "selection_error_family_count": 0,
+    "selection_errors": [],
+    "singleton_candidate_case_count": 0,
+    "split": "heldout",
+    "target_accuracy": 1.0
+  },
+  "optimizer_evidence": {
+    "after_evaluation": 5520,
+    "before_evaluation": 5520,
+    "heldout_feedback_to_optimizer": false
+  },
+  "report_hash": "sha256:4277687c06281726aa130377ee8d8d74a1c9ab83be6a65e6b68e44a7d86a0e69",
+  "report_type": "CETA_FINAL_HELDOUT_EVALUATION",
+  "schema_version": 1,
+  "source_continuation_report": {
+    "path": "EPOCH_CONTINUATION_E0005_REPORT.json",
+    "sha256": "e8b1281060867ec8b79290e1f7c1c90826b1e6b661438d2077824b84bd2dbebb"
+  },
+  "status": "PASS"
+}

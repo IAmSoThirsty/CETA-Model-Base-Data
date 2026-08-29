@@ -1,0 +1,343 @@
+{
+  "additional_epochs": 2,
+  "base_checkpoint": {
+    "cursor": {
+      "config_hash": "sha256:4f1803ae6348319055e7fa4890ae9bf5d0e24c506db4b0db6563245a8ab14203",
+      "curriculum_generator_id": "CETA_WORLD_CURRICULUM/v3",
+      "curriculum_manifest_sha256": "acfe76193fa14205206bdcd570a8eb4b4f3efb7be8cc4e42dc134008e1905bc0",
+      "curriculum_splits_sha256": "43a6aa5546b34332d4ced7f6a8ca74d35f803b9c2b7a541d0e1228ac37526a87",
+      "dataset_sha256": "19d13d91643e89c7ec17b90ef72f5d0840c5c527b4bc54da71c1743cdf464e4d",
+      "epoch_index": 3,
+      "global_step": 3312,
+      "next_case_offset": 0,
+      "run_id": "EPOCH-READINESS-SMOKE",
+      "split": "train"
+    },
+    "model_hash": "sha256:10d5b46e549febc7c41cf548fff8395c30ca6ca5d1fba90060413ff54e009488",
+    "optimizer_hash": "sha256:ffc1deccf5e80ac4c6f4058ea9a26302a2d2529e175bf76ece8a0ac79e63d430",
+    "path": "checkpoint-e0003-s00003312-o000000.pt",
+    "sha256": "44b824b65df6d3aad719c6f779710127ad3f5149efe64b78b1a1576bfe794a6b"
+  },
+  "claim_boundary": {
+    "controlled_evaluation_optimizer_trained": false,
+    "distributed_training": false,
+    "hardware_activated_by_runner": false,
+    "production_model_quality_claimed": false,
+    "single_h100_only": true
+  },
+  "curriculum_binding": {
+    "generator_id": "CETA_WORLD_CURRICULUM/v3",
+    "manifest_sha256": "acfe76193fa14205206bdcd570a8eb4b4f3efb7be8cc4e42dc134008e1905bc0",
+    "splits_sha256": "43a6aa5546b34332d4ced7f6a8ca74d35f803b9c2b7a541d0e1228ac37526a87"
+  },
+  "dataset": {
+    "train_cases": 1104,
+    "train_sha256": "19d13d91643e89c7ec17b90ef72f5d0840c5c527b4bc54da71c1743cdf464e4d",
+    "validation_sha256": "8fef184d6aac3006829ba4de871e7005141e269f0cce21ff009b873d1c2c7301"
+  },
+  "device_attestation": {
+    "device": "cuda:0",
+    "device_name": "NVIDIA H100 80GB HBM3",
+    "distributed_training": false,
+    "visible_cuda_devices": 1
+  },
+  "final_checkpoint": {
+    "cursor": {
+      "config_hash": "sha256:4f1803ae6348319055e7fa4890ae9bf5d0e24c506db4b0db6563245a8ab14203",
+      "curriculum_generator_id": "CETA_WORLD_CURRICULUM/v3",
+      "curriculum_manifest_sha256": "acfe76193fa14205206bdcd570a8eb4b4f3efb7be8cc4e42dc134008e1905bc0",
+      "curriculum_splits_sha256": "43a6aa5546b34332d4ced7f6a8ca74d35f803b9c2b7a541d0e1228ac37526a87",
+      "dataset_sha256": "19d13d91643e89c7ec17b90ef72f5d0840c5c527b4bc54da71c1743cdf464e4d",
+      "epoch_index": 5,
+      "global_step": 5520,
+      "next_case_offset": 0,
+      "run_id": "EPOCH-READINESS-SMOKE",
+      "split": "train"
+    },
+    "model_hash": "sha256:3f575df949cdf8414bb6e314e9a28eed87469716b3eae52a150ebeddd57787b5",
+    "optimizer_hash": "sha256:0d6413551c803180d63843c9ff8ab1600036bcb093d58de0bb8ec600ac570239",
+    "path": "checkpoint-e0005-s00005520-o000000.pt",
+    "sha256": "b095fc3af9cb3fa6d1bc34ba52d13b55d47da5478e8c88ea92fab2f8a27857ff"
+  },
+  "heldout_evaluation": {
+    "reason": "reserved from iterative continuation decisions",
+    "status": "NOT_RUN"
+  },
+  "promotion_gate": {
+    "outcome": "PROMOTED",
+    "policy": {
+      "max_mean_transition_loss": 1.0,
+      "min_legal_selection_rate": 0.99,
+      "min_opcode_accuracy": 0.95,
+      "min_target_accuracy": 0.95,
+      "opcode_accuracy_semantics": "selected transition operation matches target operation",
+      "operation_target_accuracy": {
+        "Adjudicate": 0.9999899999999999,
+        "AdmitEvidence": 0.9995,
+        "Authorize": 0.999999,
+        "Contradict": 0.995,
+        "CreateBelief": 0.995,
+        "CreateClaim": 0.99,
+        "Execute": 0.999999,
+        "ExpandScope": 0.9999899999999999,
+        "Expire": 0.9999899999999999,
+        "Invalidate": 0.9998999999999999,
+        "Merge": 0.9990000000000001,
+        "NarrowScope": 0.9990000000000001,
+        "Observe": 0.99,
+        "Reevaluate": 0.99,
+        "RejectAuthorization": 0.9998999999999999,
+        "RejectEvidence": 0.9990000000000001,
+        "Rollback": 0.999999,
+        "Split": 0.9990000000000001,
+        "Support": 0.995,
+        "Suspend": 0.9998999999999999,
+        "Undercut": 0.995,
+        "ValidateObservation": 0.9990000000000001,
+        "Verify": 0.9999899999999999
+      },
+      "zero_illegal_selection_operations": [
+        "Adjudicate",
+        "AdmitEvidence",
+        "Authorize",
+        "Contradict",
+        "CreateBelief",
+        "CreateClaim",
+        "Execute",
+        "ExpandScope",
+        "Expire",
+        "Invalidate",
+        "Merge",
+        "NarrowScope",
+        "Observe",
+        "RejectAuthorization",
+        "RejectEvidence",
+        "Rollback",
+        "Split",
+        "Support",
+        "Suspend",
+        "Undercut",
+        "ValidateObservation",
+        "Verify"
+      ]
+    }
+  },
+  "report_hash": "sha256:b4f9a37b78b470defd6d3f44b7b0bf349d1371aed534a8708f0c35502ca4d0c2",
+  "report_type": "CETA_EPOCH_CONTINUATION",
+  "run_id": "EPOCH-READINESS-SMOKE",
+  "schema_version": 2,
+  "status": "PASS",
+  "torch_version": "2.8.0+cu128",
+  "training_evidence": {
+    "checkpoint_each_epoch": true,
+    "cross_process_resume": true,
+    "event_count": 5542,
+    "event_root": "sha256:8cc43ec3adef81867eb0f961dc932294254420a614ee487e146e4a02e8571dcb",
+    "event_type_counts": {
+      "CHECKPOINT_PROMOTED": 1,
+      "CHECKPOINT_QUARANTINED": 2,
+      "CHECKPOINT_SAVED": 6,
+      "CONTINUATION_COMPLETED": 2,
+      "CONTINUATION_PLANNED": 2,
+      "EPOCH_COMPLETED": 5,
+      "OPTIMIZER_STEP": 5520,
+      "RUN_INITIALIZED": 1,
+      "RUN_RESUMED": 3
+    },
+    "target_epoch_index": 5,
+    "target_global_step": 5520
+  },
+  "validation": {
+    "ambiguous_top_selection_count": 0,
+    "candidate_count_total": 552,
+    "case_count": 138,
+    "checkpoint_sha256": "b095fc3af9cb3fa6d1bc34ba52d13b55d47da5478e8c88ea92fab2f8a27857ff",
+    "curriculum_manifest_sha256": "acfe76193fa14205206bdcd570a8eb4b4f3efb7be8cc4e42dc134008e1905bc0",
+    "curriculum_splits_sha256": "43a6aa5546b34332d4ced7f6a8ca74d35f803b9c2b7a541d0e1228ac37526a87",
+    "dataset_sha256": "8fef184d6aac3006829ba4de871e7005141e269f0cce21ff009b873d1c2c7301",
+    "evaluation_hash": "sha256:204036dec91153aa9a3129e8444057586528726e49022a8a60600797fb0fd530",
+    "hostile_candidate_count": 552,
+    "legal_selection_rate": 1.0,
+    "mean_target_candidate_margin": 28.347262209740236,
+    "mean_transition_loss": 0.010140386817102557,
+    "metric_contract": {
+      "opcode_accuracy": "selected transition operation matches target operation",
+      "operation_selection_objective": "maximum candidate score grouped by operation",
+      "state_only_auxiliary_opcode_head": false,
+      "target_accuracy": "exact selected full transition matches target"
+    },
+    "opcode_accuracy": 1.0,
+    "opcode_error_count": 0,
+    "opcode_error_family_count": 0,
+    "operation_metrics": {
+      "Adjudicate": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "AdmitEvidence": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Authorize": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Contradict": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "CreateBelief": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "CreateClaim": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Execute": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "ExpandScope": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Expire": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Invalidate": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Merge": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "NarrowScope": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Observe": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Reevaluate": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "RejectAuthorization": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "RejectEvidence": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Rollback": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Split": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Support": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Suspend": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Undercut": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "ValidateObservation": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Verify": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      }
+    },
+    "rejected_candidate_count": 138,
+    "selection_error_count": 0,
+    "selection_error_family_count": 0,
+    "selection_errors": [],
+    "singleton_candidate_case_count": 0,
+    "split": "validation",
+    "target_accuracy": 1.0
+  }
+}

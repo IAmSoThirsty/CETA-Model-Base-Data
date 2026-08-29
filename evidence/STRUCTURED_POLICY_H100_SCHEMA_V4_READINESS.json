@@ -1,0 +1,911 @@
+{
+  "claim_boundary": {
+    "clean_unseen_evaluation_case_count": 59,
+    "controlled_evaluation_bound": true,
+    "controlled_evaluation_optimizer_trained": false,
+    "epoch_pipeline_ready": true,
+    "known_exposed_evaluation_case_count": 1,
+    "language_generation_trained": false,
+    "normal_inference_accepts_caller_candidates": false,
+    "production_model_quality_claimed": false,
+    "public_defensive_structural_derivatives_trained": true,
+    "raw_source_prose_trained": false,
+    "real_world_fact_knowledge_trained": false,
+    "target_blind_action_space": true,
+    "unique_vm_legal_generated_target": true
+  },
+  "config": {
+    "gradient_clip_norm": 1.0,
+    "hidden_dim": 32,
+    "learning_rate": 0.003,
+    "seed": 20260824,
+    "weight_decay": 0.0
+  },
+  "config_hash": "sha256:4f1803ae6348319055e7fa4890ae9bf5d0e24c506db4b0db6563245a8ab14203",
+  "dataset": {
+    "generator_id": "CETA_WORLD_CURRICULUM/v3",
+    "heldout_cases": 138,
+    "heldout_sha256": "209ce4963ae3cfe833cfeaa050ddf88fe62f5aca2bdf0e1f7463c931620f2338",
+    "manifest_sha256": "acfe76193fa14205206bdcd570a8eb4b4f3efb7be8cc4e42dc134008e1905bc0",
+    "splits_sha256": "43a6aa5546b34332d4ced7f6a8ca74d35f803b9c2b7a541d0e1228ac37526a87",
+    "train_cases": 1104,
+    "train_sha256": "19d13d91643e89c7ec17b90ef72f5d0840c5c527b4bc54da71c1743cdf464e4d",
+    "validation_cases": 138,
+    "validation_sha256": "8fef184d6aac3006829ba4de871e7005141e269f0cce21ff009b873d1c2c7301"
+  },
+  "device": "cuda",
+  "heldout": {
+    "ambiguous_top_selection_count": 0,
+    "candidate_count_total": 552,
+    "case_count": 138,
+    "checkpoint_sha256": "6eae342ed8d97fd2ba577ed355b80987c67c359486d1b23a38cd1340168cee0d",
+    "curriculum_manifest_sha256": "acfe76193fa14205206bdcd570a8eb4b4f3efb7be8cc4e42dc134008e1905bc0",
+    "curriculum_splits_sha256": "43a6aa5546b34332d4ced7f6a8ca74d35f803b9c2b7a541d0e1228ac37526a87",
+    "dataset_sha256": "209ce4963ae3cfe833cfeaa050ddf88fe62f5aca2bdf0e1f7463c931620f2338",
+    "evaluation_hash": "sha256:af819c38a8fe41461a0dc23b765fab5d7ad6aab581fab9a2131920326e214dcb",
+    "hostile_candidate_count": 552,
+    "legal_selection_rate": 0.9130434782608695,
+    "mean_target_candidate_margin": 6.5299005676870765,
+    "mean_transition_loss": 0.6758871498514317,
+    "metric_contract": {
+      "opcode_accuracy": "selected transition operation matches target operation",
+      "operation_selection_objective": "maximum candidate score grouped by operation",
+      "state_only_auxiliary_opcode_head": false,
+      "target_accuracy": "exact selected full transition matches target"
+    },
+    "opcode_accuracy": 0.9130434782608695,
+    "opcode_error_count": 12,
+    "opcode_error_family_count": 4,
+    "operation_metrics": {
+      "Adjudicate": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "AdmitEvidence": {
+        "case_count": 6,
+        "illegal_selection_count": 6,
+        "legal_selection_rate": 0.0,
+        "opcode_accuracy": 0.0,
+        "target_accuracy": 0.0
+      },
+      "Authorize": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Contradict": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "CreateBelief": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "CreateClaim": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Execute": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "ExpandScope": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Expire": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Invalidate": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Merge": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "NarrowScope": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Observe": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Reevaluate": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "RejectAuthorization": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "RejectEvidence": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Rollback": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Split": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Support": {
+        "case_count": 6,
+        "illegal_selection_count": 6,
+        "legal_selection_rate": 0.0,
+        "opcode_accuracy": 0.0,
+        "target_accuracy": 0.0
+      },
+      "Suspend": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Undercut": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "ValidateObservation": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Verify": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      }
+    },
+    "rejected_candidate_count": 138,
+    "selection_error_count": 12,
+    "selection_error_family_count": 4,
+    "selection_errors": [
+      {
+        "case_id": "CETA-V3-ADMITEVIDENCE-F06-V000",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.20317943394184113,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.527280569076538,
+        "selected_operation": "RejectEvidence",
+        "target_candidate_margin": -1.2824978828430176,
+        "target_operation": "AdmitEvidence",
+        "total_loss": 4.7929487228393555,
+        "transition_rank_loss": 1.5312442779541016,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/AdmitEvidence/F06",
+        "world_variant_id": "V000"
+      },
+      {
+        "case_id": "CETA-V3-ADMITEVIDENCE-F06-V001",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.20317943394184113,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.527280569076538,
+        "selected_operation": "RejectEvidence",
+        "target_candidate_margin": -1.2824978828430176,
+        "target_operation": "AdmitEvidence",
+        "total_loss": 4.7929487228393555,
+        "transition_rank_loss": 1.5312442779541016,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/AdmitEvidence/F06",
+        "world_variant_id": "V001"
+      },
+      {
+        "case_id": "CETA-V3-ADMITEVIDENCE-F06-V002",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.20317943394184113,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.527280569076538,
+        "selected_operation": "RejectEvidence",
+        "target_candidate_margin": -1.2824978828430176,
+        "target_operation": "AdmitEvidence",
+        "total_loss": 4.7929487228393555,
+        "transition_rank_loss": 1.5312442779541016,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/AdmitEvidence/F06",
+        "world_variant_id": "V002"
+      },
+      {
+        "case_id": "CETA-V3-ADMITEVIDENCE-F12-V000",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.20326390862464905,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.5284130573272705,
+        "selected_operation": "RejectEvidence",
+        "target_candidate_margin": -1.2839443683624268,
+        "target_operation": "AdmitEvidence",
+        "total_loss": 4.796361446380615,
+        "transition_rank_loss": 1.5323423147201538,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/AdmitEvidence/F12",
+        "world_variant_id": "V000"
+      },
+      {
+        "case_id": "CETA-V3-ADMITEVIDENCE-F12-V001",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.20326390862464905,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.5284130573272705,
+        "selected_operation": "RejectEvidence",
+        "target_candidate_margin": -1.2839443683624268,
+        "target_operation": "AdmitEvidence",
+        "total_loss": 4.796361446380615,
+        "transition_rank_loss": 1.5323423147201538,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/AdmitEvidence/F12",
+        "world_variant_id": "V001"
+      },
+      {
+        "case_id": "CETA-V3-ADMITEVIDENCE-F12-V002",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.20326390862464905,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.5284130573272705,
+        "selected_operation": "RejectEvidence",
+        "target_candidate_margin": -1.2839443683624268,
+        "target_operation": "AdmitEvidence",
+        "total_loss": 4.796361446380615,
+        "transition_rank_loss": 1.5323423147201538,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/AdmitEvidence/F12",
+        "world_variant_id": "V002"
+      },
+      {
+        "case_id": "CETA-V3-SUPPORT-F10-V000",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.2979094386100769,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.6605582237243652,
+        "selected_operation": "Contradict",
+        "target_candidate_margin": -1.4497966766357422,
+        "target_operation": "Support",
+        "total_loss": 5.281554222106934,
+        "transition_rank_loss": 1.661543369293213,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/Support/F10",
+        "world_variant_id": "V000"
+      },
+      {
+        "case_id": "CETA-V3-SUPPORT-F10-V001",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.2979094386100769,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.6605582237243652,
+        "selected_operation": "Contradict",
+        "target_candidate_margin": -1.4497966766357422,
+        "target_operation": "Support",
+        "total_loss": 5.281554222106934,
+        "transition_rank_loss": 1.661543369293213,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/Support/F10",
+        "world_variant_id": "V001"
+      },
+      {
+        "case_id": "CETA-V3-SUPPORT-F10-V002",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.2979094386100769,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.6605582237243652,
+        "selected_operation": "Contradict",
+        "target_candidate_margin": -1.4497966766357422,
+        "target_operation": "Support",
+        "total_loss": 5.281554222106934,
+        "transition_rank_loss": 1.661543369293213,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/Support/F10",
+        "world_variant_id": "V002"
+      },
+      {
+        "case_id": "CETA-V3-SUPPORT-F18-V000",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.29911378026008606,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.662505030632019,
+        "selected_operation": "Contradict",
+        "target_candidate_margin": -1.4521996974945068,
+        "target_operation": "Support",
+        "total_loss": 5.28859281539917,
+        "transition_rank_loss": 1.6634869575500488,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/Support/F18",
+        "world_variant_id": "V000"
+      },
+      {
+        "case_id": "CETA-V3-SUPPORT-F18-V001",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.29911378026008606,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.662505030632019,
+        "selected_operation": "Contradict",
+        "target_candidate_margin": -1.4521996974945068,
+        "target_operation": "Support",
+        "total_loss": 5.28859281539917,
+        "transition_rank_loss": 1.6634869575500488,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/Support/F18",
+        "world_variant_id": "V001"
+      },
+      {
+        "case_id": "CETA-V3-SUPPORT-F18-V002",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.29911378026008606,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.662505030632019,
+        "selected_operation": "Contradict",
+        "target_candidate_margin": -1.4521996974945068,
+        "target_operation": "Support",
+        "total_loss": 5.28859281539917,
+        "transition_rank_loss": 1.6634869575500488,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/Support/F18",
+        "world_variant_id": "V002"
+      }
+    ],
+    "singleton_candidate_case_count": 0,
+    "split": "heldout",
+    "target_accuracy": 0.9130434782608695
+  },
+  "pause": {
+    "cursor": {
+      "config_hash": "sha256:4f1803ae6348319055e7fa4890ae9bf5d0e24c506db4b0db6563245a8ab14203",
+      "curriculum_generator_id": "CETA_WORLD_CURRICULUM/v3",
+      "curriculum_manifest_sha256": "acfe76193fa14205206bdcd570a8eb4b4f3efb7be8cc4e42dc134008e1905bc0",
+      "curriculum_splits_sha256": "43a6aa5546b34332d4ced7f6a8ca74d35f803b9c2b7a541d0e1228ac37526a87",
+      "dataset_sha256": "19d13d91643e89c7ec17b90ef72f5d0840c5c527b4bc54da71c1743cdf464e4d",
+      "epoch_index": 0,
+      "global_step": 173,
+      "next_case_offset": 173,
+      "run_id": "EPOCH-READINESS-SMOKE",
+      "split": "train"
+    },
+    "model_hash": "sha256:12fdea18c7e123512ec831c106f362c817f5b16e8c2d78f512f436464b9d547b",
+    "optimizer_hash": "sha256:6bea50561183dd6fa3d9262426d45a30fcaf5d8c7d60dba6bf4405c5dc8ab918",
+    "path": "checkpoint-e0000-s00000173-o000173.pt",
+    "sha256": "8ba9aa6cb8a15b9c56542fbf7c1ec61ef34a9c9e4d3f730eecdf349d8edf2bec"
+  },
+  "promotion_gate": {
+    "note": "Smoke checkpoint quality is not a production-model claim. Strict promotion is intentionally independent of epoch-readiness.",
+    "outcome": "QUARANTINED",
+    "policy": {
+      "max_mean_transition_loss": 1.0,
+      "min_legal_selection_rate": 0.99,
+      "min_opcode_accuracy": 0.95,
+      "min_target_accuracy": 0.95,
+      "opcode_accuracy_semantics": "selected transition operation matches target operation",
+      "operation_target_accuracy": {
+        "Adjudicate": 0.9999899999999999,
+        "AdmitEvidence": 0.9995,
+        "Authorize": 0.999999,
+        "Contradict": 0.995,
+        "CreateBelief": 0.995,
+        "CreateClaim": 0.99,
+        "Execute": 0.999999,
+        "ExpandScope": 0.9999899999999999,
+        "Expire": 0.9999899999999999,
+        "Invalidate": 0.9998999999999999,
+        "Merge": 0.9990000000000001,
+        "NarrowScope": 0.9990000000000001,
+        "Observe": 0.99,
+        "Reevaluate": 0.99,
+        "RejectAuthorization": 0.9998999999999999,
+        "RejectEvidence": 0.9990000000000001,
+        "Rollback": 0.999999,
+        "Split": 0.9990000000000001,
+        "Support": 0.995,
+        "Suspend": 0.9998999999999999,
+        "Undercut": 0.995,
+        "ValidateObservation": 0.9990000000000001,
+        "Verify": 0.9999899999999999
+      },
+      "zero_illegal_selection_operations": [
+        "Adjudicate",
+        "AdmitEvidence",
+        "Authorize",
+        "Contradict",
+        "CreateBelief",
+        "CreateClaim",
+        "Execute",
+        "ExpandScope",
+        "Expire",
+        "Invalidate",
+        "Merge",
+        "NarrowScope",
+        "Observe",
+        "RejectAuthorization",
+        "RejectEvidence",
+        "Rollback",
+        "Split",
+        "Support",
+        "Suspend",
+        "Undercut",
+        "ValidateObservation",
+        "Verify"
+      ]
+    }
+  },
+  "readiness_target": "CETA epoch start/pause/resume/evaluate gate",
+  "report_hash": "sha256:5a463c9b0d30dff0675d4b8d0e02b778ff79579dd65b2030c7cbbc260f51d8a8",
+  "resume": {
+    "final_checkpoint": {
+      "cursor": {
+        "config_hash": "sha256:4f1803ae6348319055e7fa4890ae9bf5d0e24c506db4b0db6563245a8ab14203",
+        "curriculum_generator_id": "CETA_WORLD_CURRICULUM/v3",
+        "curriculum_manifest_sha256": "acfe76193fa14205206bdcd570a8eb4b4f3efb7be8cc4e42dc134008e1905bc0",
+        "curriculum_splits_sha256": "43a6aa5546b34332d4ced7f6a8ca74d35f803b9c2b7a541d0e1228ac37526a87",
+        "dataset_sha256": "19d13d91643e89c7ec17b90ef72f5d0840c5c527b4bc54da71c1743cdf464e4d",
+        "epoch_index": 1,
+        "global_step": 1104,
+        "next_case_offset": 0,
+        "run_id": "EPOCH-READINESS-SMOKE",
+        "split": "train"
+      },
+      "model_hash": "sha256:0d1493150bc37bbb5adc13f33076d6eaf02d8a0a863b2245a1ac46ca7044f644",
+      "optimizer_hash": "sha256:19fbdb19877600a463e6e8429536971e256e2c66ac0ad8cccb0c3f0a4a841e99",
+      "path": "checkpoint-e0001-s00001104-o000000.pt",
+      "sha256": "6eae342ed8d97fd2ba577ed355b80987c67c359486d1b23a38cd1340168cee0d"
+    },
+    "final_epoch_index": 1,
+    "final_global_step": 1104,
+    "remaining_cases": 931
+  },
+  "schema_version": 2,
+  "status": "PASS",
+  "torch_version": "2.8.0+cu128",
+  "training_evidence": {
+    "checkpoint_required_before_successful_return": true,
+    "evaluation_leakage_detected": false,
+    "event_count": 1110,
+    "event_root": "sha256:28105ba134fb60dc1d87c61fdda50c05c81015ab0cb16350eb9d8e524f6dcde4",
+    "event_type_counts": {
+      "CHECKPOINT_QUARANTINED": 1,
+      "CHECKPOINT_SAVED": 2,
+      "EPOCH_COMPLETED": 1,
+      "OPTIMIZER_STEP": 1104,
+      "RUN_INITIALIZED": 1,
+      "RUN_RESUMED": 1
+    },
+    "exact_train_split_coverage": true,
+    "optimizer_receipts": 1104,
+    "resume_authority": "append-only CHECKPOINT_SAVED ledger event",
+    "source_context_anchors_actionable": false,
+    "target_candidate_injection": false,
+    "unique_vm_legal_generated_target": true
+  },
+  "validation": {
+    "ambiguous_top_selection_count": 0,
+    "candidate_count_total": 552,
+    "case_count": 138,
+    "checkpoint_sha256": "6eae342ed8d97fd2ba577ed355b80987c67c359486d1b23a38cd1340168cee0d",
+    "curriculum_manifest_sha256": "acfe76193fa14205206bdcd570a8eb4b4f3efb7be8cc4e42dc134008e1905bc0",
+    "curriculum_splits_sha256": "43a6aa5546b34332d4ced7f6a8ca74d35f803b9c2b7a541d0e1228ac37526a87",
+    "dataset_sha256": "8fef184d6aac3006829ba4de871e7005141e269f0cce21ff009b873d1c2c7301",
+    "evaluation_hash": "sha256:9d7c4f8767a7cc0247d2051b0ed1fb5107abfd414c149e812c59217c70a20e72",
+    "hostile_candidate_count": 552,
+    "legal_selection_rate": 0.9130434782608695,
+    "mean_target_candidate_margin": 6.53285268381022,
+    "mean_transition_loss": 0.675489619074801,
+    "metric_contract": {
+      "opcode_accuracy": "selected transition operation matches target operation",
+      "operation_selection_objective": "maximum candidate score grouped by operation",
+      "state_only_auxiliary_opcode_head": false,
+      "target_accuracy": "exact selected full transition matches target"
+    },
+    "opcode_accuracy": 0.9130434782608695,
+    "opcode_error_count": 12,
+    "opcode_error_family_count": 4,
+    "operation_metrics": {
+      "Adjudicate": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "AdmitEvidence": {
+        "case_count": 6,
+        "illegal_selection_count": 6,
+        "legal_selection_rate": 0.0,
+        "opcode_accuracy": 0.0,
+        "target_accuracy": 0.0
+      },
+      "Authorize": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Contradict": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "CreateBelief": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "CreateClaim": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Execute": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "ExpandScope": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Expire": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Invalidate": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Merge": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "NarrowScope": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Observe": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Reevaluate": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "RejectAuthorization": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "RejectEvidence": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Rollback": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Split": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Support": {
+        "case_count": 6,
+        "illegal_selection_count": 6,
+        "legal_selection_rate": 0.0,
+        "opcode_accuracy": 0.0,
+        "target_accuracy": 0.0
+      },
+      "Suspend": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Undercut": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "ValidateObservation": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      },
+      "Verify": {
+        "case_count": 6,
+        "illegal_selection_count": 0,
+        "legal_selection_rate": 1.0,
+        "opcode_accuracy": 1.0,
+        "target_accuracy": 1.0
+      }
+    },
+    "rejected_candidate_count": 138,
+    "selection_error_count": 12,
+    "selection_error_family_count": 4,
+    "selection_errors": [
+      {
+        "case_id": "CETA-V3-ADMITEVIDENCE-F13-V000",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.2032535821199417,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.5281414985656738,
+        "selected_operation": "RejectEvidence",
+        "target_candidate_margin": -1.283597469329834,
+        "target_operation": "AdmitEvidence",
+        "total_loss": 4.795523643493652,
+        "transition_rank_loss": 1.5320641994476318,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/AdmitEvidence/F13",
+        "world_variant_id": "V000"
+      },
+      {
+        "case_id": "CETA-V3-ADMITEVIDENCE-F13-V001",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.2032535821199417,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.5281414985656738,
+        "selected_operation": "RejectEvidence",
+        "target_candidate_margin": -1.283597469329834,
+        "target_operation": "AdmitEvidence",
+        "total_loss": 4.795523643493652,
+        "transition_rank_loss": 1.5320641994476318,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/AdmitEvidence/F13",
+        "world_variant_id": "V001"
+      },
+      {
+        "case_id": "CETA-V3-ADMITEVIDENCE-F13-V002",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.2032535821199417,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.5281414985656738,
+        "selected_operation": "RejectEvidence",
+        "target_candidate_margin": -1.283597469329834,
+        "target_operation": "AdmitEvidence",
+        "total_loss": 4.795523643493652,
+        "transition_rank_loss": 1.5320641994476318,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/AdmitEvidence/F13",
+        "world_variant_id": "V002"
+      },
+      {
+        "case_id": "CETA-V3-ADMITEVIDENCE-F19-V000",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.20315569639205933,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.5284504890441895,
+        "selected_operation": "RejectEvidence",
+        "target_candidate_margin": -1.283992052078247,
+        "target_operation": "AdmitEvidence",
+        "total_loss": 4.796255111694336,
+        "transition_rank_loss": 1.5323245525360107,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/AdmitEvidence/F19",
+        "world_variant_id": "V000"
+      },
+      {
+        "case_id": "CETA-V3-ADMITEVIDENCE-F19-V001",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.20315569639205933,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.5284504890441895,
+        "selected_operation": "RejectEvidence",
+        "target_candidate_margin": -1.283992052078247,
+        "target_operation": "AdmitEvidence",
+        "total_loss": 4.796255111694336,
+        "transition_rank_loss": 1.5323245525360107,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/AdmitEvidence/F19",
+        "world_variant_id": "V001"
+      },
+      {
+        "case_id": "CETA-V3-ADMITEVIDENCE-F19-V002",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.20315569639205933,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.5284504890441895,
+        "selected_operation": "RejectEvidence",
+        "target_candidate_margin": -1.283992052078247,
+        "target_operation": "AdmitEvidence",
+        "total_loss": 4.796255111694336,
+        "transition_rank_loss": 1.5323245525360107,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/AdmitEvidence/F19",
+        "world_variant_id": "V002"
+      },
+      {
+        "case_id": "CETA-V3-SUPPORT-F05-V000",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.2971251904964447,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.6584346294403076,
+        "selected_operation": "Contradict",
+        "target_candidate_margin": -1.447174072265625,
+        "target_operation": "Support",
+        "total_loss": 5.274400234222412,
+        "transition_rank_loss": 1.6594202518463135,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/Support/F05",
+        "world_variant_id": "V000"
+      },
+      {
+        "case_id": "CETA-V3-SUPPORT-F05-V001",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.2971251904964447,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.6584346294403076,
+        "selected_operation": "Contradict",
+        "target_candidate_margin": -1.447174072265625,
+        "target_operation": "Support",
+        "total_loss": 5.274400234222412,
+        "transition_rank_loss": 1.6594202518463135,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/Support/F05",
+        "world_variant_id": "V001"
+      },
+      {
+        "case_id": "CETA-V3-SUPPORT-F05-V002",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.2971251904964447,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.6584346294403076,
+        "selected_operation": "Contradict",
+        "target_candidate_margin": -1.447174072265625,
+        "target_operation": "Support",
+        "total_loss": 5.274400234222412,
+        "transition_rank_loss": 1.6594202518463135,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/Support/F05",
+        "world_variant_id": "V002"
+      },
+      {
+        "case_id": "CETA-V3-SUPPORT-F12-V000",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.2979954183101654,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.6595215797424316,
+        "selected_operation": "Contradict",
+        "target_candidate_margin": -1.448516607284546,
+        "target_operation": "Support",
+        "total_loss": 5.2785234451293945,
+        "transition_rank_loss": 1.6605032682418823,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/Support/F12",
+        "world_variant_id": "V000"
+      },
+      {
+        "case_id": "CETA-V3-SUPPORT-F12-V001",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.2979954183101654,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.6595215797424316,
+        "selected_operation": "Contradict",
+        "target_candidate_margin": -1.448516607284546,
+        "target_operation": "Support",
+        "total_loss": 5.2785234451293945,
+        "transition_rank_loss": 1.6605032682418823,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/Support/F12",
+        "world_variant_id": "V001"
+      },
+      {
+        "case_id": "CETA-V3-SUPPORT-F12-V002",
+        "exact_target_correct": false,
+        "failure_surface_loss": 0.2979954183101654,
+        "opcode_correct": false,
+        "operation_selection_loss": 1.6595215797424316,
+        "selected_operation": "Contradict",
+        "target_candidate_margin": -1.448516607284546,
+        "target_operation": "Support",
+        "total_loss": 5.2785234451293945,
+        "transition_rank_loss": 1.6605032682418823,
+        "vm_disposition": "DENY",
+        "world_family_id": "CETA-V3/Support/F12",
+        "world_variant_id": "V002"
+      }
+    ],
+    "singleton_candidate_case_count": 0,
+    "split": "validation",
+    "target_accuracy": 0.9130434782608695
+  }
+}
