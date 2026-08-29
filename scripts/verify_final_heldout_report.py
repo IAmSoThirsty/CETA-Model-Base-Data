@@ -2,16 +2,15 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
 import sys
-
+from math import isclose
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from history import domain_hash
 from training import file_sha256
-
 
 DEFAULT_REPORT = ROOT / "evidence" / "STRUCTURED_POLICY_H100_SCHEMA_V4_FINAL_HELDOUT.json"
 DEFAULT_CONTINUATION = ROOT / "evidence" / "STRUCTURED_POLICY_H100_SCHEMA_V4_EPOCH_5.json"
@@ -20,6 +19,13 @@ DATA = ROOT / "data" / "ceta_curriculum_v3"
 
 def fail(message: str) -> None:
     raise SystemExit(f"FINAL HELDOUT REPORT VERIFY: FAIL - {message}")
+
+
+def is_exact_rate(value: object) -> bool:
+    try:
+        return isclose(float(value), 1.0, rel_tol=0.0, abs_tol=1e-12)
+    except (TypeError, ValueError):
+        return False
 
 
 def verify_metric_contract(metrics: dict) -> None:
@@ -35,7 +41,7 @@ def verify_metric_contract(metrics: dict) -> None:
     evaluation_hash = metric_body.pop("evaluation_hash", None)
     if evaluation_hash != domain_hash(metric_body, domain="CETA/INDEPENDENT_EVALUATION/v2"):
         fail("held-out evaluation hash mismatch")
-    if any(float(metrics.get(key, -1.0)) != 1.0 for key in (
+    if any(not is_exact_rate(metrics.get(key)) for key in (
         "target_accuracy", "opcode_accuracy", "legal_selection_rate",
     )):
         fail("held-out exact, operation, and legal-selection rates must all equal 1")
@@ -53,19 +59,13 @@ def verify_metric_contract(metrics: dict) -> None:
         fail("held-out transition loss is invalid")
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--report", type=Path, default=DEFAULT_REPORT)
-    parser.add_argument("--continuation", type=Path, default=DEFAULT_CONTINUATION)
-    args = parser.parse_args()
-    report_path = args.report.expanduser().resolve()
-    continuation_path = args.continuation.expanduser().resolve()
-    if not report_path.is_file():
-        fail(f"report missing: {report_path}")
-    if not continuation_path.is_file():
-        fail(f"continuation report missing: {continuation_path}")
+def load_report(path: Path, label: str) -> dict:
+    if not path.is_file():
+        fail(f"{label} missing: {path}")
+    return json.loads(path.read_text(encoding="utf-8"))
 
-    report = json.loads(report_path.read_text(encoding="utf-8"))
+
+def verify_report_identity(report: dict) -> str:
     claimed = report.get("report_hash")
     body = dict(report)
     body.pop("report_hash", None)
@@ -77,8 +77,10 @@ def main() -> None:
         or report.get("status") != "PASS"
     ):
         fail("report schema, type, or status mismatch")
+    return str(claimed)
 
-    continuation = json.loads(continuation_path.read_text(encoding="utf-8"))
+
+def verify_source_continuation(report: dict, continuation: dict, continuation_path: Path) -> None:
     continuation_body = dict(continuation)
     continuation_hash = continuation_body.pop("report_hash", None)
     if continuation_hash != domain_hash(continuation_body, domain="CETA/EPOCH_CONTINUATION_REPORT/v2"):
@@ -93,6 +95,8 @@ def main() -> None:
     if continuation.get("heldout_evaluation", {}).get("status") != "NOT_RUN":
         fail("source continuation used held-out evaluation iteratively")
 
+
+def verify_checkpoint(report: dict, continuation: dict) -> dict:
     checkpoint = report.get("checkpoint", {})
     source_checkpoint = continuation.get("final_checkpoint", {})
     source_cursor = source_checkpoint.get("cursor", {})
@@ -104,7 +108,10 @@ def main() -> None:
         fail("held-out checkpoint epoch mismatch")
     if checkpoint.get("global_step") != source_cursor.get("global_step") or checkpoint.get("global_step") != 5520:
         fail("held-out checkpoint optimizer-step mismatch")
+    return checkpoint
 
+
+def verify_execution_boundary(report: dict) -> None:
     attestation = report.get("device_attestation", {})
     if (
         attestation.get("device") != "cuda:0"
@@ -128,6 +135,8 @@ def main() -> None:
     ):
         fail("held-out claim boundary mismatch")
 
+
+def verify_heldout_bindings(report: dict, checkpoint: dict) -> dict:
     heldout = report.get("heldout", {})
     verify_metric_contract(heldout)
     manifest = json.loads((DATA / "manifest.json").read_text(encoding="utf-8"))
@@ -141,7 +150,10 @@ def main() -> None:
         fail("held-out curriculum splits binding mismatch")
     if heldout.get("checkpoint_sha256") != checkpoint.get("sha256"):
         fail("held-out metrics are not checkpoint-bound")
+    return heldout
 
+
+def verify_operation_metrics(heldout: dict) -> None:
     canonical = set(json.loads((ROOT / "registry" / "ceta_operations.json").read_text(encoding="utf-8"))["operations"])
     operation_metrics = heldout.get("operation_metrics", {})
     if set(operation_metrics) != canonical:
@@ -149,12 +161,29 @@ def main() -> None:
     for operation, metrics in operation_metrics.items():
         if int(metrics.get("case_count", 0)) < 1:
             fail(f"held-out operation has no cases: {operation}")
-        if any(float(metrics.get(key, -1.0)) != 1.0 for key in (
+        if any(not is_exact_rate(metrics.get(key)) for key in (
             "target_accuracy", "opcode_accuracy", "legal_selection_rate",
         )):
             fail(f"held-out operation metric is not perfect: {operation}")
         if int(metrics.get("illegal_selection_count", -1)) != 0:
             fail(f"held-out operation selected an illegal transition: {operation}")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--report", type=Path, default=DEFAULT_REPORT)
+    parser.add_argument("--continuation", type=Path, default=DEFAULT_CONTINUATION)
+    args = parser.parse_args()
+    report_path = args.report.expanduser().resolve()
+    continuation_path = args.continuation.expanduser().resolve()
+    report = load_report(report_path, "report")
+    continuation = load_report(continuation_path, "continuation report")
+    claimed = verify_report_identity(report)
+    verify_source_continuation(report, continuation, continuation_path)
+    checkpoint = verify_checkpoint(report, continuation)
+    verify_execution_boundary(report)
+    heldout = verify_heldout_bindings(report, checkpoint)
+    verify_operation_metrics(heldout)
 
     print("FINAL HELDOUT REPORT VERIFY: PASS")
     print(

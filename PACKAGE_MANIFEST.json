@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 207,
-  "content_root": "sha256:2a9c7aba7112cdff20b5d76445728af5e5d82e91f81b07a141e809deb38d5364",
+  "content_root": "sha256:b06a884c76401d5dfb0b45db81274a9ec89b5c93aa70c593fa85fa247c7836f0",
   "files": [
     {
       "path": ".gitattributes",
@@ -617,8 +617,8 @@
     },
     {
       "path": "scripts/verify_final_heldout_report.py",
-      "size": 8072,
-      "sha256": "e133743d55d3a389326d3ef957c48c56f8b7b01b5a6aa75e6aae4f11f9ed57e1"
+      "size": 9007,
+      "sha256": "1ef80c977dd9a5382ac245955964abcbde4e28d971c64a2a1f2efbb41c10626a"
     },
     {
       "path": "scripts/verify_language_epoch_report.py",
