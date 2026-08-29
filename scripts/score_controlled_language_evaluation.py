@@ -119,8 +119,8 @@ def main() -> None:
     answers = {str(item["scenario_id"]): item for item in jsonl(answer_path)}
     if set(predictions) != set(answers) or len(predictions) != manifest.get("case_count"):
         raise SystemExit("CONTROLLED LANGUAGE EVALUATION: FAIL - prediction/answer identity mismatch")
-    excluded = set(str(item) for item in policy["clean_case_ids_excluded"])
-    if excluded != set(str(item) for item in manifest.get("known_exposed_case_ids", [])):
+    excluded = {str(item) for item in policy["clean_case_ids_excluded"]}
+    if excluded != {str(item) for item in manifest.get("known_exposed_case_ids", [])}:
         raise SystemExit("CONTROLLED LANGUAGE EVALUATION: FAIL - exposure exclusion mismatch")
 
     clean_scenario_ids = sorted(set(predictions) - excluded)

@@ -15,7 +15,8 @@ class AuthorityLedgerTests(unittest.TestCase):
 
     def test_empty_scope_is_rejected_at_issue_boundary(self):
         p,c=self.make(subject_scope='')
-        with self.assertRaises(AuthorityBindingError): AuthorityLedger().issue(p,consequence=c,now_ms=1)
+        ledger=AuthorityLedger()
+        with self.assertRaises(AuthorityBindingError): ledger.issue(p,consequence=c,now_ms=1)
 
     def test_exact_consumer_key_is_required(self):
         p,c=self.make(); l=AuthorityLedger(); l.issue(p,consequence=c,now_ms=1)

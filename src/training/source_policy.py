@@ -156,7 +156,7 @@ def deterministic_partition(
         raise TrainingSourceViolation("train_percent must be between 1 and 98")
     if not 1 <= validation_percent <= 98 or train_percent + validation_percent >= 100:
         raise TrainingSourceViolation("validation percentage leaves no heldout partition")
-    unique = sorted(set(str(x) for x in case_ids))
+    unique = sorted({str(x) for x in case_ids})
     if not unique:
         raise TrainingSourceViolation("cannot partition an empty case set")
     train: list[str] = []
@@ -231,7 +231,9 @@ def partition_world_families(cases: Iterable[object]) -> WorldDatasetPartition:
             )
         ordered=sorted(
             families,
-            key=lambda family: sha256(("CETA/WORLD_FAMILY_SPLIT/v1\n"+operation+"\n"+family).encode("utf-8")).digest(),
+            key=lambda family, operation=operation: sha256(
+                ("CETA/WORLD_FAMILY_SPLIT/v1\n" + operation + "\n" + family).encode("utf-8")
+            ).digest(),
         )
         n=len(ordered)
         n_val=max(1,n//10)

@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 207,
-  "content_root": "sha256:b06a884c76401d5dfb0b45db81274a9ec89b5c93aa70c593fa85fa247c7836f0",
+  "content_root": "sha256:1c10131cfa8e5e37ccdc93a73dad3ff358789ef8253e901882faeddcd57dd2c0",
   "files": [
     {
       "path": ".gitattributes",
@@ -497,8 +497,8 @@
     },
     {
       "path": "scripts/build_release.py",
-      "size": 3109,
-      "sha256": "d13d0c19a633b13c70bdecc9c7a91638710ffd22178765cd491f4f6fc5008dae"
+      "size": 3103,
+      "sha256": "fc21bf85410cfe70d88dbbd98e2e3da9ee82a2842db845892995e20e789fe034"
     },
     {
       "path": "scripts/build_release_zip.py",
@@ -552,8 +552,8 @@
     },
     {
       "path": "scripts/score_controlled_language_evaluation.py",
-      "size": 10839,
-      "sha256": "04c8966d412fdb83235990bbacde59aef435098a12a9892d13ec571efe2c0af8"
+      "size": 10833,
+      "sha256": "d5659c3cab2195ebc698d3596ba12ebf22e2181e48c7d29fa8b543f885eac1eb"
     },
     {
       "path": "scripts/train_language_adapter.py",
@@ -662,8 +662,8 @@
     },
     {
       "path": "src/authority/ledger.py",
-      "size": 18244,
-      "sha256": "39baade1b5689c2fd2b1b2eb497fc77e8977d00a65bb071380e4d6c56bd007de"
+      "size": 18136,
+      "sha256": "febca208c929cb8c9813812670247c42d6d54e0a367c001032e8bb88c7fe3605"
     },
     {
       "path": "src/authority/model.py",
@@ -727,8 +727,8 @@
     },
     {
       "path": "src/formal_verification/checks.py",
-      "size": 1701,
-      "sha256": "6665f2fd21b6e4c9870dfe9d1caebec95ce1a0d66b91398ede614de857f3fc99"
+      "size": 1697,
+      "sha256": "8d42922fa4570d5f5f7a5244561edc43713a90696defa9b1185c7231e5059c9a"
     },
     {
       "path": "src/history/__init__.py",
@@ -862,8 +862,8 @@
     },
     {
       "path": "src/training/dataset.py",
-      "size": 5453,
-      "sha256": "8fec9eeb898873890756ee82674e0d06ba47539f1dfec90e8fcec3c444aa5041"
+      "size": 5447,
+      "sha256": "d6ce764d91cd9c4e13e22900373ac82737e1dc2d460b3778a76ae825fd12f412"
     },
     {
       "path": "src/training/evaluator.py",
@@ -877,8 +877,8 @@
     },
     {
       "path": "src/training/governed.py",
-      "size": 57779,
-      "sha256": "8c9dc899809df00cfe0d2f791c819a5852885385879945e7596fc7909704d8fe"
+      "size": 57864,
+      "sha256": "fedddec8dfeb1aadd1ddf0255ffde50d581f3fd16d8556aaa12fa75a220239da"
     },
     {
       "path": "src/training/language_adapter.py",
@@ -892,18 +892,18 @@
     },
     {
       "path": "src/training/source_policy.py",
-      "size": 10824,
-      "sha256": "57ce237e70cc2b2ec0bef0c20bd12c14e7b053ec7becee174680f0dab4d9ddab"
+      "size": 10878,
+      "sha256": "2f393e75e42d8465032ef50062512b843847ba432b49903d2ace42e998d4812b"
     },
     {
       "path": "src/training/worlds.py",
-      "size": 26847,
-      "sha256": "6464d93b95e6ae7e2c9a8bddc009af663818355dafccd73b1ed0d84ec43b1cb9"
+      "size": 26827,
+      "sha256": "f803b26d4adbb665f363f9d9f63c70630a48f94aa84591a174b238909bf597b5"
     },
     {
       "path": "src/training/worlds_v3.py",
-      "size": 33901,
-      "sha256": "25eb0bd820bbb2e1189cf757420f9f1ce2aca05fcdf72adb730191cad524782b"
+      "size": 33878,
+      "sha256": "e05dabf1294aec75f891557429078746287e3afb7cc027fe352b92b771f16f65"
     },
     {
       "path": "src/transition_policy/__init__.py",
@@ -917,8 +917,8 @@
     },
     {
       "path": "src/transition_policy/encoder.py",
-      "size": 14054,
-      "sha256": "4014675c093a9506274c4d02f9f1792d4b56d66ec40cf2ca03ae50e13cb60c37"
+      "size": 14067,
+      "sha256": "109a776388f861a59b6f087d510b90a4d212f9f01fe5a19b6eb824530b25acdd"
     },
     {
       "path": "src/transition_policy/interface.py",
@@ -927,8 +927,8 @@
     },
     {
       "path": "src/transition_policy/loss.py",
-      "size": 5478,
-      "sha256": "851a8bc25a3c7a9abe2d14aef218287360710a21519b2d23cf181a26a4e275c6"
+      "size": 5474,
+      "sha256": "ef13ce0a3802e4c361bf4fa6f8e22f4a70bad59eeaf5f8545fb1e414af2c7639"
     },
     {
       "path": "src/transition_policy/neural.py",
@@ -937,8 +937,8 @@
     },
     {
       "path": "src/transition_policy/schema.py",
-      "size": 2725,
-      "sha256": "51ed50e98f36d4dd1b5c3532ecb735ec2b700943c519018141d502039add76a8"
+      "size": 2754,
+      "sha256": "20f808c0217cfccaa4df9fbf3d4b3ea96d2c0e81ae86938aecfc5f10f8adb16d"
     },
     {
       "path": "tests/test_architecture_contracts.py",
@@ -947,8 +947,8 @@
     },
     {
       "path": "tests/test_authority_ledger.py",
-      "size": 6807,
-      "sha256": "7f32eaf9a6d235eb612512f4a0a38b76eba2101b969f300cffea535073d619e7"
+      "size": 6829,
+      "sha256": "5f4212c3f3e2e2a2f824d13053b1171cfc695fdf6388adc4ce7f419988935dca"
     },
     {
       "path": "tests/test_ceta_operation_algebra.py",
@@ -972,18 +972,18 @@
     },
     {
       "path": "tests/test_effect_boundary.py",
-      "size": 11132,
-      "sha256": "d3252708c386af66684a85995d23fdf51a915cc756db398bef7ce8b9cd1d516c"
+      "size": 11167,
+      "sha256": "5b31cbf79a36801ed5475478ddb3927dd7a98063552f99dcae336a563a2fd474"
     },
     {
       "path": "tests/test_epoch_continuation.py",
-      "size": 10256,
-      "sha256": "237fdf152c5f84ff65962ccd7b05fe8caf29af47995126b566de542ba7396b61"
+      "size": 10259,
+      "sha256": "0309e7512b7ce81a9610b006812b286941fe8f8eb658dd85b52a3c7adde8892a"
     },
     {
       "path": "tests/test_governed_training.py",
-      "size": 19607,
-      "sha256": "30ccba95743070febff3fa5ecf478e7024efc0cedf435b1f6c4a444d4bd0b99f"
+      "size": 19781,
+      "sha256": "e2dba32b64457c7f104bcfe17f26998c39255e00ec43fc24d00844bfc09577af"
     },
     {
       "path": "tests/test_h100_evidence.py",
@@ -992,13 +992,13 @@
     },
     {
       "path": "tests/test_identity_authority_trust.py",
-      "size": 6338,
-      "sha256": "54c992c5778acb98a18ceaf19b1dd493585b3fa5c8354d1328c6b0bff642a5fa"
+      "size": 6382,
+      "sha256": "745b8fe0292318cb4da3d1594c7f0a9acb96cab864b106198ce65564dec409db"
     },
     {
       "path": "tests/test_language_adapter.py",
-      "size": 15747,
-      "sha256": "b1ec48be2092e232e7211fc1378518d373f6e08bdfb2df0fe44a2ff314f4a727"
+      "size": 15754,
+      "sha256": "282ed3010fe8b8d30cfa27b1b8c790c227bc485028117f45e711a0ca8c714ee3"
     },
     {
       "path": "tests/test_memory_projection.py",
@@ -1022,13 +1022,13 @@
     },
     {
       "path": "tests/test_supplied_architecture_data.py",
-      "size": 9527,
-      "sha256": "a5e9c55ea148026d903460112137c86f3ed1929ec8b3f494e0c20befc5d772ac"
+      "size": 9542,
+      "sha256": "1427c4b00925541ebd4a4c4dfc28f2c6e226e8d306a5faa997edb9bc110508ff"
     },
     {
       "path": "tests/test_transition_history.py",
-      "size": 10002,
-      "sha256": "e8b5ffee1d24eefde027bbf797bee4cabf54356f7f1cb2949808846d53493862"
+      "size": 10046,
+      "sha256": "de8d9c52309db00019f33323b1c8bf2e422bcdd1ecb2cf5861cf18ac5e0a53b3"
     },
     {
       "path": "tests/test_transition_training.py",

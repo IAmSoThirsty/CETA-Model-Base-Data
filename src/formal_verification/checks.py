@@ -19,7 +19,7 @@ def verify_transition_chain(entries: Iterable[LedgerEntry]) -> None:
     for index,entry in enumerate(entries,1):
         if entry.sequence != index:
             raise FormalInvariantViolation('transition sequence continuity violated')
-        if not entry.proof.get('vm_decision_hash') == entry.vm_decision_hash:
+        if entry.proof.get('vm_decision_hash') != entry.vm_decision_hash:
             raise FormalInvariantViolation('VM proof binding violated')
         if entry.verification.get('transition_id') != entry.transition_id:
             raise FormalInvariantViolation('verification transition binding violated')

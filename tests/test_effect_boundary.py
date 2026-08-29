@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey  # noqa: E402
-from authority import AuthorityLedger, Permit, PermitReuseError, PermitStatus, canonical_hash  # noqa: E402
+from authority import AuthorityBindingError, AuthorityLedger, Permit, PermitReuseError, PermitStatus, canonical_hash  # noqa: E402
 from effects import (  # noqa: E402
     AdapterAttempt,
     EffectBindingError,
@@ -131,7 +131,7 @@ class EffectBoundaryTests(unittest.TestCase):
     def test_gateway_cannot_use_permit_bound_to_other_key(self):
         auth = AuthorityLedger(); _, consequence = issue(auth, key_id="other-key")
         gateway = self.gateway(auth, {"fake": FakeAdapter()})
-        with self.assertRaises(Exception):
+        with self.assertRaises(AuthorityBindingError):
             gateway.execute("P1", consequence=consequence, now_ms=2)
         self.assertFalse(auth.consumed("N1"))
 

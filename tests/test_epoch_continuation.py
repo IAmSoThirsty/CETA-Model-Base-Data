@@ -23,7 +23,8 @@ from training import (
 
 SOURCE_DATA=ROOT/'data/ceta_curriculum_v2'
 RUNNER_SPEC=importlib.util.spec_from_file_location('ceta_epoch_runner',ROOT/'scripts/run_epoch_readiness.py')
-assert RUNNER_SPEC is not None and RUNNER_SPEC.loader is not None
+assert RUNNER_SPEC is not None
+assert RUNNER_SPEC.loader is not None
 EPOCH_RUNNER=importlib.util.module_from_spec(RUNNER_SPEC)
 RUNNER_SPEC.loader.exec_module(EPOCH_RUNNER)
 

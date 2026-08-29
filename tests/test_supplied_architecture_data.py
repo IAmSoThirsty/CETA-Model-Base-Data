@@ -15,24 +15,29 @@ PACKAGE_BUILDER_PATH = ROOT / "scripts" / "build_package_manifest.py"
 PACKAGE_SUMS_PATH = ROOT / "scripts" / "build_sha256sums.py"
 PACKAGE_VERIFY_PATH = ROOT / "scripts" / "verify_package.py"
 SPEC = importlib.util.spec_from_file_location("ceta_source_policy_for_test", SOURCE_POLICY_PATH)
-assert SPEC is not None and SPEC.loader is not None
+assert SPEC is not None
+assert SPEC.loader is not None
 SOURCE_POLICY = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = SOURCE_POLICY
 SPEC.loader.exec_module(SOURCE_POLICY)
 INGEST_SPEC = importlib.util.spec_from_file_location("ceta_ingest_for_test", INGEST_PATH)
-assert INGEST_SPEC is not None and INGEST_SPEC.loader is not None
+assert INGEST_SPEC is not None
+assert INGEST_SPEC.loader is not None
 INGEST = importlib.util.module_from_spec(INGEST_SPEC)
 INGEST_SPEC.loader.exec_module(INGEST)
 PACKAGE_BUILDER_SPEC = importlib.util.spec_from_file_location("ceta_package_builder_for_test", PACKAGE_BUILDER_PATH)
-assert PACKAGE_BUILDER_SPEC is not None and PACKAGE_BUILDER_SPEC.loader is not None
+assert PACKAGE_BUILDER_SPEC is not None
+assert PACKAGE_BUILDER_SPEC.loader is not None
 PACKAGE_BUILDER = importlib.util.module_from_spec(PACKAGE_BUILDER_SPEC)
 PACKAGE_BUILDER_SPEC.loader.exec_module(PACKAGE_BUILDER)
 PACKAGE_SUMS_SPEC = importlib.util.spec_from_file_location("ceta_package_sums_for_test", PACKAGE_SUMS_PATH)
-assert PACKAGE_SUMS_SPEC is not None and PACKAGE_SUMS_SPEC.loader is not None
+assert PACKAGE_SUMS_SPEC is not None
+assert PACKAGE_SUMS_SPEC.loader is not None
 PACKAGE_SUMS = importlib.util.module_from_spec(PACKAGE_SUMS_SPEC)
 PACKAGE_SUMS_SPEC.loader.exec_module(PACKAGE_SUMS)
 PACKAGE_VERIFY_SPEC = importlib.util.spec_from_file_location("ceta_package_verify_for_test", PACKAGE_VERIFY_PATH)
-assert PACKAGE_VERIFY_SPEC is not None and PACKAGE_VERIFY_SPEC.loader is not None
+assert PACKAGE_VERIFY_SPEC is not None
+assert PACKAGE_VERIFY_SPEC.loader is not None
 PACKAGE_VERIFY = importlib.util.module_from_spec(PACKAGE_VERIFY_SPEC)
 PACKAGE_VERIFY_SPEC.loader.exec_module(PACKAGE_VERIFY)
 TrainingSourceViolation = SOURCE_POLICY.TrainingSourceViolation

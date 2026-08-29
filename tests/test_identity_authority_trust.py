@@ -80,8 +80,9 @@ class IdentityAuthorityTrustTests(unittest.TestCase):
             r.verify("human-1", assertion=assertion, now_epoch_ms=20)
             self.assertTrue(IdentityRegistry(path, trusted_verifier=verifier).verify_integrity())
             wrong = Ed25519PrivateKey.generate()
+            wrong_verifier = TrustedIdentityVerifier({"idv": ("id-key", wrong.public_key())})
             with self.assertRaises(IdentityRegistryError):
-                IdentityRegistry(path, trusted_verifier=TrustedIdentityVerifier({"idv": ("id-key", wrong.public_key())}))
+                IdentityRegistry(path, trusted_verifier=wrong_verifier)
 
     def test_authority_assertion_is_bound_to_state_operation_and_time(self):
         key = Ed25519PrivateKey.generate()

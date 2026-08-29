@@ -13,7 +13,7 @@ ROOT=Path(__file__).resolve().parents[1]
 
 def remove_transient() -> None:
     for name in ("__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache"):
-        for path in list(ROOT.rglob(name)):
+        for path in ROOT.rglob(name):
             if path.is_dir(): shutil.rmtree(path,ignore_errors=True)
     for path in list(ROOT.rglob("*.pyc"))+list(ROOT.rglob("*.pyo")):
         path.unlink(missing_ok=True)

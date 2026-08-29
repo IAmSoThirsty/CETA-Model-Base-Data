@@ -56,7 +56,7 @@ def failure_labels(case: Any, output: PolicyOutput) -> torch.Tensor:
     vm=ConstitutionalVM()
     rows=[]
     for proposal in output.candidate_proposals:
-        row={name:0.0 for name in FAILURE_HEADS}
+        row=dict.fromkeys(FAILURE_HEADS,0.0)
         proposal_json=_proposal_json(proposal)
         if proposal_json != target_json:
             row['missing_transition']=1.0

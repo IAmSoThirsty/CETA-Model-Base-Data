@@ -10,7 +10,7 @@ import torch
 from ceta import TransitionProposal
 from history import EpistemicObject, ProjectionSnapshot, domain_hash
 from .schema import (
-    EPISTEMIC_STATUS_TO_INDEX, ENUM_VALUES, OBJECT_TYPE_TO_INDEX, OPERAND_KIND_TO_INDEX,
+    EPISTEMIC_STATUS_TO_INDEX, ENUM_VALUES, NONE_TOKEN, OBJECT_TYPE_TO_INDEX, OPERAND_KIND_TO_INDEX,
     OPERAND_ROLE_TO_INDEX, STATUS_TO_INDEX, VERIFICATION_TO_INDEX,
 )
 
@@ -72,9 +72,9 @@ class StructuredStateEncoder:
             scope=content.get('scope',{}) if isinstance(content.get('scope',{}),Mapping) else {}
             scope_card=sum(len(v) if isinstance(v,list) else 1 for v in scope.values())
             types.append(OBJECT_TYPE_TO_INDEX.get(obj.object_type,0))
-            statuses.append(STATUS_TO_INDEX.get(str(content.get('status','<NONE>')),0))
-            verifications.append(VERIFICATION_TO_INDEX.get(str(content.get('verification_status','<NONE>')),0))
-            epistemics.append(EPISTEMIC_STATUS_TO_INDEX.get(str(content.get('epistemic_status','<NONE>')),0))
+            statuses.append(STATUS_TO_INDEX.get(str(content.get('status',NONE_TOKEN)),0))
+            verifications.append(VERIFICATION_TO_INDEX.get(str(content.get('verification_status',NONE_TOKEN)),0))
+            epistemics.append(EPISTEMIC_STATUS_TO_INDEX.get(str(content.get('epistemic_status',NONE_TOKEN)),0))
             numeric.append([
                 float(len(scope)),float(scope_card),float(len(content.get('support_refs',[]) or [])),
                 float(len(content.get('contradiction_refs',[]) or [])),float(len(content.get('undercut_refs',[]) or [])),
@@ -268,7 +268,7 @@ def world_from_training_case(case: Any) -> WorldView:
     snapshot=ProjectionSnapshot(
         state_ref=data['state_ref'],
         active_objects=tuple(EpistemicObject.from_dict(x) for x in data['active_objects']),
-        supersessions=tuple(),
+        supersessions=(),
     )
     if data.get('supersessions'):
         from history import Supersession

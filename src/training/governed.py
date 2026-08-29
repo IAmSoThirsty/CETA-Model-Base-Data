@@ -7,7 +7,7 @@ import json
 import os
 from pathlib import Path
 import re
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping, Sequence, cast
 
 import torch
 
@@ -19,6 +19,9 @@ from .model import TransitionTrainingCase
 
 class TrainingBindingError(RuntimeError):
     pass
+
+
+MODEL_STATE_DOMAIN = 'CETA/MODEL_STATE/v1'
 
 
 @dataclass(frozen=True)
@@ -184,7 +187,7 @@ def promotion_policy_from_risk_material(
     for record in records:
         operation=str(record.get('Operation',''))
         required=str(record.get('Required accuracy',''))
-        match=re.search(r'>=\s*([0-9]+(?:\.[0-9]+)?)%',required)
+        match=re.search(r'>=\s*(\d+(?:\.\d+)?)%',required)
         if not operation or match is None:
             raise TrainingBindingError(f'operation risk material has no parseable accuracy: {operation or "<missing>"}')
         if operation in accuracy:
@@ -257,7 +260,7 @@ class CheckpointStore:
         self.root=Path(root); self.root.mkdir(parents=True,exist_ok=True)
 
     def save(self,*,model: NeuralTransitionPolicy,optimizer: torch.optim.Optimizer,cursor: TrainingCursor,config: TrainingConfig) -> CheckpointRef:
-        model_hash=hash_torch_state(model.state_dict(),domain='CETA/MODEL_STATE/v1')
+        model_hash=hash_torch_state(model.state_dict(),domain=MODEL_STATE_DOMAIN)
         optimizer_hash=hash_torch_state(optimizer.state_dict(),domain='CETA/OPTIMIZER_STATE/v1')
         payload={
             'schema_version':1,'model_class':'NeuralTransitionPolicy','model_hidden_dim':model.hidden_dim,
@@ -310,7 +313,7 @@ class CheckpointStore:
         model.load_state_dict(payload["model_state"])
         optimizer=torch.optim.AdamW(model.parameters(),lr=expected_config.learning_rate,weight_decay=expected_config.weight_decay)
         optimizer.load_state_dict(payload["optimizer_state"])
-        model_hash=hash_torch_state(model.state_dict(),domain="CETA/MODEL_STATE/v1")
+        model_hash=hash_torch_state(model.state_dict(),domain=MODEL_STATE_DOMAIN)
         optimizer_hash=hash_torch_state(optimizer.state_dict(),domain="CETA/OPTIMIZER_STATE/v1")
         if model_hash!=payload.get("model_hash") or optimizer_hash!=payload.get("optimizer_hash"):
             raise TrainingBindingError("checkpoint internal state hash mismatch")
@@ -396,7 +399,7 @@ class GovernedEpochTrainer:
         while processed < max_cases:
             order=self._epoch_order(self.cursor.epoch_index)
             if self.cursor.next_case_offset >= len(order):
-                self.ledger.append('EPOCH_COMPLETED',{'run_id':self.run_id,'epoch_index':self.cursor.epoch_index,'global_step':self.cursor.global_step,'model_hash':hash_torch_state(self.model.state_dict(),domain='CETA/MODEL_STATE/v1')})
+                self.ledger.append('EPOCH_COMPLETED',{'run_id':self.run_id,'epoch_index':self.cursor.epoch_index,'global_step':self.cursor.global_step,'model_hash':hash_torch_state(self.model.state_dict(),domain=MODEL_STATE_DOMAIN)})
                 self.cursor=self._cursor(epoch_index=self.cursor.epoch_index+1,next_case_offset=0,global_step=self.cursor.global_step)
                 order=self._epoch_order(self.cursor.epoch_index)
             case=self.cases[order[self.cursor.next_case_offset]]
@@ -407,7 +410,7 @@ class GovernedEpochTrainer:
         # training call to notice that its final case was already consumed.
         final_order=self._epoch_order(self.cursor.epoch_index)
         if self.cursor.next_case_offset >= len(final_order):
-            self.ledger.append('EPOCH_COMPLETED',{'run_id':self.run_id,'epoch_index':self.cursor.epoch_index,'global_step':self.cursor.global_step,'model_hash':hash_torch_state(self.model.state_dict(),domain='CETA/MODEL_STATE/v1')})
+            self.ledger.append('EPOCH_COMPLETED',{'run_id':self.run_id,'epoch_index':self.cursor.epoch_index,'global_step':self.cursor.global_step,'model_hash':hash_torch_state(self.model.state_dict(),domain=MODEL_STATE_DOMAIN)})
             self.cursor=self._cursor(epoch_index=self.cursor.epoch_index+1,next_case_offset=0,global_step=self.cursor.global_step)
         self.checkpoint=self.checkpoints.save(model=self.model,optimizer=self.optimizer,cursor=self.cursor,config=self.config)
         self.ledger.append('CHECKPOINT_SAVED',{'run_id':self.run_id,'checkpoint':self.checkpoint.to_dict()})
@@ -569,14 +572,14 @@ class GovernedEpochTrainer:
 
     def _train_one(self,case: TransitionTrainingCase) -> None:
         self.model.train(); self.optimizer.zero_grad(set_to_none=True)
-        before=hash_torch_state(self.model.state_dict(),domain='CETA/MODEL_STATE/v1')
+        before=hash_torch_state(self.model.state_dict(),domain=MODEL_STATE_DOMAIN)
         world=world_from_training_case(case)
         output=self.model.forward_world(world,extra_candidates=candidate_sequence(case))
         losses=compute_ceta_loss(case,output)
         losses.total.backward()
         grad_norm=float(torch.nn.utils.clip_grad_norm_(self.model.parameters(),self.config.gradient_clip_norm).item())
         self.optimizer.step()
-        after=hash_torch_state(self.model.state_dict(),domain='CETA/MODEL_STATE/v1')
+        after=hash_torch_state(self.model.state_dict(),domain=MODEL_STATE_DOMAIN)
         optimizer_hash=hash_torch_state(self.optimizer.state_dict(),domain='CETA/OPTIMIZER_STATE/v1')
         receipt={
             'run_id':self.run_id,'epoch_index':self.cursor.epoch_index,'case_offset':self.cursor.next_case_offset,
@@ -625,7 +628,7 @@ class IndependentCheckpointEvaluator:
             raise TrainingBindingError('evaluation dataset is not bound to the checkpoint curriculum')
         model=NeuralTransitionPolicy(hidden_dim=int(payload['model_hidden_dim']))
         model.load_state_dict(payload['model_state'])
-        if hash_torch_state(model.state_dict(),domain='CETA/MODEL_STATE/v1')!=payload.get('model_hash'):
+        if hash_torch_state(model.state_dict(),domain=MODEL_STATE_DOMAIN)!=payload.get('model_hash'):
             raise TrainingBindingError('evaluation checkpoint model hash mismatch')
         model.to(self.device); model.eval()
         cases=load_cases(dataset_path)
@@ -701,7 +704,10 @@ class IndependentCheckpointEvaluator:
             'selection_errors':tuple(selection_errors),
         }
         metrics=EvaluationMetrics(**body,evaluation_hash='')
-        return replace(metrics,evaluation_hash=domain_hash(metrics.body(),domain='CETA/INDEPENDENT_EVALUATION/v2'))
+        return cast(EvaluationMetrics, replace(
+            metrics,
+            evaluation_hash=domain_hash(metrics.body(),domain='CETA/INDEPENDENT_EVALUATION/v2'),
+        ))
 
 
 class CheckpointPromotionRegistry:

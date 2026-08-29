@@ -111,7 +111,7 @@ def _lineage_id(path: str, kind: str, record: Any, source_record_id: str) -> str
     if not lineage_key:
         lineage_key = f"record:{source_record_id}"
     return domain_hash(
-        {"path_class": "HUMAN_DERIVATIVE" if kind.startswith("section_") or kind.startswith("role_") else path,
+        {"path_class": "HUMAN_DERIVATIVE" if kind.startswith(("section_", "role_")) else path,
          "lineage_key": lineage_key},
         domain="CETA/SOURCE_LINEAGE/v3",
     )
@@ -418,7 +418,7 @@ def build_source_family_assignments(
             raise ValueError(f"source family has no public source records: {operation}/F{family_index:02d}")
         risk = risk_by_operation[operation]
         required = str(risk.get("Required accuracy", ""))
-        match = re.search(r">=\s*([0-9]+(?:\.[0-9]+)?)%", required)
+        match = re.search(r">=\s*(\d+(?:\.\d+)?)%", required)
         if match is None:
             raise ValueError(f"operation risk row has no parseable accuracy: {operation}")
         accuracy = float(match.group(1)) / 100.0

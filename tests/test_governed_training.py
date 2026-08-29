@@ -200,8 +200,10 @@ class GovernedTrainingTests(unittest.TestCase):
             cp=trainer.train_cases(1)
             body=self._metrics_body(cp,split='heldout',target_accuracy=1.0,opcode_accuracy=1.0,legal_selection_rate=1.0,mean_transition_loss=0.0,rejected_candidate_count=0,dataset_sha256=file_sha256(DATA/'heldout.jsonl'))
             metrics=EvaluationMetrics(**body,evaluation_hash=domain_hash(body,domain='CETA/INDEPENDENT_EVALUATION/v1'))
+            registry=CheckpointPromotionRegistry(td/'registry',trainer.ledger)
+            policy=PromotionPolicy(0,0,0,99)
             with self.assertRaises(TrainingBindingError):
-                CheckpointPromotionRegistry(td/'registry',trainer.ledger).decide(cp,metrics,PromotionPolicy(0,0,0,99))
+                registry.decide(cp,metrics,policy)
 
     def test_passing_checkpoint_cannot_replace_better_trusted_head(self):
         with tempfile.TemporaryDirectory() as td:
@@ -250,8 +252,9 @@ class GovernedTrainingTests(unittest.TestCase):
             base=Path(td)/'curriculum'
             shutil.copytree(DATA,base)
             shutil.copyfile(base/'heldout.jsonl',base/'train.jsonl')
+            run_root=Path(td)/'run'
             with self.assertRaises(TrainingBindingError):
-                GovernedEpochTrainer(run_root=Path(td)/'run',dataset_path=base/'train.jsonl',config=self.cfg,run_id='R')
+                GovernedEpochTrainer(run_root=run_root,dataset_path=base/'train.jsonl',config=self.cfg,run_id='R')
 
     def test_split_manifest_tampering_blocks_training(self):
         with tempfile.TemporaryDirectory() as td:
@@ -271,8 +274,9 @@ class GovernedTrainingTests(unittest.TestCase):
             cp=trainer.train_cases(1)
             sidecar=Path(cp.path).with_suffix(Path(cp.path).suffix+'.json')
             meta=json.loads(sidecar.read_text()); meta['sha256']='0'*64; sidecar.write_text(json.dumps(meta))
+            evaluator=IndependentCheckpointEvaluator(config=self.cfg)
             with self.assertRaises(TrainingBindingError):
-                IndependentCheckpointEvaluator(config=self.cfg).evaluate(cp.path,DATA/'validation.jsonl',split='validation')
+                evaluator.evaluate(cp.path,DATA/'validation.jsonl',split='validation')
 
     def test_promotion_rejects_cross_curriculum_metrics(self):
         with tempfile.TemporaryDirectory() as td:
@@ -281,8 +285,10 @@ class GovernedTrainingTests(unittest.TestCase):
             cp=trainer.train_cases(1)
             body=self._metrics_body(cp,curriculum_manifest_sha256='f'*64)
             metrics=EvaluationMetrics(**body,evaluation_hash=domain_hash(body,domain='CETA/INDEPENDENT_EVALUATION/v1'))
+            registry=CheckpointPromotionRegistry(td/'registry',trainer.ledger)
+            policy=PromotionPolicy(0,0,0,99)
             with self.assertRaises(TrainingBindingError):
-                CheckpointPromotionRegistry(td/'registry',trainer.ledger).decide(cp,metrics,PromotionPolicy(0,0,0,99))
+                registry.decide(cp,metrics,policy)
 
 
     def test_crash_tail_is_orphaned_before_deterministic_replay(self):

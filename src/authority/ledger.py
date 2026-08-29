@@ -224,7 +224,7 @@ class AuthorityLedger:
                 raise AuthorityBindingError('authority event previous hash mismatch')
             if _event_hash(event.body()) != event.event_hash:
                 raise AuthorityBindingError('authority event hash mismatch')
-            replay._apply_event(event,validate_replay=True)
+            replay._apply_event(event)
             previous=event.event_hash
             expected_sequence += 1
         if _state_fingerprint(replay) != _state_fingerprint(self):
@@ -256,17 +256,17 @@ class AuthorityLedger:
         event=AuthorityEvent(**body,event_hash=_event_hash(body))
         # Validate against a clone first so an illegal event can never reach disk.
         clone=self._clone_state_only()
-        clone._apply_event(event,validate_replay=True)
+        clone._apply_event(event)
         if self.path is not None:
             self.path.parent.mkdir(parents=True,exist_ok=True)
             with self.path.open('a',encoding='utf-8',newline='\n') as handle:
                 handle.write(json.dumps(event.to_dict(),sort_keys=True,separators=(',',':'),ensure_ascii=True)+'\n')
                 handle.flush(); os.fsync(handle.fileno())
-        self._apply_event(event,validate_replay=True)
+        self._apply_event(event)
         self._events.append(event)
         return event
 
-    def _apply_event(self,event: AuthorityEvent,*,validate_replay: bool) -> None:
+    def _apply_event(self,event: AuthorityEvent) -> None:
         et=event.event_type; pid=event.permit_id; p=event.payload
         if et=="ISSUE":
             permit=_permit_from_dict(p['permit']); consequence=p['consequence']
@@ -320,7 +320,7 @@ class AuthorityLedger:
                     if event.sequence != expected: raise AuthorityBindingError('authority event sequence mismatch')
                     if event.previous_hash != previous: raise AuthorityBindingError('authority previous hash mismatch')
                     if _event_hash(event.body()) != event.event_hash: raise AuthorityBindingError('authority event hash mismatch')
-                    self._apply_event(event,validate_replay=True)
+                    self._apply_event(event)
                     events.append(event); previous=event.event_hash; expected += 1
                 except Exception as exc:
                     raise AuthorityBindingError(f'invalid authority ledger line {lineno}: {exc}') from exc

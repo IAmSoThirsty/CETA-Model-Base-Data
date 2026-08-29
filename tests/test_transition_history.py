@@ -65,8 +65,9 @@ class TransitionHistoryTests(unittest.TestCase):
         obj = EpistemicObject.create(object_id="C-1", object_type="CLAIM", content={"x": 1})
         ledger.commit(candidate(ledger, transition_id="T-1", operation="CreateClaim", delta=StateDelta((obj,), ())))
         duplicate = EpistemicObject.create(object_id="C-1", object_type="CLAIM", content={"x": 1})
+        delta = StateDelta((duplicate,), ())
         with self.assertRaises(HistoryBindingError):
-            candidate(ledger, transition_id="T-2", operation="CreateClaim", delta=StateDelta((duplicate,), ()))
+            candidate(ledger, transition_id="T-2", operation="CreateClaim", delta=delta)
 
     def test_supersession_requires_active_old_and_new_created_same_transition(self) -> None:
         ledger = TransitionLedger(known_operations=OPS)
@@ -82,12 +83,13 @@ class TransitionHistoryTests(unittest.TestCase):
             )
         )
         illegal = EpistemicObject.create(object_id="B-3", object_type="BELIEF", content={"version": 3})
+        delta = StateDelta((illegal,), (Supersession("B-1", "B-3"),))
         with self.assertRaises(HistoryBindingError):
             candidate(
                 ledger,
                 transition_id="T-3",
                 operation="Invalidate",
-                delta=StateDelta((illegal,), (Supersession("B-1", "B-3"),)),
+                delta=delta,
             )
 
     def test_output_state_mismatch_is_rejected(self) -> None:

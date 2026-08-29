@@ -92,7 +92,7 @@ class CetaWorldCurriculum:
         if not legal:
             raise ValueError(f"target-blind action space produced no legal {draft.target.operation} candidate for {draft.family_id}/{draft.variant_id}")
         legal.sort(key=lambda item: repr((item[0].operation,sorted(item[0].operands.items()))))
-        target,target_decision=legal[0]
+        target,_=legal[0]
 
         negatives: list[IllegalTransitionAlternative] = []
         for spec in draft.alternatives:
@@ -375,7 +375,7 @@ class CetaWorldCurriculum:
             ("replay_fault",),
         )
         missing_operands = dict(target.operands)
-        first_key = sorted(missing_operands)[0]
+        first_key = min(missing_operands)
         del missing_operands[first_key]
         malformed = _AltSpec(
             "MISSING_REQUIRED_OPERAND",
