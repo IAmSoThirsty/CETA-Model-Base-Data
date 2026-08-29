@@ -33,8 +33,17 @@ def main() -> None:
     parser.add_argument("--inference-root", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
     args = parser.parse_args()
+    training = verify_training(args.training_run.resolve())
+    inference = verify_inference(args.inference_root.resolve(), training)
+    report = verify_evaluation(args.report.resolve(), training, inference)
+    print(
+        "CETA LANGUAGE EPOCH VERIFICATION: PASS "
+        f"steps={training['global_step']} predictions={inference['prediction_count']} "
+        f"status={report['status']} report={report['report_hash']}"
+    )
 
-    training_root = args.training_run.resolve()
+
+def verify_training(training_root: Path) -> dict:
     training_path = training_root / "TRAINING_REPORT.json"
     binding_path = training_root / "RUN_BINDING.json"
     complete_path = training_root / "TRAINING_COMPLETE"
@@ -76,8 +85,10 @@ def main() -> None:
         fail("adapter artifact hash mismatch")
     if not any(path.is_dir() and path.name.startswith("checkpoint-") for path in (training_root / "checkpoints").glob("checkpoint-*")):
         fail("no durable Trainer checkpoint exists")
+    return training
 
-    inference_root = args.inference_root.resolve()
+
+def verify_inference(inference_root: Path, training: dict) -> dict:
     inference_path = inference_root / "inference_manifest.json"
     predictions_path = inference_root / "predictions.jsonl"
     if not inference_path.is_file() or not predictions_path.is_file():
@@ -90,8 +101,11 @@ def main() -> None:
         fail("inference independence binding mismatch")
     if LANGUAGE_ADAPTER.sha256_file(predictions_path) != inference.get("predictions_sha256"):
         fail("prediction hash mismatch")
+    return inference
 
-    report = json.loads(args.report.resolve().read_text(encoding="utf-8"))
+
+def verify_evaluation(report_path: Path, training: dict, inference: dict) -> dict:
+    report = json.loads(report_path.read_text(encoding="utf-8"))
     report_body = {key: value for key, value in report.items() if key != "report_hash"}
     if report.get("report_hash") != canonical_hash(report_body, domain="CETA/CONTROLLED_LANGUAGE_EVALUATION_REPORT/v1"):
         fail("controlled-evaluation report hash mismatch")
@@ -109,11 +123,7 @@ def main() -> None:
     policy = report.get("evaluation_policy", {})
     if policy.get("heldout_feedback_to_optimizer") is not False or policy.get("promotion_authority") != "INDEPENDENT_EVALUATOR_ONLY":
         fail("controlled-evaluation authority boundary mismatch")
-    print(
-        "CETA LANGUAGE EPOCH VERIFICATION: PASS "
-        f"steps={training['global_step']} predictions={inference['prediction_count']} "
-        f"status={report['status']} report={report['report_hash']}"
-    )
+    return report
 
 
 if __name__ == "__main__":

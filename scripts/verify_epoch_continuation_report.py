@@ -56,6 +56,20 @@ def main() -> None:
     if not report_path.is_file():
         fail(f"report missing: {report_path}")
     report = json.loads(report_path.read_text(encoding="utf-8"))
+    claimed = verify_report_identity(report)
+    verify_attestation(report)
+    verify_curriculum_binding(report)
+    additional = verify_progress(report)
+    verify_validation(report)
+    verify_boundaries(report)
+    print("EPOCH CONTINUATION REPORT VERIFY: PASS")
+    print(
+        f"report_hash={claimed} additional_epochs={additional} "
+        f"promotion={report['promotion_gate']['outcome']}"
+    )
+
+
+def verify_report_identity(report: dict) -> str:
     claimed = report.get("report_hash")
     body = dict(report)
     body.pop("report_hash", None)
@@ -65,6 +79,10 @@ def main() -> None:
         fail("report hash mismatch")
     if report.get("status") != "PASS" or report.get("report_type") != "CETA_EPOCH_CONTINUATION":
         fail("report status or type mismatch")
+    return str(claimed)
+
+
+def verify_attestation(report: dict) -> None:
     attestation = report.get("device_attestation", {})
     if (
         attestation.get("device") != "cuda:0"
@@ -73,6 +91,9 @@ def main() -> None:
         or "H100" not in str(attestation.get("device_name", "")).upper()
     ):
         fail("single-H100 attestation mismatch")
+
+
+def verify_curriculum_binding(report: dict) -> None:
     binding = report.get("curriculum_binding", {})
     manifest = DATA / "manifest.json"
     splits = DATA / "splits.json"
@@ -82,6 +103,9 @@ def main() -> None:
         fail("curriculum splits binding mismatch")
     if binding.get("generator_id") != json.loads(manifest.read_text(encoding="utf-8")).get("generator_id"):
         fail("curriculum generator binding mismatch")
+
+
+def verify_progress(report: dict) -> int:
     base = report.get("base_checkpoint", {}).get("cursor", {})
     final = report.get("final_checkpoint", {}).get("cursor", {})
     additional = int(report.get("additional_epochs", 0))
@@ -94,6 +118,10 @@ def main() -> None:
         fail("final optimizer-step target mismatch")
     if final.get("next_case_offset") != 0:
         fail("final checkpoint is not at an epoch boundary")
+    return additional
+
+
+def verify_validation(report: dict) -> None:
     validation = report.get("validation", {})
     verify_metric_contract(validation)
     if validation.get("checkpoint_sha256") != report.get("final_checkpoint", {}).get("sha256"):
@@ -102,6 +130,9 @@ def main() -> None:
         fail("validation split hash mismatch")
     if report.get("heldout_evaluation", {}).get("status") != "NOT_RUN":
         fail("heldout was used during iterative continuation")
+
+
+def verify_boundaries(report: dict) -> None:
     boundary = report.get("claim_boundary", {})
     if boundary.get("hardware_activated_by_runner") is not False:
         fail("runner hardware-activation boundary mismatch")
@@ -113,11 +144,6 @@ def main() -> None:
         fail("promotion outcome missing")
     if report.get("promotion_gate", {}).get("policy", {}).get("opcode_accuracy_semantics") != "selected transition operation matches target operation":
         fail("promotion opcode-accuracy semantics mismatch")
-    print("EPOCH CONTINUATION REPORT VERIFY: PASS")
-    print(
-        f"report_hash={claimed} additional_epochs={additional} "
-        f"promotion={report['promotion_gate']['outcome']}"
-    )
 
 
 if __name__ == "__main__":

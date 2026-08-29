@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 207,
-  "content_root": "sha256:3f4711733933680fee1f2d5a24f281d9e5470a5592cbd2aa80e37c00d36d4a8e",
+  "content_root": "sha256:a6cc4b08770fce32cbd2cf934d13efa56fce8469b93d98a96455133a8059e144",
   "files": [
     {
       "path": ".gitattributes",
@@ -602,13 +602,13 @@
     },
     {
       "path": "scripts/verify_corpus_manifest.py",
-      "size": 2201,
-      "sha256": "45ff4f37760d04c6c24d82a9b0aa507351dbe46ab19eb4b7c8e04992228cc494"
+      "size": 2286,
+      "sha256": "958aeb8e8f0dcb9520c25caf69b4b1ea39f00621d430d3d89c3de45277e92b33"
     },
     {
       "path": "scripts/verify_epoch_continuation_report.py",
-      "size": 6279,
-      "sha256": "84978b0262a5c3ab1b5a9fc9fc58ac1658b0ca3b4df62ce9002129fbe689e4de"
+      "size": 6832,
+      "sha256": "66fdb12bb9bf09c47aea5432207184b679ca9c933122de91bbb0f629a8a82e25"
     },
     {
       "path": "scripts/verify_epoch_readiness_report.py",
@@ -622,13 +622,13 @@
     },
     {
       "path": "scripts/verify_language_epoch_report.py",
-      "size": 6339,
-      "sha256": "fcd893c2654546d855aaededea2e77e22716381ece7f07cdd5585d81cac59f81"
+      "size": 6702,
+      "sha256": "52f7434b713c7e0b1290e020c472f3e441fd81b8e6df8bb63480ba5aff0d875f"
     },
     {
       "path": "scripts/verify_package.py",
-      "size": 4512,
-      "sha256": "3737817cef1733aa537eb589b5809b31eda1263e643e2b92b4148b7d1156bf79"
+      "size": 5162,
+      "sha256": "1953154888f8ce1cca2492a7082a95c577118bce11822d47b6b018d6a7f7d7db"
     },
     {
       "path": "spec/ADMISSION_RULES.md",

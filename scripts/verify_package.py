@@ -54,15 +54,32 @@ def visible_files() -> set[str]:
 
 def main() -> None:
     errors=[]
-    controlled_root=ROOT/"data"/"ceta_controlled_evaluation"
-    if not (ROOT/".git").exists() and controlled_root.exists() and any(controlled_root.rglob("*")):
-        errors.append("controlled evaluation payload is present in a release/extracted package")
+    verify_controlled_payload(errors)
     manifest_path=ROOT/"PACKAGE_MANIFEST.json"
     sums_path=ROOT/"SHA256SUMS"
     if not manifest_path.is_file() or not sums_path.is_file():
         raise SystemExit("PACKAGE VERIFY: FAIL - PACKAGE_MANIFEST.json and SHA256SUMS are required")
     manifest=json.loads(manifest_path.read_text(encoding="utf-8"))
     files=manifest.get("files",[])
+    verify_manifest(manifest, files, errors)
+    actual=verify_registered_files(files, errors)
+    sums=read_sha256sums(sums_path, errors)
+    verify_sha256sums(sums, actual, errors)
+    if errors:
+        print("PACKAGE VERIFY: FAIL")
+        for error in errors: print(" -",error)
+        raise SystemExit(1)
+    print("PACKAGE VERIFY: PASS")
+    print(f"files={len(actual)} registered_payload_files={len(files)} content_root={manifest['content_root']}")
+
+
+def verify_controlled_payload(errors: list[str]) -> None:
+    controlled_root=ROOT/"data"/"ceta_controlled_evaluation"
+    if not (ROOT/".git").exists() and controlled_root.exists() and any(controlled_root.rglob("*")):
+        errors.append("controlled evaluation payload is present in a release/extracted package")
+
+
+def verify_manifest(manifest: dict, files: list[dict], errors: list[str]) -> None:
     if manifest.get("schema_version")!=1:
         errors.append("unsupported package manifest schema")
     if manifest.get("version")!=(ROOT/"VERSION").read_text(encoding="utf-8").strip():
@@ -71,6 +88,9 @@ def main() -> None:
         errors.append("manifest file_count mismatch")
     if manifest.get("content_root")!=manifest_root(files):
         errors.append("manifest content_root mismatch")
+
+
+def verify_registered_files(files: list[dict], errors: list[str]) -> set[str]:
     expected={str(x.get("path")) for x in files}|{"PACKAGE_MANIFEST.json","SHA256SUMS"}
     actual=visible_files()
     missing=sorted(expected-actual); extra=sorted(actual-expected)
@@ -87,6 +107,10 @@ def main() -> None:
         if not path.is_file(): continue
         if path.stat().st_size!=item["size"]: errors.append(f"size mismatch: {rel}")
         if sha256(path)!=item["sha256"]: errors.append(f"hash mismatch: {rel}")
+    return actual
+
+
+def read_sha256sums(sums_path: Path, errors: list[str]) -> dict[str, str]:
     sums={}
     for lineno,line in enumerate(sums_path.read_text(encoding="utf-8").splitlines(),1):
         if not line.strip(): continue
@@ -94,6 +118,10 @@ def main() -> None:
         except ValueError: errors.append(f"invalid SHA256SUMS line {lineno}"); continue
         if rel in sums: errors.append(f"duplicate SHA256SUMS path: {rel}")
         sums[rel]=digest
+    return sums
+
+
+def verify_sha256sums(sums: dict[str, str], actual: set[str], errors: list[str]) -> None:
     expected_sums=actual-{"SHA256SUMS"}
     if set(sums)!=expected_sums:
         errors.append(f"SHA256SUMS path set mismatch missing={sorted(expected_sums-set(sums))} extra={sorted(set(sums)-expected_sums)}")
@@ -101,12 +129,6 @@ def main() -> None:
         path=ROOT/rel
         if path.is_file() and sha256(path)!=digest:
             errors.append(f"SHA256SUMS hash mismatch: {rel}")
-    if errors:
-        print("PACKAGE VERIFY: FAIL")
-        for error in errors: print(" -",error)
-        raise SystemExit(1)
-    print("PACKAGE VERIFY: PASS")
-    print(f"files={len(actual)} registered_payload_files={len(files)} content_root={manifest['content_root']}")
 
 
 if __name__=="__main__":
