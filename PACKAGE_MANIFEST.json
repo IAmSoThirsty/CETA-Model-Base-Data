@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 207,
-  "content_root": "sha256:a6cc4b08770fce32cbd2cf934d13efa56fce8469b93d98a96455133a8059e144",
+  "content_root": "sha256:1cfd7c2eebed48dadb79614e47786018e9a37b66de4946560ef11f7d3ab04fee",
   "files": [
     {
       "path": ".gitattributes",
@@ -27,8 +27,8 @@
     },
     {
       "path": "README.md",
-      "size": 20927,
-      "sha256": "0bb4d6a86f69e96812a6850aa7a2b11cdb47adffc670371a017c9079da2f7d19"
+      "size": 21488,
+      "sha256": "eb0eba585c705e51720678d4ebc1524023ccc2af41081ddfd71e868ce8dbdebe"
     },
     {
       "path": "STATUS.md",
