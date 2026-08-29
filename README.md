@@ -1,5 +1,9 @@
 # Architecture Rebuild — CETA Epoch-Ready Reference v0.3.0
 
+> **Frozen verification release: `V3.1`**
+>
+> `V3.1` freezes the verified schema-v4 single-H100 structured-policy result: five completed epochs, 5,520 committed optimizer steps, 100% validation exact-target/selected-operation/VM-legal selection, 100% final independent held-out exact-target/selected-operation/VM-legal selection, zero selection errors, and strict `PROMOTED` status. The promoted checkpoint SHA-256 is `b095fc3af9cb3fa6d1bc34ba52d13b55d47da5478e8c88ea92fab2f8a27857ff`. The separate language-adapter track remains outside this promotion claim.
+
 This repository is a clean rebuild derived from the supplied architecture corpus. Existing systems were treated as evidence, tests, failure history, and design lineage. Their APIs were not preserved as compatibility requirements.
 
 The computational center is **Constitutional Epistemic Transition Algebra (CETA)**:
