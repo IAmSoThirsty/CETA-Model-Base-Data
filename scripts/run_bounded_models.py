@@ -59,17 +59,21 @@ def main() -> None:
         for label, nxt in successors(state):
             transitions += 1
             verify_state(nxt)
-            if state.consumed and not nxt.consumed:
-                raise AssertionError(f"consumed tombstone lost on {label}: {state} -> {nxt}")
-            if state.status != "INDETERMINATE" and label.startswith("reconcile:"):
-                raise AssertionError("reconciliation escaped INDETERMINATE precondition")
-            if label == "revoke" and state.status not in PRE:
-                raise AssertionError("revocation crossed effect boundary")
+            verify_transition(state, label, nxt)
             if nxt not in seen:
                 seen.add(nxt)
                 queue.append((nxt, path + (label,)))
     print("BOUNDED AUTHORITY MODEL: PASS")
     print(f"states={len(seen)} transitions={transitions} max_depth={max_depth}")
+
+
+def verify_transition(state: State, label: str, nxt: State) -> None:
+    if state.consumed and not nxt.consumed:
+        raise AssertionError(f"consumed tombstone lost on {label}: {state} -> {nxt}")
+    if state.status != "INDETERMINATE" and label.startswith("reconcile:"):
+        raise AssertionError("reconciliation escaped INDETERMINATE precondition")
+    if label == "revoke" and state.status not in PRE:
+        raise AssertionError("revocation crossed effect boundary")
 
 
 if __name__ == "__main__":

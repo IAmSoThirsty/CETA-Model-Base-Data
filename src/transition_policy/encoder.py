@@ -200,17 +200,10 @@ class StructuredStateEncoder:
         refs: tuple[int,...]=()
         list_len=0; mapping_size=0; numeric_value=0.0; is_existing_ref=0.0; is_enum=0.0
         if isinstance(value,str):
-            if value in object_index:
-                kind='REF'; refs=(object_index[value],); is_existing_ref=1.0
-            elif value in ENUM_VALUES:
-                kind='ENUM'; is_enum=1.0
-            else:
-                kind='OPAQUE_SYMBOL'
+            kind,refs,is_existing_ref,is_enum=self._string_operand_features(value,object_index)
         elif isinstance(value,list):
             list_len=len(value)
-            matched=tuple(object_index[x] for x in value if isinstance(x,str) and x in object_index)
-            if matched and len(matched)==len(value): kind='REF_LIST'; refs=matched; is_existing_ref=1.0
-            else: kind='LIST'
+            kind,refs,is_existing_ref=self._list_operand_features(value,object_index)
         elif isinstance(value,Mapping):
             kind='MAPPING'; mapping_size=len(value)
         elif isinstance(value,bool): kind='BOOL'; numeric_value=float(value)
@@ -218,6 +211,21 @@ class StructuredStateEncoder:
         elif value is None: kind='NULL'
         else: kind='OPAQUE_SYMBOL'
         return kind,refs,[float(list_len),float(mapping_size),numeric_value,is_existing_ref,is_enum]
+
+    @staticmethod
+    def _string_operand_features(value: str, object_index: Mapping[str,int]) -> tuple[str,tuple[int,...],float,float]:
+        if value in object_index:
+            return 'REF',(object_index[value],),1.0,0.0
+        if value in ENUM_VALUES:
+            return 'ENUM',(),0.0,1.0
+        return 'OPAQUE_SYMBOL',(),0.0,0.0
+
+    @staticmethod
+    def _list_operand_features(value: list[Any], object_index: Mapping[str,int]) -> tuple[str,tuple[int,...],float]:
+        matched=tuple(object_index[x] for x in value if isinstance(x,str) and x in object_index)
+        if matched and len(matched)==len(value):
+            return 'REF_LIST',matched,1.0
+        return 'LIST',(),0.0
 
 
 def _canonical_mapping_hash(value: Mapping[str,Any]) -> str:

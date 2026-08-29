@@ -41,6 +41,10 @@ def verify_metric_contract(metrics: dict, *, split: str) -> None:
     opcode_family_count=len({str(error.get('world_family_id')) for error in opcode_errors})
     if int(metrics.get('selection_error_family_count',-1))!=family_count: fail(f'{split} selection-error family count mismatch')
     if int(metrics.get('opcode_error_family_count',-1))!=opcode_family_count: fail(f'{split} opcode-error family count mismatch')
+    verify_error_diagnostics(errors, split=split)
+
+
+def verify_error_diagnostics(errors: list[dict], *, split: str) -> None:
     required={'case_id','world_family_id','world_variant_id','target_operation','selected_operation','exact_target_correct','opcode_correct','vm_disposition','target_candidate_margin','total_loss','operation_selection_loss','transition_rank_loss','failure_surface_loss'}
     for error in errors:
         if not isinstance(error,dict) or not required <= set(error): fail(f'{split} selection-error diagnostic is incomplete')

@@ -77,21 +77,22 @@ def consumed_evaluator_receipt(
 ) -> dict[str, str] | None:
     """Return the public receipt that proves an evaluator is no longer clean-unseen."""
     for path in sorted(evidence_root.glob("*.json")):
-        try:
-            value = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
-            continue
-        if value.get("schema_id") != "CETA_LANGUAGE_ADAPTER_H100_CALIBRATION/v1":
-            continue
-        if (
-            value.get("challenge_sha256") == challenge_sha256
-            and value.get("answer_key_sha256") == answer_key_sha256
-        ):
-            return {
-                "receipt": path.name,
-                "run_date": str(value.get("run_date", "")),
-            }
+        receipt = _matching_calibration_receipt(path, challenge_sha256, answer_key_sha256)
+        if receipt is not None:
+            return receipt
     return None
+
+
+def _matching_calibration_receipt(path: Path, challenge_sha256: str, answer_key_sha256: str) -> dict[str, str] | None:
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return None
+    if value.get("schema_id") != "CETA_LANGUAGE_ADAPTER_H100_CALIBRATION/v1":
+        return None
+    if value.get("challenge_sha256") != challenge_sha256 or value.get("answer_key_sha256") != answer_key_sha256:
+        return None
+    return {"receipt": path.name, "run_date": str(value.get("run_date", ""))}
 
 
 def _read_records(path: Path, spec: _SourceSpec) -> list[tuple[str, Any, str | None]]:
@@ -144,14 +145,14 @@ def _text(value: Any) -> str:
 def _scenario_prompt(record: Mapping[str, Any], *, title_key: str, action_key: str) -> str:
     fields = (
         ("Scenario", title_key),
-        (STARTING_STATE_LABEL, STARTING_STATE_LABEL if STARTING_STATE_LABEL in record else "starting_state"),
-        (AVAILABLE_EVIDENCE_LABEL, AVAILABLE_EVIDENCE_LABEL if AVAILABLE_EVIDENCE_LABEL in record else "available_evidence"),
+        (STARTING_STATE_LABEL, _preferred_key(record, STARTING_STATE_LABEL, "starting_state")),
+        (AVAILABLE_EVIDENCE_LABEL, _preferred_key(record, AVAILABLE_EVIDENCE_LABEL, "available_evidence")),
         (
             MISSING_EVIDENCE_LABEL,
-            MISSING_EVIDENCE_LABEL if MISSING_EVIDENCE_LABEL in record else "missing_or_uncertain_evidence",
+            _preferred_key(record, MISSING_EVIDENCE_LABEL, "missing_or_uncertain_evidence"),
         ),
-        ("Identity", "Identity involved" if "Identity involved" in record else "identity_involved"),
-        ("Authority", "Authority granted" if "Authority granted" in record else "authority_granted"),
+        ("Identity", _preferred_key(record, "Identity involved", "identity_involved")),
+        ("Authority", _preferred_key(record, "Authority granted", "authority_granted")),
         ("Requested action", action_key),
     )
     body = "\n\n".join(f"{label}:\n{_text(record.get(key))}" for label, key in fields)
@@ -159,6 +160,10 @@ def _scenario_prompt(record: Mapping[str, Any], *, title_key: str, action_key: s
         f"{body}\n\nDetermine the bounded decision. Return JSON with keys "
         '"decision", "reasoning", "missing_evidence", and "wrong_decision_risks".'
     )
+
+
+def _preferred_key(record: Mapping[str, Any], preferred: str, fallback: str) -> str:
+    return preferred if preferred in record else fallback
 
 
 def _messages_for_record(kind: str, value: Any, *, path: str, group: str | None) -> list[dict[str, str]]:

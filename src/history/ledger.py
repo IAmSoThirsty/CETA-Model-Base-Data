@@ -206,19 +206,7 @@ class TransitionLedger:
         previous_hash = GENESIS_TRANSITION_ROOT
         expected_sequence = 1
         for entry in entries:
-            if entry.sequence != expected_sequence:
-                raise HistoryBindingError(f"ledger sequence mismatch at {entry.sequence}")
-            if entry.transition_id in ids:
-                raise HistoryBindingError(f"duplicate transition ID in history: {entry.transition_id}")
-            if self._known_operations and entry.operation not in self._known_operations:
-                raise HistoryBindingError(f"unknown CETA operation in history: {entry.operation}")
-            if entry.previous_entry_hash != previous_hash:
-                raise HistoryBindingError(f"previous-entry hash mismatch at sequence {entry.sequence}")
-            expected_hash = domain_hash(entry.body_dict(), domain="CETA/COMMITTED_TRANSITION/v1")
-            if entry.entry_hash != expected_hash:
-                raise HistoryBindingError(f"entry hash mismatch at sequence {entry.sequence}")
-            if entry.input_state_ref != projector.state_ref:
-                raise HistoryBindingError(f"input-state replay mismatch at sequence {entry.sequence}")
+            self._validate_replay_entry(entry, expected_sequence, ids, previous_hash, projector.state_ref)
             self._validate_entry_runtime_bindings(entry)
             projector.apply(entry.state_delta)
             if entry.output_state_ref != projector.state_ref:
@@ -227,6 +215,23 @@ class TransitionLedger:
             previous_hash = entry.entry_hash
             expected_sequence += 1
         return projector, ids
+
+    def _validate_replay_entry(
+        self, entry: LedgerEntry, expected_sequence: int, ids: set[str], previous_hash: str, state_ref: str
+    ) -> None:
+        if entry.sequence != expected_sequence:
+            raise HistoryBindingError(f"ledger sequence mismatch at {entry.sequence}")
+        if entry.transition_id in ids:
+            raise HistoryBindingError(f"duplicate transition ID in history: {entry.transition_id}")
+        if self._known_operations and entry.operation not in self._known_operations:
+            raise HistoryBindingError(f"unknown CETA operation in history: {entry.operation}")
+        if entry.previous_entry_hash != previous_hash:
+            raise HistoryBindingError(f"previous-entry hash mismatch at sequence {entry.sequence}")
+        expected_hash = domain_hash(entry.body_dict(), domain="CETA/COMMITTED_TRANSITION/v1")
+        if entry.entry_hash != expected_hash:
+            raise HistoryBindingError(f"entry hash mismatch at sequence {entry.sequence}")
+        if entry.input_state_ref != state_ref:
+            raise HistoryBindingError(f"input-state replay mismatch at sequence {entry.sequence}")
 
     @staticmethod
     def _validate_runtime_bindings(candidate: CommitCandidate) -> None:

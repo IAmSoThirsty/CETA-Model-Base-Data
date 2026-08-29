@@ -207,13 +207,7 @@ def partition_world_families(cases: Iterable[object]) -> WorldDatasetPartition:
     by_operation: dict[str, dict[str,list[str]]] = {}
     fingerprint_to_family: dict[str,str] = {}
     for case in materialized:
-        try:
-            case_id=str(case.case_id)
-            family=str(case.world_family_id)
-            fingerprint=str(case.structural_fingerprint)
-            operation=str(case.target_proposal.operation)
-        except AttributeError as exc:
-            raise TrainingSourceViolation("world-family partition requires TransitionTrainingCase-like objects") from exc
+        case_id, family, fingerprint, operation = _world_partition_fields(case)
         previous=fingerprint_to_family.setdefault(fingerprint,family)
         if previous != family:
             raise TrainingSourceViolation(
@@ -225,23 +219,7 @@ def partition_world_families(cases: Iterable[object]) -> WorldDatasetPartition:
     train_families: list[str]=[]; validation_families: list[str]=[]; heldout_families: list[str]=[]
     for operation in sorted(by_operation):
         families=by_operation[operation]
-        if len(families) < 10:
-            raise TrainingSourceViolation(
-                f"operation {operation} has {len(families)} world families; at least 10 are required"
-            )
-        ordered=sorted(
-            families,
-            key=lambda family, operation=operation: sha256(
-                ("CETA/WORLD_FAMILY_SPLIT/v1\n" + operation + "\n" + family).encode("utf-8")
-            ).digest(),
-        )
-        n=len(ordered)
-        n_val=max(1,n//10)
-        n_held=max(1,n//10)
-        n_train=n-n_val-n_held
-        if n_train < 1:
-            raise TrainingSourceViolation(f"operation {operation} leaves no training families")
-        groups=(ordered[:n_train],ordered[n_train:n_train+n_val],ordered[n_train+n_val:])
+        groups=_partition_operation_families(operation, families)
         for family in groups[0]:
             train_families.append(family); train_cases.extend(sorted(families[family]))
         for family in groups[1]:
@@ -259,3 +237,34 @@ def partition_world_families(cases: Iterable[object]) -> WorldDatasetPartition:
     if assigned != expected:
         raise TrainingSourceViolation("world-family partition did not assign every case exactly once")
     return result
+
+
+def _world_partition_fields(case: object) -> tuple[str, str, str, str]:
+    try:
+        return (
+            str(case.case_id),
+            str(case.world_family_id),
+            str(case.structural_fingerprint),
+            str(case.target_proposal.operation),
+        )
+    except AttributeError as exc:
+        raise TrainingSourceViolation("world-family partition requires TransitionTrainingCase-like objects") from exc
+
+
+def _partition_operation_families(operation: str, families: dict[str, list[str]]) -> tuple[list[str], list[str], list[str]]:
+    if len(families) < 10:
+        raise TrainingSourceViolation(
+            f"operation {operation} has {len(families)} world families; at least 10 are required"
+        )
+    ordered=sorted(
+        families,
+        key=lambda family: sha256(
+            ("CETA/WORLD_FAMILY_SPLIT/v1\n" + operation + "\n" + family).encode("utf-8")
+        ).digest(),
+    )
+    n_val=max(1,len(ordered)//10)
+    n_held=max(1,len(ordered)//10)
+    n_train=len(ordered)-n_val-n_held
+    if n_train < 1:
+        raise TrainingSourceViolation(f"operation {operation} leaves no training families")
+    return ordered[:n_train],ordered[n_train:n_train+n_val],ordered[n_train+n_val:]

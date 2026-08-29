@@ -44,6 +44,22 @@ def validate(root: Path) -> list[str]:
     if not manifest_path.is_file():
         return ["controlled-evaluation manifest is missing"]
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    errors.extend(validate_manifest(manifest))
+
+    challenge_path = root / str(manifest.get("challenge_path", ""))
+    answer_path = root / str(manifest.get("answer_key_path", ""))
+    errors.extend(validate_artifacts(challenge_path, answer_path, manifest))
+    if errors:
+        return errors
+
+    challenges = jsonl(challenge_path)
+    answers = jsonl(answer_path)
+    errors.extend(validate_case_sets(challenges, answers, manifest))
+    return errors
+
+
+def validate_manifest(manifest: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
     if manifest.get("schema_version") != 1:
         errors.append("manifest schema_version mismatch")
     if manifest.get("evaluation_id") != "CETA_CONTROLLED_EVALUATION/v1":
@@ -52,9 +68,11 @@ def validate(root: Path) -> list[str]:
         errors.append("usage_class mismatch")
     if manifest.get("optimizer_input") is not False or manifest.get("git_delivery") is not False:
         errors.append("controlled-evaluation role boundary mismatch")
+    return errors
 
-    challenge_path = root / str(manifest.get("challenge_path", ""))
-    answer_path = root / str(manifest.get("answer_key_path", ""))
+
+def validate_artifacts(challenge_path: Path, answer_path: Path, manifest: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
     for label, path, expected in (
         ("challenge", challenge_path, manifest.get("challenge_sha256")),
         ("answer key", answer_path, manifest.get("answer_key_sha256")),
@@ -63,11 +81,11 @@ def validate(root: Path) -> list[str]:
             errors.append(f"{label} file is missing")
         elif sha256(path) != expected:
             errors.append(f"{label} hash mismatch")
-    if errors:
-        return errors
+    return errors
 
-    challenges = jsonl(challenge_path)
-    answers = jsonl(answer_path)
+
+def validate_case_sets(challenges: list[dict[str, Any]], answers: list[dict[str, Any]], manifest: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
     challenge_ids = [str(item.get("scenario_id", "")) for item in challenges]
     answer_ids = [str(item.get("scenario_id", "")) for item in answers]
     if not all(challenge_ids) or len(challenge_ids) != len(set(challenge_ids)):

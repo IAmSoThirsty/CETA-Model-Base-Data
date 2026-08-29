@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 207,
-  "content_root": "sha256:922a8bd875942479d1ec0577c4cb61800d0d82c15d8b3876d298df233b76a706",
+  "content_root": "sha256:3f4711733933680fee1f2d5a24f281d9e5470a5592cbd2aa80e37c00d36d4a8e",
   "files": [
     {
       "path": ".gitattributes",
@@ -527,8 +527,8 @@
     },
     {
       "path": "scripts/run_bounded_models.py",
-      "size": 2987,
-      "sha256": "229b53f4bd653c7248e215b55a3f99c17826f8cfb1c9e501e6f13ecc2bce0813"
+      "size": 3059,
+      "sha256": "60c178be146b48dba5babf3e2a197589906c004d733d0517476e1a769f9a0a22"
     },
     {
       "path": "scripts/run_controlled_language_inference.py",
@@ -582,8 +582,8 @@
     },
     {
       "path": "scripts/validate_controlled_evaluation.py",
-      "size": 5120,
-      "sha256": "c62d457117f71553a1890ed54c7a8b822a51baeb77b67a1e72d49b4ed4a43e4e"
+      "size": 5748,
+      "sha256": "921cc153120dca6c2bae0459127039005702ac8b13307b80abe3fe5ae9b7cdf3"
     },
     {
       "path": "scripts/validate_evidence_registry.py",
@@ -612,8 +612,8 @@
     },
     {
       "path": "scripts/verify_epoch_readiness_report.py",
-      "size": 10479,
-      "sha256": "75b92eed3eb11ed42b9e0389000d4b1d891cacfd0ad57434e903daba857a9e6b"
+      "size": 10604,
+      "sha256": "b490d65f1b63660cfd056303144279477b1b879e8c0b85807db91150c070a4fe"
     },
     {
       "path": "scripts/verify_final_heldout_report.py",
@@ -702,8 +702,8 @@
     },
     {
       "path": "src/effects/verifier.py",
-      "size": 5015,
-      "sha256": "48d62c00f4d0b647d14e7558491d1e923454c62271f2156649a79eb94537721d"
+      "size": 5167,
+      "sha256": "cdf07042c86201db3228877dd19310d74dd2b60551aa26e61c2fe8c64d54a9f9"
     },
     {
       "path": "src/evidence_registry/__init__.py",
@@ -717,8 +717,8 @@
     },
     {
       "path": "src/evidence_registry/registry.py",
-      "size": 6264,
-      "sha256": "d45530fb3bee775a3d8e2f029a496dc5f7575aabfdea633485e1806d47173059"
+      "size": 6370,
+      "sha256": "141600dc483b65b283d26214270047806dfca16f9b9abe6dbe3d1fb3e67e3e9a"
     },
     {
       "path": "src/formal_verification/__init__.py",
@@ -737,8 +737,8 @@
     },
     {
       "path": "src/history/ledger.py",
-      "size": 11749,
-      "sha256": "5eeabd29b61b8d637feb6966907548dcea1a567d8464262d20923d7292470624"
+      "size": 11950,
+      "sha256": "a93ccf43e836e3fa2ce7b54c1afd805627cf36c0d659801736fb51e22e10a90d"
     },
     {
       "path": "src/history/model.py",
@@ -882,8 +882,8 @@
     },
     {
       "path": "src/training/language_adapter.py",
-      "size": 25161,
-      "sha256": "1d10eff2dfe4c3e0ca11cb84c054b26cf7d265256500c9d8a28193fee84b39a7"
+      "size": 25409,
+      "sha256": "e35f30938d213501dbcaf0d487011e9aa6a018f8dad508cb0337df5a38b1a686"
     },
     {
       "path": "src/training/model.py",
@@ -892,8 +892,8 @@
     },
     {
       "path": "src/training/source_policy.py",
-      "size": 10878,
-      "sha256": "2f393e75e42d8465032ef50062512b843847ba432b49903d2ace42e998d4812b"
+      "size": 11130,
+      "sha256": "d300c5611c10a683a5d187aeb49dcba21cbd922e1a26b83ab28475a8ddd439b6"
     },
     {
       "path": "src/training/worlds.py",
@@ -917,8 +917,8 @@
     },
     {
       "path": "src/transition_policy/encoder.py",
-      "size": 14067,
-      "sha256": "109a776388f861a59b6f087d510b90a4d212f9f01fe5a19b6eb824530b25acdd"
+      "size": 14457,
+      "sha256": "4b635cf222f66b9931bbd9c75a744756a14bdfa889d73037f22f6516c5775afc"
     },
     {
       "path": "src/transition_policy/interface.py",

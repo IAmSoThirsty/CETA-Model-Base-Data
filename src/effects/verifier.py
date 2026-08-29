@@ -34,25 +34,34 @@ class EffectVerifier:
         self._trusted_observers = dict(trusted_observers)
 
     def verify(self, receipt: EffectExecutionReceipt, observation: EffectObservation) -> EffectVerification:
+        failure = self._precondition_failure(receipt, observation)
+        if failure is not None:
+            return self._result(receipt, observation, *failure)
+        return self._verify_observed_status(receipt, observation)
+
+    def _precondition_failure(self, receipt, observation) -> tuple[EffectVerificationStatus, str] | None:
         gateway_key = self._trusted_gateway_keys.get(receipt.executor_key_id)
         if gateway_key is None:
-            return self._result(receipt, observation, EffectVerificationStatus.MISMATCH, "UNTRUSTED_GATEWAY_KEY")
+            return EffectVerificationStatus.MISMATCH, "UNTRUSTED_GATEWAY_KEY"
         if not receipt.verify_integrity():
-            return self._result(receipt, observation, EffectVerificationStatus.MISMATCH, "RECEIPT_INTEGRITY_MISMATCH")
+            return EffectVerificationStatus.MISMATCH, "RECEIPT_INTEGRITY_MISMATCH"
         if not receipt.verify_signature(gateway_key):
-            return self._result(receipt, observation, EffectVerificationStatus.MISMATCH, "RECEIPT_SIGNATURE_INVALID")
+            return EffectVerificationStatus.MISMATCH, "RECEIPT_SIGNATURE_INVALID"
         if observation.receipt_hash != receipt.receipt_hash:
-            return self._result(receipt, observation, EffectVerificationStatus.MISMATCH, "OBSERVATION_RECEIPT_BINDING_MISMATCH")
+            return EffectVerificationStatus.MISMATCH, "OBSERVATION_RECEIPT_BINDING_MISMATCH"
         if not observation.observer_id.strip() or observation.observer_id == receipt.executor_component_id:
-            return self._result(receipt, observation, EffectVerificationStatus.MISMATCH, "OBSERVER_NOT_INDEPENDENT")
+            return EffectVerificationStatus.MISMATCH, "OBSERVER_NOT_INDEPENDENT"
         trusted = self._trusted_observers.get(observation.observer_id)
         if trusted is None:
-            return self._result(receipt, observation, EffectVerificationStatus.MISMATCH, "UNTRUSTED_OBSERVER")
+            return EffectVerificationStatus.MISMATCH, "UNTRUSTED_OBSERVER"
         expected_key_id, observer_key = trusted
         if observation.observer_key_id != expected_key_id:
-            return self._result(receipt, observation, EffectVerificationStatus.MISMATCH, "OBSERVER_KEY_ID_MISMATCH")
+            return EffectVerificationStatus.MISMATCH, "OBSERVER_KEY_ID_MISMATCH"
         if not observation.verify_signature(observer_key):
-            return self._result(receipt, observation, EffectVerificationStatus.MISMATCH, "OBSERVATION_SIGNATURE_INVALID")
+            return EffectVerificationStatus.MISMATCH, "OBSERVATION_SIGNATURE_INVALID"
+        return None
+
+    def _verify_observed_status(self, receipt, observation) -> EffectVerification:
         if observation.observed_status == PermitStatus.INDETERMINATE:
             return self._result(receipt, observation, EffectVerificationStatus.INDETERMINATE, "OBSERVED_STATE_INDETERMINATE")
         if receipt.executor_claim_status == PermitStatus.INDETERMINATE:

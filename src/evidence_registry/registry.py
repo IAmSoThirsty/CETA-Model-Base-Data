@@ -86,24 +86,26 @@ class EvidenceRegistry:
     def verify(self) -> bool:
         seen_hashes: set[str] = set()
         for record_id, revisions in sorted(self._revisions.items()):
-            prior_hash = None
-            expected_revision = 1
-            for record in revisions:
-                reconstructed = EvidenceRecord.from_dict(record.to_dict())
-                if reconstructed.record_hash != record.record_hash:
-                    raise EvidenceRegistryError("evidence record does not reconstruct")
-                if record.record_id != record_id:
-                    raise EvidenceRegistryError("record identity changed within revision chain")
-                if record.revision != expected_revision:
-                    raise EvidenceRegistryError("evidence revision sequence mismatch")
-                if record.supersedes_hash != prior_hash:
-                    raise EvidenceRegistryError("evidence supersession hash mismatch")
-                if record.record_hash in seen_hashes:
-                    raise EvidenceRegistryError("duplicate evidence revision hash")
-                seen_hashes.add(record.record_hash)
-                prior_hash = record.record_hash
-                expected_revision += 1
+            self._verify_revision_chain(record_id, revisions, seen_hashes)
         return True
+
+    @staticmethod
+    def _verify_revision_chain(record_id: str, revisions: list[EvidenceRecord], seen_hashes: set[str]) -> None:
+        prior_hash = None
+        for expected_revision, record in enumerate(revisions, 1):
+            reconstructed = EvidenceRecord.from_dict(record.to_dict())
+            if reconstructed.record_hash != record.record_hash:
+                raise EvidenceRegistryError("evidence record does not reconstruct")
+            if record.record_id != record_id:
+                raise EvidenceRegistryError("record identity changed within revision chain")
+            if record.revision != expected_revision:
+                raise EvidenceRegistryError("evidence revision sequence mismatch")
+            if record.supersedes_hash != prior_hash:
+                raise EvidenceRegistryError("evidence supersession hash mismatch")
+            if record.record_hash in seen_hashes:
+                raise EvidenceRegistryError("duplicate evidence revision hash")
+            seen_hashes.add(record.record_hash)
+            prior_hash = record.record_hash
 
     def _append(self, record: EvidenceRecord, *, write: bool = True) -> None:
         if record.record_hash in self._hashes:
