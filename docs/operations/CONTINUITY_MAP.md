@@ -4,6 +4,33 @@ Date: September 6, 2026. Scope: the existing CETA repository and the expressly
 authorized delivery work described below. Preserve the reference/training core,
 earlier local changes, historical evidence, and project boundaries.
 
+## GitHub publication validation: September 6, 2026
+
+The reviewed desktop source and a merge retaining the remote V3.1 verification
+block were pushed to the existing repository's main and desktop delivery branch
+at `435585d90b7a22ea0170e8d91a7ef1f3ee1b764e`. The five protected original
+core edits remain unchanged and are excluded from this delivery. All 252 manifest
+payload entries and 253 checksum entries matched the prospective Git blobs.
+Three historical JSON evidence files retain their original CRLF or mixed bytes
+through explicit Git attributes; they were not reformatted.
+
+The first Windows CI run executed 93 desktop tests and found one test assertion
+that compared a short Windows directory alias with the runtime's canonical path.
+The runtime correctly resolved and locked the installer. The expected path now
+uses strict resolution, and another test exercises a real Windows short alias
+while retaining the write/delete-denial and process-launch assertions. The local
+targeted run executed six tests: five passed, and alias coverage explicitly
+skipped because this host's temporary volume exposes no distinct short alias.
+No application runtime or installer bytes changed for this test correction.
+
+The separate reference workflow remains blocked by `transformers==5.5.0`,
+`CVE-2026-9856`, whose reported fix is 5.10.0. This is a training dependency,
+excluded from the isolated desktop payload; its repair requires separate
+training compatibility validation. The desktop dependency audit passed. Neither
+the reference failure nor the first Windows assertion failure is represented as
+a passing GitHub check. A subsequent Windows CI result and actual public delivery
+will be recorded separately.
+
 ## Current authorization and delivery work
 
 The user expressly authorized a dedicated CETA showcase page and direct download

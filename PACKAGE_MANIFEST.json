@@ -3,7 +3,7 @@
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
   "file_count": 252,
-  "content_root": "sha256:af262ce5cdd9f3e2d6ca0fc5182a350b6492435192696604f637f75f27d36abc",
+  "content_root": "sha256:0c821d57f37e196f5c624e3f3aafe744e9349a1aab3b8685fe0d84507e715f17",
   "files": [
     {
       "path": ".gitattributes",
@@ -317,8 +317,8 @@
     },
     {
       "path": "docs/operations/CONTINUITY_MAP.md",
-      "size": 16090,
-      "sha256": "c45a2b97b73f7386c2789d4806fc589b309a56628e82fa0ac2995caba82fa4d9"
+      "size": 17802,
+      "sha256": "cba9d04228a147cf59042f35bb85c148a2d501d7574eaeb0a21bec6eda49089f"
     },
     {
       "path": "evidence/CETA_DESKTOP_RENAME_VALIDATION.json",
@@ -1157,8 +1157,8 @@
     },
     {
       "path": "tests/test_desktop_installation.py",
-      "size": 3785,
-      "sha256": "e85bd67ec1f875f95f913848b0e9354e59bfe57998e2cdc6c89887f5fcea84b1"
+      "size": 4975,
+      "sha256": "99d699f59799040ce641d0c7dd0c18c56575f4a3f175d1a923c066eab35015f0"
     },
     {
       "path": "tests/test_desktop_network_boundary.py",

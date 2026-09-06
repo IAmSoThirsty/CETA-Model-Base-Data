@@ -1,6 +1,7 @@
 """Native update handoff rejects changed files and retains Windows file locks."""
 from __future__ import annotations
 
+import ctypes
 import hashlib
 import os
 from pathlib import Path
@@ -31,6 +32,27 @@ class DesktopInstallationTests(unittest.TestCase):
         self.temp.cleanup()
 
     def test_verified_file_stays_locked_until_native_process_creation(self):
+        self.assert_locked_handoff(self.installer)
+
+    def test_short_directory_alias_resolves_before_locked_handoff(self):
+        kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+        kernel.GetShortPathNameW.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p, ctypes.c_uint32]
+        kernel.GetShortPathNameW.restype = ctypes.c_uint32
+        directory = str(self.installer.parent.resolve(strict=True))
+        required = kernel.GetShortPathNameW(directory, None, 0)
+        if not required:
+            raise ctypes.WinError(ctypes.get_last_error())
+        buffer = ctypes.create_unicode_buffer(required)
+        written = kernel.GetShortPathNameW(directory, buffer, len(buffer))
+        if not written or written >= len(buffer):
+            raise ctypes.WinError(ctypes.get_last_error())
+        if buffer.value.casefold() == directory.casefold():
+            self.skipTest("The temporary volume does not provide a distinct Windows short alias.")
+        alias = Path(buffer.value) / self.installer.name
+        self.assertTrue(alias.samefile(self.installer))
+        self.assert_locked_handoff(alias)
+
+    def assert_locked_handoff(self, installer):
         with patch("ceta_desktop.installation.subprocess.Popen") as start:
             process = start.return_value
             process.pid = 123
@@ -43,9 +65,9 @@ class DesktopInstallationTests(unittest.TestCase):
                 return process
 
             start.side_effect = check_locked
-            self.assertEqual(launch_verified_update(self.installer, self.manifest), 123)
+            self.assertEqual(launch_verified_update(installer, self.manifest), 123)
             self.assertEqual(start.call_args.args[0],
-                             [str(self.installer), f"/WAITPID={os.getpid()}"])
+                             [str(installer.resolve(strict=True)), f"/WAITPID={os.getpid()}"])
             self.assertFalse(start.call_args.kwargs.get("shell", False))
             self.assertTrue(start.call_args.kwargs["close_fds"])
         self.installer.write_bytes(b"released")
