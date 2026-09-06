@@ -1,1 +1,5 @@
 * text=auto eol=lf
+# Preserve the original bytes of retained historical validation evidence.
+evidence/CETA_DESKTOP_RENAME_VALIDATION.json -text
+evidence/THIRSTYAI_DESKTOP_HARDENING_VALIDATION.json -text
+evidence/THIRSTYAI_DESKTOP_RELEASE_WORKFLOW_VALIDATION.json -text
