@@ -290,3 +290,50 @@ Windows Sandbox installer lifecycle had not yet been rerun for the rename.
 The later candidate 002 results above supersede those missing-validation items
 within their stated scope. The retained training dependency issue described in
 `docs/DESKTOP_DELIVERY.md` still requires separate follow-up work.
+
+
+## Desktop 0.3.1 ember redesign: build 004 local checkpoint
+
+The user-directed native redesign has seven sections with distinct planetary
+landscapes, native message/code display, conversation search and selected export,
+and persistent editor font/wrapping settings. Desktop version 0.3.1 is independent
+of the retained reference package VERSION 0.3.0. No new training epoch is claimed.
+The 21-file same-repository transfer from delivery back to the original checkout
+is recorded in the external `ember-source-sync-001.json`; the protected original
+core edits were excluded and remain preserved.
+
+`evidence/CETA_EMBER_RELEASE_VALIDATION.json` binds the current source snapshot,
+actual distribution files, and retained logs under
+`C:\Users\Quencher\.codex\audits\CETA-personal-release-20260906`.
+
+- Installer: `CETA-0.3.1-setup.exe`, 43,492,467 bytes, SHA-256
+  `6debcf31c8822bb27791e839194bd272f8fcffcd4abebd427b2ab89f7147c0e2`.
+- Distribution directory: original checkout `dist/CETA-0.3.1-personal-001`,
+  containing installer, dependency sources, verification ZIP, publisher public
+  metadata, signed update envelope, and checksums. Actual file hashes were checked.
+- Build 004: 118 desktop tests ran in 27.668 seconds; 117 passed and one host
+  short-alias test skipped. The isolated dependency audit found no known advisories.
+- Full delivery suite: 293 tests in 239.197 seconds; 292 passed and the same one
+  short-alias test skipped, exit code 0. The printed H100 test diagnostic is not
+  evidence that a new hardware training run occurred.
+- Fresh Sandbox 004: all nine lifecycle checks passed with networking disabled.
+  The installed redesigned Chat screenshot is 1540 by 813 pixels. Installation,
+  notices, startup, same-version replacement, uninstall and file preservation were
+  checked; timeout code 4 and completed-parent code 0 were retained. The test guest
+  was stopped; no other Sandbox was stopped by this validation.
+- The actual personal Ed25519 receipt passed the standalone public verifier for
+  key fingerprint
+  `583b329e113816d2bcbcaf63fe796d4d3e8d0b9e9afe15fa0caf41954c9273bb`.
+  Windows Authenticode remains NotSigned. No private key was read during evidence
+  reconciliation and no Windows trust-store modification is claimed.
+
+Public 0.3.1 assets, the website download, live channel delivery, a real installed
+application's public update, and new Windows CI are still unverified at this
+checkpoint. The offline Sandbox is same-version replacement, not proof of an
+upgrade from a prior database schema. No model download or inference benchmark
+was performed for this checkpoint. Earlier installer records remain unchanged.
+
+The coordinator must regenerate package manifests/checksums after these new docs
+and evidence, then verify and publish the reviewed source. The separate reference
+workflow gate for Transformers 5.5.0 / CVE-2026-9856 remains unresolved and requires
+training compatibility validation; it is outside the isolated desktop payload.

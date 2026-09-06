@@ -2,8 +2,8 @@
   "schema_version": 1,
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
-  "file_count": 252,
-  "content_root": "sha256:0c821d57f37e196f5c624e3f3aafe744e9349a1aab3b8685fe0d84507e715f17",
+  "file_count": 267,
+  "content_root": "sha256:fbd94018f6c2a824670e11349af0bd9f2dfc8f32b1ad17f3ce205fbed5cf83cd",
   "files": [
     {
       "path": ".gitattributes",
@@ -277,8 +277,13 @@
     },
     {
       "path": "docs/CETA_USER_GUIDE.md",
-      "size": 7043,
-      "sha256": "4481a0f1eab7c66e4af7d6ee7f67798d4611427c4b0fb1e45e5146ef4fdd6ef5"
+      "size": 10613,
+      "sha256": "e71de30172bc267b2713bc214071c35d36f4c0e9787b9d76b4857c65a4ac7830"
+    },
+    {
+      "path": "docs/CETA_VISUAL_DESIGN.md",
+      "size": 5747,
+      "sha256": "f24c96a899f5afa79d89e8fb6bc6480b5aa1a92de81c03412d641ae03149d67d"
     },
     {
       "path": "docs/CLAIM_BOUNDARY.md",
@@ -287,8 +292,8 @@
     },
     {
       "path": "docs/DESKTOP_DELIVERY.md",
-      "size": 20573,
-      "sha256": "bdf224288009ce3965429eef2930bf07de17fa28e877ca0d73f86807f913881a"
+      "size": 22892,
+      "sha256": "26a7ce9fb61d16dbe7422a60e3743f6cbb1a5f4b433f61f21a09e174c93520ec"
     },
     {
       "path": "docs/HOSTILE_REVIEW.md",
@@ -317,8 +322,8 @@
     },
     {
       "path": "docs/operations/CONTINUITY_MAP.md",
-      "size": 17802,
-      "sha256": "cba9d04228a147cf59042f35bb85c148a2d501d7574eaeb0a21bec6eda49089f"
+      "size": 20784,
+      "sha256": "ca38febb2956ddda9240aed019956f2ad88d96c738efd51fdf3730b6b3c4379d"
     },
     {
       "path": "evidence/CETA_DESKTOP_RENAME_VALIDATION.json",
@@ -329,6 +334,11 @@
       "path": "evidence/CETA_DESKTOP_UPDATE_HANDOFF_VALIDATION.json",
       "size": 15788,
       "sha256": "11a41b91c90e1dec15f8528ba0b392a09f79d33f5894fa2e7646819c926e1fc2"
+    },
+    {
+      "path": "evidence/CETA_EMBER_RELEASE_VALIDATION.json",
+      "size": 21863,
+      "sha256": "bcfa2f5d025b33ce158ab7785cfb01005d2a9c08342c36a822ec5daecb8de871"
     },
     {
       "path": "evidence/CETA_PERSONAL_RELEASE_VALIDATION.json",
@@ -467,8 +477,8 @@
     },
     {
       "path": "pyproject.toml",
-      "size": 935,
-      "sha256": "afb3418b76d9db1ab53c7db63c8e9dfd187eda789daa2f89f00708dc3e044031"
+      "size": 951,
+      "sha256": "f80abcb1f4c6ade3b02c1981da6ed5f75ffcbd83ae7adc18b1dc0576463ddcb1"
     },
     {
       "path": "registry/build_constraints.json",
@@ -552,8 +562,8 @@
     },
     {
       "path": "scripts/build_desktop.py",
-      "size": 12636,
-      "sha256": "2e0eb3a16530b40856e260822950127a2cd3a4007cd88ffb842f7cf3be5440f3"
+      "size": 12837,
+      "sha256": "ce174d3f8073df91baa37a3899f808d90f3c4c6049c0cfacd31473372d476b0f"
     },
     {
       "path": "scripts/build_language_adapter_dataset.py",
@@ -808,22 +818,67 @@
     {
       "path": "src/ceta_desktop/__init__.py",
       "size": 102,
-      "sha256": "8a045c2c07356f47ae2993c2e2ef9ac5db429e9c1e2282215af22ce7ba0a24d4"
+      "sha256": "67b45be8e7c42f970656ca4f8af0b97a1424b729161f43a8112aa98296d203b7"
     },
     {
       "path": "src/ceta_desktop/app.py",
-      "size": 49893,
-      "sha256": "cfcf5aeb51b18d32618c65d81f2f8c1f4858fa974e8dbf88f77d1eacf5faccaf"
+      "size": 65499,
+      "sha256": "88d945392c35f044aa9579d7e2a177863fe10979af82a4d4d494e76b962163d9"
+    },
+    {
+      "path": "src/ceta_desktop/assets/chat-landscape.png",
+      "size": 1768083,
+      "sha256": "438fa90241592ab8765f78b51f087846f52e763c1245fc727d783f3b0760929a"
+    },
+    {
+      "path": "src/ceta_desktop/assets/ember-landscape.png",
+      "size": 1714002,
+      "sha256": "eefea3705eaa88688c5f99d6ebe8775036364b24c7b1cdadbc4036ed157f1bb6"
+    },
+    {
+      "path": "src/ceta_desktop/assets/library-landscape.png",
+      "size": 1801731,
+      "sha256": "47065446c38ac5ae9e96129dc637d622bb13ceef40c1e60db67f3b05a4f22b30"
+    },
+    {
+      "path": "src/ceta_desktop/assets/models-landscape.png",
+      "size": 1675318,
+      "sha256": "bdca4711b8678933801076744e7132ac0ff54fb0192460206718722e7b19491c"
+    },
+    {
+      "path": "src/ceta_desktop/assets/projects-landscape.png",
+      "size": 1699940,
+      "sha256": "3e704e1b8adee30a788d972836522065b34f0eb87945e9719b44bd827a1cc91a"
+    },
+    {
+      "path": "src/ceta_desktop/assets/settings-landscape.png",
+      "size": 1643016,
+      "sha256": "89e0890b4cef22ada2b0199cbad032f1e746ca3a5c96fa985ab7d2dff9953851"
+    },
+    {
+      "path": "src/ceta_desktop/assets/updates-landscape.png",
+      "size": 1745106,
+      "sha256": "39f88bc94005264d8f7b3fee66b183e41d48f6b5387139cdf66164ec02abcfbf"
+    },
+    {
+      "path": "src/ceta_desktop/assets/workloads-landscape.png",
+      "size": 1829601,
+      "sha256": "49b81bfc25736333a072ea658750b7bb9ff10b8a9f03c737fae8e67fd65c3800"
+    },
+    {
+      "path": "src/ceta_desktop/chat_widgets.py",
+      "size": 17969,
+      "sha256": "8816f8997dbae044db4eb428401beb201b552f9c870e453ae502986f63e2a5c5"
     },
     {
       "path": "src/ceta_desktop/editor.py",
       "size": 3488,
-      "sha256": "e0bd5afd235c61dfb37380825ac4934351159217cf7bac32bb223bf4201e77b6"
+      "sha256": "a215a9c2a1566dc7ee632efc211d72908044ba3487705fe559ce1f0c9e09fac5"
     },
     {
       "path": "src/ceta_desktop/icon.svg",
-      "size": 281,
-      "sha256": "dd1f28d5d2279e2da6556a6c6b2791f625a5d297728d80aaea6b0a7594dfcab9"
+      "size": 1730,
+      "sha256": "8e1c66f4a9c745db77fb09735434c00d9f330b28c6886fdf0d4ff2bd1247aed7"
     },
     {
       "path": "src/ceta_desktop/installation.py",
@@ -849,6 +904,11 @@
       "path": "src/ceta_desktop/storage.py",
       "size": 5648,
       "sha256": "3f51c35eb20500d4ac659bc569a8192a0f0d06de877cc49255d65c20f3ee9f75"
+    },
+    {
+      "path": "src/ceta_desktop/theme.py",
+      "size": 22344,
+      "sha256": "a967a3e3743f6ce408f5ab835a28f801081301368186101c1ca07457d9e273d8"
     },
     {
       "path": "src/ceta_desktop/updates.py",
@@ -1151,6 +1211,11 @@
       "sha256": "93fdc7ea7e703fff4944c509ed7a19d7cf1d14b8aa8d728879daabe6b845df19"
     },
     {
+      "path": "tests/test_desktop_chat_widgets.py",
+      "size": 8625,
+      "sha256": "6169320b6f4b32341be11356908f6557e1a128a1de35ddd751187daf85f09e23"
+    },
+    {
       "path": "tests/test_desktop_gui.py",
       "size": 14134,
       "sha256": "44fb360d318df949e21cc646a62a8f5ad32c966a4df178af8cef2760844e44d6"
@@ -1159,6 +1224,11 @@
       "path": "tests/test_desktop_installation.py",
       "size": 4975,
       "sha256": "99d699f59799040ce641d0c7dd0c18c56575f4a3f175d1a923c066eab35015f0"
+    },
+    {
+      "path": "tests/test_desktop_navigation.py",
+      "size": 13699,
+      "sha256": "cb88a522bd7baee82a1471f507546dd3056693b855920e57826f242351c864a5"
     },
     {
       "path": "tests/test_desktop_network_boundary.py",
@@ -1174,6 +1244,11 @@
       "path": "tests/test_desktop_signing.py",
       "size": 12538,
       "sha256": "477381f041dd3e2c60b0917a4b2c6513d828551e2f95d88714a0772b7553edd0"
+    },
+    {
+      "path": "tests/test_desktop_theme.py",
+      "size": 5911,
+      "sha256": "fba18782b33f41374d4742b1756d132e3864e35164e999af49b570e50617c610"
     },
     {
       "path": "tests/test_desktop_update_keys.py",

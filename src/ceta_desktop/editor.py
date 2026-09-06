@@ -73,8 +73,8 @@ class CodeEditor(QPlainTextEdit):
 
     def paint_numbers(self, event):
         painter = QPainter(self.numbers)
-        painter.fillRect(event.rect(), QColor("#141c27"))
-        painter.setPen(QColor("#6e8199"))
+        painter.fillRect(event.rect(), QColor("#10161b"))
+        painter.setPen(QColor("#798792"))
         block = self.firstVisibleBlock()
         number = block.blockNumber()
         top = round(self.blockBoundingGeometry(block).translated(self.contentOffset()).top())

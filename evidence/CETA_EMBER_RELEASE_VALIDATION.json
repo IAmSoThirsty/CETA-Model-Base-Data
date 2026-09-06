@@ -1,0 +1,444 @@
+{
+  "schema_version": 1,
+  "product": "CETA",
+  "desktop_version": "0.3.1",
+  "reference_version": "0.3.0",
+  "candidate": "004",
+  "recorded_at_utc": "2026-09-06T22:10:23.348225+00:00",
+  "classification": "locally_validated_redesign_public_release_pending",
+  "authority": "User requested the native charcoal/ember design and distinct planetary environments for all seven sections; existing CETA GitHub and thirstysystems.com showcase/download publication and personal signing remain expressly authorized.",
+  "versioning": "Desktop 0.3.1 and the retained reference VERSION 0.3.0 are intentionally independent. No reference-core rename or training epoch is implied.",
+  "source": {
+    "delivery_root": "T:\\00-Active\\CETA-desktop-delivery-20260906",
+    "original_root": "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0",
+    "delivery_head_before_redesign_commit": "6e36163347601240e17986e503fc6a97510920d1",
+    "original_head": "decd957ef91884e5ba9fc61c627fb5481d53a80f",
+    "delivery_branch": "codex/ceta-desktop-release",
+    "original_branch": "codex/ceta-curriculum-v3",
+    "transfer_record": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\ember-source-sync-001.json",
+      "size": 4963,
+      "sha256": "bc595064716fe81725b758108b1ba384295894bd3650e4d8d9ede675d59d68a0"
+    },
+    "transfer_recorded_at": "2026-09-06T21:47:59.399754+00:00",
+    "current_snapshot": [
+      {
+        "path": "docs/CETA_USER_GUIDE.md",
+        "transfer_sha256": "e71de30172bc267b2713bc214071c35d36f4c0e9787b9d76b4857c65a4ac7830",
+        "current_sha256": "e71de30172bc267b2713bc214071c35d36f4c0e9787b9d76b4857c65a4ac7830",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "pyproject.toml",
+        "transfer_sha256": "f80abcb1f4c6ade3b02c1981da6ed5f75ffcbd83ae7adc18b1dc0576463ddcb1",
+        "current_sha256": "f80abcb1f4c6ade3b02c1981da6ed5f75ffcbd83ae7adc18b1dc0576463ddcb1",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "scripts/build_desktop.py",
+        "transfer_sha256": "ce174d3f8073df91baa37a3899f808d90f3c4c6049c0cfacd31473372d476b0f",
+        "current_sha256": "ce174d3f8073df91baa37a3899f808d90f3c4c6049c0cfacd31473372d476b0f",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "src/ceta_desktop/__init__.py",
+        "transfer_sha256": "67b45be8e7c42f970656ca4f8af0b97a1424b729161f43a8112aa98296d203b7",
+        "current_sha256": "67b45be8e7c42f970656ca4f8af0b97a1424b729161f43a8112aa98296d203b7",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "src/ceta_desktop/app.py",
+        "transfer_sha256": "88d945392c35f044aa9579d7e2a177863fe10979af82a4d4d494e76b962163d9",
+        "current_sha256": "88d945392c35f044aa9579d7e2a177863fe10979af82a4d4d494e76b962163d9",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "src/ceta_desktop/editor.py",
+        "transfer_sha256": "a215a9c2a1566dc7ee632efc211d72908044ba3487705fe559ce1f0c9e09fac5",
+        "current_sha256": "a215a9c2a1566dc7ee632efc211d72908044ba3487705fe559ce1f0c9e09fac5",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "src/ceta_desktop/icon.svg",
+        "transfer_sha256": "8e1c66f4a9c745db77fb09735434c00d9f330b28c6886fdf0d4ff2bd1247aed7",
+        "current_sha256": "8e1c66f4a9c745db77fb09735434c00d9f330b28c6886fdf0d4ff2bd1247aed7",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "docs/CETA_VISUAL_DESIGN.md",
+        "transfer_sha256": "32e611d4e79f33d01d0f6314b6a823d248a772c5b1adcc452d8ca0a81468b8d7",
+        "current_sha256": "f24c96a899f5afa79d89e8fb6bc6480b5aa1a92de81c03412d641ae03149d67d",
+        "both_roots_match": true,
+        "changed_after_transfer": true
+      },
+      {
+        "path": "src/ceta_desktop/assets/chat-landscape.png",
+        "transfer_sha256": "438fa90241592ab8765f78b51f087846f52e763c1245fc727d783f3b0760929a",
+        "current_sha256": "438fa90241592ab8765f78b51f087846f52e763c1245fc727d783f3b0760929a",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "src/ceta_desktop/assets/ember-landscape.png",
+        "transfer_sha256": "eefea3705eaa88688c5f99d6ebe8775036364b24c7b1cdadbc4036ed157f1bb6",
+        "current_sha256": "eefea3705eaa88688c5f99d6ebe8775036364b24c7b1cdadbc4036ed157f1bb6",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "src/ceta_desktop/assets/library-landscape.png",
+        "transfer_sha256": "47065446c38ac5ae9e96129dc637d622bb13ceef40c1e60db67f3b05a4f22b30",
+        "current_sha256": "47065446c38ac5ae9e96129dc637d622bb13ceef40c1e60db67f3b05a4f22b30",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "src/ceta_desktop/assets/models-landscape.png",
+        "transfer_sha256": "bdca4711b8678933801076744e7132ac0ff54fb0192460206718722e7b19491c",
+        "current_sha256": "bdca4711b8678933801076744e7132ac0ff54fb0192460206718722e7b19491c",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "src/ceta_desktop/assets/projects-landscape.png",
+        "transfer_sha256": "3e704e1b8adee30a788d972836522065b34f0eb87945e9719b44bd827a1cc91a",
+        "current_sha256": "3e704e1b8adee30a788d972836522065b34f0eb87945e9719b44bd827a1cc91a",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "src/ceta_desktop/assets/settings-landscape.png",
+        "transfer_sha256": "89e0890b4cef22ada2b0199cbad032f1e746ca3a5c96fa985ab7d2dff9953851",
+        "current_sha256": "89e0890b4cef22ada2b0199cbad032f1e746ca3a5c96fa985ab7d2dff9953851",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "src/ceta_desktop/assets/updates-landscape.png",
+        "transfer_sha256": "39f88bc94005264d8f7b3fee66b183e41d48f6b5387139cdf66164ec02abcfbf",
+        "current_sha256": "39f88bc94005264d8f7b3fee66b183e41d48f6b5387139cdf66164ec02abcfbf",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "src/ceta_desktop/assets/workloads-landscape.png",
+        "transfer_sha256": "49b81bfc25736333a072ea658750b7bb9ff10b8a9f03c737fae8e67fd65c3800",
+        "current_sha256": "49b81bfc25736333a072ea658750b7bb9ff10b8a9f03c737fae8e67fd65c3800",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "src/ceta_desktop/chat_widgets.py",
+        "transfer_sha256": "8816f8997dbae044db4eb428401beb201b552f9c870e453ae502986f63e2a5c5",
+        "current_sha256": "8816f8997dbae044db4eb428401beb201b552f9c870e453ae502986f63e2a5c5",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "src/ceta_desktop/theme.py",
+        "transfer_sha256": "a967a3e3743f6ce408f5ab835a28f801081301368186101c1ca07457d9e273d8",
+        "current_sha256": "a967a3e3743f6ce408f5ab835a28f801081301368186101c1ca07457d9e273d8",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "tests/test_desktop_chat_widgets.py",
+        "transfer_sha256": "6169320b6f4b32341be11356908f6557e1a128a1de35ddd751187daf85f09e23",
+        "current_sha256": "6169320b6f4b32341be11356908f6557e1a128a1de35ddd751187daf85f09e23",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "tests/test_desktop_navigation.py",
+        "transfer_sha256": "cb88a522bd7baee82a1471f507546dd3056693b855920e57826f242351c864a5",
+        "current_sha256": "cb88a522bd7baee82a1471f507546dd3056693b855920e57826f242351c864a5",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      },
+      {
+        "path": "tests/test_desktop_theme.py",
+        "transfer_sha256": "fba18782b33f41374d4742b1756d132e3864e35164e999af49b570e50617c610",
+        "current_sha256": "fba18782b33f41374d4742b1756d132e3864e35164e999af49b570e50617c610",
+        "both_roots_match": true,
+        "changed_after_transfer": false
+      }
+    ],
+    "protected_core": [
+      {
+        "path": "scripts/verify_epoch_readiness_report.py",
+        "original_dirty_sha256": "12723887a42a265175530f0b4b3cf57ae2204b4fc0274c406ebb1ea3a061e371",
+        "delivery_base_sha256": "b490d65f1b63660cfd056303144279477b1b879e8c0b85807db91150c070a4fe",
+        "preserved": true
+      },
+      {
+        "path": "src/architecture_contracts.py",
+        "original_dirty_sha256": "b99290d8cd47f7aed734d0a2e8b0c1bbbcd6a99fd7dd307c06ad588405c54686",
+        "delivery_base_sha256": "2f0d691b7521a2544a9d2562587863fd0e6c05f3589add078cb4076f7e6273bd",
+        "preserved": true
+      },
+      {
+        "path": "src/authority/ledger.py",
+        "original_dirty_sha256": "f74e6828259670099f8c2ede5789247c4c4a632155519970610f16b97c2e9359",
+        "delivery_base_sha256": "febca208c929cb8c9813812670247c42d6d54e0a367c001032e8bb88c7fe3605",
+        "preserved": true
+      },
+      {
+        "path": "src/identity_registry/registry.py",
+        "original_dirty_sha256": "4332f56201bedc54be4d281f9ad88557c5bff213e5985ecc6d1fc646dcbdeef3",
+        "delivery_base_sha256": "07bc0d240c855f0064eca58d6392752c409af1c382326f1050f761d771d55289",
+        "preserved": true
+      },
+      {
+        "path": "src/runtime/core.py",
+        "original_dirty_sha256": "5b53a2ba54ebadb4401b2a72da204fd64d16477609e88a309ad682a850b9f384",
+        "delivery_base_sha256": "9dbc35780331a41cd1961143f4ce2264f7d47b7a355393a55d8f373ed663f4ca",
+        "preserved": true
+      }
+    ],
+    "snapshot_limit": "Source transfer was recorded after the build; current hashes corroborate the retained source, not a signed build-input attestation. Visual-design checkpoint wording changed after transfer; runtime and assets match it. Final docs/evidence are post-build additions."
+  },
+  "artifacts": {
+    "distribution_root": "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\dist\\CETA-0.3.1-personal-001",
+    "public_files": [
+      {
+        "path": "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\dist\\CETA-0.3.1-personal-001\\CETA-0.3.1-dependency-sources.zip",
+        "size": 70981896,
+        "sha256": "063ed318ffdc8bf7e843cc47094ac721aab70218f36623f25406326bb0024778"
+      },
+      {
+        "path": "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\dist\\CETA-0.3.1-personal-001\\CETA-0.3.1-setup.exe",
+        "size": 43492467,
+        "sha256": "6debcf31c8822bb27791e839194bd272f8fcffcd4abebd427b2ab89f7147c0e2"
+      },
+      {
+        "path": "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\dist\\CETA-0.3.1-personal-001\\CETA-0.3.1-verification.zip",
+        "size": 12121,
+        "sha256": "60fec9a2db7000f519813a8a362c6a72fdb238da38fdd92a1956769942a06842"
+      },
+      {
+        "path": "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\dist\\CETA-0.3.1-personal-001\\CETA-PUBLISHER.json",
+        "size": 383,
+        "sha256": "5fa26234d42657e92c5411086ffdb1b605179d4148e09b49cacbc87f52c00d9c"
+      },
+      {
+        "path": "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\dist\\CETA-0.3.1-personal-001\\CETA-UPDATE.json",
+        "size": 473,
+        "sha256": "035324cc84f529cd950790ac5f78b52f8c83240e45f0ff12fe9404137118d29f"
+      },
+      {
+        "path": "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\dist\\CETA-0.3.1-personal-001\\SHA256SUMS",
+        "size": 450,
+        "sha256": "7cd4c8dfa2ca83bd495072310d42ac8e0a9a6609817cfb74ee985b526f2acbca"
+      }
+    ],
+    "build_installer": {
+      "path": "C:\\Users\\Quencher\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\CETA-build\\01a074c6\\release-004\\CETA-0.3.1-setup.exe",
+      "size": 43492467,
+      "sha256": "6debcf31c8822bb27791e839194bd272f8fcffcd4abebd427b2ab89f7147c0e2"
+    },
+    "build_and_distribution_installer_identical": true,
+    "sandbox_installer_identical": true,
+    "dependency_source_companion_identical": true
+  },
+  "validation": {
+    "desktop_build": {
+      "tests_run": 118,
+      "passed": 117,
+      "skipped": 1,
+      "seconds": 27.668,
+      "result": "OK (skipped=1)",
+      "skipped_test": "test_short_directory_alias_resolves_before_locked_handoff (test_desktop_installation.DesktopInstallationTests.test_short_directory_alias_resolves_before_locked_handoff) ... skipped 'The temporary volume does not provide a distinct Windows short alias.'",
+      "desktop_dependency_audit": "No known vulnerabilities found",
+      "build_status": "built_unsigned_not_published"
+    },
+    "full_delivery_suite": {
+      "tests_run": 293,
+      "passed": 292,
+      "skipped": 1,
+      "seconds": 239.197,
+      "exit_code": 0,
+      "source_root": "T:\\00-Active\\CETA-desktop-delivery-20260906",
+      "source_record": {
+        "exit_code": 0,
+        "finished_at": "2026-09-06T21:48:18.7548291Z",
+        "source": "T:\\00-Active\\CETA-desktop-delivery-20260906",
+        "command": "python -B -m unittest discover -s tests -v"
+      }
+    },
+    "ruff_f_e9": "PASS reported by release coordinator; not rerun during this documentation-only reconciliation.",
+    "sandbox": {
+      "report": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\sandbox-004\\CETA-SANDBOX-VALIDATION.json",
+        "size": 6717,
+        "sha256": "2a7fd46fbb0eebd672152b6ef283ff42a40b315587c988afe36561c027e4a3b6"
+      },
+      "lifecycle": {
+        "status": "PASS",
+        "environment": "Windows Sandbox",
+        "network": "disabled",
+        "checks": [
+          "install",
+          "dependency_license_notices",
+          "startup",
+          "update_wait_timeout",
+          "update_wait_for_exit",
+          "update",
+          "uninstall",
+          "application_data_preserved",
+          "unrecognized_file_preserved"
+        ]
+      },
+      "update_handoff": {
+        "status": "PASS",
+        "timeout_exit_code": 4,
+        "completed_parent_exit_code": 0
+      },
+      "test_guest_stopped": true,
+      "other_guests_stopped": 0,
+      "screenshot": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\sandbox-004\\results\\installed-window.png",
+        "size": 429351,
+        "sha256": "823942014c1399e7eea33d2353478f869509f6923e3e4a2f1d2628f9cf0a4f23",
+        "width": 1540,
+        "height": 813
+      },
+      "scope": "Offline installation and same-version replacement, not a live update or prior database-schema migration."
+    },
+    "personal_verification": {
+      "result": "PASS",
+      "public_key_sha256": "583b329e113816d2bcbcaf63fe796d4d3e8d0b9e9afe15fa0caf41954c9273bb",
+      "signed_manifest": {
+        "schema_version": 1,
+        "product": "CETA",
+        "version": "0.3.1",
+        "platform": "windows-x64",
+        "url": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data/releases/download/ceta-desktop-v0.3.1/CETA-0.3.1-setup.exe",
+        "sha256": "6debcf31c8822bb27791e839194bd272f8fcffcd4abebd427b2ab89f7147c0e2",
+        "size": 43492467
+      },
+      "retained_check": {
+        "command": [
+          "C:\\Users\\Quencher\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ThirstyAI-build\\01a074c6\\venv\\Scripts\\python.exe",
+          "-B",
+          "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\verification-0.3.1\\verify_ceta.py",
+          "--installer",
+          "C:\\Users\\Quencher\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\CETA-build\\01a074c6\\release-004\\CETA-0.3.1-setup.exe",
+          "--trusted-fingerprint",
+          "583b329e113816d2bcbcaf63fe796d4d3e8d0b9e9afe15fa0caf41954c9273bb"
+        ],
+        "started_at_utc": "2026-09-06T21:58:23.776437+00:00",
+        "completed_at_utc": "2026-09-06T21:58:24.040605+00:00",
+        "exit_code": 0,
+        "stdout": "VERIFIED: CETA 0.3.1 matches the independently pinned publisher key.\nInstaller SHA-256: 6debcf31c8822bb27791e839194bd272f8fcffcd4abebd427b2ab89f7147c0e2\n",
+        "stderr": "",
+        "verifier_sha256": "604ba221c783a21a583ae21c5c96b9a4e515d44e9c8bc80d3cc174034766963b",
+        "installer_sha256": "6debcf31c8822bb27791e839194bd272f8fcffcd4abebd427b2ab89f7147c0e2",
+        "installer_executed": false,
+        "network_requests": false,
+        "private_key_access": false
+      },
+      "independent_reconciliation_check": "Standalone public verifier rerun against original dist/CETA-0.3.1-personal-001 installer: exit 0, VERIFIED CETA 0.3.1. ZIP public envelope, key metadata and verifier bytes match the independently checked public files.",
+      "private_key_access": false,
+      "installer_executed_during_reconciliation": false
+    },
+    "authenticode": {
+      "status": "NotSigned",
+      "checked_using": "Get-AuthenticodeSignature on the exact distribution installer",
+      "windows_ca_trust_claimed": false
+    }
+  },
+  "documentation_snapshot": [
+    {
+      "path": "T:\\00-Active\\CETA-desktop-delivery-20260906\\docs\\DESKTOP_DELIVERY.md",
+      "size": 22892,
+      "sha256": "26a7ce9fb61d16dbe7422a60e3743f6cbb1a5f4b433f61f21a09e174c93520ec",
+      "relative_path": "docs/DESKTOP_DELIVERY.md"
+    },
+    {
+      "path": "T:\\00-Active\\CETA-desktop-delivery-20260906\\docs\\operations\\CONTINUITY_MAP.md",
+      "size": 20784,
+      "sha256": "ca38febb2956ddda9240aed019956f2ad88d96c738efd51fdf3730b6b3c4379d",
+      "relative_path": "docs/operations/CONTINUITY_MAP.md"
+    },
+    {
+      "path": "T:\\00-Active\\CETA-desktop-delivery-20260906\\docs\\CETA_VISUAL_DESIGN.md",
+      "size": 5747,
+      "sha256": "f24c96a899f5afa79d89e8fb6bc6480b5aa1a92de81c03412d641ae03149d67d",
+      "relative_path": "docs/CETA_VISUAL_DESIGN.md"
+    }
+  ],
+  "external_evidence": [
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\ember-source-sync-001.json",
+      "size": 4963,
+      "sha256": "bc595064716fe81725b758108b1ba384295894bd3650e4d8d9ede675d59d68a0"
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\ember-full-repository-tests.log",
+      "size": 52192,
+      "sha256": "06aadecf426a1bd0c004dfc0c50d99b5628c81b59e1f74a5d0f5b5fa6dd7375c"
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\ember-full-repository-tests-exit.json",
+      "size": 196,
+      "sha256": "1d2a37ce0614b67c1d69d776586bf693ed68d53e2c8f14cd8f86ed3262833ff7"
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\desktop-build-004.log",
+      "size": 35186,
+      "sha256": "2c9b2bd6ca3696404a2736c3274a3f40f89c7e607984e9178478f2fd01c3d4ef"
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\public-payload-0.3.1.json",
+      "size": 910,
+      "sha256": "2593068063dda8bc5196c3e15a5f8916d298aafb3186b7cf0e62fd68484a53f4"
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\publication-check\\local-verification-0.3.1.json",
+      "size": 1182,
+      "sha256": "d77fd9faebc0f1c6effa8be67a2cc172ecf8117ba84c622ed4d6acd5bd70b4df"
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\sandbox-004\\CETA-SANDBOX-VALIDATION.json",
+      "size": 6717,
+      "sha256": "2a7fd46fbb0eebd672152b6ef283ff42a40b315587c988afe36561c027e4a3b6"
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\sandbox-004\\results\\result.json",
+      "size": 257,
+      "sha256": "fd8ce47e55db7f56554468c54030a3751c476140366da6527d6bb4080081cc22"
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\sandbox-004\\results\\update-handoff.json",
+      "size": 75,
+      "sha256": "3c8880449bad1b53106047a5c78781ad61d27f703a3f9a76d224bd13f1e9ebd6"
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\sandbox-004\\results\\installed-window.png",
+      "size": 429351,
+      "sha256": "823942014c1399e7eea33d2353478f869509f6923e3e4a2f1d2628f9cf0a4f23"
+    }
+  ],
+  "publication": {
+    "public_0_3_1_release": "pending",
+    "website_download": "not verified for 0.3.1",
+    "live_signed_update_channel": "not verified for 0.3.1",
+    "new_windows_ci": "pending",
+    "package_manifests": "Coordinator must regenerate after new docs/evidence before publishing source."
+  },
+  "limitations": [
+    "One Windows short-alias test skipped because this host offers no distinct alias; the other 117 desktop and 292 full-suite tests passed.",
+    "Same-installer offline Sandbox replacement does not verify upgrading from earlier database schemas or a live HTTPS update from an installed application.",
+    "Personal Ed25519 verification requires an independently trusted publisher fingerprint and does not establish Windows CA trust or remove SmartScreen warnings.",
+    "The separate reference workflow remains blocked by Transformers 5.5.0 / CVE-2026-9856; the reported fix 5.10.0 requires training compatibility validation. Training dependencies are excluded from the isolated desktop payload.",
+    "Original local core edits remain preserved and excluded from delivery; these results do not validate those separate changes.",
+    "No new training epoch, model download, or model-quality benchmark occurred in this checkpoint. Historical artifacts and evidence have not been rewritten."
+  ]
+}

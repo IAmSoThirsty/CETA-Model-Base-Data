@@ -13,7 +13,7 @@ dependencies = ["cryptography>=42"]
 where = ["src"]
 
 [tool.setuptools.package-data]
-ceta_desktop = ["*.json", "*.svg"]
+ceta_desktop = ["*.json", "*.svg", "assets/*.png"]
 
 [project.optional-dependencies]
 desktop = ["PySide6-Essentials==6.11.2"]

@@ -161,7 +161,9 @@ def main():
         channel_directory.mkdir()
         channel = channel_directory / "release_channel.json"
         channel.write_text(json.dumps(config, indent=2), encoding="utf-8")
-    version = (ROOT / "VERSION").read_text().strip()
+    # Desktop releases evolve independently of the retained reference package.
+    sys.path.insert(0, str(ROOT / "src"))
+    from ceta_desktop import __version__ as version
     from PySide6.QtCore import Qt
     from PySide6.QtGui import QImage, QPainter
     from PySide6.QtSvg import QSvgRenderer
@@ -185,6 +187,7 @@ def main():
         "--icon", str(icon_path),
         "--add-data", f"{channel};ceta_desktop",
         "--add-data", f"{ROOT / 'src/ceta_desktop/icon.svg'};ceta_desktop",
+        "--add-data", f"{ROOT / 'src/ceta_desktop/assets'};ceta_desktop/assets",
         "--distpath", str(output / "app"), "--workpath", str(output / "work"),
         "--specpath", str(output), str(ROOT / "scripts/desktop_entry.py"),
     ], cwd=ROOT, env=build_environment, check=True)

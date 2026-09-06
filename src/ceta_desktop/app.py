@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import html
 from importlib.resources import files
 import json
 import os
@@ -10,13 +9,14 @@ from pathlib import Path
 import subprocess
 import sys
 import threading
+from datetime import datetime
 
-from PySide6.QtCore import QDir, QLockFile, QProcess, QProcessEnvironment, QThread, QTimer, QUrl, Qt, Signal
+from PySide6.QtCore import QDir, QSize, QLockFile, QProcess, QProcessEnvironment, QThread, QTimer, QUrl, Qt, Signal
 from PySide6.QtGui import QAction, QCloseEvent, QDesktopServices, QFont, QIcon, QKeySequence, QTextCursor
 from PySide6.QtWidgets import (
-    QApplication, QComboBox, QFileDialog, QFileSystemModel, QFormLayout, QHBoxLayout,
-    QInputDialog, QLabel, QLineEdit, QListWidget, QMainWindow, QMessageBox, QPlainTextEdit,
-    QPushButton, QSplitter, QStackedWidget, QTextBrowser, QTreeView,
+    QApplication, QCheckBox, QComboBox, QFrame, QFileDialog, QFileSystemModel, QFormLayout, QHBoxLayout,
+    QInputDialog, QLabel, QLineEdit, QListWidget, QListWidgetItem, QMainWindow, QMessageBox, QPlainTextEdit,
+    QPushButton, QScrollArea, QSpinBox, QSplitter, QStackedWidget, QTreeView,
     QVBoxLayout, QWidget,
 )
 
@@ -28,6 +28,8 @@ from .updates import check_update, download_update
 from .instance import open_application_marker, close_application_marker
 from .installation import launch_verified_update
 from .editor import CodeEditor
+from .theme import APP_STYLESHEET, BrandMark, EmberSidebar, ScenePage, icon
+from .chat_widgets import ChatTranscript
 
 
 class BackgroundTask(QThread):
@@ -85,8 +87,8 @@ class MainWindow(QMainWindow):
         self.process.errorOccurred.connect(self._workload_error)
         self.setWindowTitle(f"CETA · {__version__}")
         self.setWindowIcon(QIcon(str(files("ceta_desktop").joinpath("icon.svg"))))
-        self.resize(1400, 900)
-        self.setMinimumSize(920, 600)
+        self.resize(1540, 940)
+        self.setMinimumSize(1100, 720)
         self.draft_timer = QTimer(self)
         self.draft_timer.setSingleShot(True)
         self.draft_timer.timeout.connect(self._save_editor_draft)
@@ -113,29 +115,66 @@ class MainWindow(QMainWindow):
 
     def _build_ui(self):
         central = QWidget()
+        central.setObjectName("appShell")
         outer = QHBoxLayout(central)
         outer.setContentsMargins(0, 0, 0, 0)
+        outer.setSpacing(0)
+        sidebar = EmberSidebar()
+        self.sidebar = sidebar
+        sidebar.setObjectName("sidebar")
+        sidebar.setFixedWidth(222)
+        rail = QVBoxLayout(sidebar)
+        rail.setContentsMargins(16, 24, 16, 20)
+        rail.setSpacing(24)
+        brand_row = QHBoxLayout()
+        brand_row.setSpacing(9)
+        brand_row.addWidget(BrandMark(size=57))
+        brand_text = QVBoxLayout()
+        brand_text.setSpacing(3)
+        name = QLabel("CETA")
+        name.setObjectName("brandName")
+        brand_text.addWidget(name)
+        tagline = QLabel("LOCAL INTELLIGENCE.\nUSER SOVEREIGNTY.")
+        tagline.setObjectName("brandTagline")
+        brand_text.addWidget(tagline)
+        brand_row.addLayout(brand_text)
+        rail.addLayout(brand_row)
         self.navigation = QListWidget()
-        self.navigation.addItems(["Workbench", "Conversations", "Workloads", "Model packs", "Updates & about"])
-        sidebar = QWidget()
-        sidebar.setFixedWidth(185)
-        sidebar_layout = QVBoxLayout(sidebar)
-        sidebar_layout.setContentsMargins(4, 6, 4, 0)
-        brand = QLabel("CETA")
-        brand.setObjectName("heading")
-        sidebar_layout.addWidget(brand)
-        sidebar_layout.addWidget(self.navigation)
+        self.navigation.setObjectName("navigation")
+        self.navigation.setAccessibleName("CETA navigation")
+        self.navigation.setIconSize(QSize(22, 22))
+        self.navigation.setSpacing(5)
+        for name, symbol in (("Chat", "chat"), ("Projects", "projects"), ("Library", "library"),
+                             ("Models", "models"), ("Workloads", "terminal"),
+                             ("Updates", "updates"), ("Settings", "settings")):
+            item = QListWidgetItem(icon(symbol), name)
+            item.setSizeHint(QSize(180, 47))
+            self.navigation.addItem(item)
+        rail.addWidget(self.navigation, 1)
+        motto = QLabel("Your data.\nYour machine.\nYour intelligence.")
+        motto.setObjectName("sidebarMotto")
+        rail.addWidget(motto)
+        footing = QLabel("A MORE SOVEREIGN\nTOMORROW.")
+        footing.setObjectName("brandTagline")
+        rail.addWidget(footing)
         self.pages = QStackedWidget()
+        self.pages.addWidget(self._chat_page())
         self.pages.addWidget(self._workbench())
-        self.pages.addWidget(self._conversations_page())
-        self.pages.addWidget(self._workloads_page())
+        self.pages.addWidget(self._library_page())
         self.pages.addWidget(self._models_page())
+        self.pages.addWidget(self._workloads_page())
         self.pages.addWidget(self._updates_page())
+        self.pages.addWidget(self._settings_page())
+        self._connect_model_selectors()
         self.navigation.currentRowChanged.connect(self.pages.setCurrentIndex)
+        scenes = ("chat", "projects", "library", "models", "workloads", "updates", "settings")
+        self.navigation.currentRowChanged.connect(lambda row: self.sidebar.set_scene(scenes[row]) if 0 <= row < len(scenes) else None)
         self.navigation.setCurrentRow(0)
         outer.addWidget(sidebar)
         outer.addWidget(self.pages, 1)
         self.setCentralWidget(central)
+        self.setStyleSheet(APP_STYLESHEET)
+        self.setFont(QFont("Segoe UI", 10))
         file_menu = self.menuBar().addMenu("File")
         for label, shortcut, callback in (
             ("Open workspace…", "Ctrl+O", self.choose_workspace),
@@ -143,44 +182,222 @@ class MainWindow(QMainWindow):
             ("New file…", "Ctrl+Shift+N", self.new_file),
             ("Find in file…", "Ctrl+F", self.find_in_file),
             ("New conversation", "Ctrl+N", self.new_conversation),
+            ("Export conversation…", "Ctrl+Shift+E", self.export_conversation),
         ):
             action = QAction(label, self)
             action.setShortcut(QKeySequence(shortcut))
             action.triggered.connect(callback)
             file_menu.addAction(action)
-        self.setStyleSheet("""
-            QMainWindow, QWidget { background: #141922; color: #e2e8f0; font-size: 13px; }
-            QMenuBar, QMenu { background: #1c2430; }
-            QListWidget, QTreeView, QPlainTextEdit, QTextBrowser, QLineEdit, QComboBox {
-                background: #10151d; border: 1px solid #303b4b; border-radius: 5px;
-                selection-background-color: #244e68; padding: 6px;
-            }
-            QListWidget::item { padding: 13px 5px; }
-            QListWidget::item:selected { background: #20394a; color: #76e3c1; }
-            QPushButton { background: #253648; border: 1px solid #3b5269; border-radius: 5px; padding: 8px 14px; }
-            QPushButton:hover { background: #34516a; }
-            QPushButton:disabled { color: #758293; background: #1c2430; }
-            QLabel#heading { font-size: 24px; font-weight: 600; padding: 8px 0; }
-            QTabBar::tab { background: #1c2430; padding: 8px 16px; }
-            QSplitter::handle { background: #293341; }
-            QStatusBar { color: #97a9be; }
-        """)
+        self.statusBar().setSizeGripEnabled(True)
+        for label in self.findChildren(QLabel):
+            label.setTextFormat(Qt.PlainText)
+
+    def _action(self, text, callback, symbol=None, primary=False):
+        control = button(text, callback)
+        control.setObjectName("primaryButton" if primary else "secondaryButton")
+        if symbol:
+            control.setIcon(icon(symbol, "#ff943f" if primary else "#c0c7cf"))
+        control.setMinimumHeight(38)
+        return control
+
+    def _page(self, title, subtitle):
+        page = ScenePage(scene=title.lower())
+        outer = QVBoxLayout(page)
+        outer.setContentsMargins(0, 0, 0, 0)
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.NoFrame)
+        scroll.setStyleSheet("QScrollArea { background: transparent; border: none; }")
+        scroll.viewport().setAutoFillBackground(False)
+        content = QWidget()
+        content.setObjectName("pageContent")
+        content.setAutoFillBackground(False)
+        layout = QVBoxLayout(content)
+        layout.setContentsMargins(28, 24, 28, 24)
+        layout.setSpacing(20)
+        heading = QLabel(title)
+        heading.setObjectName("pageTitle")
+        layout.addWidget(heading)
+        description = QLabel(subtitle)
+        description.setObjectName("pageSubtitle")
+        description.setWordWrap(True)
+        layout.addWidget(description)
+        scroll.setWidget(content)
+        content.setAutoFillBackground(False)
+        scroll.viewport().setAutoFillBackground(False)
+        outer.addWidget(scroll)
+        return page, layout
+
+    def _card(self, title, description=None):
+        card = QFrame()
+        card.setObjectName("card")
+        layout = QVBoxLayout(card)
+        layout.setContentsMargins(22, 20, 22, 20)
+        layout.setSpacing(14)
+        label = QLabel(title)
+        label.setObjectName("pageHeader")
+        layout.addWidget(label)
+        if description:
+            body = QLabel(description)
+            body.setWordWrap(True)
+            body.setObjectName("muted")
+            layout.addWidget(body)
+        return card, layout
+
+    def _chat_page(self):
+        page = ScenePage(scene="chat")
+        layout = QHBoxLayout(page)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        self.chat_rail = QWidget()
+        self.chat_rail.setObjectName("chatRail")
+        self.chat_rail.setMinimumWidth(200)
+        self.chat_rail.setMaximumWidth(320)
+        rail = QVBoxLayout(self.chat_rail)
+        rail.setContentsMargins(16, 24, 16, 16)
+        rail.setSpacing(14)
+        title = QLabel("Conversations")
+        title.setObjectName("pageHeader")
+        rail.addWidget(title)
+        self.conversation_search = QLineEdit()
+        self.conversation_search.setPlaceholderText("Search conversations…")
+        self.conversation_search.setAccessibleName("Search conversations")
+        self.conversation_search.addAction(icon("search"), QLineEdit.LeadingPosition)
+        self.conversation_search.textChanged.connect(self._filter_conversations)
+        rail.addWidget(self.conversation_search)
+        rail.addWidget(self._action("New Chat", self.new_conversation, "plus", primary=True))
+        self.conversation_list = QListWidget()
+        self.conversation_list.setObjectName("conversationList")
+        self.conversation_list.setAccessibleName("Saved conversations")
+        self.conversation_list.setSpacing(4)
+        self.conversation_list.itemClicked.connect(self._select_conversation)
+        rail.addWidget(self.conversation_list, 1)
+        self.conversation_empty = QLabel("Your conversations will appear here.\nStart a new chat when you are ready.")
+        self.conversation_empty.setWordWrap(True)
+        self.conversation_empty.setObjectName("muted")
+        rail.addWidget(self.conversation_empty)
+        rail.addWidget(self._action("Export conversation…", self.export_conversation, "file"))
+        splitter = QSplitter()
+        splitter.setChildrenCollapsible(False)
+        splitter.addWidget(self.chat_rail)
+        splitter.addWidget(self._chat_panel())
+        splitter.setSizes([270, 870])
+        layout.addWidget(splitter)
+        return page
+
+    def _chat_panel(self):
+        panel = QWidget()
+        layout = QVBoxLayout(panel)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        header = QWidget()
+        header.setObjectName("chatHeader")
+        top = QHBoxLayout(header)
+        top.setContentsMargins(28, 20, 28, 18)
+        title = QVBoxLayout()
+        title.setSpacing(3)
+        self.chat_title = QLabel("Chat")
+        self.chat_title.setObjectName("pageTitle")
+        title.addWidget(self.chat_title)
+        subtitle = QLabel("Local AI. Real control. A brighter tomorrow.")
+        subtitle.setObjectName("pageSubtitle")
+        title.addWidget(subtitle)
+        top.addLayout(title, 1)
+        self.chat_model_combo = QComboBox()
+        self.chat_model_combo.setEditable(True)
+        self.chat_model_combo.setMinimumWidth(150)
+        self.chat_model_combo.setMaximumWidth(210)
+        self.chat_model_combo.setAccessibleName("Chat model")
+        self.chat_model_combo.lineEdit().setPlaceholderText("Select model")
+        top.addWidget(self.chat_model_combo)
+        self.privacy_badge = QLabel("◉  Local · Offline-first")
+        self.privacy_badge.setObjectName("privacyBadge")
+        self.privacy_badge.setToolTip("CETA connects only to local model endpoints. Separately started runtimes retain their own privacy settings.")
+        top.addWidget(self.privacy_badge)
+        layout.addWidget(header)
+        self.chat_view = ChatTranscript()
+        layout.addWidget(self.chat_view, 1)
+        composer_margin = QVBoxLayout()
+        composer_margin.setContentsMargins(24, 10, 24, 8)
+        composer = QFrame()
+        composer.setObjectName("composer")
+        compose_layout = QVBoxLayout(composer)
+        compose_layout.setContentsMargins(12, 8, 12, 10)
+        compose_layout.setSpacing(8)
+        self.prompt = QPlainTextEdit()
+        self.prompt.setObjectName("chatPrompt")
+        self.prompt.setMinimumHeight(58)
+        self.prompt.setMaximumHeight(125)
+        self.prompt.setPlaceholderText("Type a message to CETA…")
+        self.prompt.setAccessibleName("Message to CETA")
+        self.prompt.textChanged.connect(lambda: self.prompt_timer.start(500))
+        compose_layout.addWidget(self.prompt)
+        actions = QHBoxLayout()
+        attach = self._action("Open file", self.attach_document, "file")
+        attach.setObjectName("quietButton")
+        attach.setToolTip("Add the currently open editor file to this draft. Nothing is sent until you choose Send.")
+        actions.addWidget(attach)
+        workspace = self._action("Workspace", lambda: self.navigation.setCurrentRow(1), "folder")
+        workspace.setObjectName("quietButton")
+        actions.addWidget(workspace)
+        actions.addStretch()
+        self.composer_model_combo = QComboBox()
+        self.composer_model_combo.setEditable(True)
+        self.composer_model_combo.setAccessibleName("Message model")
+        self.composer_model_combo.setMinimumWidth(130)
+        self.composer_model_combo.setMaximumWidth(190)
+        self.composer_model_combo.lineEdit().setPlaceholderText("Select model")
+        actions.addWidget(self.composer_model_combo)
+        self.stop_chat_button = self._action("Stop", self.stop_chat)
+        self.stop_chat_button.setEnabled(False)
+        actions.addWidget(self.stop_chat_button)
+        self.send_button = self._action("Send", self.send_message, "send", primary=True)
+        actions.addWidget(self.send_button)
+        compose_layout.addLayout(actions)
+        composer_margin.addWidget(composer)
+        self.chat_status = QLabel("Choose a local model in Models to start chatting.")
+        self.chat_status.setObjectName("muted")
+        self.chat_status.setWordWrap(True)
+        composer_margin.addWidget(self.chat_status)
+        privacy = QLabel("Your conversations are saved on your machine.")
+        privacy.setObjectName("muted")
+        privacy.setAlignment(Qt.AlignCenter)
+        composer_margin.addWidget(privacy)
+        layout.addLayout(composer_margin)
+        return panel
+
+    def _connect_model_selectors(self):
+        self.chat_model_combo.setModel(self.model_combo.model())
+        self.composer_model_combo.setModel(self.model_combo.model())
+        for selector in (self.model_combo, self.chat_model_combo, self.composer_model_combo):
+            selector.currentTextChanged.connect(lambda text, source=selector: self._sync_model_selection(source, text))
+        self._sync_model_selection(self.model_combo, self.store.setting("model", ""))
+
+    def _sync_model_selection(self, source, text):
+        for selector in (self.model_combo, self.chat_model_combo, self.composer_model_combo):
+            if selector is not source and selector.currentText() != text:
+                was_blocked = selector.blockSignals(True)
+                selector.setCurrentText(text)
+                selector.blockSignals(was_blocked)
 
     def _workbench(self):
-        page = QWidget()
-        layout = QVBoxLayout(page)
+        page, layout = self._page("Projects", "Your files and tools, together. Open a folder to make it your workspace.")
         top = QHBoxLayout()
-        self.workspace_label = QLabel("Open a folder to start working")
+        self.workspace_label = QLabel("No workspace open")
+        self.workspace_label.setObjectName("muted")
         top.addWidget(self.workspace_label, 1)
-        top.addWidget(button("Open workspace", self.choose_workspace))
-        top.addWidget(button("Save file", self.save_document))
+        top.addWidget(self._action("Open workspace", self.choose_workspace, "folder"))
+        top.addWidget(self._action("New file", self.new_file, "plus"))
+        top.addWidget(self._action("Save file", self.save_document, "file", primary=True))
         layout.addLayout(top)
         splitter = QSplitter()
+        splitter.setChildrenCollapsible(False)
         self.file_model = QFileSystemModel(self)
         self.file_model.setFilter(QDir.AllDirs | QDir.Files | QDir.NoDotAndDotDot)
         self.tree = QTreeView()
         self.tree.setModel(self.file_model)
         self.tree.setHeaderHidden(True)
+        self.tree.setAccessibleName("Workspace files")
         for index in range(1, 4):
             self.tree.hideColumn(index)
         self.tree.doubleClicked.connect(self.open_document)
@@ -190,21 +407,22 @@ class MainWindow(QMainWindow):
         editor_layout = QVBoxLayout(editor_panel)
         editor_layout.setContentsMargins(0, 0, 0, 0)
         self.file_label = QLabel("No file open")
+        self.file_label.setObjectName("muted")
         self.editor = CodeEditor()
         self.editor.setFont(QFont("Cascadia Mono", 11))
-        self.editor.setPlaceholderText("Open a text file from the workspace. Changes are saved only when you choose Save.")
+        self.editor.setPlaceholderText("Open a text file from your workspace. Changes are saved only when you choose Save.")
         self.editor.setEnabled(False)
         self.editor.textChanged.connect(self._editor_changed)
         editor_layout.addWidget(self.file_label)
         editor_layout.addWidget(self.editor)
         center.addWidget(editor_panel)
-        terminal = QWidget()
-        terminal_layout = QVBoxLayout(terminal)
+        terminal, terminal_layout = self._card("Terminal", "Commands run only when you choose Run, with your account's permissions.")
         command_row = QHBoxLayout()
         self.command = QLineEdit()
         self.command.setPlaceholderText("Command to run in this workspace")
-        self.run_button = button("Run", self.run_workload)
-        self.stop_work_button = button("Stop", self.stop_workload)
+        self.command.setAccessibleName("Workspace command")
+        self.run_button = self._action("Run", self.run_workload, "terminal", primary=True)
+        self.stop_work_button = self._action("Stop", self.stop_workload)
         self.stop_work_button.setEnabled(False)
         command_row.addWidget(self.command, 1)
         command_row.addWidget(self.run_button)
@@ -213,123 +431,180 @@ class MainWindow(QMainWindow):
         self.output = QPlainTextEdit()
         self.output.setReadOnly(True)
         self.output.setMaximumBlockCount(10000)
-        self.output.setPlaceholderText("Workload output appears here. Commands run only when you click Run.")
+        self.output.setFont(QFont("Cascadia Mono", 10))
+        self.output.setPlaceholderText("Workload output appears here.")
         terminal_layout.addWidget(self.output)
         center.addWidget(terminal)
-        center.setSizes([550, 200])
+        center.setSizes([520, 240])
         splitter.addWidget(center)
-        splitter.addWidget(self._chat_panel())
-        splitter.setSizes([220, 640, 400])
+        splitter.setSizes([240, 850])
         layout.addWidget(splitter, 1)
         return page
 
-    def _chat_panel(self):
-        panel = QWidget()
-        layout = QVBoxLayout(panel)
-        heading = QLabel("Conversation")
-        heading.setObjectName("heading")
-        layout.addWidget(heading)
-        self.chat_view = QTextBrowser()
-        self.chat_view.setOpenExternalLinks(False)
-        self.chat_view.setOpenLinks(False)
-        layout.addWidget(self.chat_view, 1)
-        self.prompt = QPlainTextEdit()
-        self.prompt.setMaximumHeight(120)
-        self.prompt.setPlaceholderText("Ask about code or plan your next task…")
-        self.prompt.textChanged.connect(lambda: self.prompt_timer.start(500))
-        layout.addWidget(self.prompt)
+    def _library_page(self):
+        page, layout = self._page("Library", "Pick up a conversation or export a copy. Your saved work stays on this computer.")
+        self.library_search = QLineEdit()
+        self.library_search.setPlaceholderText("Find a saved conversation…")
+        self.library_search.setAccessibleName("Search library")
+        self.library_search.addAction(icon("search"), QLineEdit.LeadingPosition)
+        self.library_search.textChanged.connect(self._filter_library)
+        layout.addWidget(self.library_search)
+        self.library_list = QListWidget()
+        self.library_list.setObjectName("conversationList")
+        self.library_list.setAccessibleName("Conversation library")
+        self.library_list.itemDoubleClicked.connect(self._select_conversation)
+        self.library_empty = QLabel("Your library starts with a conversation.\nSaved chats appear here, ready to continue or export.")
+        self.library_empty.setObjectName("emptyBody")
+        self.library_empty.setAlignment(Qt.AlignCenter)
+        self.library_empty.setWordWrap(True)
+        layout.addWidget(self.library_empty, 1)
+        layout.addWidget(self.library_list, 1)
         row = QHBoxLayout()
-        self.send_button = button("Send", self.send_message)
-        self.stop_chat_button = button("Stop", self.stop_chat)
-        self.stop_chat_button.setEnabled(False)
-        row.addWidget(self.send_button)
-        row.addWidget(self.stop_chat_button)
-        row.addWidget(button("New", self.new_conversation))
+        row.addWidget(self._action("Continue conversation", self._open_library_conversation, "chat", primary=True))
+        row.addWidget(self._action("Export selected…", self._export_library_conversation, "file"))
+        row.addStretch()
+        row.addWidget(self._action("Open project files", lambda: self.navigation.setCurrentRow(1), "folder"))
         layout.addLayout(row)
-        layout.addWidget(button("Add open file to message", self.attach_document))
-        self.chat_status = QLabel("Choose a local model in Model packs to start chatting.")
-        self.chat_status.setWordWrap(True)
-        layout.addWidget(self.chat_status)
-        return panel
-
-    def _conversations_page(self):
-        page = QWidget()
-        layout = QVBoxLayout(page)
-        heading = QLabel("Your conversations")
-        heading.setObjectName("heading")
-        layout.addWidget(heading)
-        layout.addWidget(QLabel("Saved locally. Double-click a conversation to continue it in the workbench."))
-        self.conversation_list = QListWidget()
-        self.conversation_list.itemDoubleClicked.connect(self._select_conversation)
-        layout.addWidget(self.conversation_list)
-        layout.addWidget(button("New conversation", self.new_conversation))
-        layout.addWidget(button("Export conversation…", self.export_conversation))
         return page
 
+    def _open_library_conversation(self):
+        item = self.library_list.currentItem()
+        if item:
+            self._select_conversation(item)
+
+    def _export_library_conversation(self):
+        item = self.library_list.currentItem()
+        if item:
+            self._export_conversation_id(item.data(Qt.UserRole))
+
+    def _filter_conversations(self, query):
+        self._filter_list(self.conversation_list, query)
+
+    def _filter_library(self, query):
+        self._filter_list(self.library_list, query)
+
+    @staticmethod
+    def _filter_list(listing, query):
+        for index in range(listing.count()):
+            item = listing.item(index)
+            item.setHidden(query.casefold() not in item.text().casefold())
+
     def _models_page(self):
-        page = QWidget()
-        layout = QVBoxLayout(page)
-        heading = QLabel("Model expansion packs")
-        heading.setObjectName("heading")
-        layout.addWidget(heading)
-        description = QLabel("Install a GGUF model from your computer, or connect to models already running in a local service. Model files are optional and stay separate from application updates.")
-        description.setWordWrap(True)
-        layout.addWidget(description)
-        privacy = QLabel("CETA starts Ollama with cloud features disabled. Services started outside CETA use their own privacy settings and may send prompts off this computer.")
-        privacy.setWordWrap(True)
-        layout.addWidget(privacy)
+        page, layout = self._page("Models", "Your intelligence, your choice. Install optional packs or connect to a local runtime.")
+        service, service_layout = self._card("Local model connection", "CETA starts Ollama with cloud features disabled. Services started outside CETA retain their own privacy settings.")
         form = QFormLayout()
+        form.setSpacing(12)
         self.endpoint = QLineEdit(self.store.setting("endpoint", "http://127.0.0.1:11434/v1"))
         form.addRow("Local service", self.endpoint)
         self.model_combo = QComboBox()
         self.model_combo.setEditable(True)
         self.model_combo.setCurrentText(self.store.setting("model", ""))
+        self.model_combo.setAccessibleName("Active local model")
+        self.model_combo.lineEdit().setPlaceholderText("Connect to discover installed models")
         form.addRow("Active model", self.model_combo)
-        layout.addLayout(form)
-        layout.addWidget(button("Connect / refresh models", self.refresh_models))
-        layout.addWidget(button("Start installed Ollama service", self.start_ollama))
+        service_layout.addLayout(form)
+        controls = QHBoxLayout()
+        controls.addWidget(self._action("Connect / refresh models", self.refresh_models, "refresh", primary=True))
+        controls.addWidget(self._action("Start installed Ollama", self.start_ollama, "models"))
+        controls.addStretch()
+        service_layout.addLayout(controls)
+        layout.addWidget(service)
+        packs, packs_layout = self._card("Expansion packs", "Model downloads are optional and separate from application updates. No model is bundled with CETA.")
         download_row = QHBoxLayout()
         self.pack_name = QLineEdit()
         self.pack_name.setPlaceholderText("Ollama model name, for example qwen3:4b")
-        self.pull_button = button("Download pack", self.download_model_pack)
-        self.cancel_pull_button = button("Cancel download", self.cancel_model_download)
+        self.pull_button = self._action("Download pack", self.download_model_pack, "updates", primary=True)
+        self.cancel_pull_button = self._action("Cancel download", self.cancel_model_download)
         self.cancel_pull_button.setEnabled(False)
         download_row.addWidget(self.pack_name, 1)
         download_row.addWidget(self.pull_button)
         download_row.addWidget(self.cancel_pull_button)
-        layout.addLayout(download_row)
+        packs_layout.addLayout(download_row)
         self.pack_list = QListWidget()
-        layout.addWidget(self.pack_list, 1)
+        self.pack_list.setAccessibleName("Installed GGUF model packs")
+        packs_layout.addWidget(self.pack_list, 1)
         row = QHBoxLayout()
-        self.import_button = button("Install GGUF pack…", self.import_model)
+        self.import_button = self._action("Import GGUF pack…", self.import_model, "folder")
         row.addWidget(self.import_button)
-        row.addWidget(button("Start selected pack…", self.start_model))
-        row.addWidget(button("Stop local model", lambda: self._stop_process(self.model_process)))
-        layout.addLayout(row)
+        row.addWidget(self._action("Start selected pack…", self.start_model, "models"))
+        row.addWidget(self._action("Stop local model", lambda: self._stop_process(self.model_process)))
+        packs_layout.addLayout(row)
+        layout.addWidget(packs, 1)
         self.model_status = QLabel("No model download is required to browse or edit your workspace.")
+        self.model_status.setObjectName("muted")
         self.model_status.setWordWrap(True)
         layout.addWidget(self.model_status)
         self.model_log = QPlainTextEdit()
         self.model_log.setReadOnly(True)
         self.model_log.setMaximumBlockCount(1000)
-        self.model_log.setMaximumHeight(150)
+        self.model_log.setMaximumHeight(90)
+        self.model_log.setPlaceholderText("Local runtime output")
         layout.addWidget(self.model_log)
         return page
 
     def _workloads_page(self):
-        page = QWidget()
-        layout = QVBoxLayout(page)
-        heading = QLabel("Workload history")
-        heading.setObjectName("heading")
-        layout.addWidget(heading)
-        layout.addWidget(QLabel("Recent user-started commands, exit status, and saved output."))
+        page, layout = self._page("Workloads", "A record of the commands you ran, their results, and what happened next.")
+        layout.addWidget(self._action("Go to project terminal", lambda: self.navigation.setCurrentRow(1), "terminal"), 0, Qt.AlignLeft)
+        splitter = QSplitter(Qt.Vertical)
         self.workload_history = QListWidget()
+        self.workload_history.setAccessibleName("Workload history")
         self.workload_history.currentItemChanged.connect(self._select_workload)
-        layout.addWidget(self.workload_history)
+        splitter.addWidget(self.workload_history)
         self.history_output = QPlainTextEdit()
         self.history_output.setReadOnly(True)
-        layout.addWidget(self.history_output)
+        self.history_output.setFont(QFont("Cascadia Mono", 10))
+        self.history_output.setPlaceholderText("Select a command to inspect its saved output. Start commands from Projects.")
+        splitter.addWidget(self.history_output)
+        splitter.setSizes([260, 450])
+        layout.addWidget(splitter, 1)
         return page
+
+    def _settings_page(self):
+        page, layout = self._page("Settings", "Make CETA feel at home. These preferences are saved on this computer.")
+        editor_card, editor_layout = self._card("Editor preferences")
+        form = QFormLayout()
+        self.editor_font_size = QSpinBox()
+        self.editor_font_size.setRange(10, 22)
+        saved_size = self.store.setting("editor_font_size", 11)
+        self.editor_font_size.setValue(saved_size if type(saved_size) is int and 10 <= saved_size <= 22 else 11)
+        self.editor_font_size.setSuffix(" pt")
+        form.addRow("Code font size", self.editor_font_size)
+        self.editor_wrap = QCheckBox("Wrap long lines in the editor")
+        self.editor_wrap.setChecked(self.store.setting("editor_wrap", False) is True)
+        form.addRow("Line wrapping", self.editor_wrap)
+        editor_layout.addLayout(form)
+        self.editor_font_size.valueChanged.connect(self._save_editor_preferences)
+        self.editor_wrap.toggled.connect(self._save_editor_preferences)
+        self._apply_editor_preferences()
+        layout.addWidget(editor_card)
+        privacy, privacy_layout = self._card("Local data & privacy", "Conversations, drafts, command history, and settings are kept in your local application data. CETA does not attach workspace files automatically.")
+        path = QLineEdit(str(self.store.directory))
+        path.setReadOnly(True)
+        path.setAccessibleName("CETA application data folder")
+        privacy_layout.addWidget(path)
+        privacy_layout.addWidget(self._action("Open data folder", lambda: QDesktopServices.openUrl(QUrl.fromLocalFile(str(self.store.directory))), "folder"), 0, Qt.AlignLeft)
+        note = QLabel("Local storage uses your Windows account's file permissions. Export conversations only when you choose to share them. Review separately started model runtimes' privacy settings before connecting.")
+        note.setWordWrap(True)
+        note.setObjectName("muted")
+        privacy_layout.addWidget(note)
+        layout.addWidget(privacy)
+        shortcuts, shortcut_layout = self._card("Keyboard shortcuts")
+        shortcut_layout.addWidget(QLabel("Ctrl+N  New chat     ·     Ctrl+O  Open workspace     ·     Ctrl+S  Save file\nCtrl+F  Find in file     ·     Ctrl+Shift+N  New file     ·     Ctrl+Shift+E  Export chat"))
+        layout.addWidget(shortcuts)
+        layout.addStretch()
+        return page
+
+    def _apply_editor_preferences(self):
+        size = self.editor_font_size.value()
+        self.editor.setFont(QFont("Cascadia Mono", size))
+        self.editor.setStyleSheet(f"QPlainTextEdit {{ font-family: 'Cascadia Mono'; font-size: {size}pt; }}")
+        self.editor.setLineWrapMode(QPlainTextEdit.WidgetWidth if self.editor_wrap.isChecked() else QPlainTextEdit.NoWrap)
+
+    def _save_editor_preferences(self, *_):
+        self.store.set_setting("editor_font_size", self.editor_font_size.value())
+        self.store.set_setting("editor_wrap", self.editor_wrap.isChecked())
+        self._apply_editor_preferences()
+
 
     def _load_workloads(self):
         self.workload_history.clear()
@@ -344,42 +619,52 @@ class MainWindow(QMainWindow):
                 self.history_output.setPlainText(f"Workspace: {record['workspace']}\nCommand: {record['command']}\nStatus: {record['status']}\nExit: {record['exit_code']}\n\n{record['output']}")
 
     def _updates_page(self):
-        page = QWidget()
-        layout = QVBoxLayout(page)
-        heading = QLabel("CETA")
-        heading.setObjectName("heading")
-        layout.addWidget(heading)
-        layout.addWidget(QLabel(f"Version {__version__} · Windows-first native desktop environment"))
-        description = QLabel("Application updates and model packs are separate. Conversations, settings, and installed models are stored in your local application data folder. Download a verified update, then choose Install update to close CETA and start the installer.")
-        description.setWordWrap(True)
-        layout.addWidget(description)
-        data = QLineEdit(str(self.store.directory))
-        data.setReadOnly(True)
-        layout.addWidget(data)
+        page, layout = self._page("Updates", "Keep your workspace moving forward. Updates happen when you choose.")
+        release, release_layout = self._card(f"CETA {__version__}", "Windows native desktop · Personal publisher verification")
         self.update_status = QLabel("No public update channel is configured for this development build.")
         self.update_status.setWordWrap(True)
-        layout.addWidget(self.update_status)
+        self.update_status.setObjectName("muted")
         self.update_channel = json.loads(files("ceta_desktop").joinpath("release_channel.json").read_text(encoding="utf-8"))
         if self.update_channel.get("url") and self.update_channel.get("public_key"):
             self.update_status.setText("Ready to check the publisher's signed update channel.")
         self.update_manifest = None
-        self.check_update_button = button("Check for updates", self.check_for_updates)
+        release_layout.addWidget(self.update_status)
+        row = QHBoxLayout()
+        self.check_update_button = self._action("Check for updates", self.check_for_updates, "refresh", primary=True)
         self.check_update_button.setEnabled(bool(self.update_channel.get("url") and self.update_channel.get("public_key")))
-        self.download_update_button = button("Download verified update…", self.save_update)
+        row.addWidget(self.check_update_button)
+        self.download_update_button = self._action("Download verified update…", self.save_update, "updates")
         self.download_update_button.setEnabled(False)
-        layout.addWidget(self.check_update_button)
-        layout.addWidget(self.download_update_button)
-        self.cancel_update_button = button("Cancel update download", self.cancel_update_download)
+        row.addWidget(self.download_update_button)
+        row.addStretch()
+        release_layout.addLayout(row)
+        install_row = QHBoxLayout()
+        self.cancel_update_button = self._action("Cancel download", self.cancel_update_download)
         self.cancel_update_button.setEnabled(False)
-        layout.addWidget(self.cancel_update_button)
-        self.install_update_button = button("Install update and close CETA…", self.install_update)
+        install_row.addWidget(self.cancel_update_button)
+        self.install_update_button = self._action("Install update and close CETA…", self.install_update, "updates", primary=True)
         self.install_update_button.setEnabled(False)
-        layout.addWidget(self.install_update_button)
+        install_row.addWidget(self.install_update_button)
+        install_row.addStretch()
+        release_layout.addLayout(install_row)
+        layout.addWidget(release)
+        security, security_layout = self._card("A signature you can verify", "CETA verifies the publisher's signed update receipt and the installer's exact bytes before offering installation. Application updates are separate from model packs.")
+        note = QLabel("This release uses a personal Ed25519 publisher key. Windows may show an unrecognized-publisher warning. Confirm the public-key fingerprint directly with the publisher. No root certificate is installed.")
+        note.setWordWrap(True)
+        note.setObjectName("muted")
+        security_layout.addWidget(note)
+        layout.addWidget(security)
+        about, about_layout = self._card("Built for your computer", "Conversations, settings, and model packs are retained during updates. Close active work before installing.")
         notice = QLabel("Built with Qt, PySide6, and Shiboken under LGPLv3. License texts and matching library sources accompany this release.")
         notice.setWordWrap(True)
-        layout.addWidget(notice)
-        layout.addWidget(button("About Qt", QApplication.aboutQt))
-        layout.addWidget(button("Open dependency notices", self.open_dependency_notices))
+        notice.setObjectName("muted")
+        about_layout.addWidget(notice)
+        notices = QHBoxLayout()
+        notices.addWidget(self._action("About Qt", QApplication.aboutQt))
+        notices.addWidget(self._action("Dependency notices", self.open_dependency_notices, "library"))
+        notices.addStretch()
+        about_layout.addLayout(notices)
+        layout.addWidget(about)
         layout.addStretch()
         return page
 
@@ -498,6 +783,7 @@ class MainWindow(QMainWindow):
         if folder:
             self._set_workspace(Path(folder))
             self._clear_editor_draft()
+            self.navigation.setCurrentRow(1)
 
     def new_file(self):
         if not self.workspace:
@@ -621,14 +907,28 @@ class MainWindow(QMainWindow):
 
     def _load_conversations(self):
         self.conversation_list.clear()
+        self.library_list.clear()
         conversations = self.store.conversations()
         if self.conversation_id not in {record["id"] for record in conversations}:
             self.conversation_id = None
         for record in conversations:
-            self.conversation_list.addItem(record["title"])
-            self.conversation_list.item(self.conversation_list.count() - 1).setData(Qt.UserRole, record["id"])
+            created = datetime.fromtimestamp(record["created"]).strftime("%b %d · %I:%M %p")
+            for listing in (self.conversation_list, self.library_list):
+                item = QListWidgetItem(f"{record['title']}\n{created}")
+                item.setData(Qt.UserRole, record["id"])
+                item.setToolTip(record["title"])
+                item.setSizeHint(QSize(220, 65))
+                listing.addItem(item)
+                if record["id"] == self.conversation_id:
+                    listing.setCurrentItem(item)
         if self.conversation_id is None and self.conversation_list.count():
             self.conversation_id = self.conversation_list.item(0).data(Qt.UserRole)
+            self.conversation_list.setCurrentRow(0)
+        self.conversation_empty.setVisible(not conversations)
+        self.library_empty.setVisible(not conversations)
+        self.library_list.setVisible(bool(conversations))
+        self._filter_conversations(self.conversation_search.text())
+        self._filter_library(self.library_search.text())
         self._render_chat()
 
     def _save_prompt_draft(self):
@@ -648,21 +948,8 @@ class MainWindow(QMainWindow):
 
     def _render_chat(self):
         records = self.store.messages(self.conversation_id) if self.conversation_id else []
-        if self.assistant_text:
-            records = [record for record in records if record["status"] != "generating"]
-            records.append({"role": "assistant", "content": self.assistant_text, "status": "generating"})
-        if not records:
-            self.chat_view.setHtml("<h2>A place to think and build.</h2><p>Connect a local model to start a conversation. Your workspace is never attached automatically.</p>")
-            return
-        chunks = []
-        for record in records:
-            title = "You" if record["role"] == "user" else "Assistant"
-            status = "" if record["status"] == "complete" else " · " + html.escape(record["status"])
-            content = html.escape(record["content"]).replace("\n", "<br>")
-            chunks.append(f"<h3>{title}{status}</h3><p style='white-space:pre-wrap'>{content}</p>")
-        self.chat_view.setHtml("".join(chunks))
-        bar = self.chat_view.verticalScrollBar()
-        bar.setValue(bar.maximum())
+        self.chat_view.render_messages(records, pending_text=self.assistant_text,
+                                       model_name=self.model_combo.currentText())
 
     def new_conversation(self):
         if self.chat_task:
@@ -682,8 +969,9 @@ class MainWindow(QMainWindow):
         self.navigation.setCurrentRow(0)
 
     def export_conversation(self):
-        item = self.conversation_list.currentItem()
-        identifier = item.data(Qt.UserRole) if item else self.conversation_id
+        self._export_conversation_id(self.conversation_id)
+
+    def _export_conversation_id(self, identifier):
         if not identifier:
             return
         destination, _ = QFileDialog.getSaveFileName(self, "Export conversation", "conversation.json", "JSON (*.json)")
@@ -702,7 +990,7 @@ class MainWindow(QMainWindow):
             client = LocalModelClient(self.endpoint.text().strip())
             model = self.model_combo.currentText().strip()
             if not model:
-                self.chat_status.setText("Open Model packs and connect to an installed model first.")
+                self.chat_status.setText("Open Models and connect to an installed model first.")
                 return
             if len(prompt) > 100000:
                 raise ValueError("This message is too long. Keep it below 100,000 characters.")

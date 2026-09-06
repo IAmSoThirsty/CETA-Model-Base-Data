@@ -50,9 +50,45 @@ and public key. Its signed update manifest and public verification bundle have
 been created and verified locally; public hosting and website publication remain
 pending at this checkpoint.
 
-### Personal release build 003
+### Current desktop 0.3.1: redesigned release build 004
 
-The latest local Windows x64 installer is `CETA-0.3.0-setup.exe`, 29,988,504 bytes,
+CETA desktop 0.3.1 now has the seven native sections Chat, Projects, Library,
+Models, Workloads, Updates, and Settings, with distinct planetary backgrounds,
+native message/code presentation, conversation search and export, and saved
+editor preferences. Desktop version 0.3.1 and the reference package's `VERSION`
+0.3.0 are intentionally independent; this release does not rename or retrain the
+reference core. The approved visual direction is in `docs/CETA_VISUAL_DESIGN.md`.
+
+The actual installer is `CETA-0.3.1-setup.exe`, 43,492,467 bytes, SHA-256
+`6debcf31c8822bb27791e839194bd272f8fcffcd4abebd427b2ab89f7147c0e2`.
+Its six-file personal distribution payload is retained at
+`dist/CETA-0.3.1-personal-001` in the original checkout. The new record
+`evidence/CETA_EMBER_RELEASE_VALIDATION.json` binds those actual files, the
+21-file source synchronization, and the current build/test/Sandbox records.
+
+The build ran 118 desktop tests: 117 passed and one Windows short-alias test
+explicitly skipped because this host provides no distinct alias. The full
+delivery repository run executed 293 tests in 239.197 seconds: 292 passed and the
+same one skipped. No known vulnerabilities were reported for the isolated desktop
+build dependencies. These totals include the skip; they are not 118 or 293 passes.
+
+A fresh network-disabled Windows Sandbox passed all nine installer lifecycle
+checks, including startup of the redesigned application, same-version replacement,
+uninstall, and preservation of application data and unknown files. Parent-process
+timeout returned 4 and successful wait returned 0. This does not verify upgrading
+from an older database schema or updating through a live public channel.
+
+The standalone verifier passed against the actual 0.3.1 installer and personal
+Ed25519 receipt. Windows Authenticode remains `NotSigned`; no Windows CA trust
+is claimed. Public 0.3.1 release assets, website delivery, live update checks, and
+new Windows CI remain pending at this checkpoint. Refresh package manifests after
+this evidence/documentation addition before publishing the reviewed source.
+The separate training dependency gate for Transformers 5.5.0 / CVE-2026-9856
+remains unresolved and is excluded from this desktop dependency result.
+
+### Historical personal release build 003
+
+The installer at this earlier checkpoint was `CETA-0.3.0-setup.exe`, 29,988,504 bytes,
 SHA-256 `416bf6d702342ec9a38be733f207319f77d377c9823aa4c694e2f02917c08bfc`.
 It was built in the external CETA build directory `release-003`, from the same
 repository's `codex/ceta-desktop-release` delivery worktree. Its source assembly,
