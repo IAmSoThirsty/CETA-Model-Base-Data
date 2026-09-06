@@ -27,34 +27,44 @@ Its historical model evaluations are not evidence for desktop application qualit
 
 ## Current release classification
 
-The application has been renamed to CETA by the user's instruction on September 6,
-2026. The window, launcher, Windows installer identity, and update signature domain
-now use CETA. Desktop 0.3.1 is publicly downloadable with its personal verification
-bundle, and the CETA website is live. Its native updater request encountered HTTP
-403 from the public channel. The focused 0.3.2 source fix now identifies requests
-as `CETA/0.3.2` and has checked that channel and downloaded the correct 0.3.1
-installer using its normal request path. This does not change the already-published
-0.3.1 binary. The new 0.3.2 build, Windows CI, and publication remain pending at
-this source-validation checkpoint. See
-`evidence/CETA_UPDATE_CLIENT_FIX_VALIDATION.json` for the exact evidence and limits.
-The user subsequently authorized a dedicated page
-and direct download on `thirstysystems.com` through the "Thirstys Projects LLC"
-website project, release hosting in the existing CETA GitHub repository, and all
-required signing. This permits the delivery work and does not itself prove that
-publication or signing succeeded. See
-`docs/operations/CONTINUITY_MAP.md` for checks performed after the rename.
+CETA desktop 0.3.2 is publicly released in the existing CETA GitHub repository.
+Its six downloadable assets were retrieved without authentication and matched
+the reviewed local bytes; the personal Ed25519 receipt passed verification.
+The installer is 43,489,436 bytes, SHA-256
+`f5c05b36f9740406cf45d4bae69db50b77b57fbbc6fa1a9741d96a6e4031eb2f`.
+The live showcase returns HTTP 200, and its download route redirects to this
+exact 0.3.2 installer with no-store caching. The normal 0.3.2 update-client
+functions fetched the signed live manifest and downloaded the verified installer.
+That check used 0.3.1 as the comparison version; it did not execute the old client
+or run a live GUI download-to-install sequence. Installed upgrade behavior was
+validated separately in the offline Sandbox.
+See `evidence/CETA_DESKTOP_PUBLICATION_032.json` for exact source, build, public
+artifact, website, update-client, CI and installed-upgrade evidence.
 
-The user then expressly declined a Microsoft signing subscription and selected a
-personal signing artifact for recipients to verify installation identity. A
-dedicated CETA Ed25519 key has been generated and protected with current-user
-Windows DPAPI outside the repositories. The verification bundle binds the exact
-installer to that key and requires an independently received key fingerprint.
-This is personal publisher verification, not Windows CA signing; Windows may
-display an unrecognized-publisher warning. No other project's certificate is used
-and no root certificate is installed. Public 0.3.1 release assets and their
-personal signature have been verified by unauthenticated downloads. The current
-updater-access limitation and pending 0.3.2 replacement are described above;
-earlier local checkpoints below retain their original validation scope.
+The unchanged 0.3.1 client can receive HTTP 403 from the hosted update channel.
+Users of that version must manually download and install 0.3.2 to obtain its
+update-client fix. The 0.3.2 requests identify the application as `CETA/0.3.2`.
+Windows CI passed all 119 desktop tests, and a fresh offline Windows Sandbox
+verified installation, 0.3.1-to-0.3.2 upgrade, clean startup, retained synthetic
+conversation/draft/preferences, and uninstall with user-data preservation.
+This verifies compatibility with the unchanged SQLite schema 1, not a future
+schema migration. The seven native planetary environments remain available.
+
+The user authorized CETA's dedicated page and download on `thirstysystems.com`
+through the Thirstys Projects LLC website and release hosting in the existing
+CETA GitHub repository. The user selected personal signing after declining a
+paid Microsoft signing subscription. The dedicated CETA Ed25519 key is protected
+with current-user Windows DPAPI outside the repositories. Recipients must compare
+its fingerprint with one received independently from the publisher. Authenticode
+remains NotSigned: this receipt does not provide Windows CA trust, and Windows
+may show an unrecognized-publisher warning. No system root certificate was
+installed and no other project's key is used.
+
+The independent reference/training package remains version 0.3.0. Its existing
+Transformers 5.5.0 / CVE-2026-9856 dependency gate still requires separate follow-up;
+the isolated desktop dependency audit passed. No new model or training validation
+is claimed here. Earlier checkpoints below preserve what was verified or pending
+at their own observation times.
 
 ### Desktop 0.3.1: redesigned release build 004 local checkpoint
 

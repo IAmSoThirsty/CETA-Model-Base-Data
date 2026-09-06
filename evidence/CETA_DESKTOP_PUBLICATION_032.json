@@ -1,0 +1,349 @@
+{
+  "schema_version": 1,
+  "product": "CETA",
+  "desktop_version": "0.3.2",
+  "reference_version": "0.3.0",
+  "status": "PUBLISHED_VERIFIED_WITH_RECORDED_LIMITATIONS",
+  "prepared_at_utc": "2026-09-06T23:20:30.422340+00:00",
+  "recorded_at_utc": "2026-09-06T23:37:15.952386+00:00",
+  "scope": "Additive publication checkpoint. Prior source-only, local-build and 0.3.1 checkpoints remain historical evidence.",
+  "authority": {
+    "repository": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data",
+    "website": "User expressly authorized the dedicated CETA showcase and direct download on thirstysystems.com through Thirstys Projects LLC, existing CETA GitHub hosting and signing.",
+    "signing": "The user declined paid Microsoft signing and selected a personal verification artifact.",
+    "boundary": "The separate website audit and CETA publication are authorized; no unrelated project implementation, branding, models, data or signing keys are imported.",
+    "actual_scoped_transfer": "CETA publisher metadata, signed update receipt, release URLs/version, guide/showcase material, screenshots and CETA-generated landscape assets were delivered to the expressly authorized Thirstys Projects LLC website mirror and same-site Git worktree. The website source proof binds the affected paths. No website implementation or unrelated backlog was imported into CETA."
+  },
+  "source": {
+    "reviewed_commit": "340d8b47e872c422d9f6a7602c17f2ad4386869d",
+    "proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\publication-source-0.3.2.json",
+      "sha256": "5a45a449f72c62592b8eccd03b0fa5cfe11fe70308ebec9b47f3910e8f7dc07f",
+      "size": 86790
+    },
+    "manifest_payload_files": 268,
+    "checksum_entries": 269,
+    "committed_files": 270,
+    "content_root": "sha256:497b2f63b4851c4c9e92d34cf2547a3fad95d60b1c56dd0627c83d1565d3351b",
+    "original_preservation": "Original codex/ceta-curriculum-v3 HEAD decd957ef91884e5ba9fc61c627fb5481d53a80f and five dirty core hashes preserved; delivery retains reviewed public base core bytes.",
+    "build_provenance": "Build 005 used frozen 0.3.2 desktop code in the delivery root. The three-file synchronization proof binds those bytes subsequently committed at the reviewed commit; documentation/package checkpoints may postdate the build.",
+    "fix_checkpoint": {
+      "path": "T:\\00-Active\\CETA-desktop-delivery-20260906\\evidence\\CETA_UPDATE_CLIENT_FIX_VALIDATION.json",
+      "sha256": "9bb66740d210b8089e9373a9c688038271a72d6eeca9d53e8092a03a210c651b",
+      "size": 5421
+    },
+    "code_sync": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\publication-check\\updater-032-source-sync.json",
+      "sha256": "5aee95886429bc7f7fba9e11952a9586021e094c4485eedd276e21f2462de1f0",
+      "size": 1134
+    }
+  },
+  "build_005": {
+    "status": "PASS",
+    "exit_code": 0,
+    "completed_at_utc": "2026-09-06T22:53:57.0514573Z",
+    "result": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\desktop-build-005-result.json",
+      "sha256": "fac328f2fbd76223c6d9beb424c4a1b1046edf408731ac9ee6843550e5b40230",
+      "size": 285
+    },
+    "log": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\desktop-build-005.log",
+      "sha256": "4f53ad6fe648d694256b04723c7f251e1847ebcf3a97e532eb86dacdce27fd65",
+      "size": 35446
+    },
+    "desktop_tests": {
+      "run": 119,
+      "passed": 118,
+      "skipped": 1,
+      "seconds": 27.838,
+      "skip_reason": "Host temporary volume lacks a distinct Windows short alias; this same case passed in Windows CI."
+    },
+    "dependency_audit": "No known vulnerabilities found",
+    "authenticode": "NotSigned"
+  },
+  "ci": {
+    "windows": {
+      "id": 34065672843,
+      "conclusion": "success",
+      "tests_run": 119,
+      "passed": 119,
+      "skipped": 0,
+      "seconds": 43.882,
+      "html_url": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data/actions/runs/34065672843",
+      "retained_log": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\github-windows-0.3.2.log",
+        "size": 80721,
+        "sha256": "dd24c62e0a14cf86eedb4bc72f9e06109c3ef5aca9ccbe8583f93c9100eb63c8"
+      }
+    },
+    "codeql": {
+      "id": 34065672861,
+      "name": "CodeQL",
+      "head_sha": "340d8b47e872c422d9f6a7602c17f2ad4386869d",
+      "head_branch": "main",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data/actions/runs/34065672861",
+      "created_at": "2026-09-06T23:01:22Z",
+      "updated_at": "2026-09-06T23:02:39Z"
+    },
+    "reference_training": {
+      "id": 34065672844,
+      "conclusion": "failure",
+      "dependency": "transformers",
+      "version": "5.5.0",
+      "vulnerability": "CVE-2026-9856",
+      "reported_fix": "5.10.0",
+      "classification": "Requires separate training compatibility/dependency follow-up; outside the isolated desktop payload. Not fixed or bypassed by this release.",
+      "log": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\publication-source-0.3.2-reference-ci.log",
+        "size": 2928,
+        "sha256": "601c8204df26cf3908ffd1b8c094835073356cee9f7bc119e7a49b268aa9ad04"
+      }
+    }
+  },
+  "public_release": {
+    "status": "PASS",
+    "proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\publication-check\\release-032-public-001\\result.json",
+      "sha256": "8a75f2b7c3600076a4251f119fa335b39d4effa47a7dd425a53970c69ec6d1b0",
+      "size": 5390
+    },
+    "release": {
+      "id": 383743931,
+      "tag_name": "ceta-desktop-v0.3.2",
+      "target_commitish": "340d8b47e872c422d9f6a7602c17f2ad4386869d",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-09-06T23:09:37Z",
+      "html_url": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data/releases/tag/ceta-desktop-v0.3.2"
+    },
+    "unauthenticated_requests": true,
+    "all_six_assets_match": true,
+    "assets": [
+      {
+        "name": "CETA-0.3.2-dependency-sources.zip",
+        "size": 70981896,
+        "sha256": "063ed318ffdc8bf7e843cc47094ac721aab70218f36623f25406326bb0024778",
+        "url": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data/releases/download/ceta-desktop-v0.3.2/CETA-0.3.2-dependency-sources.zip",
+        "matches_local": true
+      },
+      {
+        "name": "CETA-0.3.2-setup.exe",
+        "size": 43489436,
+        "sha256": "f5c05b36f9740406cf45d4bae69db50b77b57fbbc6fa1a9741d96a6e4031eb2f",
+        "url": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data/releases/download/ceta-desktop-v0.3.2/CETA-0.3.2-setup.exe",
+        "matches_local": true
+      },
+      {
+        "name": "CETA-0.3.2-verification.zip",
+        "size": 12121,
+        "sha256": "3407e1f26b5d2fad7b6a2a573f01ba5cbc421891b9a2dd2208bc65050a8c9741",
+        "url": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data/releases/download/ceta-desktop-v0.3.2/CETA-0.3.2-verification.zip",
+        "matches_local": true
+      },
+      {
+        "name": "CETA-PUBLISHER.json",
+        "size": 383,
+        "sha256": "5fa26234d42657e92c5411086ffdb1b605179d4148e09b49cacbc87f52c00d9c",
+        "url": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data/releases/download/ceta-desktop-v0.3.2/CETA-PUBLISHER.json",
+        "matches_local": true
+      },
+      {
+        "name": "CETA-UPDATE.json",
+        "size": 473,
+        "sha256": "a0d44d3a69e064ed9bbb416fa334142f0a9a9e8b8ea1d3d6fcbb9ccdd2d9f7dd",
+        "url": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data/releases/download/ceta-desktop-v0.3.2/CETA-UPDATE.json",
+        "matches_local": true
+      },
+      {
+        "name": "SHA256SUMS",
+        "size": 450,
+        "sha256": "52037a124b0a334c093ceeb7e90f22812e4cbbc147d61dbdf31689460f2b711d",
+        "url": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data/releases/download/ceta-desktop-v0.3.2/SHA256SUMS",
+        "matches_local": true
+      }
+    ],
+    "personal_ed25519_signature": "PASS",
+    "public_key_fingerprint_sha256": "583b329e113816d2bcbcaf63fe796d4d3e8d0b9e9afe15fa0caf41954c9273bb",
+    "identity_boundary": "Recipients must compare this dedicated CETA fingerprint with one received independently from the publisher. A key downloaded beside its receipt alone does not establish publisher identity; no recipient comparison is claimed.",
+    "windows_trust": "Installer Authenticode remains NotSigned. Personal Ed25519 verification does not create Windows CA trust; no root certificate installation or other project key is used.",
+    "downloaded_installer_executed_in_public_verification": false
+  },
+  "native_interface": {
+    "sections": [
+      "Chat",
+      "Projects",
+      "Library",
+      "Models",
+      "Workloads",
+      "Updates",
+      "Settings"
+    ],
+    "scenes": [
+      "ember world",
+      "ringed ice world",
+      "amber desert",
+      "amethyst world",
+      "binary-star canyon",
+      "gas-giant shoreline",
+      "lunar Earthrise"
+    ],
+    "design_record": {
+      "path": "T:\\00-Active\\CETA-desktop-delivery-20260906\\docs\\CETA_VISUAL_DESIGN.md",
+      "sha256": "f24c96a899f5afa79d89e8fb6bc6480b5aa1a92de81c03412d641ae03149d67d",
+      "size": 5747
+    },
+    "redesign_local_checkpoint": {
+      "path": "T:\\00-Active\\CETA-desktop-delivery-20260906\\evidence\\CETA_EMBER_RELEASE_VALIDATION.json",
+      "sha256": "bcfa2f5d025b33ce158ab7785cfb01005d2a9c08342c36a822ec5daecb8de871",
+      "size": 21863
+    },
+    "redesign_windows_ci": {
+      "id": 34063636474,
+      "passed": 118,
+      "skipped": 0,
+      "seconds": 45.414,
+      "proof": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\publication-source-0.3.1.json",
+        "sha256": "60f019e413606129edff45628ac3023f8b76692421656aa6847f9875a0667970",
+        "size": 68674
+      }
+    },
+    "version_boundary": "Desktop 0.3.2 retains the seven-scene 0.3.1 UI; this update-client fix does not retrain or rename the independent reference VERSION 0.3.0."
+  },
+  "offline_upgrade": {
+    "status": "PASS",
+    "from_version": "0.3.1",
+    "to_version": "0.3.2",
+    "proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\sandbox-006-031-to-032\\CETA-CROSS-VERSION-VALIDATION.json",
+      "sha256": "180b98c1859af6ffb8398a9bfb693cde84273ab04c8c6846eed88ad9d172af12",
+      "size": 17464
+    },
+    "actual_versions_and_frozen_binaries_match": true,
+    "install_upgrade_clean_launch_uninstall_exit_codes": 0,
+    "data_preservation": "One synthetic conversation, two messages, active conversation, unsent draft and editor settings matched exactly across readonly SQLite snapshots; integrity and foreign keys passed; app-data and unknown-file markers retained.",
+    "schema_version": 1,
+    "schema_migration_tested": false,
+    "real_user_data_used": false,
+    "owned_sandbox_stopped": true,
+    "other_sandboxes_stopped": 0,
+    "live_https_update_tested_by_this_sandbox": false,
+    "clean_installed_screenshot": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\sandbox-006-031-to-032\\results\\installed-0.3.2-clean.png",
+      "sha256": "823942014c1399e7eea33d2353478f869509f6923e3e4a2f1d2628f9cf0a4f23",
+      "size": 429351,
+      "visually_reviewed": true,
+      "observation": "Actual installed CETA 0.3.2 clean empty chat, seven navigation sections, planetary background, and no model or seeded conversation.",
+      "clean_data": true
+    }
+  },
+  "website": {
+    "status": "PASS",
+    "reviewed_commit": "ebecbced665063cd13252aca2c086d682748b984",
+    "deployment_id": "5177de65-7c21-43e3-92f2-198f34780417",
+    "proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\live-website-032-003\\result.json",
+      "sha256": "c85d5f5a2262ed4ade2579e89d450ca2604500966e4552aff201c7e85e7553f4",
+      "size": 5152
+    },
+    "showcase_url": "https://www.thirstysystems.com/ceta",
+    "direct_download_url": "https://www.thirstysystems.com/ceta/download",
+    "stable_channel_url": "https://www.thirstysystems.com/ceta/updates/stable.json",
+    "source_proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\website-publication-source-032.json",
+      "sha256": "59db3c103476a6b6bdfcaa3507876e8e62942917d965ea6e5866a6ed28fa8a54",
+      "size": 14313
+    },
+    "hosting_observation": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\hosting-deployment-032-live-observed-001.json",
+      "sha256": "a6d3c99583f86ba5c807d8e7cc244ab2906c2bad88cfc6cd3c123af49cc648e3",
+      "size": 4510
+    },
+    "retry": {
+      "proof": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\lovable-deployment-032-retry-001.json",
+        "sha256": "c34230ecacb299ffdbd3fff40a2753d7b8d4234cdd09bc9938143f081731df70",
+        "size": 648
+      },
+      "same_deployment_id_returned": true,
+      "second_deployment_id_created": false
+    },
+    "public_checks": {
+      "page_status": 200,
+      "download_status": 302,
+      "download_cache_control": "no-store",
+      "download_target": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data/releases/download/ceta-desktop-v0.3.2/CETA-0.3.2-setup.exe",
+      "publisher_and_stable_json_match": true,
+      "active_images_matching_reviewed_bytes": 7
+    },
+    "browser": {
+      "proof": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\browser-ceta-032-live-review.json",
+        "sha256": "24f34e2aba7d86ce41b1cc8d7958ece94ca40f72d4e42241018bb7a9874147e4",
+        "size": 913
+      },
+      "viewport_width": 826,
+      "document_scroll_width": 811,
+      "horizontal_overflow": false,
+      "loaded_main_images": 8,
+      "new_console_entries_since_233200_utc": [],
+      "scope": "Inspected viewport only, not an exhaustive device matrix."
+    },
+    "ci": {
+      "id": 34066561310,
+      "conclusion": "success",
+      "head_sha": "ebecbced665063cd13252aca2c086d682748b984",
+      "url": "https://github.com/IAmSoThirsty/creative-blossom-tool-6976969a/actions/runs/34066561310",
+      "tests_passed": 266,
+      "test_files_passed": 39,
+      "seconds": 14.14,
+      "clean_clone_harness_tests": 121,
+      "clean_clone_harness_files": 12,
+      "lint_typecheck_freshness_build": "PASS",
+      "log": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\github-website-0.3.2.log",
+        "sha256": "c1e66e2f0cd6f8552f5419281c5fb60c0dab6881c28c0eece4c7815eaa86bff6",
+        "size": 402552
+      }
+    }
+  },
+  "native_live_channel": {
+    "status": "PASS",
+    "proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\publication-check\\channel-032-public-001\\result.json",
+      "sha256": "c8fecd0d1ea14ea2e42056185ce24e00e556608e52fc61b389895764d66c3ec8",
+      "size": 1918
+    },
+    "runtime_source_sha256": "ee86152f754466c5aa951b280656b948ef4234f88d8d59e8f14a1fe924a3eea8",
+    "executing_client_source_version": "0.3.2",
+    "comparison_version_argument": "0.3.1",
+    "manifest_version": "0.3.2",
+    "manifest_http_status": 200,
+    "signed_manifest_sha256": "a0d44d3a69e064ed9bbb416fa334142f0a9a9e8b8ea1d3d6fcbb9ccdd2d9f7dd",
+    "downloaded_installer": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\publication-check\\channel-032-public-001\\application-download\\CETA-0.3.2-setup.exe",
+      "sha256": "f5c05b36f9740406cf45d4bae69db50b77b57fbbc6fa1a9741d96a6e4031eb2f",
+      "size": 43489436
+    },
+    "download_executed": false,
+    "scope": "Normal CETA 0.3.2 check_update and download_update functions contacted the public channel and verified/downloaded the exact 0.3.2 installer. The 0.3.1 argument only exercised update availability; this is not execution of the unchanged 0.3.1 binary or a live GUI installer handoff."
+  },
+  "legacy_update_requirement": "The unchanged published 0.3.1 client retains its HTTP 403 behavior. Its users must manually download and install 0.3.2 from the CETA site/release to receive this client fix; the 0.3.1 release bytes were not rewritten.",
+  "separate_website_audit": {
+    "proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\website-delivery-gap-20260906T201409Z\\REPORT.md",
+      "sha256": "f13883467c836911a2d11c9cd698229439e32a7e173718e07196e4aad85bd1e3",
+      "size": 15749
+    },
+    "boundary": "The user-authorized audit identifies unpublished website work separately. Its backlog is preserved and not imported or silently included in CETA publication. These timestamped audit observations are not a current deployment inventory."
+  },
+  "limitations": [
+    "No model download, inference benchmark, new training run or model-quality certification is claimed by this checkpoint.",
+    "Offline upgrade proves compatibility of unchanged SQLite schema 1 with synthetic data, not schema-version migration.",
+    "Personal signature identity depends on independently confirming the fingerprint; Windows Authenticode CA signing is absent.",
+    "Public HTTPS check/download and offline installed upgrade were verified separately; an installed GUI-driven live HTTPS download-to-install sequence was not exercised as one combined test."
+  ]
+}

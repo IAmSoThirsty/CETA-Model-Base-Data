@@ -2,8 +2,8 @@
   "schema_version": 1,
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
-  "file_count": 268,
-  "content_root": "sha256:497b2f63b4851c4c9e92d34cf2547a3fad95d60b1c56dd0627c83d1565d3351b",
+  "file_count": 269,
+  "content_root": "sha256:c5df174912a7dcb267ae0d3c0ad2475cb9513cc97361470ce2a9006856e9a03e",
   "files": [
     {
       "path": ".gitattributes",
@@ -292,8 +292,8 @@
     },
     {
       "path": "docs/DESKTOP_DELIVERY.md",
-      "size": 23392,
-      "sha256": "8eff3477c783815d41d70210d8c914381afdf0111883ea7c166c1f9ea3f3b749"
+      "size": 23949,
+      "sha256": "aaaf802407e0039ea0b8b1db6f324c50678d247e613203c82b3daaa322100547"
     },
     {
       "path": "docs/HOSTILE_REVIEW.md",
@@ -322,8 +322,13 @@
     },
     {
       "path": "docs/operations/CONTINUITY_MAP.md",
-      "size": 22630,
-      "sha256": "4f6400c9f25799f5fb0eaf2e4d3d3ac94fbf4dae95596aebe6b678bbb76ffb36"
+      "size": 24924,
+      "sha256": "68d7998326383bd6bedd1f2b07a7a01ba08dec25003abb9c1abc584dd361845e"
+    },
+    {
+      "path": "evidence/CETA_DESKTOP_PUBLICATION_032.json",
+      "size": 17431,
+      "sha256": "cd77de5ebc3f4c433437bb5283f51cac703622e6ec83d72ded4797bb1c497c2a"
     },
     {
       "path": "evidence/CETA_DESKTOP_RENAME_VALIDATION.json",

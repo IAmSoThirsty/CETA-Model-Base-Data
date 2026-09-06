@@ -366,3 +366,39 @@ The new build, its Windows CI, personal receipt, and public release require thei
 own checks. Personal signing remains separate from Windows Authenticode CA trust.
 The existing Transformers 5.5.0 / CVE-2026-9856 training gate remains unresolved
 and excluded from the isolated desktop payload. Earlier evidence is unchanged.
+
+## CETA desktop 0.3.2: public delivery checkpoint
+
+The 0.3.2 runtime source is committed at
+`340d8b47e872c422d9f6a7602c17f2ad4386869d` in the existing CETA repository.
+Read-only source verification matched all 270 committed files, 268 manifest
+payloads and 269 checksum entries. The original curriculum branch and its five
+dirty core files remain preserved. Build 005 ran 119 tests: 118 passed and one
+host-only short-alias case was skipped. Windows CI passed all 119 tests in
+43.882 seconds, including that case. CodeQL passed and the isolated desktop dependency audit found no known
+vulnerabilities.
+
+All six public 0.3.2 release assets matched their reviewed hashes through
+unauthenticated downloads. The personal Ed25519 receipt passed; installer
+Authenticode remains NotSigned. Recipients still need an independently received
+CETA public-key fingerprint to establish the publisher identity.
+The live showcase returns HTTP 200, and its download route redirects to this
+exact 0.3.2 installer with no-store caching. The normal 0.3.2 update-client
+functions fetched the signed live manifest and downloaded the verified installer.
+That check used 0.3.1 as the comparison version; it did not execute the old client
+or run a live GUI download-to-install sequence. Installed upgrade behavior was
+validated separately in the offline Sandbox.
+
+A fresh offline Sandbox verified 0.3.1-to-0.3.2 installation, actual version
+window titles and frozen executable hashes, startup, uninstall and exact
+synthetic conversation/message/draft/preferences preservation. SQLite schema 1
+is unchanged; this is compatibility evidence, not a schema-version migration.
+The owned Sandbox was stopped and no other Sandbox was stopped by the test.
+The preserved 0.3.1 updater still has the HTTP 403 issue; its users must manually
+install 0.3.2 to obtain the fix. No model or inference validation is added here.
+
+`evidence/CETA_DESKTOP_PUBLICATION_032.json` binds the actual reports and retains
+the distinct 0.3.1 visual-design checkpoint. The separately authorized website
+audit and its unpublished backlog remain separate, preserved work. The reference
+training dependency gate for Transformers 5.5.0 / CVE-2026-9856 remains unresolved
+and requires its own compatibility follow-up. Earlier evidence was not rewritten.
