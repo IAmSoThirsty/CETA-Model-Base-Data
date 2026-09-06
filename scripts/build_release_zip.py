@@ -5,10 +5,32 @@ import hashlib
 import json
 from pathlib import Path
 import zipfile
+import subprocess
+import sys
+
+if __package__:
+    from .verify_package import safe_package_path
+else:
+    from verify_package import safe_package_path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 ARCHIVE_ROOT = "Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0"
+
+
+def registered_paths(root: Path) -> tuple[Path, ...]:
+    manifest = json.loads((root / "PACKAGE_MANIFEST.json").read_text(encoding="utf-8"))
+    names = [item["path"] for item in manifest["files"]]
+    names.extend(["PACKAGE_MANIFEST.json", "SHA256SUMS"])
+    if len(names) != len(set(names)):
+        raise ValueError("duplicate package path")
+    paths = []
+    for name in sorted(names):
+        path = safe_package_path(root, name)
+        if not path.is_file():
+            raise ValueError(f"registered payload missing: {name}")
+        paths.append(path)
+    return tuple(paths)
 
 
 def sha256(path: Path) -> str:
@@ -29,22 +51,14 @@ def main() -> None:
     if output.exists():
         raise SystemExit(f"RELEASE ZIP: FAIL - output already exists: {output}")
 
-    manifest = json.loads((ROOT / "PACKAGE_MANIFEST.json").read_text(encoding="utf-8"))
-    relative_paths = [str(item["path"]) for item in manifest.get("files", [])]
-    relative_paths.extend(["PACKAGE_MANIFEST.json", "SHA256SUMS"])
-    if len(relative_paths) != len(set(relative_paths)):
-        raise SystemExit("RELEASE ZIP: FAIL - duplicate package path")
-    if any(path.startswith("data/ceta_controlled_evaluation/") for path in relative_paths):
-        raise SystemExit("RELEASE ZIP: FAIL - controlled evaluation entered package manifest")
-    for relative in relative_paths:
-        path = ROOT / relative
-        if not path.is_file() or path.is_symlink():
-            raise SystemExit(f"RELEASE ZIP: FAIL - registered payload missing or unsafe: {relative}")
+    subprocess.run([sys.executable, str(ROOT / "scripts/verify_package.py")], cwd=ROOT, check=True)
+    relative_paths = [path.relative_to(ROOT).as_posix() for path in registered_paths(ROOT)]
+    archive_root = f"Architecture-Rebuild-CETA-Epoch-Ready-v{(ROOT / 'VERSION').read_text().strip()}"
 
     output.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(output, "x", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         for relative in sorted(relative_paths):
-            info = zipfile.ZipInfo(f"{ARCHIVE_ROOT}/{relative}", date_time=(1980, 1, 1, 0, 0, 0))
+            info = zipfile.ZipInfo(f"{archive_root}/{relative}", date_time=(1980, 1, 1, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             info.create_system = 3
             info.external_attr = (0o100644 & 0xFFFF) << 16

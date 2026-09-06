@@ -12,7 +12,11 @@ dependencies = ["cryptography>=42"]
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+ceta_desktop = ["*.json", "*.svg"]
+
 [project.optional-dependencies]
+desktop = ["PySide6-Essentials==6.11.2"]
 training = ["torch>=2.13,<2.14"]
 language-adapter = [
     "accelerate==1.14.0",
@@ -24,7 +28,12 @@ language-adapter = [
 ]
 
 [dependency-groups]
+desktop-build = ["pyinstaller==6.22.2"]
 ci = [
     "pip-audit==2.10.1",
     "ruff==0.16.4",
 ]
+
+[project.gui-scripts]
+ceta-desktop = "ceta_desktop.app:main"
+ceta = "ceta_desktop.app:main"

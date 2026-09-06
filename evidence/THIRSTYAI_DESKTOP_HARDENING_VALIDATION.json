@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "product": "ThirstyAI",
+  "version": "0.3.0",
+  "created_at": "2026-09-06T05:42:07.842714+00:00",
+  "status": "release_candidate_unsigned_unpublished",
+  "installer": {
+    "filename": "ThirstyAI-0.3.0-setup.exe",
+    "sha256": "c04424d573872d8e0e363636f22cf06c424ebf997bfd91183d5f352a0df3c2a9",
+    "bytes": 29968044,
+    "authenticode_signed": false
+  },
+  "dependency_source_companion": {
+    "filename": "ThirstyAI-0.3.0-dependency-sources.zip",
+    "sha256": "ae1a880602a081b78be5e48310a2cb9a1c363ee09745a324e2a3841c60f94d29",
+    "bytes": 70981914,
+    "archives": [
+      {
+        "filename": "qtbase-everywhere-src-6.11.2.tar.xz",
+        "url": "https://download.qt.io/archive/qt/6.11/6.11.2/submodules/qtbase-everywhere-src-6.11.2.tar.xz",
+        "sha256": "5b2e00eccaf5a4d8c14134ffa0ea8dfd0a35ae1ffc7f8d87fa4305a1ed23cf22"
+      },
+      {
+        "filename": "qtsvg-everywhere-src-6.11.2.tar.xz",
+        "url": "https://download.qt.io/archive/qt/6.11/6.11.2/submodules/qtsvg-everywhere-src-6.11.2.tar.xz",
+        "sha256": "d594337feca84c26fb67fe87b85e6a5c12fda404b611d905f9d138210c311876"
+      },
+      {
+        "filename": "pyside-setup-everywhere-src-6.11.2.tar.xz",
+        "url": "https://download.qt.io/official_releases/QtForPython/pyside6/PySide6-6.11.2-src/pyside-setup-everywhere-src-6.11.2.tar.xz",
+        "sha256": "cba47efbaad1bedd529725cbc14e21f156c7a19366f07b3edfbb076ffd7afdf8"
+      }
+    ]
+  },
+  "validation": {
+    "full_repository_tests_passed": 210,
+    "full_repository_test_seconds": 29.544,
+    "desktop_tests_passed": 36,
+    "desktop_test_seconds": 6.373,
+    "repository_gates": "PASS",
+    "desktop_dependency_audit": "no_known_vulnerabilities_reported",
+    "installer_running_application_guard": "PASS_exit_2_without_creating_installation",
+    "clean_windows_sandbox": {
+      "status": "PASS",
+      "environment": "Windows Sandbox",
+      "network": "disabled",
+      "checks": [
+        "install",
+        "dependency_license_notices",
+        "startup",
+        "update",
+        "uninstall",
+        "application_data_preserved",
+        "unrecognized_file_preserved"
+      ]
+    },
+    "real_local_model": {
+      "created_at": "2026-09-06T05:18:23.275599+00:00",
+      "status": "PASS",
+      "model": "qwen3:0.6b",
+      "transport": "loopback",
+      "duration_seconds": 6.437,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Reply with exactly LOCAL_OK. /no_think",
+          "status": "complete"
+        },
+        {
+          "role": "assistant",
+          "content": "LOCAL_OK",
+          "status": "complete"
+        }
+      ],
+      "restart_persistence": true,
+      "claim": "integration_smoke_only_not_model_quality_benchmark"
+    },
+    "real_model_scope": "Native UI source execution with the final model transport; the frozen installer lifecycle was checked separately in Windows Sandbox.",
+    "replacement_scope": "Installer replacement preserves current-schema data; future-schema migration is not claimed.",
+    "source_notice_collection": {
+      "qtbase": 178,
+      "qtsvg": 11,
+      "pyside_shiboken": 32
+    },
+    "prior_evidence": "THIRSTYAI_DESKTOP_VALIDATION.json"
+  },
+  "remaining_release_inputs": [
+    "publisher signing setup",
+    "public installer and dependency-source download location",
+    "public signed update channel URL and publisher key"
+  ],
+  "retained_training_environment_issue": {
+    "package": "transformers",
+    "version": "5.5.0",
+    "advisory": "CVE-2026-9856",
+    "included_in_desktop_payload": false
+  },
+  "source_files": {
+    "licenses/desktop-sources.json": "72bd79c4b0caf24006a742f7a3ee835ca57b014706078ce10e05909096c10010",
+    "licenses/THIRD-PARTY-NOTICES.md": "701224094650999b40f65055794502a97f8bdef328aab7e8cff9e78db6280963",
+    "pyproject.toml": "d856a9048fa1d74201ae1f44653e0e45958396f14c10b035f928a855e3a0eb0f",
+    "scripts/build_desktop.py": "5cbee5cf92246e622becc02b42181af5ef496b86e681ab2d376c7b30fb49ba95",
+    "scripts/desktop_entry.py": "5d21ddce470175bcccffa16315da4f230835ae73bd9d540184c46da722c4b4aa",
+    "scripts/desktop_notices.py": "b7c1e434b1725097000a6120c417395e03d205854474ed9eac4ffaf53bbbdea7",
+    "scripts/network_boundary.py": "bdaa86b9a5c716e179bdac51329be5779a34c9ce4bcfc601eb24a10277091781",
+    "scripts/prepare_desktop_sandbox.py": "6ae50765cfd736425eb125afac1f0fdc53ecd94ecbfb3daa0025a9f375553924",
+    "scripts/sign_desktop_update.py": "15ffa57f07ce952378cd9e1f5dee8baa3a8ab9a9bc579afcc69900a60373cc2f",
+    "scripts/verify_desktop_inference.py": "377d5e52ed02dc1dac99c0383b2a480073c4bda41faec5261d761dc46640341f",
+    "src/ceta_desktop/__init__.py": "8a045c2c07356f47ae2993c2e2ef9ac5db429e9c1e2282215af22ce7ba0a24d4",
+    "src/ceta_desktop/app.py": "b5f1ccf22c69c3877ca3e80b191363996743157f3b8bbe0fea4f7326d6174c62",
+    "src/ceta_desktop/editor.py": "e0bd5afd235c61dfb37380825ac4934351159217cf7bac32bb223bf4201e77b6",
+    "src/ceta_desktop/icon.svg": "dd1f28d5d2279e2da6556a6c6b2791f625a5d297728d80aaea6b0a7594dfcab9",
+    "src/ceta_desktop/instance.py": "72cd5cb5b43b80e5c3bbf52bbd3d222572be270bb4830e0d9edc282c8df65ddf",
+    "src/ceta_desktop/models.py": "02902196e067d1974853a8f122fa01dce45c9b46e6721994adfb8c68d19505fc",
+    "src/ceta_desktop/release_channel.json": "665a724ef81c855bed55940bf73a4e7844eb207e0457156bbdb1a6ebaf16845e",
+    "src/ceta_desktop/storage.py": "1b4005793fe2f92454993b07d9ff8bd4a7286646fa1d34841c525cffd3a70e9b",
+    "src/ceta_desktop/updates.py": "a82d037a1a95c8d5879ab2bbfc97a21d30f4a6521952cc46b36812ff3420d19f",
+    "src/ceta_desktop/workspace.py": "09e74e08ec69fbdc0f0b94f2fe8c35bfc56241c75ce90db3150693745dcf9a93",
+    "tests/test_desktop_backend.py": "a852501341e675bd49a1216f15b4c485b4d4fd21e22d0c3558ed32acbf8be6c7",
+    "tests/test_desktop_gui.py": "94a5d2b4ac9e7f98b283721c8b48daacde3e0f4e0f78900e37e06214aa363ff5",
+    "tests/test_desktop_network_boundary.py": "90cca02e90e8573a0e49217b624a1f0e790bbe583e7fd6c07a7922339a665d9c",
+    "tests/test_desktop_notices.py": "afb9ccd2fb5133a2fb7f4114989f4ced6b4f70684c22faca80d443f000f061ca",
+    "tests/test_desktop_updates.py": "899943253cbcd2b2fd3bca86de29c6d90ee1a7c2f3418e5d0842643b68d61367",
+    "uv.lock": "a41351532f60bd750761fa51e7ed7a71ff5ef37d44221c07dd2e16f20a9dd0ac",
+    "VERSION": "d915cc95d6ca8f47ae297713ed46d4e5c5d99ddd29fc3c61e263bdf305f2b5b0"
+  },
+  "validation_logs": {
+    "full_verification_sha256": "d2c374571081a9249af64a7585d03a6dad9be2fdd4c1fa60d7f2b7aa16843920",
+    "desktop_build_sha256": "ea84c4bfad8e90549949d96037acb29034e8e15fe75e3e1fd38f0cfcc6d40f85"
+  }
+}

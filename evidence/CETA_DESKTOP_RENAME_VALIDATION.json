@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-09-06T14:49:03.139583+00:00",
+  "product": "CETA",
+  "version": "0.3.0",
+  "classification": "local_unsigned_candidate_not_published",
+  "installer": {
+    "path": "dist/CETA-0.3.0-candidate-001/CETA-0.3.0-setup.exe",
+    "sha256": "33cb87af6636e6d795b671c74622e3fd8e8a44259d72de85f8aa884b8d905467",
+    "size": 29977132,
+    "windows_product_name": "CETA"
+  },
+  "dependency_sources": {
+    "path": "dist/CETA-0.3.0-candidate-001/CETA-0.3.0-dependency-sources.zip",
+    "sha256": "02e73befd8ca27870b71f5a57e9c46154e7f7997b60b12a5d3e1b4fbafb7a4c0"
+  },
+  "checks": {
+    "desktop_tests": {
+      "passed": 47,
+      "failed": 0,
+      "first_run_seconds": 7.16,
+      "also_passed_in_build": true
+    },
+    "release_safety_tests": {
+      "passed": 5,
+      "failed": 0,
+      "seconds": 2.816,
+      "after_codacy_exclusion_seconds": 0.235
+    },
+    "ruff": "F,E9 passed for desktop source and changed Python files",
+    "frozen_startup": {
+      "exit_code": 0,
+      "test_database_created": true,
+      "screenshot_inspected": true
+    },
+    "isolated_desktop_dependency_audit": "No known vulnerabilities found",
+    "unrelated_project_reference_scan": {
+      "files_scanned": 28730,
+      "bytes_scanned": 1566268490,
+      "matches": [],
+      "failures": [],
+      "elapsed_seconds": 360.12,
+      "scope": "Working files including ignored and binary files; ASCII/UTF-16LE/UTF-16BE; excludes Git internals and does not decompress archive members."
+    },
+    "package_verification": {
+      "status": "PASS",
+      "registered_payload_files": 244,
+      "codacy_tool_state_excluded": true
+    },
+    "codacy": {
+      "mcp_version": "0.6.24",
+      "initialize_and_tools_list": "PASS",
+      "direct_mcp_analysis": "completed_with_findings",
+      "initial_changed_file_sweep_calls": 27,
+      "initial_findings": 521,
+      "notes": 425,
+      "warnings": 96,
+      "semgrep_opengrep": "unavailable_on_native_windows",
+      "private_cloud_account": "not_connected",
+      "isolated_tool_dependency_audit": {
+        "before": 25,
+        "after": 14,
+        "remaining_moderate": 9,
+        "remaining_high": 5
+      }
+    }
+  },
+  "not_verified": [
+    "trusted_publisher_signing",
+    "public_update_channel",
+    "publication",
+    "renamed_installer_Windows_Sandbox_lifecycle",
+    "full_CETA_training_and_reference_suite_after_rename"
+  ],
+  "source_sha256": {
+    "src/ceta_desktop/__init__.py": "8a045c2c07356f47ae2993c2e2ef9ac5db429e9c1e2282215af22ce7ba0a24d4",
+    "src/ceta_desktop/app.py": "06b60625ec339e573b5ca074a6f432ff132500744b60e495a6df404bf99026e1",
+    "src/ceta_desktop/editor.py": "e0bd5afd235c61dfb37380825ac4934351159217cf7bac32bb223bf4201e77b6",
+    "src/ceta_desktop/instance.py": "6d472aecdb44f466173f6dc923bf61b8c2f80657fbbc2ee6fb1ba9db700f0f30",
+    "src/ceta_desktop/models.py": "02902196e067d1974853a8f122fa01dce45c9b46e6721994adfb8c68d19505fc",
+    "src/ceta_desktop/storage.py": "3f51c35eb20500d4ac659bc569a8192a0f0d06de877cc49255d65c20f3ee9f75",
+    "src/ceta_desktop/updates.py": "776c4ba431762ae2536a0ea69f3266e9593fc62197c4ee306c1e4ea65d878ded",
+    "src/ceta_desktop/workspace.py": "09e74e08ec69fbdc0f0b94f2fe8c35bfc56241c75ce90db3150693745dcf9a93",
+    "scripts/build_desktop.py": "cf48183b5f991b16c9e225dc1bf36f099b6aaaf4558c05f50e1c36a371052a5a",
+    "scripts/desktop_entry.py": "3f6bb0bd8ea75526bca09a1122fa0c6adae5804dbdbf99438d36c162f54b060c",
+    "scripts/prepare_desktop_sandbox.py": "b53bb73f6df74a56e2ec328f9a4bdf45b7aec6a8f4f5f4dca37a0408fbdacb33",
+    "scripts/sign_desktop_update.py": "3e6c2c34a0a9be7a70a27bd7f9f90e1ce4cbf61ef1e448e130e7079d76c668a9",
+    "pyproject.toml": "afb3418b76d9db1ab53c7db63c8e9dfd187eda789daa2f89f00708dc3e044031"
+  }
+}

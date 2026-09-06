@@ -1,5 +1,24 @@
 # Architecture Rebuild — CETA Epoch-Ready Reference v0.3.0
 
+## CETA native desktop application
+
+This repository now also develops **CETA**, a Windows-first native desktop
+environment for coding, conversations, and user-directed workloads. Its optional
+local model expansion packs are separate from application installation and updates.
+The desktop application is under release validation; the historical CETA training
+results below do not establish desktop production readiness.
+
+See [the desktop user guide](docs/CETA_USER_GUIDE.md) and
+[delivery status](docs/DESKTOP_DELIVERY.md). Development startup:
+
+```powershell
+uv sync --locked --extra desktop --group ci
+uv run ceta
+```
+
+The remainder of this document describes the independently retained CETA reference
+runtime, training workflows, and their evidence boundaries.
+
 This repository is a clean rebuild derived from the supplied architecture corpus. Existing systems were treated as evidence, tests, failure history, and design lineage. Their APIs were not preserved as compatibility requirements.
 
 The computational center is **Constitutional Epistemic Transition Algebra (CETA)**:

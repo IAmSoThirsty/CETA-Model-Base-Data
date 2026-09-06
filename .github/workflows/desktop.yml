@@ -1,0 +1,32 @@
+name: Verify CETA desktop
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  desktop:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d
+        with:
+          version: "0.12.3"
+      - name: Install isolated locked desktop dependencies
+        run: uv sync --locked --no-install-project --extra desktop --group desktop-build --group ci --no-default-groups
+      - name: Audit desktop dependencies
+        run: uv run --no-sync python -m pip_audit --local --progress-spinner off
+      - name: Check native application and release code
+        run: uv run --no-sync ruff check --select F,E9 src/ceta_desktop scripts/build_desktop.py scripts/desktop_entry.py scripts/desktop_notices.py scripts/desktop_signing.py scripts/desktop_update_keys.py scripts/sign_desktop_update.py scripts/create_desktop_verification.py scripts/verify_desktop_inference.py scripts/network_boundary.py tests/test_desktop*.py
+      - name: Test native application
+        run: uv run --no-sync python -m unittest discover -s tests -p "test_desktop*.py" -v

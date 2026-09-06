@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "product": "ThirstyAI",
+  "version": "0.3.0",
+  "created_at": "2026-09-06T06:45:06.563621+00:00",
+  "status": "release_candidate_unsigned_unpublished",
+  "installer": {
+    "filename": "ThirstyAI-0.3.0-setup.exe",
+    "sha256": "8d198eb7e53b380fdd139460cc3afb029995ae8eb73dc0f8f243454864047d5a",
+    "bytes": 29973561,
+    "authenticode_signed": false
+  },
+  "dependency_source_companion": {
+    "filename": "ThirstyAI-0.3.0-dependency-sources.zip",
+    "sha256": "ae1a880602a081b78be5e48310a2cb9a1c363ee09745a324e2a3841c60f94d29",
+    "bytes": 70981914,
+    "archives": [
+      {
+        "filename": "qtbase-everywhere-src-6.11.2.tar.xz",
+        "url": "https://download.qt.io/archive/qt/6.11/6.11.2/submodules/qtbase-everywhere-src-6.11.2.tar.xz",
+        "sha256": "5b2e00eccaf5a4d8c14134ffa0ea8dfd0a35ae1ffc7f8d87fa4305a1ed23cf22"
+      },
+      {
+        "filename": "qtsvg-everywhere-src-6.11.2.tar.xz",
+        "url": "https://download.qt.io/archive/qt/6.11/6.11.2/submodules/qtsvg-everywhere-src-6.11.2.tar.xz",
+        "sha256": "d594337feca84c26fb67fe87b85e6a5c12fda404b611d905f9d138210c311876"
+      },
+      {
+        "filename": "pyside-setup-everywhere-src-6.11.2.tar.xz",
+        "url": "https://download.qt.io/official_releases/QtForPython/pyside6/PySide6-6.11.2-src/pyside-setup-everywhere-src-6.11.2.tar.xz",
+        "sha256": "cba47efbaad1bedd529725cbc14e21f156c7a19366f07b3edfbb076ffd7afdf8"
+      }
+    ]
+  },
+  "validation": {
+    "full_repository_tests_passed": 215,
+    "full_repository_test_seconds": 31.847,
+    "desktop_tests_passed": 41,
+    "desktop_test_seconds": 6.53,
+    "repository_gates": "PASS",
+    "desktop_dependency_audit": "no_known_vulnerabilities_reported",
+    "clean_windows_sandbox": {
+      "status": "PASS",
+      "environment": "Windows Sandbox",
+      "network": "disabled",
+      "checks": [
+        "install",
+        "dependency_license_notices",
+        "startup",
+        "update",
+        "uninstall",
+        "application_data_preserved",
+        "unrecognized_file_preserved"
+      ]
+    },
+    "owned_ollama_cloud_disabled_and_response_continuity": {
+      "created_at": "2026-09-06T06:42:41.103691+00:00",
+      "status": "PASS",
+      "scope": "native source UI starts owned Ollama with cloud disabled and existing isolated model; no model download",
+      "model": "qwen3:0.6b",
+      "claim": "integration_transport_and_persistence_only_not_model_instruction_accuracy",
+      "server_cloud_disabled_log_verified": true,
+      "owned_server_pid": 10832,
+      "duration_seconds": 5.688,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Reply with exactly LOCAL_OK. /no_think",
+          "status": "complete"
+        },
+        {
+          "role": "assistant",
+          "content": "LOCAL_OK",
+          "status": "complete"
+        }
+      ],
+      "exact_requested_text": true,
+      "model_stream_matches_saved_response": true,
+      "owned_service_stopped_on_close": true,
+      "restart_persistence": true
+    },
+    "real_model_scope": "Native source UI in network-disabled Windows Sandbox with read-only mapped existing model and Ollama runtime. Frozen installer lifecycle checked separately in the same Sandbox.",
+    "model_instruction_exactness_failure": {
+      "created_at": "2026-09-06T06:39:47.602806+00:00",
+      "status": "FAIL",
+      "scope": "native source UI starts owned Ollama with cloud disabled and existing isolated model; no model download",
+      "model": "qwen3:0.6b",
+      "server_cloud_disabled_log_verified": true,
+      "owned_server_pid": 11728,
+      "duration_seconds": 8.687,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Reply with exactly LOCAL_OK. /no_think",
+          "status": "complete"
+        },
+        {
+          "role": "assistant",
+          "content": "Local OK.",
+          "status": "complete"
+        }
+      ]
+    },
+    "model_instruction_exactness_classification": "Retained failed literal-response assertion; the separate continuity run compares unchanged live model tokens to saved response and restart recovery. No model quality claim.",
+    "test_harness_repairs": [
+      "Host model check stopped before starting because another service owned port 11434; that service was left untouched.",
+      "An initial external Sandbox launcher contained incorrectly escaped paths; corrected launcher syntax before executing the completed checks."
+    ],
+    "replacement_scope": "Installer replacement preserves current-schema data; future-schema migration is not claimed.",
+    "prior_evidence": "THIRSTYAI_DESKTOP_RELEASE_WORKFLOW_VALIDATION.json"
+  },
+  "changes": [
+    "Set OLLAMA_NO_CLOUD=1 only in the application-owned Ollama child process.",
+    "Describe conversation storage accurately and explain independently managed service privacy.",
+    "Verify child environment overrides leave parent settings and model storage intact."
+  ],
+  "remaining_release_inputs": [
+    "publisher signing setup",
+    "public installer and dependency-source download location",
+    "public signed update channel URL and publisher key"
+  ],
+  "retained_training_environment_issue": {
+    "package": "transformers",
+    "version": "5.5.0",
+    "advisory": "CVE-2026-9856",
+    "included_in_desktop_payload": false
+  },
+  "source_files": {
+    ".github/workflows/desktop.yml": "056fb28626a439477cd68002a90e7aa2ff503472e2d683c492dd491734c397be",
+    "VERSION": "d915cc95d6ca8f47ae297713ed46d4e5c5d99ddd29fc3c61e263bdf305f2b5b0",
+    "docs/DESKTOP_DELIVERY.md": "a9d1485b97201cdbf5080349eacc826c5b8d69c9a7a73502b2a26f8176baccc9",
+    "docs/THIRSTYAI_USER_GUIDE.md": "268a7ceff569905cff5238bf920b8fa718e932a6f77ee5f4aa55966302225afa",
+    "licenses/THIRD-PARTY-NOTICES.md": "701224094650999b40f65055794502a97f8bdef328aab7e8cff9e78db6280963",
+    "licenses/desktop-sources.json": "72bd79c4b0caf24006a742f7a3ee835ca57b014706078ce10e05909096c10010",
+    "pyproject.toml": "d856a9048fa1d74201ae1f44653e0e45958396f14c10b035f928a855e3a0eb0f",
+    "scripts/build_desktop.py": "5c624c9d6b0dd9d157251bf0df1cc4605a475cb6de854738ad5559f844cfc651",
+    "scripts/desktop_entry.py": "5d21ddce470175bcccffa16315da4f230835ae73bd9d540184c46da722c4b4aa",
+    "scripts/desktop_notices.py": "b7c1e434b1725097000a6120c417395e03d205854474ed9eac4ffaf53bbbdea7",
+    "scripts/desktop_signing.py": "6809a47ca3dce8191b54445fa4b88da225719f7016e8dde19a81e08066b4a9d5",
+    "scripts/network_boundary.py": "bdaa86b9a5c716e179bdac51329be5779a34c9ce4bcfc601eb24a10277091781",
+    "scripts/prepare_desktop_sandbox.py": "6ae50765cfd736425eb125afac1f0fdc53ecd94ecbfb3daa0025a9f375553924",
+    "scripts/sign_desktop_update.py": "15ffa57f07ce952378cd9e1f5dee8baa3a8ab9a9bc579afcc69900a60373cc2f",
+    "scripts/verify_desktop_inference.py": "377d5e52ed02dc1dac99c0383b2a480073c4bda41faec5261d761dc46640341f",
+    "src/ceta_desktop/__init__.py": "8a045c2c07356f47ae2993c2e2ef9ac5db429e9c1e2282215af22ce7ba0a24d4",
+    "src/ceta_desktop/app.py": "1e2ecda635877313d55f6f0649622f08463308f53ae84d461e3dc47bfc9ff347",
+    "src/ceta_desktop/editor.py": "e0bd5afd235c61dfb37380825ac4934351159217cf7bac32bb223bf4201e77b6",
+    "src/ceta_desktop/icon.svg": "dd1f28d5d2279e2da6556a6c6b2791f625a5d297728d80aaea6b0a7594dfcab9",
+    "src/ceta_desktop/instance.py": "72cd5cb5b43b80e5c3bbf52bbd3d222572be270bb4830e0d9edc282c8df65ddf",
+    "src/ceta_desktop/models.py": "02902196e067d1974853a8f122fa01dce45c9b46e6721994adfb8c68d19505fc",
+    "src/ceta_desktop/release_channel.json": "665a724ef81c855bed55940bf73a4e7844eb207e0457156bbdb1a6ebaf16845e",
+    "src/ceta_desktop/storage.py": "1b4005793fe2f92454993b07d9ff8bd4a7286646fa1d34841c525cffd3a70e9b",
+    "src/ceta_desktop/updates.py": "a82d037a1a95c8d5879ab2bbfc97a21d30f4a6521952cc46b36812ff3420d19f",
+    "src/ceta_desktop/workspace.py": "09e74e08ec69fbdc0f0b94f2fe8c35bfc56241c75ce90db3150693745dcf9a93",
+    "tests/test_desktop_backend.py": "a852501341e675bd49a1216f15b4c485b4d4fd21e22d0c3558ed32acbf8be6c7",
+    "tests/test_desktop_gui.py": "36b9a813752777905cc2ed2673ffb3d8147e41eb033acdd01ec5ddb57007a942",
+    "tests/test_desktop_network_boundary.py": "90cca02e90e8573a0e49217b624a1f0e790bbe583e7fd6c07a7922339a665d9c",
+    "tests/test_desktop_notices.py": "afb9ccd2fb5133a2fb7f4114989f4ced6b4f70684c22faca80d443f000f061ca",
+    "tests/test_desktop_signing.py": "a9f4d19334a45e49813c5e4f353fb3a89757e3a91920a20c3e9d2a931de88cac",
+    "tests/test_desktop_updates.py": "899943253cbcd2b2fd3bca86de29c6d90ee1a7c2f3418e5d0842643b68d61367",
+    "uv.lock": "a41351532f60bd750761fa51e7ed7a71ff5ef37d44221c07dd2e16f20a9dd0ac"
+  },
+  "validation_logs": {
+    "full_verification_sha256": "36392470c9dc80c7cb0667d67cc82b708d4a11a306693f200a43665baafa56f7",
+    "desktop_build_sha256": "917933bdb3eda66cb054b8d792a889c3c3e332a2816f083a094dc777a2824109",
+    "owned_ollama_log_sha256": "edc3438d1caaa9d9bc023fb3d0adb56c97f8ca8fa1d29eab3e22d4933b964ae9",
+    "continuity_harness_sha256": "0135e88e1e2f9b68f42842a86357d8f23c403e9b1672f6930af9be356104e5c3",
+    "exact_text_failed_result_sha256": "b0af28594a91e215713aaef65a8743bfe75d7d043579176ada7f0bb866493c3c"
+  },
+  "completion_audit": {
+    "native_installer": "PASS_clean_Windows_lifecycle",
+    "coding_and_workloads": "PASS_desktop_runtime_checks",
+    "conversations_and_local_models": "PASS_native_UI_and_transport_checks",
+    "model_expansion_installation": "PASS_prior_real_Ollama_install_and_current_GGUF_checks",
+    "publisher_signed_release": "BLOCKED_publisher_configuration_not_supplied",
+    "public_downloads_and_update_channel": "BLOCKED_URL_and_publisher_key_not_supplied",
+    "production_ready": false,
+    "owned_ollama_cloud_disabled": "PASS_real_runtime_log_and_network_disabled_inference"
+  }
+}

@@ -1,0 +1,738 @@
+{
+  "schema_version": 1,
+  "product": "CETA",
+  "version": "0.3.0",
+  "candidate": "003",
+  "recorded_at_utc": "2026-09-06T20:40:40.355436+00:00",
+  "classification": "locally_verified_personal_release_publication_pending",
+  "authorization": {
+    "publication": "User expressly authorized CETA showcase and direct download at thirstysystems.com through the Thirstys Projects LLC website, release assets in the existing CETA GitHub repository, and required signing.",
+    "personal_signing": "User declined paid Microsoft signing and selected a personal signing artifact for recipients to verify installation identity.",
+    "isolation": "Same CETA repository delivery assembly only; no unrelated project application code, keys, models, or evidence imported."
+  },
+  "source_provenance": {
+    "source_root": "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0",
+    "delivery_root": "T:\\00-Active\\CETA-desktop-delivery-20260906",
+    "delivery_branch_at_assembly": "codex/ceta-desktop-release",
+    "public_base_head": "decd957ef91884e5ba9fc61c627fb5481d53a80f",
+    "assembly_recorded_at_utc": "2026-09-06T20:24:15.2232964Z",
+    "assembly_copied_files": 53,
+    "build_log_identifies_delivery_entrypoint": "scripts/desktop_entry.py",
+    "snapshot_kind": "Post-build reconciliation of current relevant sources against retained assembly and pre-finalization validation hashes; not a cryptographically signed build-input attestation.",
+    "snapshot_excludes": [
+      "This new self-referential evidence file",
+      "README.md under separate coordinator reconciliation",
+      "Regenerated package manifests and checksums"
+    ],
+    "post_build_document_changes": [
+      "docs/DESKTOP_DELIVERY.md",
+      "docs/operations/CONTINUITY_MAP.md"
+    ],
+    "protected_original_files": [
+      {
+        "path": "scripts/verify_epoch_readiness_report.py",
+        "original_dirty_sha256": "12723887a42a265175530f0b4b3cf57ae2204b4fc0274c406ebb1ea3a061e371",
+        "delivery_public_base_sha256": "b490d65f1b63660cfd056303144279477b1b879e8c0b85807db91150c070a4fe",
+        "original_preserved": true,
+        "delivery_matches_public_base": true
+      },
+      {
+        "path": "src/architecture_contracts.py",
+        "original_dirty_sha256": "b99290d8cd47f7aed734d0a2e8b0c1bbbcd6a99fd7dd307c06ad588405c54686",
+        "delivery_public_base_sha256": "2f0d691b7521a2544a9d2562587863fd0e6c05f3589add078cb4076f7e6273bd",
+        "original_preserved": true,
+        "delivery_matches_public_base": true
+      },
+      {
+        "path": "src/authority/ledger.py",
+        "original_dirty_sha256": "f74e6828259670099f8c2ede5789247c4c4a632155519970610f16b97c2e9359",
+        "delivery_public_base_sha256": "febca208c929cb8c9813812670247c42d6d54e0a367c001032e8bb88c7fe3605",
+        "original_preserved": true,
+        "delivery_matches_public_base": true
+      },
+      {
+        "path": "src/identity_registry/registry.py",
+        "original_dirty_sha256": "4332f56201bedc54be4d281f9ad88557c5bff213e5985ecc6d1fc646dcbdeef3",
+        "delivery_public_base_sha256": "07bc0d240c855f0064eca58d6392752c409af1c382326f1050f761d771d55289",
+        "original_preserved": true,
+        "delivery_matches_public_base": true
+      },
+      {
+        "path": "src/runtime/core.py",
+        "original_dirty_sha256": "5b53a2ba54ebadb4401b2a72da204fd64d16477609e88a309ad682a850b9f384",
+        "delivery_public_base_sha256": "9dbc35780331a41cd1961143f4ce2264f7d47b7a355393a55d8f373ed663f4ca",
+        "original_preserved": true,
+        "delivery_matches_public_base": true
+      }
+    ],
+    "current_relevant_source_snapshot": [
+      {
+        "path": ".github/workflows/desktop.yml",
+        "sha256": "5f89a21c51fbbc7c4f84fdfdf6a6a06053231c495a4d91b92f176714c1c1a715",
+        "original_sha256": "5f89a21c51fbbc7c4f84fdfdf6a6a06053231c495a4d91b92f176714c1c1a715",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "AGENTS.md",
+        "sha256": "2136e976fb485eb159dccfe3cb4e498003eacd47f087a1da82d961470911c00f",
+        "original_sha256": "2136e976fb485eb159dccfe3cb4e498003eacd47f087a1da82d961470911c00f",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "docs/CETA_USER_GUIDE.md",
+        "sha256": "4481a0f1eab7c66e4af7d6ee7f67798d4611427c4b0fb1e45e5146ef4fdd6ef5",
+        "original_sha256": "4481a0f1eab7c66e4af7d6ee7f67798d4611427c4b0fb1e45e5146ef4fdd6ef5",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "docs/DESKTOP_DELIVERY.md",
+        "sha256": "bdf224288009ce3965429eef2930bf07de17fa28e877ca0d73f86807f913881a",
+        "original_sha256": "bdf224288009ce3965429eef2930bf07de17fa28e877ca0d73f86807f913881a",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": false
+      },
+      {
+        "path": "docs/operations/CONTINUITY_MAP.md",
+        "sha256": "c45a2b97b73f7386c2789d4806fc589b309a56628e82fa0ac2995caba82fa4d9",
+        "original_sha256": "c45a2b97b73f7386c2789d4806fc589b309a56628e82fa0ac2995caba82fa4d9",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": false
+      },
+      {
+        "path": "evidence/CETA_DESKTOP_RENAME_VALIDATION.json",
+        "sha256": "dffe76bf7eb14fe2fd6b84e14ba12dd853c7b99a30024ebba1ec3dd96f771a4b",
+        "original_sha256": "dffe76bf7eb14fe2fd6b84e14ba12dd853c7b99a30024ebba1ec3dd96f771a4b",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "evidence/CETA_DESKTOP_UPDATE_HANDOFF_VALIDATION.json",
+        "sha256": "11a41b91c90e1dec15f8528ba0b392a09f79d33f5894fa2e7646819c926e1fc2",
+        "original_sha256": "11a41b91c90e1dec15f8528ba0b392a09f79d33f5894fa2e7646819c926e1fc2",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "evidence/THIRSTYAI_DESKTOP_HARDENING_VALIDATION.json",
+        "sha256": "622e8fe08302020d1bdbfbcef1918be28e8aac531dde8a2b3a3fff90189e986d",
+        "original_sha256": "622e8fe08302020d1bdbfbcef1918be28e8aac531dde8a2b3a3fff90189e986d",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "evidence/THIRSTYAI_DESKTOP_PRIVACY_VALIDATION.json",
+        "sha256": "ad6011aaaa7f543796e3e5134970b7a8b1f85ad2246e89d758495fa492e2f0bc",
+        "original_sha256": "ad6011aaaa7f543796e3e5134970b7a8b1f85ad2246e89d758495fa492e2f0bc",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "evidence/THIRSTYAI_DESKTOP_RELEASE_WORKFLOW_VALIDATION.json",
+        "sha256": "1f5c1f658a6569471197f6417c120e6dec876e7735e1c35a762ae3f495165019",
+        "original_sha256": "1f5c1f658a6569471197f6417c120e6dec876e7735e1c35a762ae3f495165019",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "evidence/THIRSTYAI_DESKTOP_VALIDATION.json",
+        "sha256": "4ff0dfd4c9c335eb424953017e10ad1c911b38a01ad11756c44360e2c745bd12",
+        "original_sha256": "4ff0dfd4c9c335eb424953017e10ad1c911b38a01ad11756c44360e2c745bd12",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "licenses/desktop-sources.json",
+        "sha256": "72bd79c4b0caf24006a742f7a3ee835ca57b014706078ce10e05909096c10010",
+        "original_sha256": "72bd79c4b0caf24006a742f7a3ee835ca57b014706078ce10e05909096c10010",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "licenses/THIRD-PARTY-NOTICES.md",
+        "sha256": "6e3a523e2e464603fb8145dd2fb9bec9910858b3db938a6206477cb66581c3b8",
+        "original_sha256": "6e3a523e2e464603fb8145dd2fb9bec9910858b3db938a6206477cb66581c3b8",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "pyproject.toml",
+        "sha256": "afb3418b76d9db1ab53c7db63c8e9dfd187eda789daa2f89f00708dc3e044031",
+        "original_sha256": "afb3418b76d9db1ab53c7db63c8e9dfd187eda789daa2f89f00708dc3e044031",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "scripts/build_desktop.py",
+        "sha256": "2e0eb3a16530b40856e260822950127a2cd3a4007cd88ffb842f7cf3be5440f3",
+        "original_sha256": "2e0eb3a16530b40856e260822950127a2cd3a4007cd88ffb842f7cf3be5440f3",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "scripts/build_package_manifest.py",
+        "sha256": "5bea4084d0090140288c01e921c155e5f5f4f8f7b62e857f8c533fe3b6795444",
+        "original_sha256": "5bea4084d0090140288c01e921c155e5f5f4f8f7b62e857f8c533fe3b6795444",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "scripts/build_release_zip.py",
+        "sha256": "791ea1eb140df1e34a8f43d6b0c6905024c623058df4c4350fda4c0193ec9e79",
+        "original_sha256": "791ea1eb140df1e34a8f43d6b0c6905024c623058df4c4350fda4c0193ec9e79",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "scripts/build_release.py",
+        "sha256": "00f3dc76e66535d3c14b9e93440abce323d6400686fa8f90c8bf7896c2a458de",
+        "original_sha256": "00f3dc76e66535d3c14b9e93440abce323d6400686fa8f90c8bf7896c2a458de",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "scripts/build_sha256sums.py",
+        "sha256": "ffb89f7060621dc1c85dea7d07768cb5896780e01d11897b8e8faceb7960e13e",
+        "original_sha256": "ffb89f7060621dc1c85dea7d07768cb5896780e01d11897b8e8faceb7960e13e",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "scripts/create_desktop_verification.py",
+        "sha256": "83a4e01e9bd9b2fa27422633b73cc33f88e3410dc35a2e440746df3c973b5e19",
+        "original_sha256": "83a4e01e9bd9b2fa27422633b73cc33f88e3410dc35a2e440746df3c973b5e19",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "scripts/desktop_entry.py",
+        "sha256": "3f6bb0bd8ea75526bca09a1122fa0c6adae5804dbdbf99438d36c162f54b060c",
+        "original_sha256": "3f6bb0bd8ea75526bca09a1122fa0c6adae5804dbdbf99438d36c162f54b060c",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "scripts/desktop_notices.py",
+        "sha256": "b7c1e434b1725097000a6120c417395e03d205854474ed9eac4ffaf53bbbdea7",
+        "original_sha256": "b7c1e434b1725097000a6120c417395e03d205854474ed9eac4ffaf53bbbdea7",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "scripts/desktop_signing.py",
+        "sha256": "80220e949c52757a82f33ca1128697406b981c282c6b06314064fcb96fe95cb3",
+        "original_sha256": "80220e949c52757a82f33ca1128697406b981c282c6b06314064fcb96fe95cb3",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "scripts/desktop_update_keys.py",
+        "sha256": "cd8c740ef7cb5d7c0a73ed10202126c03080e5411a6bf264ddf881c8ad921378",
+        "original_sha256": "cd8c740ef7cb5d7c0a73ed10202126c03080e5411a6bf264ddf881c8ad921378",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "scripts/hostile_audit.py",
+        "sha256": "8d200cb7636194c632fa8a81a6bb42a515db1a10afa3b795334bb519f3b24e19",
+        "original_sha256": "8d200cb7636194c632fa8a81a6bb42a515db1a10afa3b795334bb519f3b24e19",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "scripts/network_boundary.py",
+        "sha256": "bdaa86b9a5c716e179bdac51329be5779a34c9ce4bcfc601eb24a10277091781",
+        "original_sha256": "bdaa86b9a5c716e179bdac51329be5779a34c9ce4bcfc601eb24a10277091781",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "scripts/prepare_desktop_sandbox.py",
+        "sha256": "77a73f66430c4533800813e8b4621247aba3a4afcb13ffc0608e2d2fef33f201",
+        "original_sha256": "77a73f66430c4533800813e8b4621247aba3a4afcb13ffc0608e2d2fef33f201",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "scripts/sign_desktop_update.py",
+        "sha256": "db37aa472f571ef6ed038bcc8da384c7805603c5bbfcfa298e107117afda5d3c",
+        "original_sha256": "db37aa472f571ef6ed038bcc8da384c7805603c5bbfcfa298e107117afda5d3c",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "scripts/verify_desktop_inference.py",
+        "sha256": "377d5e52ed02dc1dac99c0383b2a480073c4bda41faec5261d761dc46640341f",
+        "original_sha256": "377d5e52ed02dc1dac99c0383b2a480073c4bda41faec5261d761dc46640341f",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "scripts/verify_package.py",
+        "sha256": "3004f0b6434743aa392cd11b870f1ac3a19412320845717f762481d6b880b593",
+        "original_sha256": "3004f0b6434743aa392cd11b870f1ac3a19412320845717f762481d6b880b593",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "src/ceta_desktop/__init__.py",
+        "sha256": "8a045c2c07356f47ae2993c2e2ef9ac5db429e9c1e2282215af22ce7ba0a24d4",
+        "original_sha256": "8a045c2c07356f47ae2993c2e2ef9ac5db429e9c1e2282215af22ce7ba0a24d4",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "src/ceta_desktop/app.py",
+        "sha256": "cfcf5aeb51b18d32618c65d81f2f8c1f4858fa974e8dbf88f77d1eacf5faccaf",
+        "original_sha256": "cfcf5aeb51b18d32618c65d81f2f8c1f4858fa974e8dbf88f77d1eacf5faccaf",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "src/ceta_desktop/editor.py",
+        "sha256": "e0bd5afd235c61dfb37380825ac4934351159217cf7bac32bb223bf4201e77b6",
+        "original_sha256": "e0bd5afd235c61dfb37380825ac4934351159217cf7bac32bb223bf4201e77b6",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "src/ceta_desktop/icon.svg",
+        "sha256": "dd1f28d5d2279e2da6556a6c6b2791f625a5d297728d80aaea6b0a7594dfcab9",
+        "original_sha256": "dd1f28d5d2279e2da6556a6c6b2791f625a5d297728d80aaea6b0a7594dfcab9",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "src/ceta_desktop/installation.py",
+        "sha256": "a9e6219c57d619f194668b866ecaa2dd0db1170467d807e487996aaa7ef4a98e",
+        "original_sha256": "a9e6219c57d619f194668b866ecaa2dd0db1170467d807e487996aaa7ef4a98e",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "src/ceta_desktop/instance.py",
+        "sha256": "6d472aecdb44f466173f6dc923bf61b8c2f80657fbbc2ee6fb1ba9db700f0f30",
+        "original_sha256": "6d472aecdb44f466173f6dc923bf61b8c2f80657fbbc2ee6fb1ba9db700f0f30",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "src/ceta_desktop/models.py",
+        "sha256": "02902196e067d1974853a8f122fa01dce45c9b46e6721994adfb8c68d19505fc",
+        "original_sha256": "02902196e067d1974853a8f122fa01dce45c9b46e6721994adfb8c68d19505fc",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "src/ceta_desktop/release_channel.json",
+        "sha256": "c11303d5c74c40540a2779d415f8c734e2f1210a8b5f136b2e4633401132e863",
+        "original_sha256": "c11303d5c74c40540a2779d415f8c734e2f1210a8b5f136b2e4633401132e863",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "src/ceta_desktop/storage.py",
+        "sha256": "3f51c35eb20500d4ac659bc569a8192a0f0d06de877cc49255d65c20f3ee9f75",
+        "original_sha256": "3f51c35eb20500d4ac659bc569a8192a0f0d06de877cc49255d65c20f3ee9f75",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "src/ceta_desktop/updates.py",
+        "sha256": "7e3ea426b004856fea9d36a3ecf57dd8b1443c0ee3daa452dd1ee94b83074d3e",
+        "original_sha256": "7e3ea426b004856fea9d36a3ecf57dd8b1443c0ee3daa452dd1ee94b83074d3e",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "src/ceta_desktop/workspace.py",
+        "sha256": "09e74e08ec69fbdc0f0b94f2fe8c35bfc56241c75ce90db3150693745dcf9a93",
+        "original_sha256": "09e74e08ec69fbdc0f0b94f2fe8c35bfc56241c75ce90db3150693745dcf9a93",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "tests/test_desktop_backend.py",
+        "sha256": "93fdc7ea7e703fff4944c509ed7a19d7cf1d14b8aa8d728879daabe6b845df19",
+        "original_sha256": "93fdc7ea7e703fff4944c509ed7a19d7cf1d14b8aa8d728879daabe6b845df19",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "tests/test_desktop_gui.py",
+        "sha256": "44fb360d318df949e21cc646a62a8f5ad32c966a4df178af8cef2760844e44d6",
+        "original_sha256": "44fb360d318df949e21cc646a62a8f5ad32c966a4df178af8cef2760844e44d6",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "tests/test_desktop_installation.py",
+        "sha256": "e85bd67ec1f875f95f913848b0e9354e59bfe57998e2cdc6c89887f5fcea84b1",
+        "original_sha256": "e85bd67ec1f875f95f913848b0e9354e59bfe57998e2cdc6c89887f5fcea84b1",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "tests/test_desktop_network_boundary.py",
+        "sha256": "90cca02e90e8573a0e49217b624a1f0e790bbe583e7fd6c07a7922339a665d9c",
+        "original_sha256": "90cca02e90e8573a0e49217b624a1f0e790bbe583e7fd6c07a7922339a665d9c",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "tests/test_desktop_notices.py",
+        "sha256": "afb9ccd2fb5133a2fb7f4114989f4ced6b4f70684c22faca80d443f000f061ca",
+        "original_sha256": "afb9ccd2fb5133a2fb7f4114989f4ced6b4f70684c22faca80d443f000f061ca",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "tests/test_desktop_signing.py",
+        "sha256": "477381f041dd3e2c60b0917a4b2c6513d828551e2f95d88714a0772b7553edd0",
+        "original_sha256": "477381f041dd3e2c60b0917a4b2c6513d828551e2f95d88714a0772b7553edd0",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "tests/test_desktop_update_keys.py",
+        "sha256": "cd9a2140ba8ba4de17193bdbd09802979f409f339f59a90ef51713d485ead0a1",
+        "original_sha256": "cd9a2140ba8ba4de17193bdbd09802979f409f339f59a90ef51713d485ead0a1",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "tests/test_desktop_updates.py",
+        "sha256": "ca07b1afffe5304180dd322c1b82fc4582b6bfbb8d683e563630efdf525a9c12",
+        "original_sha256": "ca07b1afffe5304180dd322c1b82fc4582b6bfbb8d683e563630efdf525a9c12",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "tests/test_desktop_verification.py",
+        "sha256": "bfe03721cedcd3d9ca43507eb6e61d2e6ad686691666a8fe4a7ac3c6e584135d",
+        "original_sha256": "bfe03721cedcd3d9ca43507eb6e61d2e6ad686691666a8fe4a7ac3c6e584135d",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "tests/test_release_safety.py",
+        "sha256": "ddae6112a9290ee7f1eee9ad9b7d0dae3271aae328ff4deb1ef534fe495e0b24",
+        "original_sha256": "ddae6112a9290ee7f1eee9ad9b7d0dae3271aae328ff4deb1ef534fe495e0b24",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      },
+      {
+        "path": "uv.lock",
+        "sha256": "a41351532f60bd750761fa51e7ed7a71ff5ef37d44221c07dd2e16f20a9dd0ac",
+        "original_sha256": "a41351532f60bd750761fa51e7ed7a71ff5ef37d44221c07dd2e16f20a9dd0ac",
+        "original_delivery_match": true,
+        "matches_pre_finalization_record": true
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "C:\\Users\\Quencher\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\CETA-build\\01a074c6\\release-003\\CETA-0.3.0-setup.exe",
+      "sha256": "416bf6d702342ec9a38be733f207319f77d377c9823aa4c694e2f02917c08bfc",
+      "bytes": 29988504
+    },
+    {
+      "path": "C:\\Users\\Quencher\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\CETA-build\\01a074c6\\release-003\\CETA-0.3.0-dependency-sources.zip",
+      "sha256": "063ed318ffdc8bf7e843cc47094ac721aab70218f36623f25406326bb0024778",
+      "bytes": 70981896
+    },
+    {
+      "path": "C:\\Users\\Quencher\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\CETA-build\\01a074c6\\release-003\\SHA256SUMS",
+      "sha256": "66db1f878364862c10e39c1c289ea36d486a0853a7316d3e3044a152e8d4634b",
+      "bytes": 189
+    }
+  ],
+  "personal_signature": {
+    "algorithm": "Ed25519",
+    "public_key": "LaoZZe9WSdybT2vkDO2Qc4hgz8p/mLj0+78YTCnZEW8=",
+    "public_key_sha256": "583b329e113816d2bcbcaf63fe796d4d3e8d0b9e9afe15fa0caf41954c9273bb",
+    "standalone_public_verifier": "PASS",
+    "public_verification_files": [
+      {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\verification\\CETA-0.3.0-verification.zip",
+        "sha256": "ebd010d0c4bbc2490efe2cb3d2f85e3fa26c11ec96e758cbeb95b45c5643c191",
+        "bytes": 12121
+      },
+      {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\verification\\CETA-PUBLISHER.json",
+        "sha256": "5fa26234d42657e92c5411086ffdb1b605179d4148e09b49cacbc87f52c00d9c",
+        "bytes": 383
+      },
+      {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\verification\\CETA-UPDATE.json",
+        "sha256": "14d531c274ab37aa26064fabae3b41b802eca4e9782a9de3dc62cb0249b038e5",
+        "bytes": 473
+      },
+      {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\verification\\README.txt",
+        "sha256": "4b621a55b079393f250b595429b27fdaaab546238c4029d7246c2e6063213bdb",
+        "bytes": 2100
+      },
+      {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\verification\\requirements.txt",
+        "sha256": "37b484db902b66118ca669553d1438cdb5bc8814d0eec3304938b13d305f47cf",
+        "bytes": 17
+      },
+      {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\verification\\verify_ceta.py",
+        "sha256": "604ba221c783a21a583ae21c5c96b9a4e515d44e9c8bc80d3cc174034766963b",
+        "bytes": 8596
+      }
+    ],
+    "update_envelope": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\CETA-UPDATE.json",
+      "sha256": "14d531c274ab37aa26064fabae3b41b802eca4e9782a9de3dc62cb0249b038e5",
+      "bytes": 473
+    },
+    "signed_manifest": {
+      "schema_version": 1,
+      "product": "CETA",
+      "version": "0.3.0",
+      "platform": "windows-x64",
+      "url": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data/releases/download/ceta-desktop-v0.3.0/CETA-0.3.0-setup.exe",
+      "sha256": "416bf6d702342ec9a38be733f207319f77d377c9823aa4c694e2f02917c08bfc",
+      "size": 29988504
+    },
+    "private_key_accessed_in_reconciliation": false,
+    "trust_boundary": "Recipients must obtain this fingerprint independently from a trusted publisher contact. This proves correspondence to the key, not CA-validated legal identity."
+  },
+  "windows_authenticode": {
+    "status": "NotSigned",
+    "independently_checked_with": "Get-AuthenticodeSignature on the exact installer",
+    "windows_ca_trust_claimed": false,
+    "root_certificate_installed": false
+  },
+  "update_channel": {
+    "url": "https://www.thirstysystems.com/ceta/updates/stable.json",
+    "frozen_channel_sha256": "c11303d5c74c40540a2779d415f8c734e2f1210a8b5f136b2e4633401132e863",
+    "frozen_matches_delivery": true,
+    "public_response_verified": false
+  },
+  "validation": {
+    "build_exit_code": 0,
+    "desktop_dependency_audit": "No known vulnerabilities found",
+    "tests": {
+      "Desktop": {
+        "Count": 93,
+        "Seconds": 15.817,
+        "Result": "PASS"
+      },
+      "DesktopInsideBuild": {
+        "Count": 93,
+        "Seconds": 13.671,
+        "Result": "PASS"
+      },
+      "ReleaseSafety": {
+        "Count": 6,
+        "Seconds": 0.044,
+        "Result": "PASS"
+      },
+      "FullRepository": {
+        "Count": 268,
+        "Seconds": 190.15,
+        "Result": "PASS",
+        "ExitCode": 0,
+        "ImportProvenance": "delivery-full-suite-import-provenance.json"
+      }
+    },
+    "full_suite_import_provenance": {
+      "executable": "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+      "root": "T:\\00-Active\\CETA-desktop-delivery-20260906",
+      "module_paths": {
+        "architecture_contracts": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\architecture_contracts.py",
+        "runtime.core": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\runtime\\core.py",
+        "authority.ledger": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\authority\\ledger.py",
+        "identity_registry.registry": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\identity_registry\\registry.py",
+        "ceta_desktop.updates": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\ceta_desktop\\updates.py",
+        "scripts.verify_package": "T:\\00-Active\\CETA-desktop-delivery-20260906\\scripts\\verify_package.py"
+      },
+      "all_from_delivery": true
+    },
+    "ruff": "F,E9 PASS",
+    "git_diff_check_before_document_finalization": "PASS",
+    "sandbox": {
+      "lifecycle": {
+        "status": "PASS",
+        "environment": "Windows Sandbox",
+        "network": "disabled",
+        "checks": [
+          "install",
+          "dependency_license_notices",
+          "startup",
+          "update_wait_timeout",
+          "update_wait_for_exit",
+          "update",
+          "uninstall",
+          "application_data_preserved",
+          "unrecognized_file_preserved"
+        ]
+      },
+      "update_handoff": {
+        "status": "PASS",
+        "timeout_exit_code": 4,
+        "completed_parent_exit_code": 0
+      },
+      "isolated_test_guest_stopped": true,
+      "limitations": [
+        "Offline same-installer replacement, not a live HTTPS application update.",
+        "No migration from an earlier application/database schema exercised.",
+        "No model inference or download validation.",
+        "Does not establish Windows CA publisher trust."
+      ]
+    },
+    "docs_codacy": "Both assigned Markdown files analyzed in both CETA roots: success, zero findings.",
+    "code_codacy_scope": "Retained code analysis includes notes and warnings; no whole-application clean-analysis claim.",
+    "package_before_document_finalization": {
+      "Result": "PASS",
+      "PayloadFiles": 251,
+      "ContentRoot": "sha256:67d5655080be93650d535c709124e948e03d7fcac8f95b19aedd6b67a3ffcaa1",
+      "ManifestSHA256": "A82B456FF7947EB9AEA62FFA77411B5D4075D09EC6C31C7BB7B18EFE1946E731",
+      "ChecksumsSHA256": "3CD011C765D728D951B6CD93E4ECBB66A55388DAC2262F6E7B900F14A309173A"
+    },
+    "package_after_document_finalization": "Pending coordinator manifest/checksum regeneration and verification."
+  },
+  "external_evidence": [
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\delivery-assembly.json",
+      "sha256": "d7ae92716ca28209a2755a304acae6030a58887b3255b2b03bdb8a9b5c24a823",
+      "bytes": 19341
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\delivery-assembly-worktree-fix-addendum.json",
+      "sha256": "7d13e7ea91fcb3540f49048669cf8b69b8e200f467b777a88a7c520f4b0aa1a0",
+      "bytes": 1593
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\desktop-build-003.log",
+      "sha256": "726a2260973f5261e8fe277c3f5bf10e3eb9bca03bc0c4a813e31f40b731d070",
+      "bytes": 29825
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\desktop-build-003-exit.json",
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a",
+      "bytes": 15
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\desktop-build-003-artifacts.json",
+      "sha256": "215d376b220585a7be97de662485d8f582feab7a936b0dec5de3fce15c6e3c8b",
+      "bytes": 1641
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\delivery-desktop-tests.log",
+      "sha256": "a6a52aca0aa5ec547835c91d69dba5c5bb0ade4014980842c0c148137c1e2d77",
+      "bytes": 18234
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\delivery-release-tests-after-worktree-fix.log",
+      "sha256": "2c72d71ea2af1e06b93c76c3b3d2fd14f55a23fe86fb9bf95ca96a3828a61d47",
+      "bytes": 1046
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\source-release-tests-after-worktree-fix.log",
+      "sha256": "9d259916bad23d71db51a9b14fb746d74cba1bf5d4c963e55a43341185c30d31",
+      "bytes": 1046
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\delivery-full-repository-tests.log",
+      "sha256": "ad53ae76fe5323f36b7f9d455a9d4c561d44332a6898c11f0d6099a6164d5898",
+      "bytes": 46888
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\delivery-full-repository-tests-exit.json",
+      "sha256": "e81bc160c0843ee56f31f12997bb3aff50528d596002d4866676cb8a1b19195a",
+      "bytes": 15
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\delivery-full-suite-import-provenance.json",
+      "sha256": "9bdd78e23c229ee0a8d216aded01f812dcb92d4bd31da5bde0bd5eab81303be9",
+      "bytes": 873
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\delivery-validation-final.json",
+      "sha256": "e1abfba26f905fd34bc95cad52875194fdcf1652f22ab256b4293229e6cea623",
+      "bytes": 10903
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\delivery-package-verification-final.log",
+      "sha256": "3595da7a03fec3f78f02741bc1019240827bc7b533c0cbbeb734da8bf93b6cfb",
+      "bytes": 147
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\delivery-ruff.log",
+      "sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0",
+      "bytes": 20
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\worktree-fix-ruff.log",
+      "sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0",
+      "bytes": 20
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\codacy-redirect-and-worktree-fix.json",
+      "sha256": "87204028fd92cdaa1151a9eb0aeef83d5b27882ba04358f058570dee659d0025",
+      "bytes": 3762
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\docs-finalization-codacy.json",
+      "sha256": "cf9463be75387cd9a1114871ad2fe4908f1c4d0c92744a995f01bf94084c8b38",
+      "bytes": 1151
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\public-verifier-independent-check.json",
+      "sha256": "e6961003f8b85661daa87fd3a32606c3fbe700e3c0e068ada9b18e0813bf382a",
+      "bytes": 992
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\sandbox\\CETA-SANDBOX-VALIDATION.json",
+      "sha256": "9e49100a7e8ea68ce6b69197c78eab3f95577845265410433af4d00e34f3524c",
+      "bytes": 6542
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\sandbox\\results\\result.json",
+      "sha256": "fd8ce47e55db7f56554468c54030a3751c476140366da6527d6bb4080081cc22",
+      "bytes": 257
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\sandbox\\results\\update-handoff.json",
+      "sha256": "3c8880449bad1b53106047a5c78781ad61d27f703a3f9a76d224bd13f1e9ebd6",
+      "bytes": 75
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\sandbox\\results\\installed-window.png",
+      "sha256": "f5885fddbd40ff25ba75e0a66ac7e19378b80356599224a7604ea9a83e234d76",
+      "bytes": 42588
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\sandbox\\CETA-validation.wsb",
+      "sha256": "c15b2d80e1a575056e6a74137dad33d539315e5024578ae18d6cb58207ba9369",
+      "bytes": 914
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\sandbox\\payload\\validate.cmd",
+      "sha256": "c5526b696b7d23ab7a161292b73d53eb10502c8536512c6e91da61968203ed48",
+      "bytes": 1858
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\sandbox\\payload\\validate-update.ps1",
+      "sha256": "3cb4bc2724d4d2bd9050542e5060dfdb17d5968c8ce5716aa71ff6993c94d243",
+      "bytes": 1513
+    }
+  ],
+  "limitations": [
+    "Public GitHub release, website showcase/download publication, and live channel response verification remain pending at this checkpoint.",
+    "No real installed-application update through the public HTTPS channel has been verified.",
+    "Sandbox validates offline same-installer replacement and file preservation, not a future database-schema migration.",
+    "Windows Authenticode remains NotSigned; personal verification does not remove unknown-publisher or SmartScreen notices.",
+    "The public verifier requires Python 3.11 or later and its declared cryptography dependency.",
+    "Five original local core/verifier edits were preserved and excluded; the full-suite result applies to delivery source and its public base core.",
+    "No new training epoch, model download, model-quality evaluation, or host application installation was performed for this checkpoint.",
+    "Existing training dependency and analysis-tool advisories remain separately classified in the continuity map."
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "product": "ThirstyAI",
+  "version": "0.3.0",
+  "created_at": "2026-09-06T04:55:29.778096+00:00",
+  "status": "release_candidate_unsigned_unpublished",
+  "installer": {
+    "filename": "ThirstyAI-0.3.0-setup.exe",
+    "sha256": "35c9237473c960bc40519a82c7fb5cd1c69c44e502ac6449455b7004f2b52593",
+    "bytes": 29526240,
+    "authenticode_signed": false
+  },
+  "validation": {
+    "full_repository_tests_passed": 194,
+    "desktop_tests_passed": 20,
+    "repository_gates": "PASS",
+    "package_integrity": "PASS",
+    "desktop_dependency_audit": "no_known_vulnerabilities_reported",
+    "clean_windows_sandbox": {
+      "status": "PASS",
+      "environment": "Windows Sandbox",
+      "network": "disabled",
+      "checks": [
+        "install",
+        "startup",
+        "update",
+        "uninstall",
+        "application_data_preserved",
+        "unrecognized_file_preserved"
+      ]
+    },
+    "real_local_model": {
+      "model": "qwen3:0.6b",
+      "transport": "loopback",
+      "completed_response": "LOCAL_OK",
+      "restart_persistence": "PASS",
+      "claim": "integration_smoke_only_not_model_quality_benchmark"
+    },
+    "installer_running_application_guard": "PASS",
+    "uninstaller_running_application_guard": "PASS"
+  },
+  "remaining_release_inputs": [
+    "publisher signing setup",
+    "public download and signed update channel"
+  ],
+  "retained_training_environment_issue": {
+    "package": "transformers",
+    "version": "5.5.0",
+    "advisory": "CVE-2026-9856",
+    "reported_fixed_version": "5.10.0",
+    "included_in_desktop_payload": false
+  },
+  "source_files": {
+    "src/ceta_desktop/__init__.py": "8a045c2c07356f47ae2993c2e2ef9ac5db429e9c1e2282215af22ce7ba0a24d4",
+    "src/ceta_desktop/app.py": "c395ef942328147bd2185d1a46ce7dbaadd2ebbbb9855f7a14d6e96456747b1f",
+    "src/ceta_desktop/editor.py": "e0bd5afd235c61dfb37380825ac4934351159217cf7bac32bb223bf4201e77b6",
+    "src/ceta_desktop/icon.svg": "dd1f28d5d2279e2da6556a6c6b2791f625a5d297728d80aaea6b0a7594dfcab9",
+    "src/ceta_desktop/instance.py": "72cd5cb5b43b80e5c3bbf52bbd3d222572be270bb4830e0d9edc282c8df65ddf",
+    "src/ceta_desktop/models.py": "9092247f1286028bb981f62ec0491b99733ec06609fedc6c2e2c096c6d4f2391",
+    "src/ceta_desktop/release_channel.json": "665a724ef81c855bed55940bf73a4e7844eb207e0457156bbdb1a6ebaf16845e",
+    "src/ceta_desktop/storage.py": "80beed6704acf92aaaf32a3065c4a16fa44949528104cd2661b60f0e581fbf2a",
+    "src/ceta_desktop/updates.py": "20409fed8c16b2e82c9e29411ea03cc899e646c212a937331a5485e96d1b3933",
+    "src/ceta_desktop/workspace.py": "5377f8b24f9c7698c53b9fb7e3d1afd30d17af2d8fc68c5114a52feb116be6ff"
+  }
+}

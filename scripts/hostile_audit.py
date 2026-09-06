@@ -9,11 +9,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from training import ReferenceCurriculum
+from network_boundary import network_import_errors
 
 errors: list[str] = []
 
-# No executable network client imports in this release.
-blocked_roots = {"requests", "httpx", "socket", "github", "gitlab"}
+# The reference core remains no-fetch. Only the declared desktop transports may
+# import network clients; their endpoint and signature controls have runtime tests.
 for base in (ROOT / "src", ROOT / "scripts", ROOT / "examples"):
     for path in sorted(base.rglob("*.py")):
         if path.name == "hostile_audit.py":
@@ -23,17 +24,7 @@ for base in (ROOT / "src", ROOT / "scripts", ROOT / "examples"):
         except SyntaxError as exc:
             errors.append(f"syntax error {path.relative_to(ROOT)}: {exc}")
             continue
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                names = [x.name for x in node.names]
-            elif isinstance(node, ast.ImportFrom):
-                names = [node.module or ""]
-            else:
-                continue
-            for name in names:
-                root = name.split(".", 1)[0]
-                if root in blocked_roots or name.startswith("urllib.request") or name.startswith("http.client"):
-                    errors.append(f"network-capable import in executable source: {path.relative_to(ROOT)} -> {name}")
+        errors.extend(network_import_errors(tree, path.relative_to(ROOT).as_posix()))
 
 
 # Do not ship literal private keys or common credential assignments.
@@ -116,4 +107,4 @@ if errors:
         print(" -", error)
     raise SystemExit(1)
 print("HOSTILE AUDIT: PASS")
-print(f"checks=local_only,ownership,authority,effects,durability,training,ceta_contracts conflicts={len(conflicts)}")
+print(f"checks=reference_no_fetch,declared_desktop_transports,ownership,authority,effects,durability,training,ceta_contracts conflicts={len(conflicts)}")

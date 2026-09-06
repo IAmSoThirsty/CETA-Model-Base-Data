@@ -8,11 +8,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "PACKAGE_MANIFEST.json"
 EXCLUDED_FILES = {
+    ".github/instructions/codacy.instructions.md",
     "PACKAGE_MANIFEST.json",
     "SHA256SUMS",
     "data/ceta_curriculum_v3/source_adjudications.jsonl",
 }
 EXCLUDED_PARTS = {
+    ".codacy",
+    "build",
+    "dist",
     "__pycache__",
     ".pytest_cache",
     ".mypy_cache",

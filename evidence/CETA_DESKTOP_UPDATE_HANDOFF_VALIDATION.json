@@ -1,0 +1,329 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-09-06T19:58:19.906888+00:00",
+  "product": "CETA",
+  "version": "0.3.0",
+  "classification": "local_unsigned_candidate_publication_and_public_channel_not_verified",
+  "scope": {
+    "repository_root": "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0",
+    "branch": "codex/ceta-curriculum-v3",
+    "head": "decd957ef91884e5ba9fc61c627fb5481d53a80f",
+    "working_tree": "dirty; existing CETA work and earlier evidence preserved"
+  },
+  "authorization": {
+    "source": "Latest express user instruction in this task",
+    "permitted_delivery": "Create a dedicated CETA showcase/download page on thirstysystems.com in the Thirstys Projects LLC website project, publish using the existing IAmSoThirsty/CETA-Model-Base-Data GitHub repository, and perform required release signing.",
+    "project_boundary": "CETA product descriptions and verified release links may be carried to the specified website. No import of unrelated project code, data, or branding into CETA and no new CETA repository.",
+    "execution_status": "Authorization recorded; publication and trusted signing are not proved by this record."
+  },
+  "installer": {
+    "path": "dist/CETA-0.3.0-candidate-002/CETA-0.3.0-setup.exe",
+    "size": 29979196,
+    "sha256": "00065daf52322a9ea469a4b8f563b49193d5d2c0185f1d112878a7463fd7874a",
+    "authenticode_status_observed": "NotSigned",
+    "sandbox_installer_sha256_matches": true
+  },
+  "dependency_sources": {
+    "path": "dist/CETA-0.3.0-candidate-002/CETA-0.3.0-dependency-sources.zip",
+    "size": 70981896,
+    "sha256": "063ed318ffdc8bf7e843cc47094ac721aab70218f36623f25406326bb0024778"
+  },
+  "checksums": {
+    "path": "dist/CETA-0.3.0-candidate-002/SHA256SUMS",
+    "size": 189,
+    "sha256": "61c411bce1678ae9ff348043fc6730b1a8fae5d6982526a79e8fe8d1debf7e26"
+  },
+  "checks": {
+    "desktop_tests": {
+      "passed": 56,
+      "failed": 0,
+      "seconds": 8.108,
+      "execution": "during the retained build",
+      "evidence": "build.log"
+    },
+    "repository_tests": {
+      "passed": 230,
+      "failed": 0,
+      "seconds": 117.73,
+      "evidence": "repository-tests.log",
+      "scope_limit": "This log retains the test total/result, not the invoking command. Its H100 device message does not establish a new training epoch."
+    },
+    "isolated_desktop_dependency_audit": {
+      "result": "No known vulnerabilities found",
+      "evidence": "build.log",
+      "scope_limit": "Applies to the isolated desktop build environment; does not clear the retained training or Codacy tool environments."
+    },
+    "reference_validation": {
+      "passed": true,
+      "syntax_files_parsed": 134,
+      "command_count": 16,
+      "commands": [
+        {
+          "command": [
+            "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+            "-B",
+            "scripts/verify_corpus_manifest.py"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+            "-B",
+            "scripts/validate_architecture.py"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+            "-B",
+            "scripts/validate_evidence_registry.py"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+            "-B",
+            "scripts/validate_ceta_curriculum.py"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+            "-B",
+            "scripts/validate_ceta_curriculum_v3.py"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+            "-B",
+            "scripts/validate_architecture_material.py"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+            "-B",
+            "scripts/validate_language_adapter_dataset.py"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+            "-B",
+            "scripts/hostile_audit.py"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+            "-B",
+            "scripts/run_bounded_models.py"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+            "-B",
+            "scripts/verify_epoch_readiness_report.py"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+            "-B",
+            "scripts/verify_final_heldout_report.py"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+            "-B",
+            "scripts/verify_epoch_readiness_report.py",
+            "--report",
+            "evidence/STRUCTURED_POLICY_H100_SCHEMA_V4_READINESS.json"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+            "-B",
+            "scripts/verify_epoch_continuation_report.py",
+            "--report",
+            "evidence/STRUCTURED_POLICY_H100_SCHEMA_V4_EPOCH_3.json"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+            "-B",
+            "scripts/verify_epoch_continuation_report.py",
+            "--report",
+            "evidence/STRUCTURED_POLICY_H100_SCHEMA_V4_EPOCH_5.json"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+            "-B",
+            "examples/reference_runtime_demo.py"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0\\.venv\\Scripts\\python.exe",
+            "-B",
+            "-c",
+            "import runpy; from pathlib import Path; ns=runpy.run_path('scripts/hostile_epoch_gate.py',run_name='ceta_gate_validation'); ns['main'].__globals__['REPORT']=Path('C:\\\\Users\\\\Quencher\\\\.codex\\\\audits\\\\CETA-update-handoff-20260906T193309Z\\\\hostile-epoch-gate.json'); ns['main']()"
+          ],
+          "exit_code": 0
+        }
+      ],
+      "scope_limit": "Verification of retained inputs and reports; no new training epoch. Hostile gate output redirected outside repository while retaining its checks."
+    },
+    "windows_sandbox": {
+      "status": "PASS",
+      "environment": "Windows Sandbox",
+      "network": "disabled",
+      "checks": [
+        "install",
+        "dependency_license_notices",
+        "startup",
+        "update_wait_timeout",
+        "update_wait_for_exit",
+        "update",
+        "uninstall",
+        "application_data_preserved",
+        "unrecognized_file_preserved"
+      ],
+      "update_handoff": {
+        "status": "PASS",
+        "timeout_exit_code": 4,
+        "completed_parent_exit_code": 0
+      },
+      "evidence": "sandbox/results/result.json; sandbox/results/update-handoff.json",
+      "scope_limit": "Replacement with this same candidate and same database schema. A controlled PowerShell parent tested process waiting. Preservation checks confirm database and sentinel-file existence; they do not prove a future schema migration or full conversation-level restoration."
+    },
+    "update_handoff_implementation": "Explicit GUI confirmation and cancellation; recheck signed-metadata size/hash under a Windows read handle denying write/delete sharing; release application resources; launch without a command shell with WAITPID; installer bounded wait and active-app rejection.",
+    "handoff_source_codacy": {
+      "calls": 7,
+      "success": true,
+      "findings": 291,
+      "notes": 214,
+      "warnings": 77,
+      "result": "completed_with_findings; not a clean verdict"
+    },
+    "reconciled_document_codacy": {
+      "native_tool": "mcp__codacy__codacy_cli_analyze",
+      "provider": "gh",
+      "organization": "IAmSoThirsty",
+      "repository": "CETA-Model-Base-Data",
+      "files": {
+        "docs/operations/CONTINUITY_MAP.md": {
+          "success": true,
+          "findings": 0
+        },
+        "docs/DESKTOP_DELIVERY.md": {
+          "success": true,
+          "findings": 0
+        }
+      }
+    }
+  },
+  "current_source_channel": {
+    "url": null,
+    "public_key": null
+  },
+  "source_snapshot_scope": "SHA-256 of the current files observed while reconciling completed validation. This snapshot was recorded after the build and is not a build-time input attestation. Rebuild and revalidate if release inputs change.",
+  "source_sha256": {
+    "licenses/desktop-sources.json": "72bd79c4b0caf24006a742f7a3ee835ca57b014706078ce10e05909096c10010",
+    "pyproject.toml": "afb3418b76d9db1ab53c7db63c8e9dfd187eda789daa2f89f00708dc3e044031",
+    "scripts/build_desktop.py": "146940d53dc7612652df2dc323fe1a0850be72186ed8afec2e69c928313ead28",
+    "scripts/desktop_entry.py": "3f6bb0bd8ea75526bca09a1122fa0c6adae5804dbdbf99438d36c162f54b060c",
+    "scripts/desktop_notices.py": "b7c1e434b1725097000a6120c417395e03d205854474ed9eac4ffaf53bbbdea7",
+    "scripts/desktop_signing.py": "6809a47ca3dce8191b54445fa4b88da225719f7016e8dde19a81e08066b4a9d5",
+    "scripts/network_boundary.py": "bdaa86b9a5c716e179bdac51329be5779a34c9ce4bcfc601eb24a10277091781",
+    "scripts/prepare_desktop_sandbox.py": "77a73f66430c4533800813e8b4621247aba3a4afcb13ffc0608e2d2fef33f201",
+    "scripts/sign_desktop_update.py": "3e6c2c34a0a9be7a70a27bd7f9f90e1ce4cbf61ef1e448e130e7079d76c668a9",
+    "src/ceta_desktop/__init__.py": "8a045c2c07356f47ae2993c2e2ef9ac5db429e9c1e2282215af22ce7ba0a24d4",
+    "src/ceta_desktop/app.py": "cfcf5aeb51b18d32618c65d81f2f8c1f4858fa974e8dbf88f77d1eacf5faccaf",
+    "src/ceta_desktop/editor.py": "e0bd5afd235c61dfb37380825ac4934351159217cf7bac32bb223bf4201e77b6",
+    "src/ceta_desktop/installation.py": "a9e6219c57d619f194668b866ecaa2dd0db1170467d807e487996aaa7ef4a98e",
+    "src/ceta_desktop/instance.py": "6d472aecdb44f466173f6dc923bf61b8c2f80657fbbc2ee6fb1ba9db700f0f30",
+    "src/ceta_desktop/models.py": "02902196e067d1974853a8f122fa01dce45c9b46e6721994adfb8c68d19505fc",
+    "src/ceta_desktop/release_channel.json": "665a724ef81c855bed55940bf73a4e7844eb207e0457156bbdb1a6ebaf16845e",
+    "src/ceta_desktop/storage.py": "3f51c35eb20500d4ac659bc569a8192a0f0d06de877cc49255d65c20f3ee9f75",
+    "src/ceta_desktop/updates.py": "776c4ba431762ae2536a0ea69f3266e9593fc62197c4ee306c1e4ea65d878ded",
+    "src/ceta_desktop/workspace.py": "09e74e08ec69fbdc0f0b94f2fe8c35bfc56241c75ce90db3150693745dcf9a93",
+    "tests/test_desktop_backend.py": "93fdc7ea7e703fff4944c509ed7a19d7cf1d14b8aa8d728879daabe6b845df19",
+    "tests/test_desktop_gui.py": "44fb360d318df949e21cc646a62a8f5ad32c966a4df178af8cef2760844e44d6",
+    "tests/test_desktop_installation.py": "e85bd67ec1f875f95f913848b0e9354e59bfe57998e2cdc6c89887f5fcea84b1",
+    "tests/test_desktop_network_boundary.py": "90cca02e90e8573a0e49217b624a1f0e790bbe583e7fd6c07a7922339a665d9c",
+    "tests/test_desktop_notices.py": "afb9ccd2fb5133a2fb7f4114989f4ced6b4f70684c22faca80d443f000f061ca",
+    "tests/test_desktop_signing.py": "33e434ac5cf93cdbfdc68e0890db0ae075e2d38d65dccd6e25144e0770fa516d",
+    "tests/test_desktop_updates.py": "34191eb511c85f49ec52ab1fc4b8f7661869741ca34f7ec9907d654d8bcbe41c",
+    "uv.lock": "a41351532f60bd750761fa51e7ed7a71ff5ef37d44221c07dd2e16f20a9dd0ac"
+  },
+  "external_evidence_directory": "C:\\Users\\Quencher\\.codex\\audits\\CETA-update-handoff-20260906T193309Z",
+  "external_evidence_sha256": {
+    "build.log": "9a40619ff4af200b7f827fe125bad9cc9dec4d400f6e65e768e9b96e3e505047",
+    "repository-tests.log": "0ab2ed4b5727ef63140532d223355cb106953ed9a3f99ae025451bbff6f9bf50",
+    "reference-validation.json": "1e3c0f8160ea6fbdcfe2f9b2af64e773db216e0e02c44b5742eacc01e431be1c",
+    "reference-validation.log": "eb6bba5e65a7fea3fcc004a66d27e8cab88c1f3cbe0f619e4223d1656da6b106",
+    "verify_reference.py": "b528ec7cfc62d36cc66525ecf08d391f8da4c55129f1944e0a87b7690e31b9b2",
+    "hostile-epoch-gate.json": "975040abf1b61beeeff2d2a7a9826691f203208869afadbd8f35df953957ce5c",
+    "CETA-window.png": "b6b36410745af4c4c7fd774d7914284bb01d5a46746659823d45bad795e7d44f",
+    "sandbox/CETA-validation.wsb": "5390db82b52afb1e334046380032efa35c6e70a54d3fcca8de70f0fd6bea646f",
+    "sandbox/payload/validate.cmd": "c5526b696b7d23ab7a161292b73d53eb10502c8536512c6e91da61968203ed48",
+    "sandbox/payload/validate-update.ps1": "3cb4bc2724d4d2bd9050542e5060dfdb17d5968c8ce5716aa71ff6993c94d243",
+    "sandbox/results/result.json": "fd8ce47e55db7f56554468c54030a3751c476140366da6527d6bb4080081cc22",
+    "sandbox/results/update-handoff.json": "3c8880449bad1b53106047a5c78781ad61d27f703a3f9a76d224bd13f1e9ebd6",
+    "sandbox/results/installed-window.png": "f5885fddbd40ff25ba75e0a66ac7e19378b80356599224a7604ea9a83e234d76",
+    "codacy-docs_CETA_USER_GUIDE.md.json": "27bc1b6ffb828eeaec196daeec173166675d45df66cf721456d1a52ea1d3d49c",
+    "codacy-scripts_build_desktop.py.json": "a647e1e6deda1d3758ea2d0908d9d8740e8c1dd14ad19fc5eb2a0918f492cdd0",
+    "codacy-scripts_prepare_desktop_sandbox.py.json": "611d1db2d58d8010b1583d2523e3251e80483bd52b05157c33cc0762a407e75e",
+    "codacy-src_ceta_desktop_app.py.json": "5415a88c38b0c0e095cc1d2ec8098c45e51b149d073a4c2fd48d92c1983e4ba4",
+    "codacy-src_ceta_desktop_installation.py.json": "18b211982ee9720c66ce29808d86940b5ff39598f4a0c72c7108b2e6895843c9",
+    "codacy-tests_test_desktop_gui.py.json": "71024bfe58ea392118a31ac1759fcdd4784dacfd67385c2f99a78d940c373c11",
+    "codacy-tests_test_desktop_installation.py.json": "88242d0ee3447a9015c3fc3a831f6bd4d9303ccd0087a05054a1ed723aa39738"
+  },
+  "not_verified": [
+    "trusted_publisher_signing",
+    "public_website_publication",
+    "public_GitHub_release_publication",
+    "configured_public_update_channel",
+    "interactive_installed_application_update_through_public_channel",
+    "future_database_schema_migration",
+    "new_training_epoch",
+    "current_package_manifest_refresh_after_this_new_evidence"
+  ],
+  "known_issues": [
+    {
+      "classification": "requires separate follow-up work",
+      "issue": "Codacy source findings remain; current local analysis is not an all-clear."
+    },
+    {
+      "classification": "environment/dependency issue",
+      "issue": "Previously recorded Codacy tool dependency advisories and native Windows Semgrep/Opengrep limitation remain unresolved in this evidence scope."
+    },
+    {
+      "classification": "environment/dependency issue",
+      "issue": "The retained training dependency advisory remains separate from the audited desktop environment."
+    }
+  ]
+}

@@ -3,11 +3,14 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[1]
-EXCLUDED_FILES = {"data/ceta_curriculum_v3/source_adjudications.jsonl"}
+EXCLUDED_FILES = {"data/ceta_curriculum_v3/source_adjudications.jsonl", ".github/instructions/codacy.instructions.md"}
 EXCLUDED_PARTS = {
+    ".codacy",
+    "build",
+    "dist",
     "__pycache__",
     ".pytest_cache",
     ".mypy_cache",
@@ -17,6 +20,27 @@ EXCLUDED_PARTS = {
     ".venv-language-adapter",
     "ceta_controlled_evaluation",
 }
+
+
+def safe_package_path(root: Path, relative: str) -> Path:
+    """Reject nonportable, excluded, escaping, or linked package entries."""
+    if not isinstance(relative, str) or not relative or "\\" in relative or ":" in relative:
+        raise ValueError(f"unsafe package path: {relative!r}")
+    pure = PurePosixPath(relative)
+    if pure.is_absolute() or pure.as_posix() != relative or ".." in pure.parts:
+        raise ValueError(f"unsafe package path: {relative!r}")
+    if relative in EXCLUDED_FILES or any(
+        part in EXCLUDED_PARTS or part.endswith(".egg-info") for part in pure.parts
+    ) or pure.suffix in {".pyc", ".pyo"}:
+        raise ValueError(f"excluded package path: {relative}")
+    path = root
+    for part in pure.parts:
+        path = path / part
+        if path.is_symlink() or (hasattr(path, "is_junction") and path.is_junction()):
+            raise ValueError(f"linked package path: {relative}")
+    if not path.resolve().is_relative_to(root.resolve()):
+        raise ValueError(f"escaping package path: {relative}")
+    return path
 
 
 def sha256(path: Path) -> str:
@@ -46,7 +70,9 @@ def visible_files() -> set[str]:
             if not path.is_file() or path.is_symlink():
                 continue
             rel=path.relative_to(ROOT)
-            if rel.as_posix() in EXCLUDED_FILES or path.suffix in {".pyc", ".pyo"}:
+            if (rel.as_posix() in EXCLUDED_FILES
+                    or any(part in EXCLUDED_PARTS for part in rel.parts)
+                    or path.suffix in {".pyc", ".pyo"}):
                 continue
             result.add(rel.as_posix())
     return result
@@ -103,7 +129,10 @@ def verify_registered_files(files: list[dict], errors: list[str]) -> set[str]:
         rel=item["path"]
         if rel in seen: errors.append(f"duplicate manifest path: {rel}")
         seen.add(rel)
-        path=ROOT/rel
+        try:
+            path=safe_package_path(ROOT,rel)
+        except ValueError as exc:
+            errors.append(str(exc)); continue
         if not path.is_file(): continue
         if path.stat().st_size!=item["size"]: errors.append(f"size mismatch: {rel}")
         if sha256(path)!=item["sha256"]: errors.append(f"hash mismatch: {rel}")
@@ -126,7 +155,10 @@ def verify_sha256sums(sums: dict[str, str], actual: set[str], errors: list[str])
     if set(sums)!=expected_sums:
         errors.append(f"SHA256SUMS path set mismatch missing={sorted(expected_sums-set(sums))} extra={sorted(set(sums)-expected_sums)}")
     for rel,digest in sums.items():
-        path=ROOT/rel
+        try:
+            path=safe_package_path(ROOT,rel)
+        except ValueError as exc:
+            errors.append(str(exc)); continue
         if path.is_file() and sha256(path)!=digest:
             errors.append(f"SHA256SUMS hash mismatch: {rel}")
 

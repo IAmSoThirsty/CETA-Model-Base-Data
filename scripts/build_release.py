@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 from pathlib import Path
-import shutil
 import subprocess
 import sys
 import zipfile
@@ -12,11 +11,7 @@ ROOT=Path(__file__).resolve().parents[1]
 
 
 def remove_transient() -> None:
-    for name in ("__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache"):
-        for path in ROOT.rglob(name):
-            if path.is_dir(): shutil.rmtree(path,ignore_errors=True)
-    for path in list(ROOT.rglob("*.pyc"))+list(ROOT.rglob("*.pyo")):
-        path.unlink(missing_ok=True)
+    """Compatibility hook: release filtering never deletes working files."""
 
 
 def sha256(path: Path) -> str:
@@ -28,29 +23,12 @@ def sha256(path: Path) -> str:
 
 
 def release_paths() -> tuple[Path,...]:
-    paths=(x for x in ROOT.rglob("*") if x.is_file() and not x.is_symlink())
-    included=[]
-    for path in paths:
-        rel=path.relative_to(ROOT)
-        if (
-            any(
-                part in {
-                    "__pycache__",
-                    ".pytest_cache",
-                    ".mypy_cache",
-                    ".ruff_cache",
-                    ".git",
-                    ".venv",
-                    ".venv-language-adapter",
-                }
-                or part.endswith(".egg-info")
-                for part in rel.parts
-            )
-            or path.suffix in {".pyc", ".pyo"}
-        ):
-            continue
-        included.append(path)
-    return tuple(sorted(included,key=lambda item:item.relative_to(ROOT).as_posix()))
+    if __package__:
+        from .build_release_zip import registered_paths
+    else:
+        from build_release_zip import registered_paths
+
+    return registered_paths(ROOT)
 
 
 def archive_info(name: str) -> zipfile.ZipInfo:
@@ -66,22 +44,23 @@ def main() -> None:
     parser.add_argument("--output",required=True)
     args=parser.parse_args()
     out=Path(args.output).resolve()
+    sidecar=out.with_suffix(out.suffix+".sha256")
+    if out.is_relative_to(ROOT.resolve()):
+        raise SystemExit("RELEASE ZIP: FAIL - output must be outside the repository")
+    if out.exists() or sidecar.exists():
+        raise SystemExit("RELEASE ZIP: FAIL - output or checksum already exists")
     subprocess.run([sys.executable,str(ROOT/"scripts/verify_all.py")],cwd=ROOT,check=True)
-    remove_transient()
-    subprocess.run([sys.executable,str(ROOT/"scripts/build_package_manifest.py")],cwd=ROOT,check=True)
-    subprocess.run([sys.executable,str(ROOT/"scripts/build_sha256sums.py")],cwd=ROOT,check=True)
     subprocess.run([sys.executable,str(ROOT/"scripts/verify_package.py")],cwd=ROOT,check=True)
     prefix=f"Architecture-Rebuild-CETA-Epoch-Ready-v{(ROOT/'VERSION').read_text().strip()}/"
     out.parent.mkdir(parents=True,exist_ok=True)
-    if out.exists(): out.unlink()
-    with zipfile.ZipFile(out,"w",compression=zipfile.ZIP_DEFLATED,compresslevel=9) as zf:
+    with zipfile.ZipFile(out,"x",compression=zipfile.ZIP_DEFLATED,compresslevel=9) as zf:
         for path in release_paths():
             rel=path.relative_to(ROOT)
             info=archive_info(prefix+rel.as_posix())
             zf.writestr(info,path.read_bytes(),compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)
     digest=sha256(out)
-    sidecar=out.with_suffix(out.suffix+".sha256")
-    sidecar.write_text(f"{digest}  {out.name}\n",encoding="utf-8",newline="\n")
+    with sidecar.open("x",encoding="utf-8",newline="\n") as handle:
+        handle.write(f"{digest}  {out.name}\n")
     print(f"RELEASE ZIP: {out}")
     print(f"SHA256: {digest}")
 

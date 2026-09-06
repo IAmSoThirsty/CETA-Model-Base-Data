@@ -6,8 +6,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "SHA256SUMS"
-EXCLUDED_FILES = {"data/ceta_curriculum_v3/source_adjudications.jsonl"}
+EXCLUDED_FILES = {"data/ceta_curriculum_v3/source_adjudications.jsonl", ".github/instructions/codacy.instructions.md"}
 EXCLUDED_PARTS = {
+    ".codacy",
+    "build",
+    "dist",
     "__pycache__",
     ".pytest_cache",
     ".mypy_cache",
