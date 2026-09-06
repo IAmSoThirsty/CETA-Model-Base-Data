@@ -2,8 +2,8 @@
   "schema_version": 1,
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
-  "file_count": 267,
-  "content_root": "sha256:fbd94018f6c2a824670e11349af0bd9f2dfc8f32b1ad17f3ce205fbed5cf83cd",
+  "file_count": 268,
+  "content_root": "sha256:497b2f63b4851c4c9e92d34cf2547a3fad95d60b1c56dd0627c83d1565d3351b",
   "files": [
     {
       "path": ".gitattributes",
@@ -292,8 +292,8 @@
     },
     {
       "path": "docs/DESKTOP_DELIVERY.md",
-      "size": 22892,
-      "sha256": "26a7ce9fb61d16dbe7422a60e3743f6cbb1a5f4b433f61f21a09e174c93520ec"
+      "size": 23392,
+      "sha256": "8eff3477c783815d41d70210d8c914381afdf0111883ea7c166c1f9ea3f3b749"
     },
     {
       "path": "docs/HOSTILE_REVIEW.md",
@@ -322,8 +322,8 @@
     },
     {
       "path": "docs/operations/CONTINUITY_MAP.md",
-      "size": 20784,
-      "sha256": "ca38febb2956ddda9240aed019956f2ad88d96c738efd51fdf3730b6b3c4379d"
+      "size": 22630,
+      "sha256": "4f6400c9f25799f5fb0eaf2e4d3d3ac94fbf4dae95596aebe6b678bbb76ffb36"
     },
     {
       "path": "evidence/CETA_DESKTOP_RENAME_VALIDATION.json",
@@ -344,6 +344,11 @@
       "path": "evidence/CETA_PERSONAL_RELEASE_VALIDATION.json",
       "size": 35477,
       "sha256": "45483e6b364074f043b75a082be738be7b6e324a5017f85a4d3cdabceab935cd"
+    },
+    {
+      "path": "evidence/CETA_UPDATE_CLIENT_FIX_VALIDATION.json",
+      "size": 5421,
+      "sha256": "9bb66740d210b8089e9373a9c688038271a72d6eeca9d53e8092a03a210c651b"
     },
     {
       "path": "evidence/EPOCH_HOSTILE_GATE_REPORT.json",
@@ -818,7 +823,7 @@
     {
       "path": "src/ceta_desktop/__init__.py",
       "size": 102,
-      "sha256": "67b45be8e7c42f970656ca4f8af0b97a1424b729161f43a8112aa98296d203b7"
+      "sha256": "b1101ad1c2ff77a6e69b1503d24aa51d33cd9eabfafce9589c0cb79ce278786a"
     },
     {
       "path": "src/ceta_desktop/app.py",
@@ -912,8 +917,8 @@
     },
     {
       "path": "src/ceta_desktop/updates.py",
-      "size": 9126,
-      "sha256": "7e3ea426b004856fea9d36a3ecf57dd8b1443c0ee3daa452dd1ee94b83074d3e"
+      "size": 9342,
+      "sha256": "ee86152f754466c5aa951b280656b948ef4234f88d8d59e8f14a1fe924a3eea8"
     },
     {
       "path": "src/ceta_desktop/workspace.py",
@@ -1257,8 +1262,8 @@
     },
     {
       "path": "tests/test_desktop_updates.py",
-      "size": 20125,
-      "sha256": "ca07b1afffe5304180dd322c1b82fc4582b6bfbb8d683e563630efdf525a9c12"
+      "size": 21196,
+      "sha256": "8d6177084be17d06f53596345f1a951978629a6aa948dedac35a49c31900cf19"
     },
     {
       "path": "tests/test_desktop_verification.py",

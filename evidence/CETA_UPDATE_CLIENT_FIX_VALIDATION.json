@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "product": "CETA",
+  "published_desktop_version": "0.3.1",
+  "validated_source_version": "0.3.2",
+  "reference_version": "0.3.0",
+  "recorded_at_utc": "2026-09-06T22:56:08.601311+00:00",
+  "classification": "source_fix_validated_new_build_and_publication_pending",
+  "scope": "Focused native updater HTTP user-agent correction only; no inference, model, training, or unrelated project changes.",
+  "failure": {
+    "client_version": "0.3.1",
+    "status": "FAIL",
+    "http_status": 403,
+    "source_sha256": "7e3ea426b004856fea9d36a3ecf57dd8b1443c0ee3daa452dd1ee94b83074d3e",
+    "started_at_utc": "2026-09-06T22:44:45.699756+00:00",
+    "completed_at_utc": "2026-09-06T22:44:46.021294+00:00",
+    "summary": "The unchanged native client using its default Python request was rejected by the public stable channel. A separate custom-user-agent reader succeeding was insufficient evidence of native updater success.",
+    "retained_result": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\publication-check\\channel-031-public-001\\result.json",
+      "sha256": "29ad7f2b759c27bbf9b0fbb1bc2eed4050d860a69aafd20fb6ffae70f1c15722",
+      "size": 883
+    },
+    "redaction": "Diagnostic response body, response headers, and client network address are not reproduced."
+  },
+  "change": {
+    "source_sync": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\publication-check\\updater-032-source-sync.json",
+      "sha256": "5aee95886429bc7f7fba9e11952a9586021e094c4485eedd276e21f2462de1f0",
+      "size": 1134
+    },
+    "files": {
+      "src/ceta_desktop/updates.py": {
+        "preimage_sha256": "7e3ea426b004856fea9d36a3ecf57dd8b1443c0ee3daa452dd1ee94b83074d3e",
+        "final_sha256": "ee86152f754466c5aa951b280656b948ef4234f88d8d59e8f14a1fe924a3eea8",
+        "destination_matches_source": true
+      },
+      "src/ceta_desktop/__init__.py": {
+        "preimage_sha256": "67b45be8e7c42f970656ca4f8af0b97a1424b729161f43a8112aa98296d203b7",
+        "final_sha256": "b1101ad1c2ff77a6e69b1503d24aa51d33cd9eabfafce9589c0cb79ce278786a",
+        "destination_matches_source": true
+      },
+      "tests/test_desktop_updates.py": {
+        "preimage_sha256": "ca07b1afffe5304180dd322c1b82fc4582b6bfbb8d683e563630efdf525a9c12",
+        "final_sha256": "8d6177084be17d06f53596345f1a951978629a6aa948dedac35a49c31900cf19",
+        "destination_matches_source": true
+      }
+    },
+    "source_root": "T:\\00-Active\\CETA-desktop-delivery-20260906",
+    "original_root": "T:\\00-Active\\Architecture-Rebuild-CETA-Epoch-Ready-v0.3.0",
+    "both_roots_hash_verified": true,
+    "request_identity": "CETA/0.3.2",
+    "behavior": "The updater supplies its truthful product/version user agent for both signed-manifest and installer requests. Signature, size, hash, redirect, and local-file protections remain in scope."
+  },
+  "validation": {
+    "updater_tests": {
+      "reported_result": "PASS",
+      "tests": 21,
+      "provenance": "Implementation-agent targeted run; no tests rerun during this documentation reconciliation."
+    },
+    "ruff_f_e9": {
+      "reported_result": "PASS",
+      "provenance": "Implementation-agent focused run."
+    },
+    "actual_channel_request": {
+      "status": 200,
+      "channel_url": "https://www.thirstysystems.com/ceta/updates/stable.json",
+      "response_size": 473,
+      "response_sha256": "035324cc84f529cd950790ac5f78b52f8c83240e45f0ff12fe9404137118d29f",
+      "runtime_source_sha256": "ee86152f754466c5aa951b280656b948ef4234f88d8d59e8f14a1fe924a3eea8",
+      "client_version": "0.3.2",
+      "request_user_agent": "CETA/0.3.2",
+      "comparison_version_argument": "0.3.0",
+      "manifest_version": "0.3.1",
+      "request_monkeypatches_or_overrides": false
+    },
+    "actual_installer_download": {
+      "version": "0.3.1",
+      "size": 43492467,
+      "sha256": "6debcf31c8822bb27791e839194bd272f8fcffcd4abebd427b2ab89f7147c0e2",
+      "independently_rehashed": true,
+      "executed": false
+    },
+    "result_report": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\publication-check\\channel-031-client-032-001\\result.json",
+      "sha256": "1aeb3cc3ff9f06512d67eadda9a73bc50b168f69a145bc02e10cd682847ce46d",
+      "size": 1926
+    },
+    "fixed_client_provenance": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-personal-release-20260906\\publication-check\\channel-031-client-032-001\\fixed-client-provenance.json",
+      "sha256": "3b8aea87f2c3db99a319e3f7f88e90e24ea3c1a6d1d2241d3569b5575a86f068",
+      "size": 685
+    }
+  },
+  "limits": [
+    "This is executed 0.3.2 source against the existing signed public 0.3.1 manifest and installer, not a modified 0.3.1 binary.",
+    "The 0.3.0 comparison-version argument deliberately exercises availability; the executed source identifies itself truthfully as CETA/0.3.2.",
+    "A new 0.3.2 built installer, Windows CI, personal receipt, and publication remain pending at this checkpoint.",
+    "Downloaded installer was not executed in this channel check.",
+    "Personal Ed25519 verification does not establish Windows Authenticode CA trust.",
+    "The separate Transformers 5.5.0 / CVE-2026-9856 training dependency gate remains unresolved and excluded from the isolated desktop payload.",
+    "Earlier evidence and published 0.3.1 installer bytes remain unchanged."
+  ]
+}

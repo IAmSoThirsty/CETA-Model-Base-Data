@@ -22,6 +22,7 @@ from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat,
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
+from ceta_desktop import __version__
 from ceta_desktop.updates import (
     UpdateError, verify_manifest, download_update, check_update, verified_https,
     NoRedirects, CetaReleaseRedirects,
@@ -144,6 +145,16 @@ class DesktopUpdateTests(unittest.TestCase):
             with self.assertRaises(UpdateError):
                 check_update("https://example.invalid/channel.json", self.public_key, "0.3.0")
 
+    def test_manifest_transport_receives_truthful_application_identity(self):
+        """Send CETA's running version while preserving the JSON request and signature check."""
+        endpoint = "https://example.invalid/channel.json"
+        network = FixtureHTTPSHandler({endpoint: (200, [], json.dumps(self.signed()).encode())})
+        with patch("ceta_desktop.updates.build_opener", side_effect=network.opener):
+            self.assertEqual(check_update(endpoint, self.public_key, "0.3.0"), self.manifest)
+        self.assertEqual(len(network.requests), 1)
+        self.assertEqual(network.requests[0].get_header("User-agent"), f"CETA/{__version__}")
+        self.assertEqual(network.requests[0].get_header("Accept"), "application/json")
+
 
 class FixtureHTTPSHandler(HTTPSHandler):
 
@@ -211,6 +222,8 @@ class CetaReleaseRedirectTests(unittest.TestCase):
             self.assertEqual(list(Path(directory).iterdir()), [target])
         self.assertEqual([request.full_url for request in network.requests],
                          [self.release, self.cdn])
+        for request in network.requests:
+            self.assertEqual(request.get_header("User-agent"), f"CETA/{__version__}")
 
     def test_direct_github_download_still_works(self):
         """Accept direct release responses without requiring a redirect."""
@@ -220,6 +233,7 @@ class CetaReleaseRedirectTests(unittest.TestCase):
             self.assertEqual(download_update(self.manifest, Path(directory)).read_bytes(),
                              b"fixture")
         self.assertEqual(len(network.requests), 1)
+        self.assertEqual(network.requests[0].get_header("User-agent"), f"CETA/{__version__}")
 
     def test_redirect_discards_original_authentication_and_host_headers(self):
         """Do not leak credentials or reuse the original Host on the CDN request."""
@@ -237,6 +251,7 @@ class CetaReleaseRedirectTests(unittest.TestCase):
             self.assertNotIn(name, headers)
         self.assertEqual(headers["host"], "release-assets.githubusercontent.com")
         self.assertEqual(headers["accept"], "application/octet-stream")
+        self.assertEqual(headers["user-agent"], f"CETA/{__version__}")
         self.assertEqual(redirected.get_method(), "GET")
 
     def test_unapproved_original_release_urls_cannot_redirect(self):

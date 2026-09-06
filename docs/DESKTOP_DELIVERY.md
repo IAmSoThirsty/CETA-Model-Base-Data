@@ -29,8 +29,14 @@ Its historical model evaluations are not evidence for desktop application qualit
 
 The application has been renamed to CETA by the user's instruction on September 6,
 2026. The window, launcher, Windows installer identity, and update signature domain
-now use CETA. The latest verified local candidate is not a published production
-release. Public release-channel delivery remains unverified at this checkpoint.
+now use CETA. Desktop 0.3.1 is publicly downloadable with its personal verification
+bundle, and the CETA website is live. Its native updater request encountered HTTP
+403 from the public channel. The focused 0.3.2 source fix now identifies requests
+as `CETA/0.3.2` and has checked that channel and downloaded the correct 0.3.1
+installer using its normal request path. This does not change the already-published
+0.3.1 binary. The new 0.3.2 build, Windows CI, and publication remain pending at
+this source-validation checkpoint. See
+`evidence/CETA_UPDATE_CLIENT_FIX_VALIDATION.json` for the exact evidence and limits.
 The user subsequently authorized a dedicated page
 and direct download on `thirstysystems.com` through the "Thirstys Projects LLC"
 website project, release hosting in the existing CETA GitHub repository, and all
@@ -45,12 +51,12 @@ Windows DPAPI outside the repositories. The verification bundle binds the exact
 installer to that key and requires an independently received key fingerprint.
 This is personal publisher verification, not Windows CA signing; Windows may
 display an unrecognized-publisher warning. No other project's certificate is used
-and no root certificate is installed. Release build 003 embeds the HTTPS channel
-and public key. Its signed update manifest and public verification bundle have
-been created and verified locally; public hosting and website publication remain
-pending at this checkpoint.
+and no root certificate is installed. Public 0.3.1 release assets and their
+personal signature have been verified by unauthenticated downloads. The current
+updater-access limitation and pending 0.3.2 replacement are described above;
+earlier local checkpoints below retain their original validation scope.
 
-### Current desktop 0.3.1: redesigned release build 004
+### Desktop 0.3.1: redesigned release build 004 local checkpoint
 
 CETA desktop 0.3.1 now has the seven native sections Chat, Projects, Library,
 Models, Workloads, Updates, and Settings, with distinct planetary backgrounds,

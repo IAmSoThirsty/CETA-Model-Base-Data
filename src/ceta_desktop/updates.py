@@ -16,6 +16,10 @@ from urllib.request import build_opener, HTTPSHandler, HTTPRedirectHandler, Requ
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
+from . import __version__
+
+_USER_AGENT = f"CETA/{__version__}"
+
 
 class UpdateError(ValueError):
     pass
@@ -65,7 +69,7 @@ class CetaReleaseRedirects(HTTPRedirectHandler):
                 or target.username is not None or target.password is not None):
             raise UpdateError("The CETA release redirect is outside the approved download host.")
         self.redirected = True
-        return Request(newurl, headers={"Accept": "application/octet-stream"}, method="GET")
+        return Request(newurl, headers={"Accept": "application/octet-stream", "User-Agent": _USER_AGENT}, method="GET")
 
     def http_error_302(self, req, fp, code, msg, headers):
         """Check before urllib normalizes URLs, without reading a redirect response body."""
@@ -135,7 +139,8 @@ def verify_manifest(envelope: dict, public_key: str, current_version: str) -> di
 
 def check_update(url: str, public_key: str, current_version: str) -> dict:
     opener = build_opener(HTTPSHandler(context=ssl.create_default_context()), NoRedirects())
-    with opener.open(Request(verified_https(url), headers={"Accept": "application/json"}), timeout=15) as response:
+    request = Request(verified_https(url), headers={"Accept": "application/json", "User-Agent": _USER_AGENT})
+    with opener.open(request, timeout=15) as response:
         data = response.read(65537)
     if len(data) > 65536:
         raise UpdateError("The update manifest is too large.")
@@ -164,7 +169,8 @@ def download_update(manifest: dict, destination: Path, cancelled: threading.Even
             temporary = Path(handle.name)
             digest = hashlib.sha256()
             count = 0
-            with opener.open(verified_https(manifest["url"]), timeout=15) as response:
+            request = Request(verified_https(manifest["url"]), headers={"User-Agent": _USER_AGENT})
+            with opener.open(request, timeout=15) as response:
                 while block := response.read(256 * 1024):
                     check_cancelled()
                     count += len(block)

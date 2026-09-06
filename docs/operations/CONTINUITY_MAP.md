@@ -337,3 +337,32 @@ The coordinator must regenerate package manifests/checksums after these new docs
 and evidence, then verify and publish the reviewed source. The separate reference
 workflow gate for Transformers 5.5.0 / CVE-2026-9856 remains unresolved and requires
 training compatibility validation; it is outside the isolated desktop payload.
+
+## Native update-client HTTP 403: source fix for desktop 0.3.2
+
+Public 0.3.1 release downloads and the live CETA website were verified, but the
+unmodified 0.3.1 updater's default Python request received HTTP 403 at the stable
+channel. A separate reader with a CETA user agent returning HTTP 200 did not prove
+that the native updater worked. The failed result remains preserved externally;
+its diagnostic response body and client network address are not copied here.
+
+The focused fix adds the truthful `CETA/0.3.2` user agent to the updater's normal
+manifest and installer requests. Only `src/ceta_desktop/updates.py`, desktop
+`__init__.py`, and `tests/test_desktop_updates.py` changed for this correction.
+The exact preimages and matching files in both CETA roots are bound by
+`evidence/CETA_UPDATE_CLIENT_FIX_VALIDATION.json`. The reference VERSION remains
+0.3.0; no model, inference, training, or unrelated project code was changed.
+
+The fixed 0.3.2 source passed 21 updater tests and a focused Ruff F/E9 check.
+Its actual request path then received the signed live 0.3.1 manifest and downloaded
+the 43,492,467-byte installer with SHA-256
+`6debcf31c8822bb27791e839194bd272f8fcffcd4abebd427b2ab89f7147c0e2`.
+The test supplied 0.3.0 as the comparison version to exercise update availability;
+it did not replace request behavior or execute the downloaded installer.
+
+This validates the patched source against the current public channel. It does
+not fix the preserved public 0.3.1 binary or prove a built 0.3.2 update yet.
+The new build, its Windows CI, personal receipt, and public release require their
+own checks. Personal signing remains separate from Windows Authenticode CA trust.
+The existing Transformers 5.5.0 / CVE-2026-9856 training gate remains unresolved
+and excluded from the isolated desktop payload. Earlier evidence is unchanged.
