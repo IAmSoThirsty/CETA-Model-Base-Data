@@ -2,8 +2,8 @@
   "schema_version": 1,
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
-  "file_count": 269,
-  "content_root": "sha256:c5df174912a7dcb267ae0d3c0ad2475cb9513cc97361470ce2a9006856e9a03e",
+  "file_count": 273,
+  "content_root": "sha256:88321593ac8a80d95fb83e7a10743915ba89a7df63415ab0d3baccd62c911e9b",
   "files": [
     {
       "path": ".gitattributes",
@@ -17,8 +17,8 @@
     },
     {
       "path": ".github/workflows/desktop.yml",
-      "size": 1392,
-      "sha256": "5f89a21c51fbbc7c4f84fdfdf6a6a06053231c495a4d91b92f176714c1c1a715"
+      "size": 1451,
+      "sha256": "575cbb33bdf7f591cf0534c16e1fde81f610d910bde31266b9ee3c83d9da6a19"
     },
     {
       "path": ".github/workflows/verify.yml",
@@ -292,8 +292,8 @@
     },
     {
       "path": "docs/DESKTOP_DELIVERY.md",
-      "size": 23949,
-      "sha256": "aaaf802407e0039ea0b8b1db6f324c50678d247e613203c82b3daaa322100547"
+      "size": 25984,
+      "sha256": "2815d0ec5af169444669817d992d74896546266d8a832455493a401b268016ad"
     },
     {
       "path": "docs/HOSTILE_REVIEW.md",
@@ -322,8 +322,8 @@
     },
     {
       "path": "docs/operations/CONTINUITY_MAP.md",
-      "size": 24924,
-      "sha256": "68d7998326383bd6bedd1f2b07a7a01ba08dec25003abb9c1abc584dd361845e"
+      "size": 26959,
+      "sha256": "d8af334eb58f216f98bb34f3858c4f64e3d684f33d7f2f416538878fed5d25af"
     },
     {
       "path": "evidence/CETA_DESKTOP_PUBLICATION_032.json",
@@ -572,8 +572,8 @@
     },
     {
       "path": "scripts/build_desktop.py",
-      "size": 12837,
-      "sha256": "ce174d3f8073df91baa37a3899f808d90f3c4c6049c0cfacd31473372d476b0f"
+      "size": 13700,
+      "sha256": "8c1ce469e0263e2388e327a6575a358fda7be90de76129ea13057991832ef1bd"
     },
     {
       "path": "scripts/build_language_adapter_dataset.py",
@@ -614,6 +614,16 @@
       "path": "scripts/desktop_entry.py",
       "size": 583,
       "sha256": "3f6bb0bd8ea75526bca09a1122fa0c6adae5804dbdbf99438d36c162f54b060c"
+    },
+    {
+      "path": "scripts/desktop_icon_resources.py",
+      "size": 4406,
+      "sha256": "a7078a743587a54eb5bf66f86e4754444e1aa19b352890547a7f3300fd16a020"
+    },
+    {
+      "path": "scripts/desktop_icons.py",
+      "size": 7498,
+      "sha256": "c59bfc942189e1a268b5596eb76b737506083f0c42804366c09113db600e82c0"
     },
     {
       "path": "scripts/desktop_notices.py",
@@ -828,7 +838,7 @@
     {
       "path": "src/ceta_desktop/__init__.py",
       "size": 102,
-      "sha256": "b1101ad1c2ff77a6e69b1503d24aa51d33cd9eabfafce9589c0cb79ce278786a"
+      "sha256": "b640b7c50e9eee37df114ff0dae1bc76829659cba548afe48539a8f0a5a311e4"
     },
     {
       "path": "src/ceta_desktop/app.py",
@@ -1229,6 +1239,16 @@
       "path": "tests/test_desktop_gui.py",
       "size": 14134,
       "sha256": "44fb360d318df949e21cc646a62a8f5ad32c966a4df178af8cef2760844e44d6"
+    },
+    {
+      "path": "tests/test_desktop_icon_resources.py",
+      "size": 3854,
+      "sha256": "aa479e50c8a0d65fa43c2a944b46dc36e56c69ce1f0dbf3376d596f0a316f665"
+    },
+    {
+      "path": "tests/test_desktop_icons.py",
+      "size": 8085,
+      "sha256": "ce8722407f6e345ebaba8485713829e0462b39671abff4f2569e4de08d2528c0"
     },
     {
       "path": "tests/test_desktop_installation.py",

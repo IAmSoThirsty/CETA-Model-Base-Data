@@ -42,12 +42,15 @@ def write_notices(destination: Path):
             break
 
 
-def installer_script(payload: Path, output: Path, version: str, finalize: str | None = None) -> str:
+def installer_script(payload: Path, output: Path, version: str, finalize: str | None = None,
+                     *, icon_path: Path | None = None, icon_check: str | None = None) -> str:
     files = sorted(path for path in payload.rglob("*") if path.is_file())
     directories = sorted({path.parent.relative_to(payload) for path in files}, key=lambda p: len(p.parts), reverse=True)
     lines = [
         'Unicode true', '!include "MUI2.nsh"', '!include "x64.nsh"', '!include "LogicLib.nsh"', '!include "FileFunc.nsh"',
         'Name "CETA"', f'OutFile "{nsis_quote(str(output))}"',
+        f'!define MUI_ICON "{nsis_quote(str(icon_path or output.parent / "CETA.ico"))}"',
+        f'!define MUI_UNICON "{nsis_quote(str(icon_path or output.parent / "CETA.ico"))}"',
         'InstallDir "$LOCALAPPDATA\\Programs\\CETA"',
         'InstallDirRegKey HKCU "Software\\CETA" "InstallDir"',
         'RequestExecutionLevel user', 'SetCompressor /SOLID lzma',
@@ -94,16 +97,19 @@ def installer_script(payload: Path, output: Path, version: str, finalize: str | 
         '  WriteUninstaller "$INSTDIR\\Uninstall.exe"',
         '  WriteRegStr HKCU "Software\\CETA" "InstallDir" "$INSTDIR"',
         '  WriteRegStr HKCU "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\CETA" "DisplayName" "CETA"',
+        '  WriteRegStr HKCU "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\CETA" "DisplayIcon" \'$\\"$INSTDIR\\CETA.exe$\\",0\'',
         f'  WriteRegStr HKCU "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\CETA" "DisplayVersion" "{version}"',
         '  WriteRegStr HKCU "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\CETA" "UninstallString" \'$\\"$INSTDIR\\Uninstall.exe$\\"\'',
         '  WriteRegDWORD HKCU "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\CETA" "NoModify" 1',
         '  WriteRegDWORD HKCU "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\CETA" "NoRepair" 1',
-        '  CreateShortcut "$SMPROGRAMS\\CETA.lnk" "$INSTDIR\\CETA.exe"',
+        '  CreateShortcut "$SMPROGRAMS\\CETA.lnk" "$INSTDIR\\CETA.exe" "" "$INSTDIR\\CETA.exe" 0',
         'SectionEnd', 'Section "Uninstall"', '  SetShellVarContext current',
         '  Delete "$SMPROGRAMS\\CETA.lnk"',
     ]
     if finalize:
         lines.insert(1, finalize)
+    if icon_check:
+        lines.insert(1, icon_check)
     # Exact installed-file removal; never recursively delete unknown user files.
     for path in files:
         lines.append(f'  Delete "$INSTDIR\\{nsis_quote(str(path.relative_to(payload)))}"')
@@ -164,17 +170,9 @@ def main():
     # Desktop releases evolve independently of the retained reference package.
     sys.path.insert(0, str(ROOT / "src"))
     from ceta_desktop import __version__ as version
-    from PySide6.QtCore import Qt
-    from PySide6.QtGui import QImage, QPainter
-    from PySide6.QtSvg import QSvgRenderer
-    icon = QImage(256, 256, QImage.Format_ARGB32)
-    icon.fill(Qt.transparent)
-    painter = QPainter(icon)
-    QSvgRenderer(str(ROOT / "src/ceta_desktop/icon.svg")).render(painter)
-    painter.end()
-    icon_path = output / "CETA.ico"
-    if not icon.save(str(icon_path)):
-        raise SystemExit("Could not create the application icon.")
+    from desktop_icons import create_windows_icon
+    from desktop_icon_resources import uninstaller_icon_finalize, verify_pe_icons
+    icon_path = create_windows_icon(ROOT / "src/ceta_desktop/icon.svg", output / "CETA.ico")
     # Do not resolve DLL dependencies from unrelated toolchains on the host PATH.
     build_environment = dict(os.environ)
     build_environment["PATH"] = os.pathsep.join([
@@ -192,6 +190,7 @@ def main():
         "--specpath", str(output), str(ROOT / "scripts/desktop_entry.py"),
     ], cwd=ROOT, env=build_environment, check=True)
     payload = output / "app" / "CETA"
+    application_icons = verify_pe_icons(payload / "CETA.exe", icon_path)
     write_notices(payload / "ThirdPartyNotices")
     companion = output / f"CETA-{version}-dependency-sources.zip"
     write_source_companion(sources, companion, payload / "ThirdPartyNotices")
@@ -202,10 +201,17 @@ def main():
     verified_payload_pe_files = signing.sign_payload(payload) if signing else 0
     setup = output / f"CETA-{version}-setup.exe"
     script = output / "CETA.nsi"
-    script.write_text(installer_script(payload, setup, version, finalize), encoding="utf-8")
+    icon_check = uninstaller_icon_finalize(icon_path, output / "uninstaller-icons.json")
+    script.write_text(installer_script(payload, setup, version, finalize,
+                                       icon_path=icon_path, icon_check=icon_check), encoding="utf-8")
     subprocess.run([str(args.makensis.resolve()), str(script)], check=True)
     if signing:
         signing.sign(setup)
+    installer_icons = verify_pe_icons(setup, icon_path)
+    with (output / "ICON-VALIDATION.json").open("x", encoding="utf-8") as handle:
+        json.dump({"application": application_icons, "installer": installer_icons,
+                   "uninstaller": json.loads((output / "uninstaller-icons.json").read_text(encoding="utf-8"))},
+                  handle, indent=2)
     with setup.open("rb") as handle:
         digest = hashlib.file_digest(handle, "sha256").hexdigest()
     with companion.open("rb") as handle:

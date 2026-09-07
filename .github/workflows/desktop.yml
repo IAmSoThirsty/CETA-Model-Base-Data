@@ -27,6 +27,6 @@ jobs:
       - name: Audit desktop dependencies
         run: uv run --no-sync python -m pip_audit --local --progress-spinner off
       - name: Check native application and release code
-        run: uv run --no-sync ruff check --select F,E9 src/ceta_desktop scripts/build_desktop.py scripts/desktop_entry.py scripts/desktop_notices.py scripts/desktop_signing.py scripts/desktop_update_keys.py scripts/sign_desktop_update.py scripts/create_desktop_verification.py scripts/verify_desktop_inference.py scripts/network_boundary.py tests/test_desktop*.py
+        run: uv run --no-sync ruff check --select F,E9 src/ceta_desktop scripts/build_desktop.py scripts/desktop_icons.py scripts/desktop_icon_resources.py scripts/desktop_entry.py scripts/desktop_notices.py scripts/desktop_signing.py scripts/desktop_update_keys.py scripts/sign_desktop_update.py scripts/create_desktop_verification.py scripts/verify_desktop_inference.py scripts/network_boundary.py tests/test_desktop*.py
       - name: Test native application
         run: uv run --no-sync python -m unittest discover -s tests -p "test_desktop*.py" -v

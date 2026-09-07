@@ -361,3 +361,35 @@ caches and admitted non-manifest files; those safeguards have been repaired.
 Codacy MCP was unavailable at that original baseline. It is now installed and
 native tools are available; current findings and environment limits are recorded
 in `docs/operations/CONTINUITY_MAP.md`.
+
+## Desktop 0.3.3 icon repair: source and compiler checkpoint
+
+The exact published 0.3.2 installer contains seven generic NSIS icon frames and
+no 256-pixel frame. Its application executable contains CETA artwork, but only
+one 256-pixel DIB frame. This is an embedded-resource defect, not merely a shell
+cache explanation. The read-only baseline is retained outside the repository at
+`C:\Users\Quencher\.codex\audits\CETA-icon-release-20260906\CETA-0.3.2-ICON-BASELINE.json`,
+SHA-256 `bceeadc329ad9f05877c97cd38dca2dd422bfd44aceaf06bd18ba1585de5fa41`.
+
+The 0.3.3 source renders the existing CETA SVG at 16, 20, 24, 32, 40, 48, 64, 128
+and 256 pixels. Small frames use 32-bit DIBs with AND masks; 256 uses PNG.
+`MUI_ICON` and `MUI_UNICON` are defined before the installer pages, and the shell
+DisplayIcon and shortcut explicitly select CETA.exe icon index 0. Compiled-resource
+checks reject default, missing, extra or mismatched artwork and require all nine
+frames. The `!uninstfinalize` gate validates the uninstaller before embedding;
+the built application and installer receive separate checks.
+
+The coordinator's focused run passed 26 tests (11 icon and 15 signing) in 1.481
+seconds; Ruff F/E9 passed. The actual NSIS 3.12 compiler preflight validated the
+synthetic installer and generated uninstaller under the external audit directory's
+`nsis-preflight-001`. The synthetic installer was not executed. This is compiler
+and source evidence, not a released 0.3.3 application.
+
+Build 006 subsequently stopped at its desktop test gate: 130 tests ran in 54.779
+seconds, with one failure and one host short-alias skip. The failure was
+`test_workload_exit_and_persistence`: workload_id remained set when the test
+expected completion. The failed result/log are preserved in the same external
+audit directory. This blocks that build attempt and requires focused diagnosis
+and a fresh successful build; no 0.3.3 real-binary or publication success is
+claimed at this checkpoint. The public 0.3.2 release and earlier evidence remain
+unchanged.
