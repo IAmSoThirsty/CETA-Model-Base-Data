@@ -434,3 +434,45 @@ audit directory. This blocks that build attempt and requires focused diagnosis
 and a fresh successful build; no 0.3.3 real-binary or publication success is
 claimed at this checkpoint. The public 0.3.2 release and earlier evidence remain
 unchanged.
+
+## Desktop 0.3.3 icon repair: verified build and installed resources
+
+Source commit `4e51cbf2b13d64da4b6007e8fac6761833b0fc72` retains the existing CETA
+SVG while supplying nine icon sizes and enforcing matching PE resources in the
+application, installer and generated uninstaller. Read-only publication proof
+matched all 275 committed files, 273 package payloads and 274 checksums. The
+original curriculum branch, its five dirty core files and separate original
+manifests were preserved.
+
+Build 007 passed: 130 desktop tests ran, 129 passed and one host short-alias case
+was skipped in 28.672 seconds. Windows CI passed all 130 tests in 49.909 seconds
+and CodeQL passed. The earlier Build 006 workload-completion failure is preserved;
+the separate GUI rerun passed all 16 tests in 13.174 seconds before the fresh build.
+
+A fresh offline Sandbox verified the 0.3.2-to-0.3.3 upgrade and exact CETA artwork
+in all 27 frames of the application, installer and actual installed uninstaller,
+including the PNG 256-pixel frames. Shortcut and uninstall-list icon metadata
+point to CETA.exe index 0. Startup, uninstall, synthetic conversation/draft/settings
+and unknown-file preservation passed. The owned Sandbox was stopped.
+The six public release assets passed unauthenticated hash and signature checks,
+and the live site serves the exact 0.3.3 download and signed update channel.
+The same installed 0.3.2 GUI verified the new release, downloaded it, handed off
+to the installer after closing, and installed 0.3.3. An explicit installed Start
+Menu shortcut action then relaunched 0.3.3 with the synthetic data and draft intact.
+Automatic relaunch is not implemented.
+
+This live cycle passed after normal Windows TLS initialization. In the fresh
+Sandbox, first manifest discovery and first GitHub download failed certificate
+verification. Ordinary validated Windows HTTPS GET/HEAD requests initialized the
+missing public roots; unmodified GUI retries then succeeded. No manual certificate
+import, validation bypass or application patch occurred. Pristine first-attempt
+TLS success remains unverified and requires follow-up.
+
+The icon proof concerns RT_ICON/RT_GROUP_ICON resources. The stock NSIS MUI
+welcome-panel computer illustration remains as a separate, nonblocking visual
+limitation. It is not part of the executable icon resource claim.
+
+`evidence/CETA_ICON_PUBLICATION_033.json` binds these additive results. Personal
+Ed25519 verification remains separate from Windows CA trust; no Explorer cache
+refresh, schema-version migration, model inference or training validation is
+claimed. The separate Transformers dependency failure remains unresolved.

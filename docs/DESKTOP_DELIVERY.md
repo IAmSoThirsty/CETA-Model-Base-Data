@@ -27,6 +27,48 @@ Its historical model evaluations are not evidence for desktop application qualit
 
 ## Current release classification
 
+CETA desktop 0.3.3 corrects the Windows icon resources in the application,
+installer and uninstaller. Each contains the existing CETA artwork at nine native
+sizes from 16 through 256 pixels, including a PNG frame at 256. Installed shortcut
+and uninstall-list metadata explicitly select CETA.exe icon index 0.
+The six public release assets passed unauthenticated hash and signature checks,
+and the live site serves the exact 0.3.3 download and signed update channel.
+The same installed 0.3.2 GUI verified the new release, downloaded it, handed off
+to the installer after closing, and installed 0.3.3. An explicit installed Start
+Menu shortcut action then relaunched 0.3.3 with the synthetic data and draft intact.
+Automatic relaunch is not implemented.
+
+This live cycle passed after normal Windows TLS initialization. In the fresh
+Sandbox, first manifest discovery and first GitHub download failed certificate
+verification. Ordinary validated Windows HTTPS GET/HEAD requests initialized the
+missing public roots; unmodified GUI retries then succeeded. No manual certificate
+import, validation bypass or application patch occurred. Pristine first-attempt
+TLS success remains unverified and requires follow-up.
+
+The icon proof concerns RT_ICON/RT_GROUP_ICON resources. The stock NSIS MUI
+welcome-panel computer illustration remains as a separate, nonblocking visual
+limitation. It is not part of the executable icon resource claim.
+
+The installer is 43,731,493 bytes with SHA-256
+`73a098ba78169a47d069a793af0af6d81642ad19b4879906f7ab66d7ae37aa82`.
+Windows CI passed all 130 desktop tests. Fresh Build 007 passed 129 tests with one
+host short-alias skip, and a clean Windows Sandbox verified all 27 embedded icon
+frames across the application, installer and actual installed uninstaller.
+The 0.3.2-to-0.3.3 upgrade preserved the synthetic conversation, draft, preferences
+and unknown files. This validates unchanged schema 1 compatibility; it does not
+claim a future schema migration or refresh of the user's existing Explorer cache.
+
+See `evidence/CETA_ICON_PUBLICATION_033.json` for the exact source, public artifact,
+compiled-resource, installed-upgrade and delivery proofs. Personal verification
+requires an independently received CETA key fingerprint; Authenticode remains
+NotSigned and Windows CA trust is not claimed. The old 0.3.1 updater still requires
+a manual newer installer because its preserved client has the HTTP 403 defect.
+The independent reference package remains version 0.3.0 with its separately
+documented Transformers dependency gate. Earlier checkpoints retain their dates
+and scope, including the preserved Build 006 failure and 0.3.2 installer defect.
+
+## Desktop 0.3.2 public delivery checkpoint
+
 CETA desktop 0.3.2 is publicly released in the existing CETA GitHub repository.
 Its six downloadable assets were retrieved without authentication and matched
 the reviewed local bytes; the personal Ed25519 receipt passed verification.

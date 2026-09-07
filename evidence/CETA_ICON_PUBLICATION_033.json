@@ -1,0 +1,452 @@
+{
+  "schema_version": 1,
+  "product": "CETA",
+  "desktop_version": "0.3.3",
+  "reference_version": "0.3.0",
+  "status": "PUBLISHED_VERIFIED_WITH_RECORDED_TLS_AND_RELAUNCH_LIMITATIONS",
+  "prepared_at_utc": "2026-09-07T01:32:49.049724+00:00",
+  "recorded_at_utc": "2026-09-07T02:28:07.991670+00:00",
+  "scope": "Additive icon repair publication checkpoint; historical installers and earlier evidence remain preserved.",
+  "authorization": "The user authorized CETA application work, hosting in its existing GitHub repository, a dedicated showcase/download on thirstysystems.com through Thirstys Projects LLC, and personal signing. No other project artwork or key is used. The final scoped transfer is CETA release metadata, signed receipt, download links and CETA showcase material to the authorized website. Its original checkout and unpublished backlog remain separate; no website implementation was imported into CETA.",
+  "source": {
+    "reviewed_commit": "4e51cbf2b13d64da4b6007e8fac6761833b0fc72",
+    "proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\publication-source-0.3.3.json",
+      "sha256": "ba28fbeb2ade5a61ca231cdaa1ce9366c0041c066c083bcb15c23bee2904bce2",
+      "size": 9891
+    },
+    "committed_files": 275,
+    "manifest_payload_files": 273,
+    "checksum_entries": 274,
+    "content_root": "sha256:88321593ac8a80d95fb83e7a10743915ba89a7df63415ab0d3baccd62c911e9b",
+    "preservation": "Original codex/ceta-curriculum-v3 HEAD decd957ef91884e5ba9fc61c627fb5481d53a80f and five dirty core files preserved. Seven changed source files and both checkpoint docs match delivery; original manifests remain separate."
+  },
+  "baseline_defect": {
+    "proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\CETA-0.3.2-ICON-BASELINE.json",
+      "sha256": "bceeadc329ad9f05877c97cd38dca2dd422bfd44aceaf06bd18ba1585de5fa41",
+      "size": 6081
+    },
+    "installer_032": "Seven generic/NSIS frames; no 256-pixel frame or matching CETA resource.",
+    "application_032": "Correct CETA artwork but only one 256-pixel DIB frame.",
+    "conclusion": "Wrong icons exist in released resources, independent of shell caching. Public 0.3.2 bytes are unchanged."
+  },
+  "repair": {
+    "artwork": {
+      "path": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\ceta_desktop\\icon.svg",
+      "sha256": "8e1c66f4a9c745db77fb09735434c00d9f330b28c6886fdf0d4ff2bd1247aed7",
+      "size": 1730
+    },
+    "canonical_ico": {
+      "path": "C:\\Users\\Quencher\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\CETA-build\\01a074c6\\release-007\\CETA.ico",
+      "sha256": "8b820970771abd2545fcea103f1c271e8be126f84d4b6e6809506b4cff5aa7e2",
+      "size": 147158
+    },
+    "sizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48,
+      64,
+      128,
+      256
+    ],
+    "small_frame_encoding": "32-bit DIB with aligned AND masks",
+    "frame_256_encoding": "8-bit RGBA PNG",
+    "installer_definitions": "MUI_ICON and MUI_UNICON before MUI pages.",
+    "shell_identity": "Shortcut and uninstall DisplayIcon explicitly select CETA.exe index 0.",
+    "resource_gate": "All nine canonical frames required in application, installer and uninstaller, with no default, missing, duplicate or orphan images.",
+    "uninstaller_gate": "NSIS !uninstfinalize checks the uninstaller before embedding.",
+    "actual_build_resource_proof": {
+      "path": "C:\\Users\\Quencher\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\CETA-build\\01a074c6\\release-007\\ICON-VALIDATION.json",
+      "sha256": "9027ef6d4c3fe04a8a8f914feebb455199160d10fac4e29f57417ccf154b5b86",
+      "size": 5260
+    },
+    "resource_claim_scope": "RT_ICON and RT_GROUP_ICON only. The stock NSIS MUI blue welcome-panel computer illustration is a separate bitmap and remains. Its presence does not contradict the verified executable icon repair."
+  },
+  "validation": {
+    "build_007": {
+      "status": "PASS",
+      "result": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\desktop-build-007-result.json",
+        "size": 223,
+        "sha256": "d8c052cfe4ad621f9051d48487f3cdd61db81dd1322275f7ce1eedaaff4642fd"
+      },
+      "log": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\desktop-build-007.log",
+        "size": 37774,
+        "sha256": "460cb6c70d470e33d16b267845260ada36cc2482a947105823359dda789c3450"
+      },
+      "desktop_tests": {
+        "run": 130,
+        "passed": 129,
+        "skipped": 1,
+        "seconds": 28.672
+      },
+      "isolated_gui_followup": {
+        "passed": 16,
+        "seconds": 13.174,
+        "log": {
+          "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\gui-isolated-after-analysis.log",
+          "size": 2539,
+          "sha256": "9a14663eea254bae3d793cfb9cf9f47ee43e232f99b65c6d663fbb8588767625"
+        }
+      },
+      "prior_build_failure": "Build 006 stopped on the workload-completion test. Its log/result remain preserved; the isolated GUI rerun and fresh Build 007 passed."
+    },
+    "windows_ci": {
+      "id": 34072597024,
+      "name": "Verify CETA desktop",
+      "head_sha": "4e51cbf2b13d64da4b6007e8fac6761833b0fc72",
+      "head_branch": "main",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data/actions/runs/34072597024",
+      "created_at": "2026-09-07T01:18:27Z",
+      "updated_at": "2026-09-07T01:20:03Z",
+      "tests_run": 130,
+      "passed": 130,
+      "skipped": 0,
+      "seconds": 49.909,
+      "dependency_audit": "No known vulnerabilities found",
+      "log": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\github-windows-0.3.3.log",
+        "size": 84573,
+        "sha256": "706952167ab29576dee0874720ee80ba97bb64c9134c14489171fbb74dcd67e6"
+      }
+    },
+    "codeql_ci": {
+      "id": 34072597021,
+      "name": "CodeQL",
+      "head_sha": "4e51cbf2b13d64da4b6007e8fac6761833b0fc72",
+      "head_branch": "main",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data/actions/runs/34072597021",
+      "created_at": "2026-09-07T01:18:27Z",
+      "updated_at": "2026-09-07T01:19:42Z"
+    },
+    "failed_build_006": {
+      "result": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\desktop-build-006-result.json",
+        "sha256": "75325fc6d389313b08cc3533dc3004071bc40e69819bdeb2698c0a57a8aeb5ef",
+        "size": 223
+      },
+      "log": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\desktop-build-006.log",
+        "sha256": "991b86ab9603a8efd7ffbd3dd23c4988bab719eb561906b24940427d3cbb164d",
+        "size": 28044
+      },
+      "classification": "Preserved failed workload-completion gate. Isolated GUI rerun and fresh Build007 passed; validation expectations were unchanged."
+    },
+    "reference_training_gate": {
+      "id": 34072597020,
+      "name": "Verify reference package",
+      "head_sha": "4e51cbf2b13d64da4b6007e8fac6761833b0fc72",
+      "head_branch": "main",
+      "status": "completed",
+      "conclusion": "failure",
+      "html_url": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data/actions/runs/34072597020",
+      "created_at": "2026-09-07T01:18:27Z",
+      "updated_at": "2026-09-07T01:19:05Z",
+      "classification": "Unresolved separate training dependency gate; not part of the isolated desktop dependency set. No fix or bypass performed by this audit.",
+      "failure_evidence": [
+        "verify\tVerify dependencies, architecture, and package\t2026-09-07T01:19:02.0093328Z transformers 5.5.0   CVE-2026-9856 5.10.0"
+      ],
+      "log": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\publication-source-0.3.3-reference-ci.log",
+        "size": 2928,
+        "sha256": "db061179189bdfdb1ad620bde45da6f3e118a6c1a23b205a43d31d2221c21001"
+      }
+    }
+  },
+  "installed_validation": {
+    "status": "PASS",
+    "proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\sandbox-033-001\\CETA-0.3.3-INSTALLED-ICON-VALIDATION.json",
+      "sha256": "dbe3aabf3a7cb8c1cc7a011d5fb93ef10aa246de3fad6af9c11fe4e8274ad262",
+      "size": 9028
+    },
+    "all_27_frames_match": true,
+    "actual_installed_app_sha256": "e58d2ce49129a5c9512e2628327e69a1bf7ba864f35249e10f25e36abeb94720",
+    "actual_installed_uninstaller": {
+      "original_path": "C:\\CETA-CrossVersion\\Uninstall.exe",
+      "evidence_path": "C:\\Results\\installed-Uninstall-0.3.3.exe",
+      "sha256": "31e54f3d1adc777a76d7715fd4599259968af4980687975a2cf4918813c13823",
+      "size": 197674
+    },
+    "shell_metadata": {
+      "shortcut_path": "C:\\Users\\WDAGUtilityAccount\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\CETA.lnk",
+      "shortcut_target": "C:\\CETA-CrossVersion\\CETA.exe",
+      "shortcut_arguments": "",
+      "shortcut_icon_location": "C:\\CETA-CrossVersion\\CETA.exe,0",
+      "registry_path": "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\CETA",
+      "registry_display_name": "CETA",
+      "registry_display_version": "0.3.3",
+      "registry_display_icon": "\"C:\\CETA-CrossVersion\\CETA.exe\",0",
+      "expected_executable": "C:\\CETA-CrossVersion\\CETA.exe",
+      "expected_registry_display_icon": "\"C:\\CETA-CrossVersion\\CETA.exe\",0"
+    },
+    "upgrade": "0.3.2 to 0.3.3 in fresh network-disabled Windows Sandbox",
+    "lifecycle": "Installation, upgrade, version titles, clean startup and uninstall passed; shortcut and uninstall registry entry removed on uninstall.",
+    "data_preservation": {
+      "fixture": "TEST ONLY - synthetic data",
+      "conversation_count": 1,
+      "message_count": 2,
+      "seeded_setting_count": 5,
+      "unsent_draft_preserved": true,
+      "all_three_snapshot_comparisons": "exact match for every seeded row and setting",
+      "sqlite_integrity": "ok",
+      "foreign_key_violations": [],
+      "schema_version": 1,
+      "immutable_read_only_sqlite_check": true,
+      "fixture_content_sha256": "e9dae5fd0c42368dfcf2a79ef45ec897ee17278e0230a82132ab214b78acac79"
+    },
+    "markers_preserved": true,
+    "owned_sandbox_stopped": true,
+    "other_sandboxes_stopped": 0,
+    "clean_screenshot": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\sandbox-033-001\\results\\installed-0.3.3-clean.png",
+      "sha256": "823942014c1399e7eea33d2353478f869509f6923e3e4a2f1d2628f9cf0a4f23",
+      "size": 429351,
+      "visually_reviewed": true,
+      "contains_seeded_or_real_user_data": false
+    },
+    "uninstaller_contact_sheet": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\sandbox-033-001\\installed-uninstaller-icons\\icon-contact-sheet.png",
+      "sha256": "40d944ec68345d9e6bfa7e7dca522efc73008e9c1558b2d3c96fc45026b8a832",
+      "visually_reviewed": true
+    }
+  },
+  "local_release_assets": {
+    "proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\release-033-local-assets.json",
+      "sha256": "6763415f69781e4f2530c88dc33d72e31d20e6fc18d2737d8b0e2bb26207819a",
+      "size": 1104
+    },
+    "assets": [
+      {
+        "name": "CETA-0.3.3-setup.exe",
+        "size": 43731493,
+        "sha256": "73a098ba78169a47d069a793af0af6d81642ad19b4879906f7ab66d7ae37aa82"
+      },
+      {
+        "name": "CETA-0.3.3-dependency-sources.zip",
+        "size": 70981896,
+        "sha256": "063ed318ffdc8bf7e843cc47094ac721aab70218f36623f25406326bb0024778"
+      },
+      {
+        "name": "CETA-0.3.3-verification.zip",
+        "size": 12121,
+        "sha256": "cb19d12bd99f902d033926bee14ee499120e6cd1b2aad0f7f9c571e065154d40"
+      },
+      {
+        "name": "CETA-PUBLISHER.json",
+        "size": 383,
+        "sha256": "5fa26234d42657e92c5411086ffdb1b605179d4148e09b49cacbc87f52c00d9c"
+      },
+      {
+        "name": "CETA-UPDATE.json",
+        "size": 473,
+        "sha256": "ee1909a24957801403fa7fe94494e82a581e5585bcd68c26069d9f62013e8d92"
+      },
+      {
+        "name": "SHA256SUMS",
+        "size": 450,
+        "sha256": "2adc06dfcf4bde208b7e9a133398eba5de082f9fc5ee836bc4253834695161a8"
+      }
+    ]
+  },
+  "personal_identity": {
+    "fingerprint_sha256": "583b329e113816d2bcbcaf63fe796d4d3e8d0b9e9afe15fa0caf41954c9273bb",
+    "authenticode": "NotSigned",
+    "boundary": "The dedicated CETA Ed25519 receipt requires independently confirming the publisher fingerprint. It does not provide Windows CA trust; no root certificate installation or another project key is used.",
+    "public_signature_verification": "PASS"
+  },
+  "public_release": {
+    "status": "PASS",
+    "proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\publication-check\\release-033-public-001\\result.json",
+      "sha256": "6ffae67100cecc6fa9bf2fde8b3b6dc56cd3636bcd1dd65bc5adda179575d284",
+      "size": 5386
+    },
+    "release": {
+      "id": 383778924,
+      "tag_name": "ceta-desktop-v0.3.3",
+      "target_commitish": "4e51cbf2b13d64da4b6007e8fac6761833b0fc72",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-09-07T01:32:44Z",
+      "html_url": "https://github.com/IAmSoThirsty/CETA-Model-Base-Data/releases/tag/ceta-desktop-v0.3.3"
+    },
+    "all_six_unauthenticated_assets_match": true,
+    "personal_signature": "PASS",
+    "installer_sha256": "73a098ba78169a47d069a793af0af6d81642ad19b4879906f7ab66d7ae37aa82",
+    "installer_size": 43731493
+  },
+  "website": {
+    "status": "PASS",
+    "proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\live-website-033-001\\result.json",
+      "sha256": "8a93a823ce998768e4d5f6a42105681d51c8d28cc7f806c7557ca388579e4e2c",
+      "size": 5152
+    },
+    "reviewed_commit": "c4ac5e055c9620f6d279917d705f89458d39af80",
+    "deployment_id": "83daaf12-f22e-4571-ae07-c26d09a7c55d",
+    "showcase_url": "https://www.thirstysystems.com/ceta",
+    "download_url": "https://www.thirstysystems.com/ceta/download",
+    "source_proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\website-publication-source-033.json",
+      "sha256": "9aaf3ae6e90ad1ce92a89fa93b0dc1d663d0a15f9494eae1e067a00c40280317",
+      "size": 11053
+    },
+    "showcase_http_status": 200,
+    "download_http_status": 302,
+    "download_cache_control": "no-store",
+    "two_json_and_seven_image_paths_match": true,
+    "browser_proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\live-browser-033.json",
+      "sha256": "5486b8b56474cf71b415c002c95bdfa7a6aeffb98dcf2803c89039ad5faa2dde",
+      "size": 1008
+    },
+    "browser_scope": "1280-pixel viewport, 1265-pixel document, eight loaded main images, no new browser console entries; not a complete device matrix.",
+    "ci": {
+      "proof": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\github-website-0.3.3-ci-001\\summary.json",
+        "sha256": "b7e2e5ca18bc45a23a5b0f7fb99643cbc33685f017ee29001d07f843bace0ace",
+        "size": 18226
+      },
+      "main_run_id": 34074018480,
+      "conclusion": "success",
+      "test_suites": [
+        {
+          "step": "Clean-clone assurance harness",
+          "passed": 121,
+          "failed": 0,
+          "skipped": 0,
+          "test_files": 12,
+          "duration_seconds": 4.35
+        },
+        {
+          "step": "Tests",
+          "passed": 266,
+          "failed": 0,
+          "skipped": 0,
+          "test_files": 39,
+          "duration_seconds": 15.79
+        }
+      ],
+      "test_suites_are_separate_not_additive": true,
+      "required_steps_all_passed": true
+    }
+  },
+  "native_live_channel": {
+    "status": "VERIFIED_THROUGH_INSTALLED_GUI_AFTER_STANDARD_WINDOWS_TLS_INITIALIZATION",
+    "proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\live-gui-update-033-001\\CETA-LIVE-GUI-UPDATE-033-VALIDATION.json",
+      "sha256": "d8c4966c8fca9fcc5972cc63df4bd42a5408884d555fac15bc3500cca0618f29",
+      "size": 16777
+    },
+    "host_direct_function_download_repeated": false,
+    "actual_client_version": "0.3.2",
+    "actual_offered_version": "0.3.3",
+    "signature_verified_in_gui": true,
+    "downloaded_installer_sha256": "73a098ba78169a47d069a793af0af6d81642ad19b4879906f7ab66d7ae37aa82"
+  },
+  "limitations": [
+    "Initial manifest discovery and first GitHub download in the pristine Sandbox failed certificate verification. Ordinary default-validation Windows HTTPS GET/HEAD initialized public roots; subsequent unmodified GUI actions succeeded. No manual certificate import, TLS bypass or application patch was used. This is an environment/trust-initialization limitation requiring follow-up.",
+    "Relaunch occurred through an explicit installed Start Menu shortcut action after the wizard. Automatic relaunch is not implemented or claimed.",
+    "RT_ICON/RT_GROUP_ICON resources are CETA artwork at all nine sizes. The separate stock NSIS MUI welcome illustration remains as a nonblocking visual limitation of this icon repair.",
+    "No claim that Explorer on the user machine refreshed its cache. Actual Sandbox shortcut/registry metadata and embedded resources were verified.",
+    "Data preservation uses synthetic fixtures and unchanged SQLite schema1, not a schema-version migration. Live GUI validation did not repeat uninstall; the separate offline installed proof covers uninstall.",
+    "No model download, inference benchmark or new training validation. The separate Transformers5.5.0/CVE-2026-9856 reference gate remains unresolved.",
+    "The old 0.3.1 client retains its HTTP403 issue and requires a manual newer installer. Prior release bytes and checkpoints remain preserved.",
+    "Website CI still reports action-runtime/dependency deprecation maintenance notes; both exact-commit runs and required steps passed. These are separately classified in the bound website CI report."
+  ],
+  "draft_updated_at_utc": "2026-09-07T01:39:30.464735+00:00",
+  "installed_gui_live_update": {
+    "status": "PASS_AFTER_STANDARD_WINDOWS_TLS_INITIALIZATION",
+    "proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\live-gui-update-033-001\\CETA-LIVE-GUI-UPDATE-033-VALIDATION.json",
+      "sha256": "d8c4966c8fca9fcc5972cc63df4bd42a5408884d555fac15bc3500cca0618f29",
+      "size": 16777
+    },
+    "scope": "Installed 0.3.2 actual Updates GUI -> live production signed 0.3.3 manifest -> GUI installer download -> GUI install confirmation -> graceful shutdown and installer handoff -> native NSIS wizard -> explicit installed shortcut relaunch 0.3.3 -> preserved synthetic local data",
+    "observed_gate_completed": true,
+    "pristine_first_attempt_status": "FAIL: fresh Sandbox lacked public roots needed by bundled Python TLS. First manifest check and first release download failed closed before normal Windows HTTPS initialization.",
+    "actual_gui_download": {
+      "version": "0.3.3",
+      "installer": "C:\\CETA-GUI-Downloads\\CETA-0.3.3-setup.exe",
+      "sha256": "73a098ba78169a47d069a793af0af6d81642ad19b4879906f7ab66d7ae37aa82",
+      "size": 43731493,
+      "status": "PASS",
+      "direct_updater_function_called_by_harness": false,
+      "manual_new_installer_launch": false
+    },
+    "actual_installer_handoff": {
+      "ProcessId": 7508,
+      "ParentProcessId": 10356,
+      "Name": "CETA-0.3.3-setup.exe",
+      "ExecutablePath": "C:\\CETA-GUI-Downloads\\CETA-0.3.3-setup.exe",
+      "CommandLine": "C:\\CETA-GUI-Downloads\\CETA-0.3.3-setup.exe /WAITPID=10356",
+      "CreationDate": "/Date(1788747449066)/"
+    },
+    "installer_exit_code": 0,
+    "relaunch": {
+      "mode": "Explicit installed Start Menu shortcut action; automatic relaunch is not implemented or claimed",
+      "shortcut": {
+        "path": "C:\\Users\\WDAGUtilityAccount\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\CETA.lnk",
+        "target": "C:\\Users\\WDAGUtilityAccount\\AppData\\Local\\Programs\\CETA\\CETA.exe",
+        "arguments": "",
+        "icon": "C:\\Users\\WDAGUtilityAccount\\AppData\\Local\\Programs\\CETA\\CETA.exe,0"
+      },
+      "app_process_id": 3080,
+      "window_title": "CETA \u00b7 0.3.3",
+      "app_sha256": "e58d2ce49129a5c9512e2628327e69a1bf7ba864f35249e10f25e36abeb94720",
+      "status": "PASS"
+    },
+    "data_preservation": {
+      "status": "PASS",
+      "snapshots_compared": 3,
+      "schema_version": 1,
+      "conversations": 1,
+      "messages": 2,
+      "seeded_settings": 5,
+      "unsent_draft": "preserved",
+      "marker_files": "both preserved against original payload bytes",
+      "integrity_checks": "all ok; no foreign key violations",
+      "fixture_sha256": "1f9e914f23276f81f2c43e2921f4ef26188d08b60d2c48f10590d34b127260ae",
+      "proof": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\live-gui-update-033-001\\DATA-PRESERVATION-COMPARISON.json",
+        "sha256": "d8071e8aae0d7826e84f0a90b60a30f135ba8c7fd9bf310e8ba46f5d57cd73e9",
+        "size": 3931
+      }
+    },
+    "tls_initialization": {
+      "status": "Required for this fresh Sandbox",
+      "site_action": "Ordinary WinHttp.WinHttpRequest.5.1 GET with default TLS validation to production stable URL returned HTTP200; unmodified GUI retry verified signature.",
+      "site_root_observation": "CurrentUser and LocalMachine Root counts 16 -> 17; GlobalSign Root CA added between inventories.",
+      "release_action": "Ordinary WinHttp.WinHttpRequest.5.1 HEAD with default TLS validation and redirects to exact CETA GitHub release URL returned HTTP200; no installer body requested. GUI retry then downloaded and verified exact033.",
+      "release_root_observation": "CurrentUser and LocalMachine Root counts 17 -> 19 during HEAD; USERTrust ECC and ISRG Root X1 added.",
+      "manual_certificate_import": false,
+      "certificate_validation_disabled": false,
+      "application_replaced_or_patched": false,
+      "proof": {
+        "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\live-gui-update-033-001\\TLS-INITIALIZATION-COMPARISON.json",
+        "sha256": "305b1c5d7e96da4256c983868e334a7c5032944d28b9384dd8bf62fdba0b08ac",
+        "size": 3344
+      }
+    },
+    "sandbox_stopped_and_absent": true,
+    "other_sandboxes_preserved": true,
+    "stop_proof": {
+      "path": "C:\\Users\\Quencher\\.codex\\audits\\CETA-icon-release-20260906\\live-gui-update-033-001\\stop-owned-sandbox.json",
+      "sha256": "4fcda4cdf1e6067a1e2c440af3203a3d5f901173860f3182fabfda5651807307",
+      "size": 669
+    },
+    "automatic_relaunch_implemented": false,
+    "interpretation": "The actual installed GUI path completed with explicit user actions after normal Windows HTTPS initialized missing public roots. This conditional success does not establish pristine first-attempt TLS success or automatic relaunch."
+  }
+}
