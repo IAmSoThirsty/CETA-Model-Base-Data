@@ -79,9 +79,16 @@ class DesktopSigningTests(unittest.TestCase):
         target = self.root / "library [1] $publisher.dll"
         response = [{"path": str(target), "status": "Valid"}]
         result = subprocess.CompletedProcess([], 0, stdout=json.dumps(response))
-        with patch("scripts.desktop_signing.subprocess.run", return_value=result) as run:
+        windows_root = self.root / "Windows fixture"
+        with (
+            patch.dict(os.environ, {"SystemRoot": str(windows_root)}, clear=True),
+            patch("scripts.desktop_signing.subprocess.run", return_value=result) as run,
+        ):
             self.assertEqual(authenticode_statuses([target]), {str(target): "Valid"})
         args = run.call_args.args[0]
+        self.assertEqual(
+            args[0], str(windows_root / "System32/WindowsPowerShell/v1.0/powershell.exe")
+        )
         self.assertNotIn(str(target), args[-1])
         self.assertIn("Get-AuthenticodeSignature -LiteralPath $path", args[-1])
         self.assertEqual(json.loads(run.call_args.kwargs["input"]), [str(target)])
@@ -104,8 +111,11 @@ class DesktopSigningTests(unittest.TestCase):
         for response in ([], [first], [first, first], [first, {**second, "status": None}],
                          [first, {**second, "path": "another-project.dll"}], first):
             result = subprocess.CompletedProcess([], 0, stdout=json.dumps(response))
-            with self.subTest(response=response), patch(
-                    "scripts.desktop_signing.subprocess.run", return_value=result):
+            with (
+                self.subTest(response=response),
+                patch.dict(os.environ, {"SystemRoot": str(self.root / "Windows")}, clear=True),
+                patch("scripts.desktop_signing.subprocess.run", return_value=result),
+            ):
                 with self.assertRaisesRegex(ValueError, "payload signature statuses"):
                     authenticode_statuses(paths)
 

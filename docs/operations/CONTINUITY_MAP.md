@@ -528,3 +528,21 @@ under the new dependency; upstream causal-LM loss counting changed. Original
 dirty core files and separate original integrity manifests remain preserved.
 The work is confined to CETA; no website, other repository, desktop release
 artifact or application-version change is included.
+
+### Linux CI follow-up: Windows protocol test fixtures
+
+The first repair commit `f14aee57bb55a0bef35dc498d40afc03e7e76ef3` reached
+reference run `34092195782`, job `101647860878`. Pip-audit reported no known
+vulnerabilities and Ruff passed. The 307-test Linux run then stopped with seven
+error records across two mocked signature-query methods (one method plus six
+subtests), 66 skips, in 22.458 seconds. Each error was `KeyError: 'SystemRoot'`:
+the fixtures mocked PowerShell results but relied on the host Windows environment.
+The later reference components and package verifier did not execute in that run.
+
+The two protocol fixtures now supply their own isolated synthetic SystemRoot and
+assert the exact PowerShell executable path, retaining all literal-path and
+incomplete/duplicate-response assertions. The real Windows integration test and
+production signing implementation are unchanged. All 15 signing tests passed
+locally in 10.370 seconds; the two mocked methods also pass with the surrounding
+environment empty. This fixes test portability while retaining Linux coverage.
+The subsequent commit requires its own complete reference CI result.
