@@ -2,8 +2,8 @@
   "schema_version": 1,
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
-  "file_count": 274,
-  "content_root": "sha256:f2f983751711a6054d83364bd891548bb74971f900a7c31fb4a54521cf07d4f0",
+  "file_count": 275,
+  "content_root": "sha256:f5529ca7b550bd1e13040a46170410376b051cc0d0c37747f6f5c2a5fda32164",
   "files": [
     {
       "path": ".gitattributes",
@@ -302,8 +302,8 @@
     },
     {
       "path": "docs/LANGUAGE_ADAPTER.md",
-      "size": 7118,
-      "sha256": "8d53c1a79404a82eaa008f069d689233d6472a5d7117da66bd6673b79bb4fd26"
+      "size": 8631,
+      "sha256": "0a8a9a0ec662e98137691ea1ef65a653aa218116c8659738fb900f16290531bb"
     },
     {
       "path": "docs/RESTART_AND_RECOVERY.md",
@@ -322,8 +322,8 @@
     },
     {
       "path": "docs/operations/CONTINUITY_MAP.md",
-      "size": 29610,
-      "sha256": "dcd619ecff344291bc4bb57edccfa830a0ec8d77fa6d50d8c15f0229b776b1b5"
+      "size": 33049,
+      "sha256": "15bfe6bb3fe0f934ee897fd64358b12f2452e7a8cb7116a2592e11d88b4df4c4"
     },
     {
       "path": "evidence/CETA_DESKTOP_PUBLICATION_032.json",
@@ -492,8 +492,8 @@
     },
     {
       "path": "pyproject.toml",
-      "size": 951,
-      "sha256": "f80abcb1f4c6ade3b02c1981da6ed5f75ffcbd83ae7adc18b1dc0576463ddcb1"
+      "size": 952,
+      "sha256": "4a31ab14243ce1dbf56d027ccb3104d33898ebb9b103e5397aa2ea8eb6a7fb1a"
     },
     {
       "path": "registry/build_constraints.json",
@@ -547,8 +547,8 @@
     },
     {
       "path": "requirements-language-adapter.txt",
-      "size": 121,
-      "sha256": "cf7124fcf06821ecb199a387dc962d54b167992b5b2edee4e2a2f92e63e11056"
+      "size": 122,
+      "sha256": "797c4a5aeea5c442bbd19aefb23190724c14185b01549fa9860b7c714e97c649"
     },
     {
       "path": "requirements-training.txt",
@@ -562,8 +562,8 @@
     },
     {
       "path": "scripts/bootstrap_language_adapter_env.sh",
-      "size": 1435,
-      "sha256": "b4d11a48da31e7b6a2d9f7cb35892f93b175efe974aa31a19c578f9776f0d260"
+      "size": 1436,
+      "sha256": "8d66f827653c5b544eb92046c49721a73fcf43950ef3c7710e94ad63512b3a3e"
     },
     {
       "path": "scripts/build_ceta_curriculum.py",
@@ -1327,8 +1327,13 @@
     },
     {
       "path": "tests/test_language_adapter.py",
-      "size": 15754,
-      "sha256": "282ed3010fe8b8d30cfa27b1b8c790c227bc485028117f45e711a0ca8c714ee3"
+      "size": 15756,
+      "sha256": "cd04b5f604f60cd063af0573801c86d6a5f1b9066d9cf314b92a9bd544bbef35"
+    },
+    {
+      "path": "tests/test_language_dependency_compatibility.py",
+      "size": 14030,
+      "sha256": "055ffef4fa91444cfbce79c1c623b5594abe1411a374548d91746c5d0a20de37"
     },
     {
       "path": "tests/test_memory_projection.py",
@@ -1372,8 +1377,8 @@
     },
     {
       "path": "uv.lock",
-      "size": 229218,
-      "sha256": "a41351532f60bd750761fa51e7ed7a71ff5ef37d44221c07dd2e16f20a9dd0ac"
+      "size": 229222,
+      "sha256": "8519c6b83ae1eb182e13b32eb3f4941cd175acb939c3b662d0a4c4dd34db967f"
     }
   ]
 }

@@ -27,7 +27,7 @@ The raw public files are derivation sources, not optimizer inputs. The optimizer
 `configs/ceta-language-adapter-qwen3-4b-h100.json` pins:
 
 - `Qwen/Qwen3-4B-Instruct-2507` revision `cdbee75f17c01a7cc42f958dc650907174af0554`;
-- PyTorch 2.13.x and Transformers 5.5.x security floors, strict deterministic algorithms, eager attention, disabled TF32, deterministic cuDNN, and a fixed cuBLAS workspace contract;
+- PyTorch 2.13.x and the current Transformers 5.10.1 dependency pin, strict deterministic algorithms, eager attention, disabled TF32, deterministic cuDNN, and a fixed cuBLAS workspace contract;
 - one visible H100 and bf16/4-bit LoRA execution;
 - dataset, seed, optimizer, checkpoint, and evaluation-policy parameters;
 - the exposed-case exclusion and controlled-evaluation thresholds before training begins.
@@ -61,6 +61,30 @@ That run also established that the staged answer key contains 59 distinct ruling
 The 2026-08-26 training-only run at Git revision `4de687e73cdefc75ff8bd65717a3dde2529f7cbc` completed 121/121 optimizer steps on one NVIDIA H100 80 GB under PyTorch 2.13.0, Transformers 5.5.0, eager attention, strict deterministic algorithms, disabled TF32, deterministic cuDNN, and the bound cuBLAS workspace configuration. Four durable checkpoints were present and the independent artifact verifier passed.
 
 The final `adapter_model.safetensors` hash was `785b7b5da99105d95ea18c155cf0ba5055c54ab1efce3ce316aaf9df001daab8`, byte-identical to the prior strict run. A discovered PEFT serialization-order variation in `target_modules` was fixed by validating the saved module set and rewriting it in the configuration-bound order before hashing the adapter. The consumed evaluator was not opened, no evaluation report was created, and no promotion occurred. The scrubbed receipt is `evidence/LANGUAGE_ADAPTER_H100_STRICT_TRAINING.json`.
+
+## Transformers dependency security update
+
+The current environment pins Transformers 5.10.1 to address
+[CVE-2026-9856](https://github.com/advisories/GHSA-xrqw-3rrv-vx5w).
+Version 5.10.0 contains the fix but was withdrawn on PyPI; the maintainers
+[published 5.10.1 as its replacement](https://github.com/huggingface/transformers/releases/tag/v5.10.1).
+Only Transformers changed in the lockfile; the other dependency versions remain
+bound to the existing lock. The requirements file and isolated target bootstrap
+assert the same version.
+
+`tests/test_language_dependency_compatibility.py` uses a tiny randomly initialized
+Qwen3 and synthetic local tokenizer. It exercises the actual assistant-only
+collator, configured LoRA module names, CPU optimization, checkpoint resume,
+adapter/tokenizer save and reload, and bounded greedy generation. A separate
+regression rejects escaping chat-template names and checks that an existing file
+outside the tokenizer destination remains unchanged. Network connections are
+blocked during these tests; they do not download a model.
+
+This is CPU API and security compatibility evidence. It does not establish H100,
+bf16, 4-bit, model-quality, or historical numerical equivalence. The earlier H100
+receipts retain their actual Transformers 5.5.0 version and artifact hashes. An
+upstream [causal-language-model loss-counting change](https://github.com/huggingface/transformers/pull/46204)
+can affect truncated examples; new H100 runs require their own bound evidence.
 
 ## Commands
 

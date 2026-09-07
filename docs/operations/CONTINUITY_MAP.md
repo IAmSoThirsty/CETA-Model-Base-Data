@@ -476,3 +476,55 @@ limitation. It is not part of the executable icon resource claim.
 Ed25519 verification remains separate from Windows CA trust; no Explorer cache
 refresh, schema-version migration, model inference or training validation is
 claimed. The separate Transformers dependency failure remains unresolved.
+
+## Reference dependency repair: September 7, 2026
+
+The baseline main commit `ed389290c58d5fa8729f67a23fff674c5c73ecc0` failed
+reference workflow run `34076668350`, job `101604017729`, at pip-audit:
+Transformers 5.5.0 / CVE-2026-9856. The subsequent Ruff, reference verification
+and package verification commands did not execute. The fix pins Transformers
+5.10.1 consistently in the project, requirements, lock, bootstrap assertion and
+dependency consistency test. Version 5.10.0 was withdrawn; 5.10.1 is the first
+non-withdrawn fixed replacement. No other locked package version changed.
+
+The isolated Python 3.12.10 Windows environment passed pip check and pip-audit
+with no known vulnerabilities, including after adding the already-pinned desktop
+and build extras needed for Windows resource tests. Ruff F/E9 passed across
+src, scripts, tests and examples. The 18 existing language tests passed; two new
+offline CPU compatibility/security tests passed in 2.726 seconds with no skips.
+They exercise tiny synthetic Qwen3/LoRA optimization, actual CETA collation,
+checkpoint resume, local serialization/reload and bounded generation, plus
+chat-template path traversal rejection. They restore their random states and
+block network connections. No pretrained model was downloaded or H100 run made.
+
+The first local reference attempt ran 307 tests in 30.481 seconds and failed
+four Windows-only icon tests because the reference-only environment lacked
+PyInstaller; 48 tests skipped. This was an environment/dependency issue, resolved
+by installing the existing locked desktop/build extras without changing the
+Linux reference workflow. The fresh Windows run passed the complete verification
+component sequence in 202.046 seconds: 307 tests ran in 148.083 seconds, 306 passed
+and one host short-alias case skipped. The hostile epoch, recorded readiness,
+continuation, final-heldout and runtime-demo verifiers all passed afterward.
+
+Only the hostile gate's report destination was redirected to external audit
+storage during local execution. The tracked report remains byte-preserved at
+SHA-256 `975040abf1b61beeeff2d2a7a9826691f203208869afadbd8f35df953957ce5c`.
+The unmodified workflow must be checked on the resulting GitHub commit; local
+component validation alone does not establish a green remote package gate.
+Reports and failed attempts are retained outside the repository under
+`C:\Users\Quencher\.codex\audits\CETA-reference-dependency-20260907`.
+
+Codacy's dependency scan returned no findings. Scoped source analysis retained
+existing test-style findings and nonblocking notes on the new test, including a
+managed-context false positive; no security bypass or suppression was added.
+The baseline SonarCloud security-rating failure remains a separate gate requiring
+review: four TLS findings conflict with verified Python secure defaults; other
+findings concern local operator-selected paths and potential signing-CLI hardening
+before any future untrusted-agent use. No Sonar issue was dismissed.
+
+Historical H100 versions, hashes and promotion results are preserved. CPU API
+compatibility does not establish H100/bf16/4-bit or numerical reproducibility
+under the new dependency; upstream causal-LM loss counting changed. Original
+dirty core files and separate original integrity manifests remain preserved.
+The work is confined to CETA; no website, other repository, desktop release
+artifact or application-version change is included.

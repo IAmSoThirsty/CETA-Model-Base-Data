@@ -261,7 +261,7 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
                 "bitsandbytes==0.50.1",
                 "peft==0.20.0",
                 "safetensors==0.8.0",
-                "transformers==5.5.0",
+                "transformers==5.10.1",
             ],
         )
         project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
@@ -274,7 +274,7 @@ class ControlledLanguageEvaluationTests(unittest.TestCase):
                 "numpy==2.4.2",
                 "peft==0.20.0",
                 "safetensors==0.8.0",
-                "transformers==5.5.0",
+                "transformers==5.10.1",
             },
         )
         self.assertEqual(set(project["dependency-groups"]["ci"]), {"pip-audit==2.10.1", "ruff==0.16.4"})
