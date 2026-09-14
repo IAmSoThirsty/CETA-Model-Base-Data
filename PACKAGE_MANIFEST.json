@@ -2,8 +2,8 @@
   "schema_version": 1,
   "package": "Architecture Rebuild — CETA Epoch-Ready Reference",
   "version": "0.3.0",
-  "file_count": 275,
-  "content_root": "sha256:666804d612cfdadb1aa691c221b8b25d40eedab425d506d2c248e7e07c3462bb",
+  "file_count": 283,
+  "content_root": "sha256:986309d6a1273993607b0d9558dd514569692e7ec568c7a6e0797b099db27aab",
   "files": [
     {
       "path": ".gitattributes",
@@ -17,8 +17,8 @@
     },
     {
       "path": ".github/workflows/desktop.yml",
-      "size": 1451,
-      "sha256": "575cbb33bdf7f591cf0534c16e1fde81f610d910bde31266b9ee3c83d9da6a19"
+      "size": 1724,
+      "sha256": "fdb8ce2f2f528190fedf257d2e1f0d889329dcfcf6f44e4ae59c872905807359"
     },
     {
       "path": ".github/workflows/verify.yml",
@@ -34,6 +34,11 @@
       "path": "AGENTS.md",
       "size": 1715,
       "sha256": "2136e976fb485eb159dccfe3cb4e498003eacd47f087a1da82d961470911c00f"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "size": 2658,
+      "sha256": "029e70763e6070462efe5374ff6266c5166e8b70d774678aeb7a1f707a7d631b"
     },
     {
       "path": "README.md",
@@ -291,6 +296,11 @@
       "sha256": "9202d48db327d60824045371ed90c5380ce167641860380de6499c65f756661b"
     },
     {
+      "path": "docs/DESKTOP_ARCHITECTURE.md",
+      "size": 5025,
+      "sha256": "d8896f0361c523f1d10d7788487478cf236eff4e92dce0d46689110af8ee4452"
+    },
+    {
       "path": "docs/DESKTOP_DELIVERY.md",
       "size": 28704,
       "sha256": "ebc3edbbff34aad2183624b554b075271cb14998de2eb028e8c64dbb0f526bc1"
@@ -322,8 +332,8 @@
     },
     {
       "path": "docs/operations/CONTINUITY_MAP.md",
-      "size": 34204,
-      "sha256": "57c7eded6c13b49639084b6425c163fbe2b85d2e847e336f44c30e1b6a45ba83"
+      "size": 36571,
+      "sha256": "08f1d546956395f834dc6ee6ce66b39ada75bfd891bd46c2227160594353d3bc"
     },
     {
       "path": "evidence/CETA_DESKTOP_PUBLICATION_032.json",
@@ -592,8 +602,8 @@
     },
     {
       "path": "scripts/build_package_manifest.py",
-      "size": 2699,
-      "sha256": "5bea4084d0090140288c01e921c155e5f5f4f8f7b62e857f8c533fe3b6795444"
+      "size": 3076,
+      "sha256": "8788ef7c78ac493f26b8618a61b00a75cbb0fc35734a1062defa89d365e29644"
     },
     {
       "path": "scripts/build_release.py",
@@ -607,8 +617,8 @@
     },
     {
       "path": "scripts/build_sha256sums.py",
-      "size": 1891,
-      "sha256": "ffb89f7060621dc1c85dea7d07768cb5896780e01d11897b8e8faceb7960e13e"
+      "size": 2221,
+      "sha256": "304abc0aed41b2a4d3458018c863a346aab67b99ab5daa47f1c5172c1cbcae40"
     },
     {
       "path": "scripts/create_desktop_verification.py",
@@ -672,8 +682,8 @@
     },
     {
       "path": "scripts/run_bounded_models.py",
-      "size": 3059,
-      "sha256": "60c178be146b48dba5babf3e2a197589906c004d733d0517476e1a769f9a0a22"
+      "size": 3404,
+      "sha256": "4915b4f6fb15d7e3d893a5264d24706cb25c81a6db088e7fd76e423fa8bf7b88"
     },
     {
       "path": "scripts/run_controlled_language_inference.py",
@@ -847,8 +857,8 @@
     },
     {
       "path": "src/ceta_desktop/app.py",
-      "size": 65499,
-      "sha256": "88d945392c35f044aa9579d7e2a177863fe10979af82a4d4d494e76b962163d9"
+      "size": 56827,
+      "sha256": "e7d6fad031a639c02e195b94f5101fd347bd1e3ba08f6c3e3c9db3aa253e008e"
     },
     {
       "path": "src/ceta_desktop/assets/chat-landscape.png",
@@ -896,6 +906,11 @@
       "sha256": "8816f8997dbae044db4eb428401beb201b552f9c870e453ae502986f63e2a5c5"
     },
     {
+      "path": "src/ceta_desktop/components.py",
+      "size": 2679,
+      "sha256": "4627893beed12779490b61b350115233c0939534cff889610b2a692723681c9b"
+    },
+    {
       "path": "src/ceta_desktop/editor.py",
       "size": 3488,
       "sha256": "a215a9c2a1566dc7ee632efc211d72908044ba3487705fe559ce1f0c9e09fac5"
@@ -921,14 +936,39 @@
       "sha256": "02902196e067d1974853a8f122fa01dce45c9b46e6721994adfb8c68d19505fc"
     },
     {
+      "path": "src/ceta_desktop/pages/__init__.py",
+      "size": 34,
+      "sha256": "9461f5866dac84f892b70bd0be9c3188feac72ae3ea34bf49e22161f039f6c9d"
+    },
+    {
+      "path": "src/ceta_desktop/pages/library.py",
+      "size": 4469,
+      "sha256": "a3437572fe22b448ef7bc9135aac0dbf88fb4c82d52343d8315206f8cb6c82a2"
+    },
+    {
+      "path": "src/ceta_desktop/pages/settings.py",
+      "size": 4676,
+      "sha256": "2a9496b35fda2de4bcf03fa899d50d87672bf48aaafba249a968172f7fceab6e"
+    },
+    {
+      "path": "src/ceta_desktop/pages/updates.py",
+      "size": 10171,
+      "sha256": "9150a6cbaae318d86b78360bafc1d19ab60dd6e7a7f4746851ddeb167a2c14f9"
+    },
+    {
+      "path": "src/ceta_desktop/pages/workloads.py",
+      "size": 3530,
+      "sha256": "108c9c81b008fd08465b17c9f50870e6ed3e9e8a17b2815e322ad532cda13c3d"
+    },
+    {
       "path": "src/ceta_desktop/release_channel.json",
       "size": 135,
       "sha256": "c11303d5c74c40540a2779d415f8c734e2f1210a8b5f136b2e4633401132e863"
     },
     {
       "path": "src/ceta_desktop/storage.py",
-      "size": 5648,
-      "sha256": "3f51c35eb20500d4ac659bc569a8192a0f0d06de877cc49255d65c20f3ee9f75"
+      "size": 6096,
+      "sha256": "e8216fc76dd79fb88d4abf2ca39d5c9059950afec5f7dd2233cde4db8e5234f8"
     },
     {
       "path": "src/ceta_desktop/theme.py",
@@ -1232,8 +1272,8 @@
     },
     {
       "path": "tests/test_desktop_backend.py",
-      "size": 13798,
-      "sha256": "93fdc7ea7e703fff4944c509ed7a19d7cf1d14b8aa8d728879daabe6b845df19"
+      "size": 19971,
+      "sha256": "15a041b2ce861bc744f89071d7abbd3640b8dcaf5ee405d8602f7c366ca5cf05"
     },
     {
       "path": "tests/test_desktop_chat_widgets.py",
@@ -1242,8 +1282,8 @@
     },
     {
       "path": "tests/test_desktop_gui.py",
-      "size": 14134,
-      "sha256": "44fb360d318df949e21cc646a62a8f5ad32c966a4df178af8cef2760844e44d6"
+      "size": 15243,
+      "sha256": "3e81780437c58858b4d179e17c232eda5f159f4e93fe257ab98858b6d3078a56"
     },
     {
       "path": "tests/test_desktop_icon_resources.py",

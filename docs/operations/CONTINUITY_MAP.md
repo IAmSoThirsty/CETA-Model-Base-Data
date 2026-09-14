@@ -546,3 +546,36 @@ production signing implementation are unchanged. All 15 signing tests passed
 locally in 10.370 seconds; the two mocked methods also pass with the surrounding
 environment empty. This fixes test portability while retaining Linux coverage.
 The subsequent commit requires its own complete reference CI result.
+
+### 2026-09-14: Desktop architecture decomposition and test coverage enhancement
+
+A complete snapshot of the repository and implementation plan was created prior to
+execution (tag `snapshot-20260914-pre-implementation`, branch `snapshot/20260914-pre-implementation`,
+and standalone archive `ceta_snapshot_20260914_pre_implementation.zip`).
+
+Changes implemented:
+1. **Shared component extraction**: Extracted `button`, `action`, `page`, `card`,
+   and `filter_list` into `src/ceta_desktop/components.py`.
+2. **Page decomposition**: Created modular page widgets in `src/ceta_desktop/pages/`:
+   `WorkloadsPage`, `SettingsPage`, `UpdatesPage`, and `LibraryPage`. `MainWindow` in
+   `src/ceta_desktop/app.py` was refactored to delegate to these pages while retaining
+   attribute properties and delegators for 100% backwards-compatibility.
+3. **Storage & UX features**: Added `Store.delete_conversation` and `Store.rename_conversation`
+   in `src/ceta_desktop/storage.py`, with UI actions in `_chat_page` rail and `LibraryPage`.
+4. **Testing gap coverage**: Added 10 targeted test cases in `tests/test_desktop_backend.py`
+   and `tests/test_desktop_gui.py` covering: future schema rejection, version zero DB
+   creation, 4 MiB exact boundary & overflow rejection, GGUF v2/v3 header checks & invalid
+   rejection, disk space failure handling, path traversal vectors, 120s socket deadline,
+   and conversation deletion GUI workflow.
+5. **Developer documentation**: Added `CONTRIBUTING.md` and `docs/DESKTOP_ARCHITECTURE.md`.
+6. **CI/CD & integrity**: Added `--check` mode to `scripts/build_package_manifest.py` and
+   `scripts/build_sha256sums.py`, and wired manifest check step into `.github/workflows/desktop.yml`.
+7. **Formal verification**: Added INV-010 (state transition determinism) and INV-016
+   (nonce consume counter monotonicity) bounded model assertions to `scripts/run_bounded_models.py`.
+8. **Performance**: Optimized workload stdout buffering in `MainWindow` using chunk lists.
+
+Validation results:
+- Desktop test suite: 140 tests ran in 58.194 seconds, 139 passed, 1 skipped (host short-alias case).
+- Bounded model checker: passed (`states=9 transitions=12 max_depth=4`).
+- Ruff (F, E9) and `network_boundary.py`: passed cleanly with 0 errors.
+- Package manifest: verified pass (`PACKAGE VERIFY: PASS`, 283 registered payload files, root hash matching).

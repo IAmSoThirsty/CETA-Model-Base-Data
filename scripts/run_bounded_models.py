@@ -32,6 +32,9 @@ def successors(s: State) -> tuple[tuple[str, State], ...]:
     elif s.status == "INDETERMINATE":
         for status in ("COMPLETED", "FAILED_BEFORE_EFFECT", "PARTIALLY_APPLIED"):
             out.append(("reconcile:" + status, State(status, True, s.consume_count)))
+    labels = [lbl for lbl, _ in out]
+    if len(labels) != len(set(labels)):
+        raise AssertionError(f"INV-010 violation: non-deterministic transitions from state {s}: {labels}")
     return tuple(out)
 
 
@@ -68,6 +71,8 @@ def main() -> None:
 
 
 def verify_transition(state: State, label: str, nxt: State) -> None:
+    if nxt.consume_count < state.consume_count:
+        raise AssertionError(f"INV-016 violation: nonce consume counter decreased on {label}: {state} -> {nxt}")
     if state.consumed and not nxt.consumed:
         raise AssertionError(f"consumed tombstone lost on {label}: {state} -> {nxt}")
     if state.status != "INDETERMINATE" and label.startswith("reconcile:"):

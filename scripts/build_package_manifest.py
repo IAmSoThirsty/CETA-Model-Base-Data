@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "PACKAGE_MANIFEST.json"
@@ -69,6 +70,7 @@ def manifest_root(files: list[dict]) -> str:
 
 
 def main() -> None:
+    check_mode = "--check" in sys.argv[1:]
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     files = []
     for path in sorted(candidate_files(), key=lambda item: item.relative_to(ROOT).as_posix()):
@@ -82,7 +84,13 @@ def main() -> None:
         "content_root": manifest_root(files),
         "files": files,
     }
-    OUT.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
+    rendered = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
+    if check_mode:
+        if not OUT.is_file() or OUT.read_text(encoding="utf-8") != rendered:
+            sys.exit("PACKAGE MANIFEST CHECK FAILED: PACKAGE_MANIFEST.json is out of date")
+        print(f"PACKAGE MANIFEST CHECK PASS files={len(files)} root={payload['content_root']}")
+        return
+    OUT.write_text(rendered, encoding="utf-8", newline="\n")
     print(f"PACKAGE MANIFEST WRITTEN files={len(files)} root={payload['content_root']}")
 
 

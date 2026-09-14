@@ -1,0 +1,1 @@
+"""CETA desktop page modules."""

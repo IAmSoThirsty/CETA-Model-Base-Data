@@ -14,9 +14,19 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from ceta_desktop.models import LocalModelClient, ModelError, ModelPacks, local_endpoint
+from collections import namedtuple
+import socket
+import sqlite3
+
+from ceta_desktop.models import (
+    LocalModelClient,
+    ModelError,
+    ModelPacks,
+    ModelSocket,
+    local_endpoint,
+)
 from ceta_desktop.storage import Store, application_directory
-from ceta_desktop.workspace import Workspace, WorkspaceError
+from ceta_desktop.workspace import MAX_EDITOR_BYTES, Workspace, WorkspaceError
 
 
 class DesktopStorageTests(unittest.TestCase):
@@ -208,6 +218,116 @@ class DesktopStorageTests(unittest.TestCase):
             with self.subTest(value=value), self.assertRaises(ModelError):
                 local_endpoint(value)
 
+    def test_future_schema_version_rejects_and_closes_database(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db_path = Path(directory) / "desktop.sqlite3"
+            conn = sqlite3.connect(db_path)
+            conn.execute("PRAGMA user_version = 2")
+            conn.close()
+            with self.assertRaises(ValueError) as ctx:
+                Store(Path(directory))
+            self.assertIn("newer CETA", str(ctx.exception))
+            conn = sqlite3.connect(db_path)
+            version = conn.execute("PRAGMA user_version").fetchone()[0]
+            conn.close()
+            self.assertEqual(version, 2)
+
+    def test_version_zero_database_receives_schema_and_version(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db_path = Path(directory) / "desktop.sqlite3"
+            conn = sqlite3.connect(db_path)
+            conn.close()
+            store = Store(Path(directory))
+            try:
+                version = store.db.execute("PRAGMA user_version").fetchone()[0]
+                self.assertEqual(version, 1)
+                tables = {row[0] for row in store.db.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()}
+                self.assertTrue({"settings", "conversations", "messages", "workloads"}.issubset(tables))
+            finally:
+                store.close()
+
+    def test_exactly_max_size_file_opens_and_saves(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / "max.txt"
+            path.write_bytes(b"a" * MAX_EDITOR_BYTES)
+            workspace = Workspace(root)
+            document = workspace.open(path)
+            self.assertEqual(len(document.text), MAX_EDITOR_BYTES)
+            workspace.save(document, "b" * MAX_EDITOR_BYTES)
+            self.assertEqual(path.read_bytes(), b"b" * MAX_EDITOR_BYTES)
+
+    def test_one_byte_over_max_rejects_on_open(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / "overflow.txt"
+            path.write_bytes(b"a" * (MAX_EDITOR_BYTES + 1))
+            workspace = Workspace(root)
+            with self.assertRaises(WorkspaceError):
+                workspace.open(path)
+
+    def test_gguf_validation_edge_cases(self):
+        with tempfile.TemporaryDirectory() as directory:
+            packs = ModelPacks(Path(directory))
+            small = Path(directory) / "small.gguf"
+            small.write_bytes(b"GGUF" + bytes(10))
+            with self.assertRaises(ModelError):
+                packs.install(small)
+            wrong_ver = Path(directory) / "wrong_ver.gguf"
+            wrong_ver.write_bytes(b"GGUF" + (1).to_bytes(4, "little") + bytes(20))
+            with self.assertRaises(ModelError):
+                packs.install(wrong_ver)
+            for ver in (2, 3):
+                valid_hdr = Path(directory) / f"v{ver}.gguf"
+                valid_hdr.write_bytes(b"GGUF" + ver.to_bytes(4, "little") + bytes(20))
+                record = packs.install(valid_hdr)
+                self.assertTrue(record["sha256"])
+
+    def test_insufficient_disk_space_rejects_model_install(self):
+        with tempfile.TemporaryDirectory() as directory:
+            packs = ModelPacks(Path(directory))
+            candidate = Path(directory) / "model.gguf"
+            candidate.write_bytes(b"GGUF" + (3).to_bytes(4, "little") + bytes(20))
+            fake_usage = namedtuple("usage", ["total", "used", "free"])(1000, 1000, 0)
+            with patch("shutil.disk_usage", return_value=fake_usage), self.assertRaises(ModelError) as ctx:
+                packs.install(candidate)
+            self.assertIn("not enough free disk space", str(ctx.exception))
+
+    def test_path_traversal_hardening(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            workspace = Workspace(root)
+            outside = Path(directory).parent / "outside.txt"
+            outside.write_text("secret", encoding="utf-8")
+            with self.assertRaises(WorkspaceError):
+                workspace.checked_path(outside)
+            with self.assertRaises(WorkspaceError):
+                workspace.checked_path(Path("../outside.txt"))
+            sub = root / "subdir"
+            sub.mkdir()
+            with self.assertRaises(WorkspaceError) as ctx:
+                workspace.checked_path(sub)
+            self.assertIn("regular file", str(ctx.exception))
+
+    def test_conversation_deletion_and_rename_in_storage(self):
+        with tempfile.TemporaryDirectory() as directory:
+            store = Store(Path(directory))
+            try:
+                cid = store.new_conversation("Initial Title")
+                store.add_message(cid, "user", "Message content")
+                self.assertEqual(len(store.conversations()), 1)
+                self.assertEqual(len(store.messages(cid)), 1)
+
+                store.rename_conversation(cid, "Renamed Title")
+                convs = store.conversations()
+                self.assertEqual(convs[0]["title"], "Renamed Title")
+
+                store.delete_conversation(cid)
+                self.assertEqual(len(store.conversations()), 0)
+                self.assertEqual(len(store.messages(cid)), 0)
+            finally:
+                store.close()
+
 
 class DesktopTransportTests(unittest.TestCase):
     def test_cancel_interrupts_a_stalled_http10_response(self):
@@ -282,6 +402,26 @@ class DesktopTransportTests(unittest.TestCase):
             server.shutdown()
             server.server_close()
             thread.join()
+
+    def test_socket_deadline_raises_after_two_minutes(self):
+        sock = ModelSocket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.cancelled = threading.Event()
+        start = 1000.0
+        current = [start]
+
+        def fake_monotonic():
+            return current[0]
+
+        def fake_recv_into(self_sock, buffer, nbytes=0, flags=0):
+            current[0] += 65.0
+            raise TimeoutError("timed out")
+
+        with patch("time.monotonic", side_effect=fake_monotonic), \
+             patch("socket.socket.recv_into", fake_recv_into):
+            with self.assertRaises(ModelError) as ctx:
+                sock.recv_into(bytearray(10))
+            self.assertIn("two minutes", str(ctx.exception))
+        sock.close()
 
 
 if __name__ == "__main__":

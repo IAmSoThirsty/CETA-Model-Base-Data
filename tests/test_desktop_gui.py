@@ -262,6 +262,27 @@ class DesktopGuiTests(unittest.TestCase):
             reopened.editor.document().setModified(False)
             reopened.close()
 
+    def test_conversation_deletion_removes_messages_and_updates_lists(self):
+        cid = self.window.store.new_conversation("To be deleted")
+        self.window.store.add_message(cid, "user", "Message in conversation")
+        self.window._load_conversations()
+        self.assertEqual(self.window.conversation_list.count(), 1)
+        self.assertEqual(self.window.library_list.count(), 1)
+
+        with patch("ceta_desktop.app.QMessageBox.question", return_value=QMessageBox.Yes):
+            self.window.delete_conversation(cid)
+
+        self.assertEqual(self.window.conversation_list.count(), 0)
+        self.assertEqual(self.window.library_list.count(), 0)
+        self.assertEqual(len(self.window.store.conversations()), 0)
+        self.assertEqual(len(self.window.store.messages(cid)), 0)
+
+        cid2 = self.window.store.new_conversation("Keep me")
+        self.window._load_conversations()
+        with patch("ceta_desktop.app.QMessageBox.question", return_value=QMessageBox.No):
+            self.window.delete_conversation(cid2)
+        self.assertEqual(self.window.conversation_list.count(), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

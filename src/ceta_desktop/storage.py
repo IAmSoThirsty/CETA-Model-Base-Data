@@ -73,6 +73,15 @@ class Store:
     def conversations(self) -> list[dict]:
         return [dict(row) for row in self.db.execute("SELECT * FROM conversations ORDER BY created DESC")]
 
+    def delete_conversation(self, identifier: str) -> None:
+        with self.db:
+            self.db.execute("DELETE FROM messages WHERE conversation_id=?", (identifier,))
+            self.db.execute("DELETE FROM conversations WHERE id=?", (identifier,))
+
+    def rename_conversation(self, identifier: str, title: str) -> None:
+        with self.db:
+            self.db.execute("UPDATE conversations SET title=? WHERE id=?", (title, identifier))
+
     def messages(self, identifier: str) -> list[dict]:
         return [dict(row) for row in self.db.execute(
             "SELECT role,content,status FROM messages WHERE conversation_id=? ORDER BY sequence", (identifier,))]

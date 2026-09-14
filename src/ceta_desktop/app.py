@@ -11,12 +11,12 @@ import sys
 import threading
 from datetime import datetime
 
-from PySide6.QtCore import QDir, QSize, QLockFile, QProcess, QProcessEnvironment, QThread, QTimer, QUrl, Qt, Signal
-from PySide6.QtGui import QAction, QCloseEvent, QDesktopServices, QFont, QIcon, QKeySequence, QTextCursor
+from PySide6.QtCore import QDir, QSize, QLockFile, QProcess, QProcessEnvironment, QThread, QTimer, Qt, Signal
+from PySide6.QtGui import QAction, QCloseEvent, QFont, QIcon, QKeySequence, QTextCursor
 from PySide6.QtWidgets import (
-    QApplication, QCheckBox, QComboBox, QFrame, QFileDialog, QFileSystemModel, QFormLayout, QHBoxLayout,
+    QApplication, QComboBox, QFrame, QFileDialog, QFileSystemModel, QFormLayout, QHBoxLayout,
     QInputDialog, QLabel, QLineEdit, QListWidget, QListWidgetItem, QMainWindow, QMessageBox, QPlainTextEdit,
-    QPushButton, QScrollArea, QSpinBox, QSplitter, QStackedWidget, QTreeView,
+    QSplitter, QStackedWidget, QTreeView,
     QVBoxLayout, QWidget,
 )
 
@@ -24,12 +24,16 @@ from . import __version__
 from .models import LocalModelClient, ModelPacks
 from .storage import Store, application_directory
 from .workspace import Document, Workspace
-from .updates import check_update, download_update
 from .instance import open_application_marker, close_application_marker
 from .installation import launch_verified_update
 from .editor import CodeEditor
 from .theme import APP_STYLESHEET, BrandMark, EmberSidebar, ScenePage, icon
 from .chat_widgets import ChatTranscript
+from .components import action, card, filter_list, page
+from .pages.library import LibraryPage
+from .pages.settings import SettingsPage
+from .pages.updates import UpdatesPage
+from .pages.workloads import WorkloadsPage
 
 
 class BackgroundTask(QThread):
@@ -48,11 +52,6 @@ class BackgroundTask(QThread):
         except Exception as exc:
             self.failed.emit(str(exc))
 
-
-def button(text, callback):
-    result = QPushButton(text)
-    result.clicked.connect(callback)
-    return result
 
 
 class MainWindow(QMainWindow):
@@ -73,6 +72,8 @@ class MainWindow(QMainWindow):
         self.pending_update = None
         self.workload_id = None
         self.workload_output = ""
+        self.workload_chunks: list[str] = []
+        self.workload_bytes = 0
         self.workload_cancelled = False
         self.pack_download_client = None
         self.model_process = QProcess(self)
@@ -157,14 +158,46 @@ class MainWindow(QMainWindow):
         footing = QLabel("A MORE SOVEREIGN\nTOMORROW.")
         footing.setObjectName("brandTagline")
         rail.addWidget(footing)
+        self.library_page = LibraryPage(
+            self._select_conversation,
+            self._export_conversation_id,
+            lambda: self.navigation.setCurrentRow(1),
+            self.delete_conversation,
+        )
+        self.library_list = self.library_page.library_list
+        self.library_empty = self.library_page.library_empty
+        self.library_search = self.library_page.library_search
+
+        self.workloads_page = WorkloadsPage(
+            self.store,
+            lambda: self.navigation.setCurrentRow(1),
+        )
+        self.workload_history = self.workloads_page.workload_history
+        self.history_output = self.workloads_page.history_output
+
+        self.updates_page = UpdatesPage(self._background, self._has_active_work, self.install_update)
+        self.updates_page.install_requested.connect(self._on_install_requested)
+        self.update_status = self.updates_page.update_status
+        self.check_update_button = self.updates_page.check_update_button
+        self.download_update_button = self.updates_page.download_update_button
+        self.cancel_update_button = self.updates_page.cancel_update_button
+        self.install_update_button = self.updates_page.install_update_button
+        self.update_channel = self.updates_page.update_channel
+
+        self.settings_page = SettingsPage(self.store)
+        self.settings_page.preferences_changed.connect(self._apply_editor_preferences)
+        self.editor_font_size = self.settings_page.editor_font_size
+        self.editor_wrap = self.settings_page.editor_wrap
+
         self.pages = QStackedWidget()
         self.pages.addWidget(self._chat_page())
         self.pages.addWidget(self._workbench())
-        self.pages.addWidget(self._library_page())
+        self.pages.addWidget(self.library_page)
         self.pages.addWidget(self._models_page())
-        self.pages.addWidget(self._workloads_page())
-        self.pages.addWidget(self._updates_page())
-        self.pages.addWidget(self._settings_page())
+        self.pages.addWidget(self.workloads_page)
+        self.pages.addWidget(self.updates_page)
+        self.pages.addWidget(self.settings_page)
+        self._apply_editor_preferences()
         self._connect_model_selectors()
         self.navigation.currentRowChanged.connect(self.pages.setCurrentIndex)
         scenes = ("chat", "projects", "library", "models", "workloads", "updates", "settings")
@@ -193,56 +226,13 @@ class MainWindow(QMainWindow):
             label.setTextFormat(Qt.PlainText)
 
     def _action(self, text, callback, symbol=None, primary=False):
-        control = button(text, callback)
-        control.setObjectName("primaryButton" if primary else "secondaryButton")
-        if symbol:
-            control.setIcon(icon(symbol, "#ff943f" if primary else "#c0c7cf"))
-        control.setMinimumHeight(38)
-        return control
+        return action(text, callback, symbol, primary)
 
     def _page(self, title, subtitle):
-        page = ScenePage(scene=title.lower())
-        outer = QVBoxLayout(page)
-        outer.setContentsMargins(0, 0, 0, 0)
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setFrameShape(QFrame.NoFrame)
-        scroll.setStyleSheet("QScrollArea { background: transparent; border: none; }")
-        scroll.viewport().setAutoFillBackground(False)
-        content = QWidget()
-        content.setObjectName("pageContent")
-        content.setAutoFillBackground(False)
-        layout = QVBoxLayout(content)
-        layout.setContentsMargins(28, 24, 28, 24)
-        layout.setSpacing(20)
-        heading = QLabel(title)
-        heading.setObjectName("pageTitle")
-        layout.addWidget(heading)
-        description = QLabel(subtitle)
-        description.setObjectName("pageSubtitle")
-        description.setWordWrap(True)
-        layout.addWidget(description)
-        scroll.setWidget(content)
-        content.setAutoFillBackground(False)
-        scroll.viewport().setAutoFillBackground(False)
-        outer.addWidget(scroll)
-        return page, layout
+        return page(title, subtitle)
 
     def _card(self, title, description=None):
-        card = QFrame()
-        card.setObjectName("card")
-        layout = QVBoxLayout(card)
-        layout.setContentsMargins(22, 20, 22, 20)
-        layout.setSpacing(14)
-        label = QLabel(title)
-        label.setObjectName("pageHeader")
-        layout.addWidget(label)
-        if description:
-            body = QLabel(description)
-            body.setWordWrap(True)
-            body.setObjectName("muted")
-            layout.addWidget(body)
-        return card, layout
+        return card(title, description)
 
     def _chat_page(self):
         page = ScenePage(scene="chat")
@@ -277,6 +267,7 @@ class MainWindow(QMainWindow):
         self.conversation_empty.setObjectName("muted")
         rail.addWidget(self.conversation_empty)
         rail.addWidget(self._action("Export conversation…", self.export_conversation, "file"))
+        rail.addWidget(self._action("Delete conversation", self.delete_conversation))
         splitter = QSplitter()
         splitter.setChildrenCollapsible(False)
         splitter.addWidget(self.chat_rail)
@@ -442,52 +433,23 @@ class MainWindow(QMainWindow):
         return page
 
     def _library_page(self):
-        page, layout = self._page("Library", "Pick up a conversation or export a copy. Your saved work stays on this computer.")
-        self.library_search = QLineEdit()
-        self.library_search.setPlaceholderText("Find a saved conversation…")
-        self.library_search.setAccessibleName("Search library")
-        self.library_search.addAction(icon("search"), QLineEdit.LeadingPosition)
-        self.library_search.textChanged.connect(self._filter_library)
-        layout.addWidget(self.library_search)
-        self.library_list = QListWidget()
-        self.library_list.setObjectName("conversationList")
-        self.library_list.setAccessibleName("Conversation library")
-        self.library_list.itemDoubleClicked.connect(self._select_conversation)
-        self.library_empty = QLabel("Your library starts with a conversation.\nSaved chats appear here, ready to continue or export.")
-        self.library_empty.setObjectName("emptyBody")
-        self.library_empty.setAlignment(Qt.AlignCenter)
-        self.library_empty.setWordWrap(True)
-        layout.addWidget(self.library_empty, 1)
-        layout.addWidget(self.library_list, 1)
-        row = QHBoxLayout()
-        row.addWidget(self._action("Continue conversation", self._open_library_conversation, "chat", primary=True))
-        row.addWidget(self._action("Export selected…", self._export_library_conversation, "file"))
-        row.addStretch()
-        row.addWidget(self._action("Open project files", lambda: self.navigation.setCurrentRow(1), "folder"))
-        layout.addLayout(row)
-        return page
+        return self.library_page
 
     def _open_library_conversation(self):
-        item = self.library_list.currentItem()
-        if item:
-            self._select_conversation(item)
+        return self.library_page._open_library_conversation()
 
     def _export_library_conversation(self):
-        item = self.library_list.currentItem()
-        if item:
-            self._export_conversation_id(item.data(Qt.UserRole))
+        return self.library_page._export_library_conversation()
 
     def _filter_conversations(self, query):
-        self._filter_list(self.conversation_list, query)
+        filter_list(self.conversation_list, query)
 
     def _filter_library(self, query):
-        self._filter_list(self.library_list, query)
+        self.library_page._filter_library(query)
 
     @staticmethod
     def _filter_list(listing, query):
-        for index in range(listing.count()):
-            item = listing.item(index)
-            item.setHidden(query.casefold() not in item.text().casefold())
+        filter_list(listing, query)
 
     def _models_page(self):
         page, layout = self._page("Models", "Your intelligence, your choice. Install optional packs or connect to a local runtime.")
@@ -560,175 +522,58 @@ class MainWindow(QMainWindow):
         return page
 
     def _settings_page(self):
-        page, layout = self._page("Settings", "Make CETA feel at home. These preferences are saved on this computer.")
-        editor_card, editor_layout = self._card("Editor preferences")
-        form = QFormLayout()
-        self.editor_font_size = QSpinBox()
-        self.editor_font_size.setRange(10, 22)
-        saved_size = self.store.setting("editor_font_size", 11)
-        self.editor_font_size.setValue(saved_size if type(saved_size) is int and 10 <= saved_size <= 22 else 11)
-        self.editor_font_size.setSuffix(" pt")
-        form.addRow("Code font size", self.editor_font_size)
-        self.editor_wrap = QCheckBox("Wrap long lines in the editor")
-        self.editor_wrap.setChecked(self.store.setting("editor_wrap", False) is True)
-        form.addRow("Line wrapping", self.editor_wrap)
-        editor_layout.addLayout(form)
-        self.editor_font_size.valueChanged.connect(self._save_editor_preferences)
-        self.editor_wrap.toggled.connect(self._save_editor_preferences)
-        self._apply_editor_preferences()
-        layout.addWidget(editor_card)
-        privacy, privacy_layout = self._card("Local data & privacy", "Conversations, drafts, command history, and settings are kept in your local application data. CETA does not attach workspace files automatically.")
-        path = QLineEdit(str(self.store.directory))
-        path.setReadOnly(True)
-        path.setAccessibleName("CETA application data folder")
-        privacy_layout.addWidget(path)
-        privacy_layout.addWidget(self._action("Open data folder", lambda: QDesktopServices.openUrl(QUrl.fromLocalFile(str(self.store.directory))), "folder"), 0, Qt.AlignLeft)
-        note = QLabel("Local storage uses your Windows account's file permissions. Export conversations only when you choose to share them. Review separately started model runtimes' privacy settings before connecting.")
-        note.setWordWrap(True)
-        note.setObjectName("muted")
-        privacy_layout.addWidget(note)
-        layout.addWidget(privacy)
-        shortcuts, shortcut_layout = self._card("Keyboard shortcuts")
-        shortcut_layout.addWidget(QLabel("Ctrl+N  New chat     ·     Ctrl+O  Open workspace     ·     Ctrl+S  Save file\nCtrl+F  Find in file     ·     Ctrl+Shift+N  New file     ·     Ctrl+Shift+E  Export chat"))
-        layout.addWidget(shortcuts)
-        layout.addStretch()
-        return page
+        return self.settings_page
 
-    def _apply_editor_preferences(self):
-        size = self.editor_font_size.value()
+    def _apply_editor_preferences(self, size=None, wrap=None):
+        if size is None:
+            size = self.editor_font_size.value()
+        if wrap is None:
+            wrap = self.editor_wrap.isChecked()
         self.editor.setFont(QFont("Cascadia Mono", size))
         self.editor.setStyleSheet(f"QPlainTextEdit {{ font-family: 'Cascadia Mono'; font-size: {size}pt; }}")
-        self.editor.setLineWrapMode(QPlainTextEdit.WidgetWidth if self.editor_wrap.isChecked() else QPlainTextEdit.NoWrap)
+        self.editor.setLineWrapMode(QPlainTextEdit.WidgetWidth if wrap else QPlainTextEdit.NoWrap)
 
     def _save_editor_preferences(self, *_):
-        self.store.set_setting("editor_font_size", self.editor_font_size.value())
-        self.store.set_setting("editor_wrap", self.editor_wrap.isChecked())
-        self._apply_editor_preferences()
-
+        self.settings_page._save_editor_preferences()
 
     def _load_workloads(self):
-        self.workload_history.clear()
-        for record in self.store.workloads():
-            self.workload_history.addItem(f"{record['status']} · {record['command'][:100]}")
-            self.workload_history.item(self.workload_history.count() - 1).setData(Qt.UserRole, record)
+        self.workloads_page.load_workloads()
 
-    def _select_workload(self, item, _previous):
-        if item:
-            record = item.data(Qt.UserRole)
-            if record:
-                self.history_output.setPlainText(f"Workspace: {record['workspace']}\nCommand: {record['command']}\nStatus: {record['status']}\nExit: {record['exit_code']}\n\n{record['output']}")
+    def _select_workload(self, item, _previous=None):
+        self.workloads_page._select_workload(item, _previous)
+
+    def _workloads_page(self):
+        return self.workloads_page
 
     def _updates_page(self):
-        page, layout = self._page("Updates", "Keep your workspace moving forward. Updates happen when you choose.")
-        release, release_layout = self._card(f"CETA {__version__}", "Windows native desktop · Personal publisher verification")
-        self.update_status = QLabel("No public update channel is configured for this development build.")
-        self.update_status.setWordWrap(True)
-        self.update_status.setObjectName("muted")
-        self.update_channel = json.loads(files("ceta_desktop").joinpath("release_channel.json").read_text(encoding="utf-8"))
-        if self.update_channel.get("url") and self.update_channel.get("public_key"):
-            self.update_status.setText("Ready to check the publisher's signed update channel.")
-        self.update_manifest = None
-        release_layout.addWidget(self.update_status)
-        row = QHBoxLayout()
-        self.check_update_button = self._action("Check for updates", self.check_for_updates, "refresh", primary=True)
-        self.check_update_button.setEnabled(bool(self.update_channel.get("url") and self.update_channel.get("public_key")))
-        row.addWidget(self.check_update_button)
-        self.download_update_button = self._action("Download verified update…", self.save_update, "updates")
-        self.download_update_button.setEnabled(False)
-        row.addWidget(self.download_update_button)
-        row.addStretch()
-        release_layout.addLayout(row)
-        install_row = QHBoxLayout()
-        self.cancel_update_button = self._action("Cancel download", self.cancel_update_download)
-        self.cancel_update_button.setEnabled(False)
-        install_row.addWidget(self.cancel_update_button)
-        self.install_update_button = self._action("Install update and close CETA…", self.install_update, "updates", primary=True)
-        self.install_update_button.setEnabled(False)
-        install_row.addWidget(self.install_update_button)
-        install_row.addStretch()
-        release_layout.addLayout(install_row)
-        layout.addWidget(release)
-        security, security_layout = self._card("A signature you can verify", "CETA verifies the publisher's signed update receipt and the installer's exact bytes before offering installation. Application updates are separate from model packs.")
-        note = QLabel("This release uses a personal Ed25519 publisher key. Windows may show an unrecognized-publisher warning. Confirm the public-key fingerprint directly with the publisher. No root certificate is installed.")
-        note.setWordWrap(True)
-        note.setObjectName("muted")
-        security_layout.addWidget(note)
-        layout.addWidget(security)
-        about, about_layout = self._card("Built for your computer", "Conversations, settings, and model packs are retained during updates. Close active work before installing.")
-        notice = QLabel("Built with Qt, PySide6, and Shiboken under LGPLv3. License texts and matching library sources accompany this release.")
-        notice.setWordWrap(True)
-        notice.setObjectName("muted")
-        about_layout.addWidget(notice)
-        notices = QHBoxLayout()
-        notices.addWidget(self._action("About Qt", QApplication.aboutQt))
-        notices.addWidget(self._action("Dependency notices", self.open_dependency_notices, "library"))
-        notices.addStretch()
-        about_layout.addLayout(notices)
-        layout.addWidget(about)
-        layout.addStretch()
-        return page
+        return self.updates_page
 
     def open_dependency_notices(self):
-        directory = Path(sys.executable).parent / "ThirdPartyNotices" if getattr(sys, "frozen", False) else Path(__file__).resolve().parents[2] / "licenses"
-        if not directory.is_dir() or not QDesktopServices.openUrl(QUrl.fromLocalFile(str(directory))):
-            self.update_status.setText(f"Dependency notices: {directory}")
+        return self.updates_page.open_dependency_notices()
 
     def check_for_updates(self):
-        if self.update_task:
-            return
-        self.update_manifest = None
-        self.downloaded_update = None
-        self.install_update_button.setEnabled(False)
-        self.download_update_button.setEnabled(False)
-        self.check_update_button.setEnabled(False)
-        self.update_status.setText("Checking the publisher's signed update information…")
-
-        def found(manifest):
-            self.update_manifest = manifest
-            self.update_status.setText(f"CETA {manifest['version']} is available. Publisher signature verified.")
-            self.download_update_button.setEnabled(True)
-
-        task = self._background(lambda _: check_update(self.update_channel["url"], self.update_channel["public_key"], __version__),
-                                found, lambda error: self.update_status.setText(str(error)))
-        task.finished.connect(lambda: self.check_update_button.setEnabled(True))
+        return self.updates_page.check_for_updates()
 
     def save_update(self):
-        if not self.update_manifest or self.update_task:
-            return
-        folder = QFileDialog.getExistingDirectory(self, "Save verified update")
-        if not folder:
-            return
-        self.download_update_button.setEnabled(False)
-        self.check_update_button.setEnabled(False)
-        self.cancel_update_button.setEnabled(True)
-        self.update_status.setText("Downloading and verifying the update…")
-        self.downloaded_update = None
-        self.install_update_button.setEnabled(False)
-        manifest = dict(self.update_manifest)
-        task = self._background(lambda task: download_update(manifest, Path(folder), task.cancelled,
-                                lambda count, total: task.token.emit(f"Downloading update · {count / total:.0%}")),
-                                lambda path: self._update_saved(path, manifest),
-                                lambda error: self.update_status.setText(str(error)))
-        self.update_task = task
-        task.token.connect(self.update_status.setText)
-        task.finished.connect(self._update_download_finished)
+        return self.updates_page.save_update()
 
     def cancel_update_download(self):
-        if self.update_task:
-            self.update_task.cancelled.set()
-            self.cancel_update_button.setEnabled(False)
-            self.update_status.setText("Cancelling update download…")
+        return self.updates_page.cancel_update_download()
 
-    def _update_download_finished(self):
-        self.update_task = None
-        self.check_update_button.setEnabled(True)
-        self.download_update_button.setEnabled(True)
-        self.cancel_update_button.setEnabled(False)
+    @property
+    def downloaded_update(self):
+        if hasattr(self, "updates_page"):
+            return self.updates_page.downloaded_update
+        return getattr(self, "_downloaded_update", None)
+
+    @downloaded_update.setter
+    def downloaded_update(self, value):
+        self._downloaded_update = value
+        if hasattr(self, "updates_page"):
+            self.updates_page.downloaded_update = value
 
     def _update_saved(self, path, manifest):
-        self.downloaded_update = (Path(path), dict(manifest))
-        self.install_update_button.setEnabled(os.name == "nt")
-        self.update_status.setText(f"Verified update saved to {path}. Choose Install update when ready. Your conversations and model packs are retained.")
+        self.updates_page._update_saved(path, manifest)
 
     def install_update(self):
         if not self.downloaded_update or os.name != "nt":
@@ -743,6 +588,14 @@ class MainWindow(QMainWindow):
         if answer != QMessageBox.Yes:
             return
         self.pending_update = self.downloaded_update
+        if not self.close():
+            self.pending_update = None
+
+    def _has_active_work(self) -> bool:
+        return bool(self.tasks or self.chat_task or self.process.state() != QProcess.NotRunning)
+
+    def _on_install_requested(self, path, manifest):
+        self.pending_update = (path, manifest)
         if not self.close():
             self.pending_update = None
 
@@ -981,6 +834,24 @@ class MainWindow(QMainWindow):
                     json.dump(self.store.messages(identifier), handle, indent=2, ensure_ascii=False)
             except OSError as exc:
                 self._error(exc)
+
+    def delete_conversation(self, identifier: str | None = None):
+        target_id = identifier or self.conversation_id
+        if not target_id:
+            return
+        if self.chat_task and target_id == self.conversation_id:
+            self.chat_status.setText("Stop the current response before deleting this conversation.")
+            return
+        answer = QMessageBox.question(
+            self, "Delete conversation", "Delete this conversation? Messages cannot be recovered.",
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No,
+        )
+        if answer != QMessageBox.Yes:
+            return
+        self.store.delete_conversation(target_id)
+        if target_id == self.conversation_id:
+            self.conversation_id = None
+        self._load_conversations()
 
     def send_message(self):
         prompt = self.prompt.toPlainText().strip()
@@ -1223,6 +1094,8 @@ class MainWindow(QMainWindow):
             return
         self.workload_id = self.store.start_workload(self.workspace.root, command)
         self.workload_output = ""
+        self.workload_chunks = []
+        self.workload_bytes = 0
         self.workload_cancelled = False
         self.output.clear()
         self.process.setWorkingDirectory(str(self.workspace.root))
@@ -1237,19 +1110,32 @@ class MainWindow(QMainWindow):
         self.process.start()
 
     def _workload_output(self):
-        text = bytes(self.process.readAllStandardOutput()).decode("utf-8", errors="replace")
-        self.workload_output = (self.workload_output + text)[-2 * 1024 * 1024:]
+        data = bytes(self.process.readAllStandardOutput())
+        if not data:
+            return
+        text = data.decode("utf-8", errors="replace")
+        self.workload_chunks.append(text)
+        self.workload_bytes += len(text)
+        if self.workload_bytes > 3 * 1024 * 1024:
+            self.workload_output = "".join(self.workload_chunks)[-2 * 1024 * 1024:]
+            self.workload_chunks = [self.workload_output]
+            self.workload_bytes = len(self.workload_output)
         self.output.insertPlainText(text)
         self.output.verticalScrollBar().setValue(self.output.verticalScrollBar().maximum())
 
     def _workload_error(self, error):
         if error == QProcess.FailedToStart:
-            self.workload_output += self.process.errorString()
-            self.output.appendPlainText(self.process.errorString())
+            msg = self.process.errorString()
+            self.workload_chunks.append(msg)
+            self.output.appendPlainText(msg)
             self._workload_finished(-1, QProcess.CrashExit)
 
     def _workload_finished(self, code, status):
         self._workload_output()
+        if self.workload_chunks:
+            self.workload_output = "".join(self.workload_chunks)[-2 * 1024 * 1024:]
+            self.workload_chunks = []
+            self.workload_bytes = 0
         if self.workload_id:
             outcome = "cancelled" if self.workload_cancelled else ("complete" if code == 0 and status == QProcess.NormalExit else "failed")
             self.store.finish_workload(self.workload_id, outcome, code, self.workload_output)

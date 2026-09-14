@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import os
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "SHA256SUMS"
@@ -57,11 +58,18 @@ def candidate_files():
 
 
 def main() -> None:
-    rows=[]
+    check_mode = "--check" in sys.argv[1:]
+    rows = []
     for path in sorted(candidate_files(), key=lambda item: item.relative_to(ROOT).as_posix()):
-        rel=path.relative_to(ROOT)
+        rel = path.relative_to(ROOT)
         rows.append(f"{sha256(path)}  {rel.as_posix()}")
-    OUT.write_text("\n".join(rows)+"\n",encoding="utf-8",newline="\n")
+    rendered = "\n".join(rows) + "\n"
+    if check_mode:
+        if not OUT.is_file() or OUT.read_text(encoding="utf-8") != rendered:
+            sys.exit("SHA256SUMS CHECK FAILED: SHA256SUMS is out of date")
+        print(f"SHA256SUMS CHECK PASS files={len(rows)}")
+        return
+    OUT.write_text(rendered, encoding="utf-8", newline="\n")
     print(f"SHA256SUMS WRITTEN files={len(rows)}")
 
 
