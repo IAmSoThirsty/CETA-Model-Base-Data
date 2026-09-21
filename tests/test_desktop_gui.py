@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import os
 from pathlib import Path
 import sys
 import tempfile
+import time
 import unittest
 from unittest.mock import patch
 
@@ -17,6 +19,7 @@ if HAS_QT:
     from PySide6.QtTest import QTest
     from PySide6.QtWidgets import QApplication, QMessageBox
     from ceta_desktop.app import MainWindow
+    from ceta_desktop.hardware import HardwareProfile
 
 
 @unittest.skipUnless(HAS_QT, "Desktop extra is required for native UI tests")
@@ -28,13 +31,19 @@ class DesktopGuiTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)
+        self.enterContext(patch("ceta_desktop.app.inspect_hardware", return_value=HardwareProfile(16 * 1024**3, 12 * 1024**3, 8)))
         self.window = MainWindow(self.root / "app-data")
         self.window.show()
         QTest.qWait(30)
 
     def tearDown(self):
+        for _ in range(200):
+            if not self.window.tasks:
+                break
+            QTest.qWait(10)
+        self.assertEqual(self.window.tasks, [])
         self.window.editor.document().setModified(False)
-        self.window.close()
+        self.assertTrue(self.window.close())
         QTest.qWait(30)
         self.temp.cleanup()
 
@@ -103,6 +112,9 @@ class DesktopGuiTests(unittest.TestCase):
             environment = self.window.model_process.processEnvironment()
             self.assertEqual(environment.value("OLLAMA_NO_CLOUD"), "1")
             self.assertEqual(environment.value("OLLAMA_HOST"), "127.0.0.1:11434")
+            self.assertEqual(environment.value("OLLAMA_CONTEXT_LENGTH"), "4096")
+            self.assertEqual(environment.value("OLLAMA_NUM_PARALLEL"), "1")
+            self.assertEqual(environment.value("OLLAMA_MAX_LOADED_MODELS"), "1")
             self.assertEqual(environment.value("OLLAMA_MODELS"), model_directory)
             self.assertEqual(self.window.model_process.program(), "ollama")
             self.assertEqual(self.window.model_process.arguments(), ["serve"])
@@ -132,9 +144,11 @@ class DesktopGuiTests(unittest.TestCase):
         self.window._set_workspace(self.root)
         self.window.command.setText("Write-Output 'desktop-workload-ok'" if os.name == "nt" else "printf desktop-workload-ok")
         self.window.run_workload()
-        for _ in range(150):
-            QTest.qWait(50)
-            if self.window.process.state() == QProcess.NotRunning:
+        deadline = time.monotonic() + 15
+        while time.monotonic() < deadline:
+            self.app.processEvents()
+            time.sleep(0.01)
+            if self.window.workload_task is None:
                 break
         self.assertIsNone(self.window.workload_id)
         self.assertIn("desktop-workload-ok", self.window.output.toPlainText())
@@ -147,8 +161,10 @@ class DesktopGuiTests(unittest.TestCase):
         self.window.model_combo.setCurrentText("unavailable-test-model")
         self.window.prompt.setPlainText("Keep this message")
         self.window.send_message()
-        for _ in range(250):
-            QTest.qWait(50)
+        deadline = time.monotonic() + 15
+        while time.monotonic() < deadline:
+            self.app.processEvents()
+            time.sleep(0.01)
             if not self.window.chat_task:
                 break
         self.assertIsNone(self.window.chat_task)
@@ -163,9 +179,11 @@ class DesktopGuiTests(unittest.TestCase):
         self.window.run_workload()
         QTest.qWait(400)
         self.window.stop_workload()
-        for _ in range(100):
-            QTest.qWait(50)
-            if self.window.process.state() == QProcess.NotRunning:
+        deadline = time.monotonic() + 15
+        while time.monotonic() < deadline:
+            self.app.processEvents()
+            time.sleep(0.01)
+            if self.window.workload_task is None:
                 break
         self.assertEqual(self.window.process.state(), QProcess.NotRunning)
         row = self.window.store.db.execute("SELECT status FROM workloads").fetchone()
@@ -211,6 +229,41 @@ class DesktopGuiTests(unittest.TestCase):
         self.assertEqual(self.window.store.setting("editor_draft")["text"], "keep my edit")
         self.assertTrue(self.window.editor.document().isModified())
         self.assertEqual(path.read_text(), "original")
+
+    def test_unavailable_editor_draft_survives_close_and_recovers_when_file_returns(self):
+        from ceta_desktop.storage import Store
+
+        data = self.root / "unavailable-draft-data"
+        workspace = self.root / "unavailable-workspace"
+        path = workspace / "recover.txt"
+        draft = {
+            "workspace": str(workspace), "path": str(path),
+            "text": "Retained unsaved edit", "digest": hashlib.sha256(b"original").hexdigest(),
+        }
+        store = Store(data)
+        store.set_setting("editor_draft", draft)
+        store.close()
+        unavailable = MainWindow(data)
+        self.assertIsNone(unavailable.document)
+        self.assertIn("could not be reopened", unavailable.statusBar().currentMessage())
+        unavailable.close()
+
+        store = Store(data)
+        try:
+            self.assertEqual(store.setting("editor_draft"), draft)
+        finally:
+            store.close()
+
+        workspace.mkdir()
+        path.write_bytes(b"original")
+        recovered = MainWindow(data)
+        try:
+            self.assertEqual(recovered.editor.toPlainText(), "Retained unsaved edit")
+            self.assertTrue(recovered.editor.document().isModified())
+            self.assertEqual(path.read_bytes(), b"original")
+        finally:
+            recovered.editor.document().setModified(False)
+            recovered.close()
 
     def test_chat_drafts_follow_their_conversation(self):
         self.window.new_conversation()
@@ -282,6 +335,77 @@ class DesktopGuiTests(unittest.TestCase):
         with patch("ceta_desktop.app.QMessageBox.question", return_value=QMessageBox.No):
             self.window.delete_conversation(cid2)
         self.assertEqual(self.window.conversation_list.count(), 1)
+
+    def test_deleting_current_conversation_restores_survivor_draft_before_autosave(self):
+        self.window.new_conversation()
+        survivor = self.window.conversation_id
+        self.window.prompt.setPlainText("Survivor draft")
+        self.window.new_conversation()
+        removed = self.window.conversation_id
+        self.window.prompt.setPlainText("Deleted conversation draft")
+        self.window._save_prompt_draft()
+        self.assertTrue(self.window.prompt_timer.isActive())
+
+        with patch("ceta_desktop.app.QMessageBox.question", return_value=QMessageBox.Yes):
+            self.window.delete_conversation()
+
+        self.assertEqual(self.window.conversation_id, survivor)
+        self.assertEqual(self.window.prompt.toPlainText(), "Survivor draft")
+        self.assertFalse(self.window.prompt_timer.isActive())
+        self.window._save_prompt_draft()
+        self.assertEqual(self.window.store.setting("chat_draft:" + survivor), "Survivor draft")
+        self.assertIsNone(self.window.store.setting("chat_draft:" + removed))
+        self.assertEqual(self.window.store.setting("active_conversation"), survivor)
+
+    def test_deleting_last_conversation_restores_new_message_draft(self):
+        self.window.prompt.setPlainText("Unassigned draft")
+        self.window.new_conversation()
+        removed = self.window.conversation_id
+        self.window.prompt.setPlainText("Deleted draft")
+        self.window._save_prompt_draft()
+
+        with patch("ceta_desktop.app.QMessageBox.question", return_value=QMessageBox.Yes):
+            self.window.delete_conversation()
+
+        self.assertIsNone(self.window.conversation_id)
+        self.assertEqual(self.window.prompt.toPlainText(), "Unassigned draft")
+        self.assertFalse(self.window.prompt_timer.isActive())
+        self.window._save_prompt_draft()
+        self.assertEqual(self.window.store.setting("chat_draft:new"), "Unassigned draft")
+        self.assertIsNone(self.window.store.setting("chat_draft:" + removed))
+        self.assertIsNone(self.window.store.setting("active_conversation"))
+
+    def test_deleting_other_conversation_keeps_current_unsaved_draft(self):
+        self.window.new_conversation()
+        removed = self.window.conversation_id
+        self.window.prompt.setPlainText("Other draft")
+        self.window.new_conversation()
+        active = self.window.conversation_id
+        self.window.prompt.setPlainText("Current unsaved draft")
+
+        with patch("ceta_desktop.app.QMessageBox.question", return_value=QMessageBox.Yes):
+            self.window.delete_conversation(removed)
+
+        self.assertEqual(self.window.conversation_id, active)
+        self.assertEqual(self.window.prompt.toPlainText(), "Current unsaved draft")
+        self.assertTrue(self.window.prompt_timer.isActive())
+        self.window._save_prompt_draft()
+        self.assertEqual(self.window.store.setting("chat_draft:" + active), "Current unsaved draft")
+        self.assertIsNone(self.window.store.setting("chat_draft:" + removed))
+        self.assertEqual(self.window.store.setting("active_conversation"), active)
+
+    def test_deleting_active_generation_is_rejected_without_changing_drafts(self):
+        self.window.new_conversation()
+        active = self.window.conversation_id
+        self.window.prompt.setPlainText("Follow-up draft")
+        self.window._save_prompt_draft()
+        with patch.object(self.window, "chat_task", object()), patch("ceta_desktop.app.QMessageBox.question") as question:
+            self.window.delete_conversation()
+        question.assert_not_called()
+        self.assertEqual(self.window.conversation_id, active)
+        self.assertEqual(self.window.prompt.toPlainText(), "Follow-up draft")
+        self.assertEqual(self.window.store.setting("chat_draft:" + active), "Follow-up draft")
+        self.assertEqual(len(self.window.store.conversations()), 1)
 
 
 if __name__ == "__main__":

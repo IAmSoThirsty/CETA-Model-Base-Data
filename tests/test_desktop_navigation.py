@@ -21,6 +21,7 @@ if HAS_QT:
     from PySide6.QtWidgets import QApplication, QPlainTextEdit, QPushButton
 
     from ceta_desktop.app import MainWindow
+    from ceta_desktop.hardware import HardwareProfile
 
 
 @unittest.skipUnless(HAS_QT, "Desktop extra is required for native navigation tests")
@@ -33,6 +34,7 @@ class DesktopNavigationTests(unittest.TestCase):
 
     def setUp(self):
         self.root = Path(self.enterContext(tempfile.TemporaryDirectory()))
+        self.enterContext(patch("ceta_desktop.app.inspect_hardware", return_value=HardwareProfile(16 * 1024**3, 12 * 1024**3, 8)))
         self.data = self.root / "app-data"
         self.window = MainWindow(self.data)
         self.window.show()

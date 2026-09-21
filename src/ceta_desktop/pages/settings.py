@@ -5,6 +5,7 @@ from __future__ import annotations
 from PySide6.QtCore import QUrl, Qt, Signal
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import (
+    QMessageBox,
     QCheckBox, QFormLayout, QFrame, QLabel, QLineEdit, QScrollArea,
     QSpinBox, QVBoxLayout, QWidget,
 )
@@ -19,9 +20,10 @@ class SettingsPage(ScenePage):
 
     preferences_changed = Signal(int, bool)
 
-    def __init__(self, store: Store, parent: QWidget | None = None):
+    def __init__(self, store: Store, parent: QWidget | None = None, *, application_runner=None):
         super().__init__(scene="settings", parent=parent)
         self.store = store
+        self.application_runner = application_runner
 
         outer = QVBoxLayout(self)
         outer.setContentsMargins(0, 0, 0, 0)
@@ -67,14 +69,14 @@ class SettingsPage(ScenePage):
         privacy, privacy_layout = card(
             "Local data & privacy",
             "Conversations, drafts, command history, and settings are kept in your local application data. "
-            "CETA does not attach workspace files automatically."
+            "Task conversations include project state and applicable instructions; file excerpts are explicitly selected."
         )
         path = QLineEdit(str(self.store.directory))
         path.setReadOnly(True)
         path.setAccessibleName("CETA application data folder")
         privacy_layout.addWidget(path)
         privacy_layout.addWidget(
-            action("Open data folder", lambda: QDesktopServices.openUrl(QUrl.fromLocalFile(str(self.store.directory))), "folder"),
+            action("Open data folder", self.open_data_folder, "folder"),
             0, Qt.AlignLeft
         )
         note = QLabel(
@@ -98,6 +100,17 @@ class SettingsPage(ScenePage):
 
         scroll.setWidget(content)
         outer.addWidget(scroll)
+
+    def open_data_folder(self):
+        try:
+            if self.application_runner is None:
+                raise ValueError("Application authority is unavailable for this operation.")
+            opened = self.application_runner("notice.open", {"path": str(self.store.directory), "purpose": "application_data"},
+                lambda: QDesktopServices.openUrl(QUrl.fromLocalFile(str(self.store.directory))))
+            if opened is False:
+                raise RuntimeError("The system did not open the application data folder.")
+        except (ValueError, OSError, RuntimeError) as exc:
+            QMessageBox.warning(self, "Could not open data folder", str(exc))
 
     def _save_editor_preferences(self, *_):
         size = self.editor_font_size.value()

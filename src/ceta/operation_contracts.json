@@ -1,0 +1,561 @@
+{
+  "schema_version": 2,
+  "contracts": [
+    {
+      "operation": "Observe",
+      "status": "BOUND",
+      "operands": [
+        "observation_id",
+        "source_id",
+        "payload",
+        "compiler_id",
+        "payload_hash"
+      ],
+      "preconditions": [
+        "input state matches current projection",
+        "payload is structured",
+        "payload hash matches exact payload",
+        "new object identity is not active"
+      ],
+      "postconditions": [
+        "create immutable OBSERVATION with status OBSERVED"
+      ],
+      "constitutional_constraints": [
+        "compiler output is candidate state only",
+        "observation admission is not semantic truth"
+      ],
+      "proof_obligations": [
+        "SOURCE_BINDING",
+        "PAYLOAD_HASH_BINDING"
+      ]
+    },
+    {
+      "operation": "ValidateObservation",
+      "status": "BOUND",
+      "operands": [
+        "observation_ref",
+        "replacement_id",
+        "validator_id",
+        "validation_code",
+        "evidence_refs"
+      ],
+      "preconditions": [
+        "target is active OBSERVATION in OBSERVED status",
+        "referenced epistemic evidence is admitted when supplied"
+      ],
+      "postconditions": [
+        "supersede observation with VALIDATED revision"
+      ],
+      "constitutional_constraints": [
+        "validation does not convert integrity proof into truth proof"
+      ],
+      "proof_obligations": [
+        "VALIDATOR_BINDING"
+      ]
+    },
+    {
+      "operation": "AdmitEvidence",
+      "status": "BOUND",
+      "operands": [
+        "evidence_id",
+        "evidence_record_id",
+        "observation_refs"
+      ],
+      "preconditions": [
+        "bound external evidence record exists and is VALIDATED",
+        "referenced observations are active and VALIDATED"
+      ],
+      "postconditions": [
+        "create immutable EVIDENCE with status ADMITTED and exact record/provenance hashes"
+      ],
+      "constitutional_constraints": [
+        "predicate/evidence binding must remain exact",
+        "registry validation is not semantic truth"
+      ],
+      "proof_obligations": [
+        "EVIDENCE_RECORD_HASH_BINDING",
+        "PROVENANCE_BINDING"
+      ]
+    },
+    {
+      "operation": "RejectEvidence",
+      "status": "BOUND",
+      "operands": [
+        "evidence_id",
+        "evidence_record_id",
+        "reason_code"
+      ],
+      "preconditions": [
+        "bound external evidence record exists and is REJECTED"
+      ],
+      "postconditions": [
+        "create immutable EVIDENCE rejection record"
+      ],
+      "constitutional_constraints": [
+        "rejected evidence cannot be used as admitted support"
+      ],
+      "proof_obligations": [
+        "EVIDENCE_REJECTION_BINDING"
+      ]
+    },
+    {
+      "operation": "CreateClaim",
+      "status": "BOUND",
+      "operands": [
+        "claim_id",
+        "proposition",
+        "scope"
+      ],
+      "preconditions": [
+        "proposition is a non-empty structured mapping",
+        "scope is machine-comparable"
+      ],
+      "postconditions": [
+        "create CLAIM ACTIVE and UNVERIFIED"
+      ],
+      "constitutional_constraints": [
+        "no language string is treated as a conclusion by the VM"
+      ],
+      "proof_obligations": [
+        "STRUCTURED_PROPOSITION_BINDING",
+        "SCOPE_BINDING"
+      ]
+    },
+    {
+      "operation": "CreateBelief",
+      "status": "BOUND",
+      "operands": [
+        "belief_id",
+        "claim_ref"
+      ],
+      "preconditions": [
+        "claim is active"
+      ],
+      "postconditions": [
+        "create BELIEF bound to claim with empty evidence relations"
+      ],
+      "constitutional_constraints": [
+        "belief creation does not establish verification"
+      ],
+      "proof_obligations": [
+        "CLAIM_BINDING"
+      ]
+    },
+    {
+      "operation": "Support",
+      "status": "BOUND",
+      "operands": [
+        "belief_ref",
+        "evidence_ref",
+        "replacement_id"
+      ],
+      "preconditions": [
+        "belief is active",
+        "evidence is active and ADMITTED",
+        "relation is not duplicated"
+      ],
+      "postconditions": [
+        "supersede belief adding exact support evidence relation"
+      ],
+      "constitutional_constraints": [
+        "old belief remains immutable history"
+      ],
+      "proof_obligations": [
+        "EXACT_EVIDENCE_RELATION_BINDING"
+      ]
+    },
+    {
+      "operation": "Contradict",
+      "status": "BOUND",
+      "operands": [
+        "belief_ref",
+        "evidence_ref",
+        "replacement_id"
+      ],
+      "preconditions": [
+        "belief is active",
+        "evidence is active and ADMITTED",
+        "relation is not duplicated"
+      ],
+      "postconditions": [
+        "supersede belief adding exact contradiction evidence relation"
+      ],
+      "constitutional_constraints": [
+        "old belief remains immutable history"
+      ],
+      "proof_obligations": [
+        "EXACT_EVIDENCE_RELATION_BINDING"
+      ]
+    },
+    {
+      "operation": "Undercut",
+      "status": "BOUND",
+      "operands": [
+        "belief_ref",
+        "evidence_ref",
+        "replacement_id"
+      ],
+      "preconditions": [
+        "belief is active",
+        "evidence is active and ADMITTED",
+        "relation is not duplicated"
+      ],
+      "postconditions": [
+        "supersede belief adding exact undercut evidence relation"
+      ],
+      "constitutional_constraints": [
+        "old belief remains immutable history"
+      ],
+      "proof_obligations": [
+        "EXACT_EVIDENCE_RELATION_BINDING"
+      ]
+    },
+    {
+      "operation": "Merge",
+      "status": "BOUND",
+      "operands": [
+        "object_refs",
+        "merged_id",
+        "strategy"
+      ],
+      "preconditions": [
+        "two or more distinct active objects",
+        "all objects share one type",
+        "strategy is IDENTICAL_OR_SET_UNION"
+      ],
+      "postconditions": [
+        "create one merged object and supersede every input"
+      ],
+      "constitutional_constraints": [
+        "scalar conflicts escalate rather than being guessed"
+      ],
+      "proof_obligations": [
+        "MERGE_INPUT_BINDING",
+        "NO_SCALAR_CONFLICT"
+      ]
+    },
+    {
+      "operation": "Split",
+      "status": "BOUND",
+      "operands": [
+        "object_ref",
+        "partitions"
+      ],
+      "preconditions": [
+        "source object is active",
+        "partitions are disjoint",
+        "partition keys preserve every source field"
+      ],
+      "postconditions": [
+        "create multiple same-type objects and supersede source to every part"
+      ],
+      "constitutional_constraints": [
+        "no source content may disappear silently"
+      ],
+      "proof_obligations": [
+        "SPLIT_PARTITION_CONSERVATION"
+      ]
+    },
+    {
+      "operation": "NarrowScope",
+      "status": "BOUND",
+      "operands": [
+        "target_ref",
+        "replacement_id",
+        "scope"
+      ],
+      "preconditions": [
+        "target supports scope algebra",
+        "new scope is a strict subset"
+      ],
+      "postconditions": [
+        "supersede target with narrower scope"
+      ],
+      "constitutional_constraints": [
+        "narrowing cannot broaden any dimension"
+      ],
+      "proof_obligations": [
+        "SCOPE_SUBSET_PROOF"
+      ]
+    },
+    {
+      "operation": "ExpandScope",
+      "status": "BOUND",
+      "operands": [
+        "target_ref",
+        "replacement_id",
+        "scope"
+      ],
+      "preconditions": [
+        "target supports scope algebra",
+        "new scope is a strict superset",
+        "scope_expand authority is present"
+      ],
+      "postconditions": [
+        "supersede target with broader scope"
+      ],
+      "constitutional_constraints": [
+        "scope expansion is privilege-bearing"
+      ],
+      "proof_obligations": [
+        "SCOPE_SUPERSET_PROOF",
+        "SCOPE_EXPANSION_AUTHORITY"
+      ]
+    },
+    {
+      "operation": "Verify",
+      "status": "BOUND",
+      "operands": [
+        "target_ref",
+        "replacement_id",
+        "evidence_refs",
+        "verification_code"
+      ],
+      "preconditions": [
+        "target type is CLAIM, BELIEF or ACTION",
+        "verification evidence is admitted",
+        "belief has no active contradiction/undercut and evidence is bound as support"
+      ],
+      "postconditions": [
+        "supersede target with VERIFIED verification state"
+      ],
+      "constitutional_constraints": [
+        "integrity evidence and semantic verification remain distinct"
+      ],
+      "proof_obligations": [
+        "SEMANTIC_VERIFICATION_EVIDENCE_BINDING"
+      ]
+    },
+    {
+      "operation": "Invalidate",
+      "status": "BOUND",
+      "operands": [
+        "target_ref",
+        "replacement_id",
+        "reason_code",
+        "evidence_refs"
+      ],
+      "preconditions": [
+        "target is active",
+        "supplied evidence is admitted"
+      ],
+      "postconditions": [
+        "supersede target as INVALIDATED"
+      ],
+      "constitutional_constraints": [
+        "invalidation requires explicit reason binding"
+      ],
+      "proof_obligations": [
+        "INVALIDATION_REASON_BINDING"
+      ]
+    },
+    {
+      "operation": "Suspend",
+      "status": "BOUND",
+      "operands": [
+        "target_ref",
+        "replacement_id",
+        "reason_code",
+        "evidence_refs"
+      ],
+      "preconditions": [
+        "target is active",
+        "supplied evidence is admitted"
+      ],
+      "postconditions": [
+        "supersede target as SUSPENDED"
+      ],
+      "constitutional_constraints": [
+        "suspension is distinct from invalidation or falsity"
+      ],
+      "proof_obligations": [
+        "SUSPENSION_REASON_BINDING"
+      ]
+    },
+    {
+      "operation": "Expire",
+      "status": "BOUND",
+      "operands": [
+        "target_ref",
+        "replacement_id",
+        "trusted_time_evidence_ref"
+      ],
+      "preconditions": [
+        "target has machine expiry",
+        "trusted-time evidence is validated",
+        "trusted time is at or after expiry"
+      ],
+      "postconditions": [
+        "supersede target as EXPIRED"
+      ],
+      "constitutional_constraints": [
+        "host clock alone cannot establish expiry"
+      ],
+      "proof_obligations": [
+        "TRUSTED_TIME_BINDING"
+      ]
+    },
+    {
+      "operation": "Reevaluate",
+      "status": "BOUND",
+      "operands": [
+        "target_ref",
+        "replacement_id",
+        "trigger_evidence_refs"
+      ],
+      "preconditions": [
+        "target is in a reevaluatable state",
+        "trigger evidence is admitted"
+      ],
+      "postconditions": [
+        "supersede target ACTIVE and UNVERIFIED for renewed evaluation"
+      ],
+      "constitutional_constraints": [
+        "reevaluation does not erase prior revision"
+      ],
+      "proof_obligations": [
+        "REEVALUATION_TRIGGER_BINDING"
+      ]
+    },
+    {
+      "operation": "Adjudicate",
+      "status": "BOUND",
+      "operands": [
+        "target_ref",
+        "replacement_id",
+        "outcome",
+        "evidence_refs",
+        "adjudication_code"
+      ],
+      "preconditions": [
+        "target is active",
+        "adjudicate authority is present",
+        "evidence is admitted",
+        "outcome is bounded"
+      ],
+      "postconditions": [
+        "supersede target with authorized adjudicated status"
+      ],
+      "constitutional_constraints": [
+        "adjudication cannot invent unregistered outcomes"
+      ],
+      "proof_obligations": [
+        "ADJUDICATION_AUTHORITY",
+        "ADJUDICATION_EVIDENCE_BINDING"
+      ]
+    },
+    {
+      "operation": "Authorize",
+      "status": "BOUND",
+      "operands": [
+        "authorization_id",
+        "permit_id",
+        "nonce",
+        "subject_id",
+        "subject_scope",
+        "operation",
+        "consequence",
+        "consumer_id",
+        "consumer_key_id",
+        "expires_at_epoch_ms",
+        "source_refs"
+      ],
+      "preconditions": [
+        "authorize authority is present",
+        "subject identity is VERIFIED",
+        "effect operation is Execute or Rollback",
+        "expiry is future",
+        "consequence is exact and hashable"
+      ],
+      "postconditions": [
+        "create immutable AUTHORITY authorization record from which a single-use permit may be derived"
+      ],
+      "constitutional_constraints": [
+        "authorization record is not effect execution",
+        "consumer and consequence are exact bindings"
+      ],
+      "proof_obligations": [
+        "AUTHORIZATION_AUTHORITY",
+        "VERIFIED_IDENTITY_BINDING",
+        "EXACT_CONSEQUENCE_BINDING"
+      ]
+    },
+    {
+      "operation": "RejectAuthorization",
+      "status": "BOUND",
+      "operands": [
+        "authorization_id",
+        "subject_id",
+        "operation",
+        "reason_code",
+        "source_refs"
+      ],
+      "preconditions": [
+        "request fields are explicit"
+      ],
+      "postconditions": [
+        "create AUTHORITY rejection record"
+      ],
+      "constitutional_constraints": [
+        "rejection cannot produce a permit"
+      ],
+      "proof_obligations": [
+        "AUTHORIZATION_REJECTION_REASON_BINDING"
+      ]
+    },
+    {
+      "operation": "Execute",
+      "status": "BOUND",
+      "operands": [
+        "action_id",
+        "authorization_ref",
+        "consequence"
+      ],
+      "preconditions": [
+        "authorization record is active and AUTHORIZED",
+        "authorization operation matches",
+        "consequence hash exactly matches authorization"
+      ],
+      "postconditions": [
+        "create ACTION EXECUTION_REQUESTED; external effect remains pending independent verification"
+      ],
+      "constitutional_constraints": [
+        "VM cannot invoke adapter",
+        "permit must be consumed before external mutation",
+        "executor cannot self-verify"
+      ],
+      "proof_obligations": [
+        "EXACT_AUTHORIZATION_BINDING",
+        "PERMIT_CONSUMPTION_RECEIPT",
+        "INDEPENDENT_EFFECT_VERIFICATION"
+      ]
+    },
+    {
+      "operation": "Rollback",
+      "status": "BOUND",
+      "operands": [
+        "action_id",
+        "authorization_ref",
+        "consequence"
+      ],
+      "preconditions": [
+        "authorization record is active and AUTHORIZED",
+        "authorization operation matches",
+        "consequence hash exactly matches authorization"
+      ],
+      "postconditions": [
+        "create ACTION ROLLBACK_REQUESTED; external effect remains pending independent verification"
+      ],
+      "constitutional_constraints": [
+        "VM cannot invoke adapter",
+        "permit must be consumed before external mutation",
+        "executor cannot self-verify"
+      ],
+      "proof_obligations": [
+        "EXACT_AUTHORIZATION_BINDING",
+        "PERMIT_CONSUMPTION_RECEIPT",
+        "INDEPENDENT_EFFECT_VERIFICATION"
+      ]
+    }
+  ]
+}

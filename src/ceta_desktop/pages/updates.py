@@ -33,11 +33,13 @@ class UpdatesPage(ScenePage):
         active_work_check: Callable[[], bool],
         install_handler: Callable[[], None] | None = None,
         parent: QWidget | None = None,
+        *, application_runner: Callable | None = None,
     ):
         super().__init__(scene="updates", parent=parent)
         self.background_runner = background_runner
         self.active_work_check = active_work_check
         self.install_handler = install_handler
+        self.application_runner = application_runner
 
         self.update_manifest: dict | None = None
         self.downloaded_update: tuple[Path, dict] | None = None
@@ -135,8 +137,18 @@ class UpdatesPage(ScenePage):
 
     def open_dependency_notices(self) -> None:
         directory = Path(sys.executable).parent / "ThirdPartyNotices" if getattr(sys, "frozen", False) else Path(__file__).resolve().parents[3] / "licenses"
-        if not directory.is_dir() or not QDesktopServices.openUrl(QUrl.fromLocalFile(str(directory))):
-            self.update_status.setText(f"Dependency notices: {directory}")
+        try:
+            opened = self._application_action("notice.open", {"path": str(directory), "purpose": "dependency_notices"},
+                lambda: directory.is_dir() and QDesktopServices.openUrl(QUrl.fromLocalFile(str(directory))))
+            if not opened:
+                self.update_status.setText(f"Dependency notices: {directory}")
+        except (ValueError, OSError, RuntimeError) as exc:
+            self.update_status.setText(str(exc))
+
+    def _application_action(self, kind, arguments, executor):
+        if self.application_runner is None:
+            raise ValueError("Application authority is unavailable for this operation.")
+        return self.application_runner(kind, arguments, executor)
 
     def check_for_updates(self) -> None:
         if self.update_task:
@@ -174,12 +186,13 @@ class UpdatesPage(ScenePage):
         self.install_update_button.setEnabled(False)
         manifest = dict(self.update_manifest)
         task = self.background_runner(
-            lambda task: download_update(
-                manifest,
-                Path(folder),
-                task.cancelled,
-                lambda count, total: task.token.emit(f"Downloading update · {count / total:.0%}"),
-            ),
+            lambda task: self._application_action("update.download", {"manifest": manifest, "destination": folder},
+                lambda: download_update(
+                    manifest,
+                    Path(folder),
+                    task.cancelled,
+                    lambda count, total: task.token.emit(f"Downloading update · {count / total:.0%}"),
+                )),
             lambda path: self._update_saved(path, manifest),
             lambda error: self.update_status.setText(str(error)),
         )

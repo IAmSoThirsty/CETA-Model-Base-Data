@@ -2,11 +2,26 @@
 
 ## CETA native desktop application
 
+The CETA 0.4.0 merger implementation connects project tasks, governed file edits,
+commands, local provider calls, and selected Project-AI Model 001 context/evidence
+components in one native application. Each project has one authoritative event
+stream; task and conversation views are projections. See
+[implementation and validation status](docs/operations/MERGER_IMPLEMENTATION_20260919.md).
+This is a local release candidate under validation; publication is a later step.
+
+
 This repository now also develops **CETA**, a Windows-first native desktop
 environment for coding, conversations, and user-directed workloads. Its optional
 local model expansion packs are separate from application installation and updates.
 The desktop application is under release validation; the historical CETA training
 results below do not establish desktop production readiness.
+
+The Models page inspects the computer running CETA, estimates which local models
+fit its currently available RAM and measured GPU memory, and tests installed
+Ollama weights with a short synthetic prompt. Hardware readings are not bundled
+as defaults or saved as another computer's profile. Cloud-backed Ollama models
+are excluded. Memory fit, successful generation, and model quality are separate
+claims; more GPU memory does not itself establish better answers.
 
 See [the desktop user guide](docs/CETA_USER_GUIDE.md) and
 [delivery status](docs/DESKTOP_DELIVERY.md). Development startup:
@@ -215,6 +230,14 @@ legal proposal
   -> Verify / Invalidate / Suspend settlement transition
 ```
 
+Durable permit operations serialize across cooperating threads/processes and
+refresh the validated ledger before acting. Adapters require a live, single-use
+gateway dispatch as well as a valid signature; captured invocations are rejected.
+Observer signing keys must differ from all trusted gateway keys. These reference
+boundaries assume trusted application code and OS file permissions; they do not
+establish hardware-backed rollback protection against an attacker replacing all
+durable state before a fresh process starts.
+
 ## Verify
 
 The CI and reproducible local verification path uses the committed `uv.lock`:
@@ -236,6 +259,10 @@ python scripts/verify_all.py
 ```
 
 The verification path is local-only. It performs no remote fetch.
+Each run writes a new hostile-gate report to a unique temporary directory and
+prints its location, preserving the packaged historical report. Use
+`scripts/verify_all.py --hostile-report <new-report-path>` to choose a new output
+location; existing files are rejected.
 
 ### Supplied architecture and defensive-evaluation material
 

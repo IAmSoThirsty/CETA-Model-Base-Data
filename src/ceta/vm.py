@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from importlib import resources
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -21,8 +22,15 @@ class ConstitutionalVM:
     """
 
     def __init__(self, contract_path: Path | None = None) -> None:
-        path = contract_path or ROOT / "registry" / "operation_contracts.json"
-        raw = json.loads(path.read_text(encoding="utf-8"))
+        if contract_path is not None:
+            contract_text = Path(contract_path).read_text(encoding="utf-8")
+        elif (ROOT / "registry" / "operation_contracts.json").is_file():
+            # Source checkouts retain the canonical, reviewable registry.
+            contract_text = (ROOT / "registry" / "operation_contracts.json").read_text(encoding="utf-8")
+        else:
+            # Wheels and frozen desktop applications have no repository registry.
+            contract_text = resources.files("ceta").joinpath("operation_contracts.json").read_text(encoding="utf-8")
+        raw = json.loads(contract_text)
         self._contracts = {x["operation"]: x for x in raw["contracts"]}
         self._handlers = {
             "Observe": self._observe,

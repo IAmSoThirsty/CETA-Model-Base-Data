@@ -579,3 +579,174 @@ Validation results:
 - Bounded model checker: passed (`states=9 transitions=12 max_depth=4`).
 - Ruff (F, E9) and `network_boundary.py`: passed cleanly with 0 errors.
 - Package manifest: verified pass (`PACKAGE VERIFY: PASS`, 283 registered payload files, root hash matching).
+
+### 2026-09-19: Claims repair and hardware-aware local model selection
+
+Authorization: the user requested concrete claim/implementation repairs across
+CETA, its native desktop, and governed runtime/verification, then clarified the
+product goal as an offline local assistant whose model choices reflect the
+hardware of whichever computer installs it. They explicitly prohibited treating
+the development computer's GPU/RAM as repository defaults. Work remains in
+`T:\00-Active\CETA-desktop-delivery-20260906`, branch
+`codex/ceta-desktop-release`, based on clean HEAD
+`7ebabf903c109d35c6cb7065ee68dd4f7d151b80`. No other project's source, models,
+data, evidence, or branding was imported. Installed shared tools and the existing
+declared Ollama runtime were used; no publication or signing was performed.
+
+Implemented:
+
+- The Models page inventories the running computer on demand and refreshes
+  availability before assessed downloads, GGUF starts, and Ollama inference.
+  Physical RAM, logical CPUs, NVIDIA free VRAM, and native Windows DXGI dedicated
+  capacity/process budgets are distinguished. Shared memory and multiple GPUs are
+  not pooled. Unknown readings remain unknown. Profiles live in memory only;
+  no actual host specification is distributed as an application default.
+- Explicit model tags have approximate download sizes and conservative working
+  memory estimates at 4096 context tokens. Suggestions only fill a download name;
+  downloading remains explicit. Larger memory permits larger candidates, without
+  treating capacity as a model-quality or speed benchmark. Preloaded same-model
+  residency is checked separately to avoid counting its weights twice.
+- Ollama model metadata is checked before transmitting conversation text.
+  Cloud-backed names and remote aliases are excluded/rejected. Other local
+  OpenAI-compatible services remain labelled as having unverified inference
+  locality. One short synthetic probe reports actual text/elapsed time and
+  runtime-reported allocation; estimates alone cannot produce a verified result.
+- Stale hardware suggestions are cleared on scan failure, chat/probe concurrency
+  is blocked, model/endpoint changes invalidate displayed readiness, and normal
+  Ollama requests enforce the same 4096 context bound. CETA-started Ollama limits
+  model residency and request parallelism to one. Models controls remain reachable
+  at 1100x720 and 1540x940; visual QA used synthetic profiles.
+  Delayed model-discovery success/failure from an earlier endpoint cannot replace
+  the current endpoint's model list or connection status. Reopening the same data
+  directory on different synthetic hardware recomputes recommendations and restores
+  no old hardware profile or readiness claim while retaining user data/model choice.
+- Conversation deletion atomically removes its own draft/settings, cancels the
+  old draft timer, and restores the surviving conversation's separate draft.
+  Unavailable editor recovery drafts survive normal application closure.
+- Durable authority operations hold thread/process locks over validated refresh,
+  append, fsync, and projection. Stale instances cannot double-consume a permit;
+  live readers reject observed-history regression. Paths bind to their canonical
+  location. The persistent `.lock` sidecar coordinates cooperating processes.
+- Adapters require a signed, live, single-use gateway dispatch. Captured calls
+  cannot replay after completion, errors, restart, or concurrent/reentrant use.
+  Observer public-key bytes must differ from all trusted executor keys, including
+  when identities or key labels differ.
+- Verification writes new exclusive report files instead of overwriting historical
+  hostile-gate evidence. The runner is import-safe and stops without printing PASS
+  when any component fails. STATUS now distinguishes the CPU smoke result from the
+  H100 result and names the currently pinned Transformers version accurately.
+
+Baseline failures were reproduced before repair: deleted drafts crossed
+conversation boundaries, an unavailable recovery draft disappeared on close,
+two stale ledger instances consumed the same permit, a captured signed invocation
+repeated an effect, and an executor key was accepted under an observer alias.
+Regression tests now exercise these failures plus unknown/insufficient memory,
+multiple synthetic hardware profiles, cloud aliases, incomplete generation,
+resident models, cancellation, and report-output preservation.
+
+Validation records for this work are separate from historical release evidence.
+The completed full run is under `build/claims-validation-20260919-a55c1688651c432b8b7ff5ee63c5112e/`.
+The existing hostile report
+remains bound to SHA-256
+`975040abf1b61beeeff2d2a7a9826691f203208869afadbd8f35df953957ce5c`.
+
+Discovered issues and limits:
+
+- Fixed now: initial sandbox Python-launch denial was resolved by executing this
+  checkout's existing interpreter with approved filesystem access. Missing declared
+  training/test extras were installed from the unchanged lockfile in this checkout.
+- Environment/dependency issue, blocking a clean training dependency audit:
+  `accelerate==1.14.0` is reported under `PYSEC-2026-3804` / `CVE-2026-69112`, with
+  no fixed version supplied by the audit. The issue concerns checkpoint index
+  `weight_map` path traversal and special-file loading; see the
+  [upstream report](https://github.com/huggingface/accelerate/issues/4067) and
+  [PyPA advisory](https://github.com/pypa/advisory-database/blob/main/vulns/accelerate/PYSEC-2026-3804.yaml).
+  No advisory was suppressed and no unsupported upgrade was represented as a fix.
+  The separately exported locked desktop dependency closure passes pip-audit;
+  Accelerate is not part of that closure. Follow-up requires a verified upstream
+  fix or a reviewed loader-boundary repair, then language compatibility tests and
+  a fresh unsuppressed audit before training-release readiness can be claimed.
+- Resolved environment issue: a real local validation model was downloaded explicitly
+  through Ollama (`qwen3:0.6b-q4_K_M`, 522653767 bytes). Its first inference attempt
+  was rejected before loading when available RAM fell below the estimate.
+  That first attempt is a verified refusal, not successful inference. Its installation
+  and probe records are external at
+  `T:\Temp\ceta-local-readiness-20260919-eob0mwg9`; no host readings were saved as
+  product configuration. The OS network was not disabled for these checks.
+- Not claimed: production safety certification, resistance to an attacker
+  replacing all ledger state before a fresh start, arbitrary service offline
+  enforcement, quality/speed guarantees, hardware-backed authority, a new H100
+  epoch, or a newly built/published installer. Source changes require their own
+  release build and installed lifecycle validation.
+
+Completed validation:
+
+- `python scripts/verify_all.py --hostile-report <new-output>` passed all 18 stages,
+  including 412 unit tests in 177.578 seconds (411 passed, one Windows short-alias
+  case skipped). Slow first imports of newly installed Torch dependencies caused
+  a long discovery delay; read-only diagnostics confirmed forward progress.
+  The hostile gate passed 11 checks over 1380 cases. Its new report hash is
+  `sha256:10524483f0d023d9c6c3c3c483dd3c1f859d85b8776417b118704e8e15fe96f7`.
+  Historical epoch/heldout reports were verified, not regenerated or retrained.
+- Final model transport regressions: 25 passed. After the endpoint race repair,
+  the hardware UI suite passed 10 tests, including the different-computer restart
+  regression. Native Windows inventory tests passed 13 cases; integrated hardware,
+  DXGI, and UI checks passed before the final two UI regressions were added.
+- Repository-wide `ruff check --select F,E9 src scripts tests examples` and
+  `git diff --check` passed. `pip check` passed. The separately exported locked
+  desktop dependency closure passed its unsuppressed `pip-audit`; the full training
+  dependency audit still reports the Accelerate issue above.
+- After the verification workload released memory, the unmodified memory guard
+  allowed `qwen3:0.6b-q4_K_M`. A real synthetic probe returned `CETA_READY` in
+  47.203 seconds, with runtime-reported CPU residency and 4096 context tokens.
+  Its record is `T:\Temp\ceta-local-readiness-final-11zbaslr\probe.json`.
+- `python scripts/verify_desktop_inference.py --endpoint http://127.0.0.1:11434/v1
+  --model qwen3:0.6b-q4_K_M --output <new-external-directory>` passed: native chat
+  returned `LOCAL_OK`, marked both messages complete, and retained identical
+  conversation contents after reopening. Elapsed chat time was 53.672 seconds.
+  Records and screenshot are at
+  `T:\Temp\ceta-native-inference-final-56a3328b30de4db1a4a554f79778ffe5`.
+  Both actual runs are integration checks, not quality/speed benchmarks or proof
+  of OS-level network isolation. No hardware measurement became product defaults.
+- Source package manifest and SHA256SUMS were regenerated and passed their
+  `--check` modes and `python scripts/verify_package.py` (293 registered payload
+  files). Final documentation changes are included by regenerating/checking the
+  same hashes again. This is source-package integrity, not an installer build.
+
+## 2026-09-19 — CETA + Model 001 merger implemented
+
+Mode: implementation and local release-candidate validation. User request:
+"implement the plan pleaser and thank yuu"; this lifted the prior CETA read-only
+restriction for the approved merger. Source was selected Project-AI Model 001
+components; destination was this existing CETA delivery checkout. The original
+CETA checkout, Model 001 source, other projects, publisher keys and host user
+databases were preserved. HEAD remains 7ebabf903c109d35c6cb7065ee68dd4f7d151b80;
+existing dirty work was retained and no Git publication occurred.
+
+Created: the shared journal and owner adapters, task runtime, project tools,
+provider interface, DPAPI runtime identity, internal ceta_model001 integration,
+historical-only importer, task UI, migration/package/role/hostile regressions,
+release runner and packaged synthetic verification. Modified: actual desktop
+call sites/storage/archive behavior, existing release/CI/configuration/docs and
+focused legacy tests. No source files deleted, moved or renamed.
+
+Verified: full 18-stage gate with 564 tests (one short-alias skip), isolated desktop
+release gate with 475 tests (one skip), unsuppressed desktop dependency audit, pip check,
+Ruff F/E9, extracted-wheel real edit/restart, actual frozen workflow/migration,
+one live installed local-model request through merged reviewer/context/history,
+and offline Windows Sandbox 0.3.3-to-0.4.0 install/update/restart/uninstall with
+synthetic legacy/unknown data and checkpoint preservation. Historical hostile
+reports were not overwritten. The source transfer manifest hashes were verified.
+
+Result: unsigned CETA 0.4.0 local release candidate. Installer SHA-256:
+ddea9a61ae6951136493bf22db81401fe6b98c0ba2187a668960e40a77c5eef2.
+No production, public signing, online update or website deployment claim.
+Commands remain explicitly trusted local execution; local history has no external
+rollback anchor. The recorded training Accelerate audit and initial public TLS
+trust setup issues remain separate follow-ups. One unrelated duplicate desktop
+page method in HEAD was classified nonblocking and preserved.
+
+Full changed surfaces, commands, repaired failures, evidence paths, artifact facts
+and limits: docs/operations/MERGER_IMPLEMENTATION_20260919.md and
+evidence/CETA_MODEL001_MERGER_20260919.json. Source package manifests are refreshed
+and checked as the final delivery step after this entry.

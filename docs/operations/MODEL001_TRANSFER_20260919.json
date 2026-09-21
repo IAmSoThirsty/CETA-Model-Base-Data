@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "authorization_record": "docs/operations/MERGER_IMPLEMENTATION_20260919.md",
+  "source_project": "T:\\00-Active\\Project-AI Model 001",
+  "destination_project": "T:\\00-Active\\CETA-desktop-delivery-20260906",
+  "source_version": "0.1.1",
+  "operation": "Selected governance/context/evidence/decision integration into existing CETA application",
+  "status": "integrated_targeted_tests_passed",
+  "source_license": "No root LICENSE file or project license field found; no license invented.",
+  "exclusions": [
+    "source history and evidence files",
+    "training",
+    "crypto",
+    "isolation",
+    "assurance",
+    "governance permit issuers",
+    "source ledger persistence"
+  ],
+  "files": [
+    {
+      "source": "T:\\00-Active\\Project-AI Model 001\\src\\project_ai_model_001\\validation.py",
+      "destination": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\ceta_model001\\validation.py",
+      "source_sha256": "26b0fea23ebedfb1b0558a6e42f2a4af3fba64683fb3f478eb151e8703e5d33f",
+      "destination_sha256": "26b0fea23ebedfb1b0558a6e42f2a4af3fba64683fb3f478eb151e8703e5d33f",
+      "adaptation": "Exact source bytes; package namespace changes to ceta_model001 through preserved relative imports."
+    },
+    {
+      "source": "T:\\00-Active\\Project-AI Model 001\\src\\project_ai_model_001\\decision.py",
+      "destination": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\ceta_model001\\decision.py",
+      "source_sha256": "93f5b6bedcc2b92cbd8aeea9931f6cad1799337f6bd032d5fb498192c5d05b15",
+      "destination_sha256": "c31bc066386e166a5dc8897434c9f3e365fb68decb58ba604bbc2bc58a41f413",
+      "adaptation": "Remove unused imports identified by Ruff F401; behavior and relative import paths preserved. Original source remains unchanged."
+    },
+    {
+      "source": "T:\\00-Active\\Project-AI Model 001\\src\\project_ai_model_001\\explanation.py",
+      "destination": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\ceta_model001\\explanation.py",
+      "source_sha256": "8a6020a4a7a8617535bf5f6d386486eea785384c9d0bcf956718b5f389d0f19e",
+      "destination_sha256": "03f2680e927d5f6adc82e09656df71473689c596a03ec7273d319528fa61493c",
+      "adaptation": "Remove unused imports identified by Ruff F401; behavior and relative import paths preserved. Original source remains unchanged."
+    },
+    {
+      "source": "T:\\00-Active\\Project-AI Model 001\\src\\project_ai_model_001\\forge\\types.py",
+      "destination": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\ceta_model001\\forge\\types.py",
+      "source_sha256": "c3f8edfac20d4e7897cb889d4c384c04f7d7c4a0f1d117d2bd9d765ac5d026be",
+      "destination_sha256": "c3f8edfac20d4e7897cb889d4c384c04f7d7c4a0f1d117d2bd9d765ac5d026be",
+      "adaptation": "Exact source bytes; package namespace changes to ceta_model001 through preserved relative imports."
+    },
+    {
+      "source": "T:\\00-Active\\Project-AI Model 001\\src\\project_ai_model_001\\forge\\roles.py",
+      "destination": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\ceta_model001\\forge\\roles.py",
+      "source_sha256": "7c4fe38793aeb5cdd03de70e035803b396529a175942f39197b01a5cc41f06ab",
+      "destination_sha256": "7c4fe38793aeb5cdd03de70e035803b396529a175942f39197b01a5cc41f06ab",
+      "adaptation": "Exact source bytes; package namespace changes to ceta_model001 through preserved relative imports."
+    },
+    {
+      "source": "T:\\00-Active\\Project-AI Model 001\\src\\project_ai_model_001\\forge\\harnesses.py",
+      "destination": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\ceta_model001\\forge\\harnesses.py",
+      "source_sha256": "2335eaecc0c465509545e7d676c1da45d488482f42df0b6977f0b754bb920070",
+      "destination_sha256": "3ea310d21600418e2baa92de48acdd0b3bf65c32d3211868bbebfdd4d9587024",
+      "adaptation": "Remove unused imports identified by Ruff F401; behavior and relative import paths preserved. Original source remains unchanged."
+    },
+    {
+      "source": "T:\\00-Active\\Project-AI Model 001\\src\\project_ai_model_001\\forge\\register.py",
+      "destination": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\ceta_model001\\forge\\register.py",
+      "source_sha256": "2805862d9856064b2a494b284a23ca7355b1e7a4960ceb889b903a9d0eec784b",
+      "destination_sha256": "2805862d9856064b2a494b284a23ca7355b1e7a4960ceb889b903a9d0eec784b",
+      "adaptation": "Exact source bytes; package namespace changes to ceta_model001 through preserved relative imports."
+    },
+    {
+      "source": "T:\\00-Active\\Project-AI Model 001\\src\\project_ai_model_001\\forge\\adjudicator.py",
+      "destination": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\ceta_model001\\forge\\adjudicator.py",
+      "source_sha256": "43559111dc8f358b439936c7efa92df8422fef4a8c0753666f2463f29ed02628",
+      "destination_sha256": "43559111dc8f358b439936c7efa92df8422fef4a8c0753666f2463f29ed02628",
+      "adaptation": "Exact source bytes; package namespace changes to ceta_model001 through preserved relative imports."
+    },
+    {
+      "source": "T:\\00-Active\\Project-AI Model 001\\src\\project_ai_model_001\\forge\\context.py",
+      "destination": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\ceta_model001\\forge\\context.py",
+      "source_sha256": "b38c924aec6e2a8ca6d3dcd3f21b594c6f8d24d0c98b095171219a8c10f3c1ad",
+      "destination_sha256": "83156576009e5dfca743ba1e90b6e6c1e72c063dbee9abfcc1f96d8abba5e25f",
+      "adaptation": "Remove unused imports identified by Ruff F401; behavior and relative import paths preserved. Original source remains unchanged."
+    }
+  ],
+  "adaptations": [
+    "New project-scoped journal adapter replaces source ledger persistence; no standalone issuer or execution gate is imported.",
+    "New facade integrates context, decisions and evidence with CETA tasks.",
+    "Remove 18 unused imports from four copied modules identified by Ruff F401; preserve all behavior and original source files."
+  ],
+  "generated_files": [
+    {
+      "destination": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\ceta_model001\\__init__.py",
+      "destination_sha256": "07523ecba0a475fc3f3e8cc0399c839ee081fa6528e718664f4ed91a65f017fd",
+      "origin": "New CETA integration code; no copied source bytes"
+    },
+    {
+      "destination": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\ceta_model001\\context.py",
+      "destination_sha256": "81eea37fa2579e8a23297ae26b22766f689b5edc4d5a7bcc1499f1128a666911",
+      "origin": "New CETA integration code; no copied source bytes"
+    },
+    {
+      "destination": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\ceta_model001\\forge\\__init__.py",
+      "destination_sha256": "323e2d1295e754cad6ce5c9f974965eca5e2abea2944b62bc9f79f075a156752",
+      "origin": "New CETA integration code; no copied source bytes"
+    },
+    {
+      "destination": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\ceta_model001\\forge\\ledger.py",
+      "destination_sha256": "fdb597a0ba6291faaa42b83e36f3b83a6fc5c7b430531659bd25be69a92aa44a",
+      "origin": "New CETA integration code; no copied source bytes"
+    },
+    {
+      "destination": "T:\\00-Active\\CETA-desktop-delivery-20260906\\src\\runtime\\model_provider.py",
+      "destination_sha256": "c8b900b03b75ed7259beced6cbc952400ce4936d54fb75de00e55e7e4c4cf4b1",
+      "origin": "New CETA integration code; no copied source bytes"
+    },
+    {
+      "destination": "T:\\00-Active\\CETA-desktop-delivery-20260906\\tests\\test_model001_integration.py",
+      "destination_sha256": "a7da16fcdd8ff2ece3822f18820596d77084d70aa54c63bacd62da9b9f1f18f4",
+      "origin": "New CETA integration code; no copied source bytes"
+    }
+  ],
+  "validation": {
+    "tests": {
+      "command": ".venv/Scripts/python.exe -B -m unittest discover -s tests -p test_model001_integration.py -v",
+      "result": "pass",
+      "count": 17,
+      "scope": "Actual CETA Journal integration and injected LocalModelClient protocol tests; no live model or deployment verification"
+    },
+    "lint": {
+      "command": ".venv/Scripts/ruff.exe check --no-cache --select F,E9 src/ceta_model001 src/runtime/model_provider.py tests/test_model001_integration.py",
+      "result": "pass"
+    },
+    "source_preserved": true,
+    "all_recorded_hashes_verified": true,
+    "generated_hash_refresh": "Final generated CETA integration hashes refreshed after provider readiness/cancellation changes; original and adapted transfer hashes unchanged."
+  }
+}

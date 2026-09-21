@@ -152,7 +152,8 @@ def main():
         raise SystemExit("The pinned library sources do not match the installed Qt Python packages.")
     sources = checked_sources(args.dependency_sources)
     subprocess.run([sys.executable, "-m", "pip_audit", "--local", "--progress-spinner", "off"], check=True)
-    subprocess.run([sys.executable, "-m", "unittest", "discover", "-s", str(ROOT / "tests"), "-p", "test_desktop*.py", "-v"], cwd=ROOT, check=True)
+    # The same merged-runtime and native desktop gate runs in CI and release builds.
+    subprocess.run([sys.executable, "-B", str(ROOT / "scripts/verify_desktop_runtime.py")], cwd=ROOT, check=True)
     output.mkdir(parents=True)
     if signing:
         with signing_snapshot.open("x", encoding="utf-8") as handle:
@@ -184,6 +185,7 @@ def main():
         "--name", "CETA", "--paths", str(ROOT / "src"),
         "--icon", str(icon_path),
         "--add-data", f"{channel};ceta_desktop",
+        "--add-data", f"{ROOT / 'src/ceta/operation_contracts.json'};ceta",
         "--add-data", f"{ROOT / 'src/ceta_desktop/icon.svg'};ceta_desktop",
         "--add-data", f"{ROOT / 'src/ceta_desktop/assets'};ceta_desktop/assets",
         "--distpath", str(output / "app"), "--workpath", str(output / "work"),

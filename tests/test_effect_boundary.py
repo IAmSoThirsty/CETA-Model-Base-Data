@@ -8,7 +8,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey  # noqa: E402
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey  # noqa: E402
 from authority import AuthorityBindingError, AuthorityLedger, Permit, PermitReuseError, PermitStatus, canonical_hash  # noqa: E402
 from effects import (  # noqa: E402
     AdapterAttempt,
@@ -234,6 +234,43 @@ class EffectBoundaryTests(unittest.TestCase):
         )
         result = self.verifier(gateway).verify(receipt, forged_observation)
         self.assertEqual(result.reason_code, "OBSERVATION_SIGNATURE_INVALID")
+
+    def test_gateway_signing_key_cannot_self_verify_under_an_observer_alias(self):
+        auth = AuthorityLedger(); permit, consequence = issue(auth)
+        gateway = self.gateway(auth, {"fake": FakeAdapter(auth)})
+        receipt = gateway.execute("P1", consequence=consequence, now_ms=2)
+        # A distinct public-key object and different identity/key labels do not
+        # establish independence when the signing key material is the same.
+        observer_public = Ed25519PublicKey.from_public_bytes(gateway.public_key.public_bytes_raw())
+        verifier = EffectVerifier(
+            "effect_verifier",
+            trusted_gateway_keys={"gateway-key": gateway.public_key},
+            trusted_observers={"independent_sensor": ("sensor-key", observer_public)},
+        )
+        observation = self.observation(
+            receipt, PermitStatus.COMPLETED, permit.consequence_hash, key=self.gateway_key,
+        )
+        result = verifier.verify(receipt, observation)
+        self.assertEqual(result.status, EffectVerificationStatus.MISMATCH)
+        self.assertEqual(result.reason_code, "OBSERVER_NOT_INDEPENDENT")
+
+    def test_other_trusted_executor_key_cannot_act_as_an_independent_observer(self):
+        auth = AuthorityLedger(); permit, consequence = issue(auth)
+        gateway = self.gateway(auth, {"fake": FakeAdapter(auth)})
+        receipt = gateway.execute("P1", consequence=consequence, now_ms=2)
+        verifier = EffectVerifier(
+            "effect_verifier",
+            trusted_gateway_keys={
+                "gateway-key": gateway.public_key,
+                "second-gateway-key": self.observer_key.public_key(),
+            },
+            trusted_observers={"independent_sensor": ("sensor-key", self.observer_key.public_key())},
+        )
+        result = verifier.verify(
+            receipt, self.observation(receipt, PermitStatus.COMPLETED, permit.consequence_hash),
+        )
+        self.assertEqual(result.status, EffectVerificationStatus.MISMATCH)
+        self.assertEqual(result.reason_code, "OBSERVER_NOT_INDEPENDENT")
 
     def test_partial_effect_cannot_close_as_verified(self):
         auth = AuthorityLedger(); _, consequence = issue(auth)

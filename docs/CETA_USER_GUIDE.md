@@ -28,6 +28,70 @@ You can browse and edit a workspace before installing any model. Chat requires
 a running local model service and an available model; a decorative planet or a
 model-name example is not evidence that a model is installed.
 
+## Project tasks and evidence
+
+CETA 0.4.0 integrates the selected Model 001 context, claims, decisions and role
+components into the existing CETA application. Open a workspace in **Projects**,
+open **Task and evidence**, enter an objective and start a task. **Inspect project**,
+**Search**, **Current context** and
+**Timeline** operate within that project and task. Inspection reports the current
+Git state when available, applicable instructions, file revisions and omitted
+paths. Sensitive filenames, Git internals, nested repositories and filesystem
+aliases are excluded or refused; the results explicitly identify omissions and
+context limits. Inspection and manual editing work without a model.
+
+Choose an existing task to resume its history. Project changes invalidate compiled
+context before dependent edits or commands. Open a file, edit it, choose **Review
+editor diff**, then **Apply reviewed edit**. A changed file or editor draft requires a
+new review. **Save file** uses the same authority and evidence path and preserves
+the existing conflict checks. Multi-file atomic application is not supported;
+each file receives a separate reviewed action and observed outcome.
+
+New conversations belong to their current task. Existing unassigned conversations
+can be explicitly attached to a task; their prior text is marked historical and
+does not become fresh evidence. Project/task selection controls subsequent chat
+context. The chat composer's **Response role** selector offers **Assistant**,
+**Reviewer** and **Specialist** using the same selected local provider and task grant. Their output is an unverified proposal, not user authority
+or independent corroboration. Model output cannot execute commands or grant itself
+permission to edit.
+
+Commands run only after the user requests the exact command. This is **trusted
+local execution** with the user's ordinary operating-system access. CETA records
+the executable, arguments, working directory, timeout, output and exit status.
+Windows job ownership supports cancellation and cleanup of owned child processes.
+It does not provide filesystem or network sandboxing. A successful exit is not
+independent proof that all effects of a command were correct.
+
+**Timeline** contains the task's captures, context receipts, decisions, consumed
+permits, observed effects and actual outcomes. Verified file edits are independently
+read back and compared with the reviewed bytes. An interrupted or uncertain effect
+is labelled **needs_reconciliation**; CETA does not replay its consumed proposal.
+Inspect actual files/output and create a new explicitly reviewed operation if
+further work is needed. Provider interruptions retain their recorded partial text.
+
+Use **Import historical log…** in **Task and evidence** to select an old CETA
+journal for the current project. Choose its kind, enter the project scope statement,
+and confirm the exact source file, SHA-256 and project in the review dialog. Import preserves original bytes and record order; it does not activate
+old permits or certify historical assertions as true. No other project's history
+is discovered or imported automatically.
+
+## Local history and upgrades
+
+CETA 0.4.0 uses desktop database schema 2. Before a schema-1 migration it creates
+and verifies a uniquely named backup beside the database; originals and unknown
+records are retained. Existing legacy transcripts remain unassigned until selected.
+New project operations share one hash-chained event stream per project. Conversation,
+workload and task views are checked against that history. The application stream
+records settings and model/update/export operations without assigning them to an
+unrelated coding project.
+
+Runtime signing keys are generated locally and protected with Windows current-user
+DPAPI. They are separate from publisher release keys. This is a trusted single-user
+desktop boundary; it does not prove tamper resistance against that user or establish
+an external rollback anchor. Missing/corrupt history or a future schema produces an
+error. After schema-2 events exist, recover forward and retain them; do not replace
+the database with an old backup or run an older schema-1 binary on it.
+
 ## Projects: working with files
 
 In **Projects**, choose **Open workspace** and select a folder. Double-click a UTF-8 text file to
@@ -37,6 +101,8 @@ your edits. Existing UTF-8 byte-order marks and consistent line endings survive
 saves. Binary files, mixed line endings, and files above 4 MiB are not editable.
 Unsaved editor drafts are periodically retained in local application data and
 reopened after a crash. Recovered drafts do not replace disk files automatically.
+If the original folder or file is temporarily unavailable, closing CETA retains
+the recovery draft so it can reopen when the file becomes available again.
 
 Use **New file** or **File > New file** to create a file inside the workspace and **Ctrl+F** to
 find text in the current file. Native undo/redo, selection, and clipboard actions
@@ -57,8 +123,10 @@ out. Stop remains available while waiting.
 The composer's **Open file** button adds the file already open in the Projects
 editor to your message draft. It does not open a file picker or attach a whole
 workspace. Use **Workspace** to switch to Projects first if you need to open a
-file. Review the resulting draft before sending. Workspace files are never
-attached automatically. Assistant text cannot itself run commands or save files.
+file. Review the resulting draft before sending. CETA sends the active task objective,
+project inventory and applicable instructions as context; explicitly selected file
+content is included when requested. Inspect **Current context** before generation to review
+the captured scope. Assistant text cannot itself run commands or save files.
 
 Click a saved discussion in Chat's **Conversations** list to resume it. **Search
 conversations** filters the displayed titles and dates, not the entire message
@@ -69,6 +137,12 @@ it does not execute or save the code.
 Use **Export conversation…** or **Ctrl+Shift+E** to export the current conversation.
 Exports create a new JSON file and refuse to overwrite an existing file.
 
+Unassigned legacy conversations retain **Delete conversation**, which removes the
+selected local transcript and draft after confirmation. Once assigned to a task,
+the action is **Archive conversation**: it hides the conversation and clears its
+draft while retaining its messages and evidence in project history. Archive does
+not erase data. CETA does not silently assign old conversations to a project.
+
 ## Library: saved conversations
 
 The **Library** lists the same locally saved discussions. Use **Find a saved
@@ -78,6 +152,34 @@ exports that selected discussion without changing which conversation is open in
 Chat. **Open project files** takes you to Projects.
 
 ## Model expansion packs
+
+Opening **Models** checks physical RAM, available RAM, logical CPU count, and
+detected graphics hardware locally. **Recheck hardware** refreshes that snapshot.
+These readings belong to the computer where the app is running. No developer
+machine profile is bundled or stored as another user's settings.
+The model selector shows explicit quantized candidates, approximate download sizes,
+and whether their estimated memory needs fit GPU memory or available system RAM.
+Unmeasured graphics memory is not counted as usable VRAM. CPU fallback can be slow.
+Windows GPU names and dedicated memory are read through native DXGI; available
+process budgets are explicitly labelled because the model service's budget may
+differ. NVIDIA free VRAM comes from `nvidia-smi` when available. Unavailable APIs
+leave unknown values. Shared RAM and multiple GPU memories are not added together
+as if they were one dedicated GPU.
+
+**Use suggested model** fills the download name; it does not download or start a
+model. CETA leaves manually entered names unchanged when checking hardware. Known
+catalog models are checked again before download, and imported GGUF packs before
+starting. If measured free memory is insufficient, close other applications or
+choose a smaller model. Custom model tags remain available with unassessed memory
+requirements. These estimates assume one request, one loaded model, and a
+4,096-token context; they do not guarantee loading, speed, or response quality.
+
+The catalog's approximate download sizes come from the official
+[Qwen3 tags](https://ollama.com/library/qwen3/tags) and
+[gpt-oss tags](https://ollama.com/library/gpt-oss/tags). Working-memory estimates
+are CETA policy, not publisher measurements. See Ollama's
+[context memory guidance](https://docs.ollama.com/context-length) and
+[hardware support](https://docs.ollama.com/gpu) for runtime requirements.
 
 Two local model paths are supported:
 
@@ -98,10 +200,29 @@ extensions. No model is included in the desktop installer.
 CETA starts Ollama with cloud features disabled for that process. Model-file
 downloads still require an internet connection. This setting does not change an
 Ollama service that was already running or any service you start separately.
+CETA-started Ollama limits loaded models and parallel requests to one and sets a
+4,096-token context. Ordinary Ollama chat requests also use that context limit.
 Before connecting to another service, check its privacy settings: a local address
 does not guarantee local inference, and that service may forward your messages
 and attached file contents to a cloud provider. See Ollama's
 [local-only configuration](https://docs.ollama.com/faq#how-do-i-disable-ollamas-cloud-features).
+
+After connecting, choose **Test selected local model** to request one short response
+from a model the Ollama service reports as local. The result shows actual response
+time and any runtime-reported VRAM allocation separately from hardware estimates.
+This check cannot certify the service's implementation or establish general model
+quality. Merely discovering a model does not verify that it can generate a response.
+Known cloud-backed model aliases are excluded from the local model list.
+They are also rejected before conversation text is sent. Other OpenAI-compatible
+services remain explicitly unverified for inference locality. The test uses a
+synthetic prompt, does not send saved conversations, and applies only to the
+selected model and endpoint at that time.
+
+CETA provides text conversations and code assistance using separately installed
+local models. It does not install the hosted ChatGPT service. Additional memory
+does not automatically add web access, vision, voice, or autonomous execution.
+Downloading weights and application updates requires connectivity; installed
+local weights can generate responses without an internet connection.
 
 ## Projects terminal and Workloads
 

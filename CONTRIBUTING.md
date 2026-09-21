@@ -47,6 +47,12 @@ Run the complete reference and formal verification sequence (18 sequential check
 uv run --no-sync python scripts/verify_all.py
 ```
 
+The runner prints a new hostile-gate report path in temporary storage; it does
+not rewrite `evidence/EPOCH_HOSTILE_GATE_REPORT.json`. Pass
+`--hostile-report <new-path>` to choose a retained output. Running
+`scripts/hostile_epoch_gate.py` directly accepts `--output <new-path>`. Both
+commands refuse to replace existing reports.
+
 ---
 
 ## 4. Code Quality and Linting

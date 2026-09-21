@@ -1,5 +1,17 @@
 # Status — v0.3.0 CETA Epoch-Ready Reference
 
+## CETA desktop 0.4.0 merger implementation — 2026-09-19
+
+The merged desktop now routes project inspection, context, provider generation,
+manual and reviewed edits, commands and application maintenance through one task
+runtime. CETA authority/effect owners and selected Model 001 components share the
+project journal. SQLite schema 2 migration retains legacy records and a verified
+backup. The current implementation/validation report is
+[MERGER_IMPLEMENTATION_20260919.md](docs/operations/MERGER_IMPLEMENTATION_20260919.md).
+The historical reference claims below retain their original scope. Desktop release
+readiness, installed migration and public deployment require their own evidence.
+
+
 ## Proven by this package
 
 - One canonical owner is assigned to each registered fundamental responsibility; duplicate ownership fails validation.
@@ -24,7 +36,7 @@
 - A later strict training-only run completed 121/121 optimizer steps at revision `4de687e73cdefc75ff8bd65717a3dde2529f7cbc`; its model weights were byte-identical to the prior strict run, its adapter metadata was canonicalized in the bound order, and the consumed evaluator was not opened. This run made no promotion decision.
 - The live calibration exposed a near-unique private ruling-label space (59 distinct labels across 60 cases). Future reports surface this as an interpretation limitation without weakening the frozen exact-ruling gate.
 - Evaluator-consumption receipts now fail closed before paid training and remain a mandatory failing gate if explicitly reused for calibration.
-- Language training now requires the security-fixed PyTorch 2.13 and Transformers 5.5 lines plus a strict deterministic H100 contract; warning-only Flash Attention execution is rejected.
+- Language training now requires PyTorch 2.13 and pinned Transformers 5.10.1 plus a strict deterministic H100 contract; warning-only Flash Attention execution is rejected.
 - Runtime inference uses a target-blind deterministic action-space generator. `propose(world)` has no caller candidate argument.
 - Every curriculum target is recoverable from the target-blind action space without inserting the label into the candidate list.
 - Every v3 target is the unique VM-legal transition in its generated action space; source-context anchors never enter that action space.
@@ -38,7 +50,7 @@
 - Held-out results cannot authorize model promotion.
 - Canonical training evidence is filesystem-location independent for identical logical runs.
 - A full 1,104-case CPU reference epoch completed across pause/restart/resume with exact training split coverage.
-- The corrected target-blind epoch selected VM-legal transitions on 100% of validation and held-out cases in the reference run.
+- The schema-v2 CPU smoke epoch recorded 0.913043 VM-legal selection on validation and held-out cases; the separate schema-v4 H100 result below recorded 100%.
 - The current schema-v2 structured smoke checkpoint is correctly `QUARANTINED`; epoch-pipeline readiness is independent of model promotion.
 - The integrated hostile epoch gate passes all registered final-gate attacks.
 

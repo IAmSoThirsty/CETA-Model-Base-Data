@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import argparse
 import inspect
 import json
+import os
 from pathlib import Path
 import shutil
 import sys
@@ -12,14 +14,8 @@ sys.path.insert(0,str(ROOT/'src'))
 
 from history import domain_hash
 from ceta import ConstitutionalVM, VmDisposition
-from training import (
-    GovernedEpochTrainer, IndependentCheckpointEvaluator, TrainingBindingError,
-    TrainingConfig, effective_optimizer_events, file_sha256, hash_torch_state, load_cases,
-)
-from transition_policy import CetaActionSpaceGenerator, NeuralTransitionPolicy, candidate_sequence, world_from_training_case
 
 DATA=ROOT/'data/ceta_curriculum_v3'
-REPORT=ROOT/'evidence/EPOCH_HOSTILE_GATE_REPORT.json'
 TRAIN_FILENAME='train.jsonl'
 
 
@@ -28,6 +24,8 @@ def pkey(p) -> tuple[str,str]:
 
 
 def must_fail(fn, label: str) -> None:
+    from training import TrainingBindingError
+
     try:
         fn()
     except TrainingBindingError:
@@ -45,7 +43,13 @@ def confined_run_file(path: Path, run_root: Path) -> Path:
     return candidate
 
 
-def main() -> None:
+def run_gate() -> dict:
+    from training import (
+        GovernedEpochTrainer, IndependentCheckpointEvaluator, TrainingConfig,
+        effective_optimizer_events, file_sha256, hash_torch_state, load_cases,
+    )
+    from transition_policy import CetaActionSpaceGenerator, NeuralTransitionPolicy, candidate_sequence, world_from_training_case
+
     checks=[]
 
     train_sig=inspect.signature(GovernedEpochTrainer.train_cases)
@@ -184,11 +188,39 @@ def main() -> None:
         },
     }
     body['report_hash']=domain_hash(body,domain='CETA/EPOCH_HOSTILE_GATE_REPORT/v1')
-    REPORT.parent.mkdir(parents=True,exist_ok=True)
-    REPORT.write_text(json.dumps(body,indent=2,sort_keys=True)+'\n',encoding='utf-8',newline='\n')
+    return body
+
+
+def write_report(body: dict, output: Path | None) -> Path:
+    """Write a new report without replacing historical verification evidence."""
+    contents=json.dumps(body,indent=2,sort_keys=True)+'\n'
+    if output is None:
+        descriptor, filename=tempfile.mkstemp(prefix='ceta-hostile-epoch-report-',suffix='.json')
+        output=Path(filename)
+        handle=os.fdopen(descriptor,'w',encoding='utf-8',newline='\n')
+    else:
+        output.parent.mkdir(parents=True,exist_ok=True)
+        handle=output.open('x',encoding='utf-8',newline='\n')
+    with handle:
+        handle.write(contents)
+        handle.flush()
+        os.fsync(handle.fileno())
+    return output
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser=argparse.ArgumentParser(description='Run the CETA hostile epoch gate and preserve historical reports.')
+    parser.add_argument('--output',type=Path,help='New report path; existing files are never overwritten. Defaults to a unique temporary file.')
+    args=parser.parse_args(argv)
+    if args.output is not None and args.output.exists():
+        parser.error(f'report output already exists: {args.output}')
+    body=run_gate()
+    output=write_report(body,args.output)
     print('CETA HOSTILE EPOCH GATE: PASS')
-    print(f"checks={len(checks)} curriculum_cases={recovered} report_hash={body['report_hash']}")
+    print(f"checks={len(body['checks'])} curriculum_cases={body['curriculum_cases_checked']} report_hash={body['report_hash']}")
+    print(f'report={output.resolve()}')
+    return 0
 
 
 if __name__=='__main__':
-    main()
+    raise SystemExit(main())

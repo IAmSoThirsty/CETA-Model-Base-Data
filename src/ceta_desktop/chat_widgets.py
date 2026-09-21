@@ -26,7 +26,7 @@ from PySide6.QtWidgets import (
 _EMPTY_HEADING = "A place to think and build."
 _EMPTY_COPY = (
     "Connect a local model to start a conversation. "
-    "Your workspace is never attached automatically."
+    "CETA includes the active task's project inventory and instructions. Add file contents explicitly."
 )
 _FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})([^\r\n]*)$")
 _STYLE = """

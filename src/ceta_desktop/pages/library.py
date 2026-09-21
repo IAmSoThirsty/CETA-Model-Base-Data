@@ -78,7 +78,8 @@ class LibraryPage(ScenePage):
         row.addWidget(action("Continue conversation", self._open_library_conversation, "chat", primary=True))
         row.addWidget(action("Export selected…", self._export_library_conversation, "file"))
         if self.delete_conversation:
-            row.addWidget(action("Delete selected", self._delete_library_conversation))
+            self.delete_button = action("Delete selected", self._delete_library_conversation)
+            row.addWidget(self.delete_button)
         row.addStretch()
         row.addWidget(action("Open project files", self.navigate_to_projects, "folder"))
         layout.addLayout(row)

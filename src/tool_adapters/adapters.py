@@ -7,6 +7,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
 from authority import PermitStatus, canonical_hash
 from effects import AdapterAttempt, GatewayInvocation
+from effects.gateway import _claim_gateway_invocation
 
 
 class AdapterBindingError(RuntimeError):
@@ -33,7 +34,7 @@ class ToolAdapter(Protocol):
 
 @dataclass
 class GatewayBoundAdapter:
-    """Reference adapter boundary that refuses unsigned/direct calls."""
+    """Reference boundary requiring a signed, live, single-use gateway call."""
 
     adapter_id: str
 
@@ -84,7 +85,10 @@ class GatewayBoundAdapter:
             raise AdapterBindingError("gateway invocation consequence hash mismatch")
         if not invocation.verify(self._gateway_public_key):
             raise AdapterBindingError("gateway invocation signature invalid")
-        return invocation.invocation_hash
+        invocation_hash = invocation.invocation_hash
+        if not _claim_gateway_invocation(self, invocation_hash):
+            raise AdapterBindingError("gateway invocation is not an available live dispatch")
+        return invocation_hash
 
 
 @dataclass

@@ -1,0 +1,259 @@
+{
+  "schema": "ceta.model001-merger-validation.v1",
+  "recorded_at": "2026-09-19T21:28:20.523983+00:00",
+  "status": "IMPLEMENTED_LOCAL_RELEASE_CANDIDATE_VALIDATED",
+  "application": "CETA",
+  "version": "0.4.0",
+  "source": {
+    "root": "T:\\00-Active\\CETA-desktop-delivery-20260906",
+    "base_commit": "7ebabf903c109d35c6cb7065ee68dd4f7d151b80",
+    "working_tree_changes_uncommitted": true,
+    "baseline": {
+      "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\CETA_MERGER_BASELINE_20260919.json",
+      "sha256": "1264bc4f3a80a8816813639691f4787b7883a6b9d00f2fab3777896cf3afabae",
+      "size": 46632
+    },
+    "baseline_files": 295,
+    "baseline_files_missing": 0,
+    "baseline_content_changes_before_final_report": [
+      {
+        "path": "tests/test_desktop_hardware_ui.py",
+        "before_sha256": "48f13d7a2f56ba05808b80f689e83766de1a963841cb49c655a9d273e2bd9d15",
+        "after_sha256": "869f3b2e2408de8f3c524fb80d51daba501a6eb7dee5993fa019ec961151f5b5"
+      },
+      {
+        "path": ".github/workflows/desktop.yml",
+        "before_sha256": "fdb8ce2f2f528190fedf257d2e1f0d889329dcfcf6f44e4ae59c872905807359",
+        "after_sha256": "7b8f877ca8438d4919534fb48228efa34d1c53ca5574ee5ef686a3e1190612fa"
+      },
+      {
+        "path": "README.md",
+        "before_sha256": "77cf966ee6607195e054cc96aaa79762dca7334d12367179cbb9f9d6100f7a3f",
+        "after_sha256": "932088d1d0bb4ee547574ad038971b4c4cc012f2cff4f2169ba54e1ccb214115"
+      },
+      {
+        "path": "STATUS.md",
+        "before_sha256": "b7ee754c0b2e8747222ecce298176ee71c03148632fc067ba17418e8bee8412d",
+        "after_sha256": "8ef12514df409345d8f786ebd1428bdd7a43f758446ff4c1d0da4b760350e190"
+      },
+      {
+        "path": "docs/CETA_USER_GUIDE.md",
+        "before_sha256": "b792ca53853b774b44a2356c370bce1ed47bdf436cc5c34f1f6119ff08104f37",
+        "after_sha256": "608769b2371d1da7ba9c35fcdf0e8632c6f5189b3462790b74a718c04c41214a"
+      },
+      {
+        "path": "pyproject.toml",
+        "before_sha256": "4a31ab14243ce1dbf56d027ccb3104d33898ebb9b103e5397aa2ea8eb6a7fb1a",
+        "after_sha256": "d66c3a6fbf2842e81fce9a7f64fe0bcf9456bc4f7ac990ca3b1ce4e317d1f51a"
+      },
+      {
+        "path": "scripts/build_desktop.py",
+        "before_sha256": "8c1ce469e0263e2388e327a6575a358fda7be90de76129ea13057991832ef1bd",
+        "after_sha256": "bb4acbec8522469483ef15e989208d815dfe6742ac2fd2f60ecd538b5bd036ce"
+      },
+      {
+        "path": "scripts/prepare_desktop_sandbox.py",
+        "before_sha256": "77a73f66430c4533800813e8b4621247aba3a4afcb13ffc0608e2d2fef33f201",
+        "after_sha256": "9ce36b6f5d0601e23c79685f8f44ff25e2e95c826d496d03fe58256e2d9a6bb3"
+      },
+      {
+        "path": "src/ceta/vm.py",
+        "before_sha256": "469dd61a55b2136bcf5b053e19ab1d607d0660715afce85890fc25516d6e3ad4",
+        "after_sha256": "579fb905528970b07750fe41326d303334da138ba4a165ec2f9623480e52cfcc"
+      },
+      {
+        "path": "src/ceta_desktop/__init__.py",
+        "before_sha256": "b640b7c50e9eee37df114ff0dae1bc76829659cba548afe48539a8f0a5a311e4",
+        "after_sha256": "23368256890df7d689cc30fa8b0779d07a450300a7ce75076637d716b51734ab"
+      },
+      {
+        "path": "src/ceta_desktop/app.py",
+        "before_sha256": "9dc82b2861b6d5f185a50fa90adcf8a0368aa7cbd981a8db931828ae995df33d",
+        "after_sha256": "7bf63b607a99b77d05ae5c3d19124b18bbf8483d4732aa464b059d54d003d3a5"
+      },
+      {
+        "path": "src/ceta_desktop/chat_widgets.py",
+        "before_sha256": "8816f8997dbae044db4eb428401beb201b552f9c870e453ae502986f63e2a5c5",
+        "after_sha256": "3fde9ad719b1ebad36e5d7fee32798e0668b7be9a08f460af09cf0691770a52e"
+      },
+      {
+        "path": "src/ceta_desktop/pages/library.py",
+        "before_sha256": "a3437572fe22b448ef7bc9135aac0dbf88fb4c82d52343d8315206f8cb6c82a2",
+        "after_sha256": "6845192735008e37b969c1cebfca8160c311a7d31ce3a73d18dda2c56ae4e882"
+      },
+      {
+        "path": "src/ceta_desktop/pages/settings.py",
+        "before_sha256": "2a9496b35fda2de4bcf03fa899d50d87672bf48aaafba249a968172f7fceab6e",
+        "after_sha256": "89ad6ea9aa1c0ba0c2240c0ea35d229de8d06f9f45183d4d5f1377c34c515d9e"
+      },
+      {
+        "path": "src/ceta_desktop/pages/updates.py",
+        "before_sha256": "9150a6cbaae318d86b78360bafc1d19ab60dd6e7a7f4746851ddeb167a2c14f9",
+        "after_sha256": "662ee54b81df99a11ad295a7cfaef69bb69b0272dac82a6ebb262d2a06fe7a39"
+      },
+      {
+        "path": "src/ceta_desktop/storage.py",
+        "before_sha256": "d6a80bcab9748b05cd38b158f31f127790455e28587a7cd8ce0277c6a080fa4f",
+        "after_sha256": "85701b69af549e6cda2474c1d2ce0fd7a3531d2fb2a1dd8d6c31089f5b311891"
+      },
+      {
+        "path": "tests/test_desktop_backend.py",
+        "before_sha256": "15a041b2ce861bc744f89071d7abbd3640b8dcaf5ee405d8602f7c366ca5cf05",
+        "after_sha256": "9c826caf55f95a5e51084eb5d3629076cce164b80392225bfbb57d5836cf88ea"
+      },
+      {
+        "path": "tests/test_desktop_chat_widgets.py",
+        "before_sha256": "6169320b6f4b32341be11356908f6557e1a128a1de35ddd751187daf85f09e23",
+        "after_sha256": "de6d6f951be8a40d76d47ba84c972afaa718ef67912462dfb77ba4657745bf8a"
+      },
+      {
+        "path": "tests/test_desktop_gui.py",
+        "before_sha256": "603217ae7266bdf03133e90b2aca5ca8b2e61ebb8d62aa06de9fad1e13f0692d",
+        "after_sha256": "45d19489b350fe0ad129a5adf5c3e951df759bf2e84df6c21a7ff00048e1047b"
+      }
+    ]
+  },
+  "authorization": {
+    "user_request": "implement the plan pleaser and thank yuu",
+    "source_project": "T:\\00-Active\\Project-AI Model 001",
+    "destination_project": "T:\\00-Active\\CETA-desktop-delivery-20260906",
+    "scope": "Selected components integrated into existing CETA; later publication not performed."
+  },
+  "tests": {
+    "full_verification": {
+      "result": "PASS",
+      "ran": 564,
+      "skipped": 1,
+      "seconds": 168.219
+    },
+    "isolated_desktop_build_gate": {
+      "result": "PASS",
+      "ran": 475,
+      "skipped": 1,
+      "seconds": 127.451
+    },
+    "skip_reason": "Temporary volume does not provide a distinct Windows short alias.",
+    "desktop_dependency_audit": "No known vulnerabilities found",
+    "pip_check": "PASS",
+    "ruff_F_E9": "PASS"
+  },
+  "installer": {
+    "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\CETA_0.4.0_RELEASE_CANDIDATE_20260919\\CETA-0.4.0-setup.exe",
+    "sha256": "ddea9a61ae6951136493bf22db81401fe6b98c0ba2187a668960e40a77c5eef2",
+    "size": 44090880,
+    "authenticode": "NotSigned",
+    "publisher_update_signature": "not_created"
+  },
+  "dependency_sources": {
+    "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\CETA_0.4.0_RELEASE_CANDIDATE_20260919\\CETA-0.4.0-dependency-sources.zip",
+    "sha256": "063ed318ffdc8bf7e843cc47094ac721aab70218f36623f25406326bb0024778",
+    "size": 70981896
+  },
+  "sandbox": {
+    "result": "PASS",
+    "network": "disabled",
+    "synthetic": true,
+    "previous_version": "0.3.3",
+    "checks": [
+      "install",
+      "dependency_license_notices",
+      "merged_workflow",
+      "schema1_to_schema2",
+      "backup_integrity",
+      "legacy_rows_preserved",
+      "unknown_rows_preserved",
+      "restart_checkpoint_preserved",
+      "update_wait_timeout",
+      "update_wait_for_exit",
+      "update",
+      "uninstall",
+      "application_data_preserved",
+      "unrecognized_file_preserved"
+    ],
+    "results": [
+      {
+        "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\CETA_MERGER_SANDBOX_20260919\\results\\installed-migration-report.json",
+        "sha256": "1f2a588bb654d5b61d296f351d7db85c83649166b6d3417bf5310ff0703d0e04",
+        "size": 1876
+      },
+      {
+        "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\CETA_MERGER_SANDBOX_20260919\\results\\installed-migration-window.png",
+        "sha256": "a76e9c13e85aad9a85a557abd7ea389769b437f5bd3bcb4ff9e8b15269c77185",
+        "size": 400279
+      },
+      {
+        "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\CETA_MERGER_SANDBOX_20260919\\results\\restart-report.json",
+        "sha256": "e1c675cb8b2bff84db3d256625102c99891e36fb99226e2fa9cae7a86f3b164f",
+        "size": 2103
+      },
+      {
+        "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\CETA_MERGER_SANDBOX_20260919\\results\\restart-window.png",
+        "sha256": "157e493b5e779c8a691702013b25f1196c8139fa0e9f85c9e261ac43be949812",
+        "size": 399722
+      },
+      {
+        "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\CETA_MERGER_SANDBOX_20260919\\results\\result.json",
+        "sha256": "99dd46f30986e59a5a3d17bd6cbdd7b4fc746df35b78fb7600c816d594fe679f",
+        "size": 3469
+      },
+      {
+        "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\CETA_MERGER_SANDBOX_20260919\\results\\stage.txt",
+        "sha256": "cef46e69318e70b234cd7eb18e0cfcb0d62f14a15e8212db79a5fcef7b4cf07f",
+        "size": 18
+      },
+      {
+        "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\CETA_MERGER_SANDBOX_20260919\\results\\update-handoff.json",
+        "sha256": "3c8880449bad1b53106047a5c78781ad61d27f703a3f9a76d224bd13f1e9ebd6",
+        "size": 75
+      },
+      {
+        "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\CETA_MERGER_SANDBOX_20260919\\results\\updated-report.json",
+        "sha256": "b764dfe28ff84d52fc9e65a1cc8f3bbf33bc301e631507107899b214b9196d9f",
+        "size": 2330
+      },
+      {
+        "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\CETA_MERGER_SANDBOX_20260919\\results\\updated-window.png",
+        "sha256": "0de301cf6721c2c952ca98b659873d1ef77e5e3038b11d087a0a6e523572da6f",
+        "size": 401131
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\ceta-merger-full-verification.log",
+      "sha256": "65193a24eac6f3b763850430b7fe2fb565d316af4c15d19254ff051abee08c03",
+      "size": 8573
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\ceta-merger-installer-build.log",
+      "sha256": "22172f84b0f03c148f08deea550d7b8b8fb3a2b208977a061e0358eb95c9a9ea",
+      "size": 95693
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\ceta-merger-hostile-gate-final.json",
+      "sha256": "975040abf1b61beeeff2d2a7a9826691f203208869afadbd8f35df953957ce5c",
+      "size": 1474
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\CETA_MERGED_WHEEL_PROOF_20260919_bab68fb3\\verification.json",
+      "sha256": "1efa1e47706cf7ccaa3efdf450b2541632de00c54ff8abc1c4283ee0bed18d8c",
+      "size": 1096
+    },
+    {
+      "path": "C:\\Users\\Quencher\\.codex\\visualizations\\2026\\09\\19\\01a0bb3e-860d-75f1-974b-12e6e59151e2\\CETA_LIVE_MODEL_PROBE_85efbafa\\result.json",
+      "sha256": "745f6dd10aa22af235d87c2eefdfb007f99dadf17020d8c25e9fb13142057463",
+      "size": 6075
+    }
+  ],
+  "deployment": {
+    "performed": false,
+    "destination_later": "Thirstysystems.com"
+  },
+  "limits": [
+    "Trusted local command mode; no application-command filesystem/network sandbox claim.",
+    "Local runtime identity has no external rollback anchor or distributed trust claim.",
+    "Installer is unsigned and unpublished; publisher signing and online release verification remain later.",
+    "Synthetic VM lifecycle and one real local-model request do not establish general model quality or every supported hardware configuration.",
+    "Historical training Accelerate audit and first-attempt public TLS trust initialization remain separate follow-ups."
+  ]
+}

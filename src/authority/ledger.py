@@ -3,7 +3,12 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import errno
+import threading
+import time
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass
+from functools import wraps
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -17,6 +22,49 @@ class PermitExpiredError(AuthorityError): pass
 
 
 GENESIS_AUTHORITY_HASH = "0" * 64
+
+
+def _serialized(method):
+    """Keep validation, durable append, and projection in one transaction."""
+    @wraps(method)
+    def call(self, *args, **kwargs):
+        with self._transaction():
+            return method(self, *args, **kwargs)
+    return call
+
+
+@contextmanager
+def _file_lock(path: Path):
+    """Serialize cooperating processes without truncating ledger evidence.
+
+    The stable sidecar must remain in place: unlinking it would allow different
+    processes to lock different files for the same ledger.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor = os.open(str(path) + ".lock", os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        if os.name == "nt":
+            import msvcrt
+            while True:
+                try:
+                    msvcrt.locking(descriptor, msvcrt.LK_NBLCK, 1)
+                    break
+                except OSError as exc:
+                    if exc.errno not in {errno.EACCES, errno.EAGAIN, errno.EDEADLK}:
+                        raise
+                    time.sleep(0.01)
+        else:
+            import fcntl
+            fcntl.flock(descriptor, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            if os.name == "nt":
+                msvcrt.locking(descriptor, msvcrt.LK_UNLCK, 1)
+            else:
+                fcntl.flock(descriptor, fcntl.LOCK_UN)
+    finally:
+        os.close(descriptor)
 
 
 def canonical_hash(value: Mapping[str, Any]) -> str:
@@ -62,31 +110,58 @@ class AuthorityLedger:
     """Single-use authority state machine with optional durable replay.
 
     The ledger never executes effects. With ``path`` set, every state change is
-    appended and fsynced before the in-memory projection advances. Restart
-    reconstructs consumed-nonce tombstones from the event chain, preventing
-    permit resurrection after process loss.
+    appended and fsynced before the in-memory projection advances. Each public
+    operation reloads the durable chain under an operating-system file lock,
+    so separate ledger instances cannot consume stale authority. Restart
+    reconstructs consumed-nonce tombstones from the event chain. A live instance
+    also rejects removal, truncation, or replacement of its observed history.
     """
 
     def __init__(self, path: str|Path|None=None) -> None:
-        self.path=Path(path) if path is not None else None
+        # All aliases of an existing symlink/junction target share one lock,
+        # and later process working-directory changes cannot redirect authority.
+        self.path=Path(path).resolve() if path is not None else None
         self._permits: dict[str,_PermitState]={}
         self._consumed_nonces: set[str]=set()
         self._events: list[AuthorityEvent]=[]
-        if self.path is not None and self.path.exists():
-            self._load()
+        self._mutex = threading.RLock()
+        self._transaction_depth = 0
+        with self._transaction():
+            pass
+
+    @contextmanager
+    def _transaction(self):
+        with self._mutex:
+            if self._transaction_depth:
+                yield
+                return
+            self._transaction_depth += 1
+            try:
+                if self.path is None:
+                    yield
+                else:
+                    with _file_lock(self.path):
+                        self._load()
+                        yield
+            finally:
+                self._transaction_depth -= 1
 
     @property
+    @_serialized
     def events(self) -> tuple[AuthorityEvent,...]:
         return tuple(self._events)
 
     @property
+    @_serialized
     def current_root(self) -> str:
         return self._events[-1].event_hash if self._events else GENESIS_AUTHORITY_HASH
 
+    @_serialized
     def issue(self, permit: Permit, *, consequence: Mapping[str,Any], now_ms: int) -> None:
         self._validate_issue(permit,consequence=consequence,now_ms=now_ms)
         self._commit_event("ISSUE",permit.permit_id,{"permit":_permit_dict(permit),"consequence":dict(consequence)})
 
+    @_serialized
     def prepare(self, permit_id: str, *, consumer_id: str, consumer_key_id: str, consequence: Mapping[str,Any], now_ms: int) -> str:
         s=self._state(permit_id)
         if s.status != PermitStatus.ISSUED:
@@ -103,6 +178,7 @@ class AuthorityLedger:
         self._commit_event("PREPARE",permit_id,{"intent_hash":intent_hash,"consumer_id":consumer_id,"consumer_key_id":consumer_key_id,"consequence_hash":ch})
         return intent_hash
 
+    @_serialized
     def resume_prepared(
         self,
         permit_id: str,
@@ -137,6 +213,7 @@ class AuthorityLedger:
             raise AuthorityBindingError("persisted prepared intent does not reconstruct")
         return s.intent_hash
 
+    @_serialized
     def consume(self, permit_id: str, *, consumer_id: str, consumer_key_id: str, intent_hash: str, now_ms: int) -> None:
         s=self._state(permit_id)
         if s.status != PermitStatus.PREPARED:
@@ -151,6 +228,7 @@ class AuthorityLedger:
             raise PermitReuseError('permit nonce already consumed')
         self._commit_event("CONSUME",permit_id,{"intent_hash":intent_hash,"nonce":s.permit.nonce})
 
+    @_serialized
     def finish(self, permit_id: str, *, status: PermitStatus, expected_consequence_hash: str, actual_consequence_hash: str|None) -> None:
         s=self._state(permit_id)
         if s.status != PermitStatus.CONSUMED:
@@ -163,6 +241,7 @@ class AuthorityLedger:
             raise AuthorityBindingError('completed effect differs from permitted consequence')
         self._commit_event("FINISH",permit_id,{"status":status.value,"expected_consequence_hash":expected_consequence_hash,"actual_consequence_hash":actual_consequence_hash})
 
+    @_serialized
     def reconcile(self, permit_id: str, *, resolved_status: PermitStatus) -> None:
         s=self._state(permit_id)
         if s.status != PermitStatus.INDETERMINATE:
@@ -171,21 +250,26 @@ class AuthorityLedger:
             raise AuthorityBindingError('invalid reconciliation status')
         self._commit_event("RECONCILE",permit_id,{"resolved_status":resolved_status.value})
 
+    @_serialized
     def revoke(self, permit_id: str) -> None:
         s=self._state(permit_id)
         if s.status not in {PermitStatus.ISSUED,PermitStatus.PREPARED}:
             raise AuthorityBindingError('only unconsumed authority may be revoked')
         self._commit_event("REVOKE",permit_id,{"reason":"EXPLICIT_REVOCATION"})
 
+    @_serialized
     def permit(self, permit_id: str) -> Permit:
         return self._state(permit_id).permit
 
+    @_serialized
     def status(self, permit_id: str) -> PermitStatus:
         return self._state(permit_id).status
 
+    @_serialized
     def consumed(self, nonce: str) -> bool:
         return nonce in self._consumed_nonces
 
+    @_serialized
     def snapshot(self) -> dict[str, Any]:
         """Read-only operational authority view for the Constitutional VM.
 
@@ -213,6 +297,7 @@ class AuthorityLedger:
             },
         }
 
+    @_serialized
     def verify(self) -> bool:
         replay=AuthorityLedger()
         previous=GENESIS_AUTHORITY_HASH
@@ -308,6 +393,11 @@ class AuthorityLedger:
         return clone
 
     def _load(self) -> None:
+        if not self.path.exists():
+            if self._events:
+                raise AuthorityBindingError('authority ledger history disappeared')
+            return
+        replay = AuthorityLedger()
         events=[]; previous=GENESIS_AUTHORITY_HASH; expected=1
         with self.path.open(encoding='utf-8') as handle:
             for lineno,line in enumerate(handle,1):
@@ -320,10 +410,17 @@ class AuthorityLedger:
                     if event.sequence != expected: raise AuthorityBindingError('authority event sequence mismatch')
                     if event.previous_hash != previous: raise AuthorityBindingError('authority previous hash mismatch')
                     if _event_hash(event.body()) != event.event_hash: raise AuthorityBindingError('authority event hash mismatch')
-                    self._apply_event(event)
+                    replay._apply_event(event)
                     events.append(event); previous=event.event_hash; expected += 1
                 except Exception as exc:
                     raise AuthorityBindingError(f'invalid authority ledger line {lineno}: {exc}') from exc
+        if len(events) < len(self._events) or any(
+            old.event_hash != new.event_hash
+            for old, new in zip(self._events, events)
+        ):
+            raise AuthorityBindingError('authority ledger history regressed or changed')
+        self._permits = replay._permits
+        self._consumed_nonces = replay._consumed_nonces
         self._events=events
 
     def _state(self, permit_id: str) -> _PermitState:

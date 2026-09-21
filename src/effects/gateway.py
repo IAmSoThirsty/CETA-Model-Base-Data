@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from contextvars import ContextVar
+from threading import Lock
 from typing import Mapping, Protocol
 from uuid import uuid4
 
@@ -36,14 +38,46 @@ class EffectAdapter(Protocol):
         ...
 
 
+class _GatewayDispatch:
+    """One live adapter attempt, never a replacement for durable authority."""
+
+    def __init__(self, adapter: EffectAdapter, invocation_hash: str) -> None:
+        self.adapter = adapter
+        self.invocation_hash = invocation_hash
+        self._available = True
+        self._lock = Lock()
+
+    def claim(self, adapter: EffectAdapter, invocation_hash: str) -> bool:
+        with self._lock:
+            if not self._available or adapter is not self.adapter or invocation_hash != self.invocation_hash:
+                return False
+            self._available = False
+            return True
+
+    def close(self) -> None:
+        # Copied contexts share this object, so reset alone would not revoke a
+        # dispatch captured by an adapter before returning or raising.
+        with self._lock:
+            self._available = False
+
+
+_CURRENT_DISPATCH: ContextVar[_GatewayDispatch | None] = ContextVar("ceta_effect_dispatch", default=None)
+
+
+def _claim_gateway_invocation(adapter: EffectAdapter, invocation_hash: str) -> bool:
+    dispatch = _CURRENT_DISPATCH.get()
+    return dispatch is not None and dispatch.claim(adapter, invocation_hash)
+
+
 class EffectGateway:
     """Single external-effect boundary.
 
     Routing is validated before authority is touched. The exact permit is
     prepared and consumed before an adapter can observe the request. The adapter
     receives a gateway-signed invocation bound to the consumed intent and exact
-    consequence hash. The gateway records only an executor claim and owns no
-    authority to verify resulting external reality.
+    consequence hash. Its live dispatch can be claimed exactly once, so a signed
+    invocation is not reusable authority. The gateway records only an executor
+    claim and owns no authority to verify resulting external reality.
     """
 
     def __init__(
@@ -145,6 +179,8 @@ class EffectGateway:
             private_key=self._signing_private_key,
         )
 
+        dispatch = _GatewayDispatch(adapter, invocation.invocation_hash)
+        dispatch_token = _CURRENT_DISPATCH.set(dispatch)
         try:
             attempt = adapter.perform(dict(consequence), invocation)
         except Exception as exc:  # after consumption, absence of effect is not proven
@@ -153,6 +189,9 @@ class EffectGateway:
                 claim={"exception_type": type(exc).__name__, "message": str(exc)},
                 actual_consequence_hash=None,
             )
+        finally:
+            dispatch.close()
+            _CURRENT_DISPATCH.reset(dispatch_token)
 
         actual_hash = attempt.actual_consequence_hash
         if attempt.status == PermitStatus.COMPLETED:

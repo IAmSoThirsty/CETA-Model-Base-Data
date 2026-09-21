@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 from importlib.resources import files
 import json
 import os
@@ -10,18 +11,23 @@ import subprocess
 import sys
 import threading
 from datetime import datetime
+from uuid import uuid4
 
 from PySide6.QtCore import QDir, QSize, QLockFile, QProcess, QProcessEnvironment, QThread, QTimer, Qt, Signal
 from PySide6.QtGui import QAction, QCloseEvent, QFont, QIcon, QKeySequence, QTextCursor
 from PySide6.QtWidgets import (
     QApplication, QComboBox, QFrame, QFileDialog, QFileSystemModel, QFormLayout, QHBoxLayout,
     QInputDialog, QLabel, QLineEdit, QListWidget, QListWidgetItem, QMainWindow, QMessageBox, QPlainTextEdit,
-    QSplitter, QStackedWidget, QTreeView,
+    QSplitter, QStackedWidget, QTabWidget, QTreeView,
     QVBoxLayout, QWidget,
 )
 
 from . import __version__
 from .models import LocalModelClient, ModelPacks
+from .hardware import (
+    ModelOption, assess_model, assess_models, format_hardware,
+    inspect_hardware, local_model_option, recommended_model,
+)
 from .storage import Store, application_directory
 from .workspace import Document, Workspace
 from .instance import open_application_marker, close_application_marker
@@ -34,6 +40,9 @@ from .pages.library import LibraryPage
 from .pages.settings import SettingsPage
 from .pages.updates import UpdatesPage
 from .pages.workloads import WorkloadsPage
+from .pages.tasks import TasksPanel
+from runtime.tasks import TaskRuntime
+from runtime.model_provider import LocalProvider
 
 
 class BackgroundTask(QThread):
@@ -58,6 +67,12 @@ class MainWindow(QMainWindow):
     def __init__(self, directory: Path):
         super().__init__()
         self.store = Store(directory)
+        self.task_runtime = TaskRuntime(directory)
+        self.task_runtime.recover_interrupted()
+        self.project_id = None
+        self.task_id = None
+        self.workload_task = None
+        self.pending_edit = None
         self.packs = ModelPacks(directory)
         self.workspace: Workspace | None = None
         self.document: Document | None = None
@@ -76,11 +91,18 @@ class MainWindow(QMainWindow):
         self.workload_bytes = 0
         self.workload_cancelled = False
         self.pack_download_client = None
+        self.hardware_profile = None
+        self.hardware_check_running = False
+        self.model_probe_running = False
+        self.model_action_id = None
+        self.model_start_pending = False
+        self.pending_model_observations = []
         self.model_process = QProcess(self)
         self.model_process.setProcessChannelMode(QProcess.MergedChannels)
         self.model_process.readyReadStandardOutput.connect(self._model_output)
-        self.model_process.errorOccurred.connect(lambda error: self.model_status.setText(self.model_process.errorString()))
-        self.model_process.finished.connect(lambda *_: self.model_status.setText("Local model stopped"))
+        self.model_process.started.connect(self._model_started)
+        self.model_process.errorOccurred.connect(self._model_error)
+        self.model_process.finished.connect(self._model_finished)
         self.process = QProcess(self)
         self.process.setProcessChannelMode(QProcess.MergedChannels)
         self.process.readyReadStandardOutput.connect(self._workload_output)
@@ -166,6 +188,7 @@ class MainWindow(QMainWindow):
         )
         self.library_list = self.library_page.library_list
         self.library_empty = self.library_page.library_empty
+        self.library_list.currentItemChanged.connect(self._library_selection_changed)
         self.library_search = self.library_page.library_search
 
         self.workloads_page = WorkloadsPage(
@@ -175,7 +198,8 @@ class MainWindow(QMainWindow):
         self.workload_history = self.workloads_page.workload_history
         self.history_output = self.workloads_page.history_output
 
-        self.updates_page = UpdatesPage(self._background, self._has_active_work, self.install_update)
+        self.updates_page = UpdatesPage(self._background, self._has_active_work, self.install_update,
+                                        application_runner=self._application_action)
         self.updates_page.install_requested.connect(self._on_install_requested)
         self.update_status = self.updates_page.update_status
         self.check_update_button = self.updates_page.check_update_button
@@ -184,7 +208,7 @@ class MainWindow(QMainWindow):
         self.install_update_button = self.updates_page.install_update_button
         self.update_channel = self.updates_page.update_channel
 
-        self.settings_page = SettingsPage(self.store)
+        self.settings_page = SettingsPage(self.store, application_runner=self._application_action)
         self.settings_page.preferences_changed.connect(self._apply_editor_preferences)
         self.editor_font_size = self.settings_page.editor_font_size
         self.editor_wrap = self.settings_page.editor_wrap
@@ -200,6 +224,7 @@ class MainWindow(QMainWindow):
         self._apply_editor_preferences()
         self._connect_model_selectors()
         self.navigation.currentRowChanged.connect(self.pages.setCurrentIndex)
+        self.navigation.currentRowChanged.connect(self._models_opened)
         scenes = ("chat", "projects", "library", "models", "workloads", "updates", "settings")
         self.navigation.currentRowChanged.connect(lambda row: self.sidebar.set_scene(scenes[row]) if 0 <= row < len(scenes) else None)
         self.navigation.setCurrentRow(0)
@@ -267,7 +292,8 @@ class MainWindow(QMainWindow):
         self.conversation_empty.setObjectName("muted")
         rail.addWidget(self.conversation_empty)
         rail.addWidget(self._action("Export conversation…", self.export_conversation, "file"))
-        rail.addWidget(self._action("Delete conversation", self.delete_conversation))
+        self.delete_conversation_button = self._action("Delete conversation", self.delete_conversation)
+        rail.addWidget(self.delete_conversation_button)
         splitter = QSplitter()
         splitter.setChildrenCollapsible(False)
         splitter.addWidget(self.chat_rail)
@@ -315,6 +341,17 @@ class MainWindow(QMainWindow):
         compose_layout = QVBoxLayout(composer)
         compose_layout.setContentsMargins(12, 8, 12, 10)
         compose_layout.setSpacing(8)
+        role_row = QHBoxLayout()
+        role_row.addWidget(QLabel("Response role"))
+        self.chat_role_combo = QComboBox()
+        self.chat_role_combo.setAccessibleName("Response role")
+        self.chat_role_combo.addItem("Assistant", None)
+        self.chat_role_combo.addItem("Reviewer", "reviewer")
+        self.chat_role_combo.addItem("Specialist", "specialist")
+        self.chat_role_combo.setToolTip("Uses the selected model and current task. Role responses are proposals; review their supporting evidence before applying changes.")
+        role_row.addWidget(self.chat_role_combo)
+        role_row.addStretch()
+        compose_layout.addLayout(role_row)
         self.prompt = QPlainTextEdit()
         self.prompt.setObjectName("chatPrompt")
         self.prompt.setMinimumHeight(58)
@@ -429,7 +466,11 @@ class MainWindow(QMainWindow):
         center.setSizes([520, 240])
         splitter.addWidget(center)
         splitter.setSizes([240, 850])
-        layout.addWidget(splitter, 1)
+        self.project_tabs = QTabWidget()
+        self.project_tabs.addTab(splitter, "Files and terminal")
+        self.task_panel = TasksPanel(self)
+        self.project_tabs.addTab(self.task_panel, "Task and evidence")
+        layout.addWidget(self.project_tabs, 1)
         return page
 
     def _library_page(self):
@@ -453,6 +494,31 @@ class MainWindow(QMainWindow):
 
     def _models_page(self):
         page, layout = self._page("Models", "Your intelligence, your choice. Install optional packs or connect to a local runtime.")
+        hardware, hardware_layout = self._card(
+            "Choose a model for this computer",
+            "Local models can help with text, code, drafting, and explanation.",
+        )
+        self.hardware_summary = QLabel("Open Models to inspect available memory and graphics hardware. No network request is needed.")
+        self.hardware_summary.setWordWrap(True)
+        self.hardware_summary.setAccessibleName("Local hardware summary")
+        hardware_layout.addWidget(self.hardware_summary)
+        choices = QHBoxLayout()
+        self.hardware_model_combo = QComboBox()
+        self.hardware_model_combo.setAccessibleName("Models assessed for this computer")
+        self.hardware_model_combo.setSizeAdjustPolicy(QComboBox.AdjustToMinimumContentsLengthWithIcon)
+        self.hardware_model_combo.setMinimumContentsLength(18)
+        self.hardware_model_combo.currentIndexChanged.connect(self._hardware_selection_changed)
+        choices.addWidget(self.hardware_model_combo, 1)
+        self.use_suggested_button = self._action("Use suggested model", self.use_suggested_model)
+        self.use_suggested_button.setEnabled(False)
+        choices.addWidget(self.use_suggested_button)
+        self.hardware_refresh_button = self._action("Recheck hardware", self.refresh_hardware, "refresh")
+        choices.addWidget(self.hardware_refresh_button)
+        hardware_layout.addLayout(choices)
+        self.hardware_model_detail = QLabel("Download remains an explicit action. Model fit is assessed for one request with a 4,096-token context.")
+        self.hardware_model_detail.setWordWrap(True)
+        hardware_layout.addWidget(self.hardware_model_detail)
+        layout.addWidget(hardware)
         service, service_layout = self._card("Local model connection", "CETA starts Ollama with cloud features disabled. Services started outside CETA retain their own privacy settings.")
         form = QFormLayout()
         form.setSpacing(12)
@@ -463,13 +529,17 @@ class MainWindow(QMainWindow):
         self.model_combo.setCurrentText(self.store.setting("model", ""))
         self.model_combo.setAccessibleName("Active local model")
         self.model_combo.lineEdit().setPlaceholderText("Connect to discover installed models")
+        self.model_combo.currentTextChanged.connect(self._model_configuration_changed)
+        self.endpoint.textChanged.connect(self._model_configuration_changed)
         form.addRow("Active model", self.model_combo)
         service_layout.addLayout(form)
         controls = QHBoxLayout()
         controls.addWidget(self._action("Connect / refresh models", self.refresh_models, "refresh", primary=True))
         controls.addWidget(self._action("Start installed Ollama", self.start_ollama, "models"))
+        self.probe_model_button = self._action("Test selected local model", self.probe_model)
         controls.addStretch()
         service_layout.addLayout(controls)
+        service_layout.addWidget(self.probe_model_button, 0, Qt.AlignLeft)
         layout.addWidget(service)
         packs, packs_layout = self._card("Expansion packs", "Model downloads are optional and separate from application updates. No model is bundled with CETA.")
         download_row = QHBoxLayout()
@@ -489,7 +559,7 @@ class MainWindow(QMainWindow):
         self.import_button = self._action("Import GGUF pack…", self.import_model, "folder")
         row.addWidget(self.import_button)
         row.addWidget(self._action("Start selected pack…", self.start_model, "models"))
-        row.addWidget(self._action("Stop local model", lambda: self._stop_process(self.model_process)))
+        row.addWidget(self._action("Stop local model", self.stop_local_model))
         packs_layout.addLayout(row)
         layout.addWidget(packs, 1)
         self.model_status = QLabel("No model download is required to browse or edit your workspace.")
@@ -503,6 +573,128 @@ class MainWindow(QMainWindow):
         self.model_log.setPlaceholderText("Local runtime output")
         layout.addWidget(self.model_log)
         return page
+
+    def _models_opened(self, row):
+        if row == 3 and self.hardware_profile is None:
+            self.refresh_hardware()
+
+    def _model_configuration_changed(self, *_):
+        if hasattr(self, "model_status"):
+            self.model_status.setText("Model settings changed. Inference is unverified for the current model and endpoint.")
+
+    def _hardware_loaded(self, profile):
+        self.hardware_profile = profile
+        self.hardware_summary.setText(format_hardware(profile))
+        previous = self.hardware_model_combo.currentData()
+        preferred = previous.model.tag if previous else None
+        suggestion = recommended_model(profile)
+        if preferred is None and suggestion:
+            preferred = suggestion.model.tag
+        self.hardware_model_combo.blockSignals(True)
+        self.hardware_model_combo.clear()
+        preferred_index = 0
+        for assessment in assess_models(profile):
+            model = assessment.model
+            self.hardware_model_combo.addItem(
+                f"{assessment.mode.upper()} · {model.tag} · {model.download_bytes / 1024**3:.1f} GiB download",
+                assessment,
+            )
+            self.hardware_model_combo.setItemData(
+                self.hardware_model_combo.count() - 1,
+                f"{model.tag}\n{assessment.reason}", Qt.ToolTipRole,
+            )
+            if model.tag == preferred:
+                preferred_index = self.hardware_model_combo.count() - 1
+        self.hardware_model_combo.setCurrentIndex(preferred_index)
+        self.hardware_model_combo.blockSignals(False)
+        self._hardware_selection_changed()
+
+    def _hardware_selection_changed(self, *_):
+        assessment = self.hardware_model_combo.currentData()
+        if assessment is None:
+            return
+        self.hardware_model_detail.setText(
+            f"{assessment.model.description}\n{assessment.reason}",
+        )
+        self.hardware_model_combo.setToolTip(self.hardware_model_combo.currentText())
+        self.use_suggested_button.setEnabled(assessment.mode in {"cpu", "gpu"})
+
+    def use_suggested_model(self):
+        assessment = self.hardware_model_combo.currentData()
+        if assessment and assessment.mode in {"cpu", "gpu"}:
+            self.pack_name.setText(assessment.model.tag)
+            self.model_status.setText("Suggested name filled in. Choose Download pack to request installation.")
+
+    def refresh_hardware(self):
+        if self.hardware_check_running:
+            return
+        self.hardware_check_running = True
+        self.hardware_refresh_button.setEnabled(False)
+        self.hardware_model_combo.setEnabled(False)
+        self.use_suggested_button.setEnabled(False)
+        self.hardware_summary.setText("Inspecting this computer's available memory and graphics hardware…")
+        task = self._background(lambda _: inspect_hardware(), self._hardware_loaded, self._hardware_check_failed)
+        task.finished.connect(self._hardware_check_finished)
+
+    def _hardware_check_failed(self, error):
+        self.hardware_profile = None
+        self.hardware_model_combo.clear()
+        self.use_suggested_button.setEnabled(False)
+        self.hardware_summary.setText(f"Hardware inspection unavailable: {error}")
+        self.hardware_model_detail.setText("There is no current hardware assessment. Recheck hardware before choosing a suggestion.")
+
+    def _hardware_check_finished(self):
+        self.hardware_check_running = False
+        self.hardware_refresh_button.setEnabled(True)
+        self.hardware_model_combo.setEnabled(True)
+
+    def probe_model(self):
+        if self.model_probe_running or self.chat_task:
+            self.model_status.setText("Stop the current model request before testing another response.")
+            return
+        model = self.model_combo.currentText().strip()
+        if not model:
+            self.model_status.setText("Connect and select an installed local model first.")
+            return
+        try:
+            endpoint = self.endpoint.text().strip()
+            client = LocalModelClient(endpoint)
+        except ValueError as exc:
+            self.model_status.setText(str(exc))
+            return
+        self.model_probe_running = True
+        self.probe_model_button.setEnabled(False)
+        self.model_status.setText(f"Testing one short local response from {model}…")
+
+        def verified(result):
+            runtime = result.get("runtime") or {}
+            residency = ""
+            if isinstance(runtime.get("size_vram"), (int, float)):
+                residency = f" · runtime-reported VRAM {runtime['size_vram'] / 1024**3:.2f} GiB"
+            if self.model_combo.currentText().strip() == model and self.endpoint.text().strip() == endpoint:
+                self.model_status.setText(
+                    f"Response completed for {result['model']} · runtime reports local inference · "
+                    f"{result['elapsed_seconds']:.1f}s{residency}. This short check does not measure general response quality.",
+                )
+            else:
+                self.model_status.setText(f"Test completed for {result['model']} using earlier settings. Current model and endpoint remain unverified.")
+            self.model_log.appendPlainText(f"Local test response ({result['model']}):\n{result['response']}")
+
+        def finished():
+            self.model_probe_running = False
+            self.probe_model_button.setEnabled(True)
+
+        directory = self.store.directory
+        def probe(task):
+            runtime = TaskRuntime(directory)
+            try:
+                return runtime.probe_model(client, model, cancelled=task.cancelled)
+            finally:
+                runtime.close()
+        task = self._background(probe, verified,
+                                lambda error: self.model_status.setText(f"Local inference not verified: {error}"))
+        task.cancelled = client.cancelled
+        task.finished.connect(finished)
 
     def _workloads_page(self):
         page, layout = self._page("Workloads", "A record of the commands you ran, their results, and what happened next.")
@@ -578,7 +770,7 @@ class MainWindow(QMainWindow):
     def install_update(self):
         if not self.downloaded_update or os.name != "nt":
             return
-        if self.tasks or self.chat_task or self.process.state() != QProcess.NotRunning:
+        if self._has_active_work():
             self.update_status.setText("Stop active conversations, downloads, and workloads before installing the update.")
             return
         answer = QMessageBox.question(
@@ -592,7 +784,7 @@ class MainWindow(QMainWindow):
             self.pending_update = None
 
     def _has_active_work(self) -> bool:
-        return bool(self.tasks or self.chat_task or self.process.state() != QProcess.NotRunning)
+        return bool(self.tasks or self.chat_task or self.workload_task or self.process.state() != QProcess.NotRunning)
 
     def _on_install_requested(self, path, manifest):
         self.pending_update = (path, manifest)
@@ -602,6 +794,71 @@ class MainWindow(QMainWindow):
     def _error(self, message):
         self.statusBar().showMessage(str(message))
         QMessageBox.warning(self, "CETA", str(message))
+
+    def _application_action(self, kind, arguments, executor, *, return_action=False):
+        runtime = TaskRuntime(self.store.directory)
+        try:
+            return runtime.application_action(kind, arguments, executor, return_action=return_action)
+        finally:
+            runtime.close()
+
+    def _observe_model(self, observation):
+        if not self.model_action_id:
+            if self.model_start_pending:
+                self.pending_model_observations.append(observation)
+            return
+        runtime = TaskRuntime(self.store.directory)
+        try:
+            runtime.application_observation(self.model_action_id, observation)
+        except (ValueError, OSError, RuntimeError) as exc:
+            self.model_status.setText(f"Model process evidence could not be saved: {exc}")
+        finally:
+            runtime.close()
+
+    def _start_owned_model(self):
+        self.model_action_id = None
+        self.model_start_pending = True
+        self.pending_model_observations = []
+        try:
+            record = self._application_action(
+                "model.start", {"program": self.model_process.program(), "arguments": self.model_process.arguments(),
+                                "outcome_scope": "Request local process startup; readiness is checked separately"},
+                self.model_process.start, return_action=True)
+            self.model_action_id = record["action_id"]
+            self.model_start_pending = False
+            observations = self.pending_model_observations
+            self.pending_model_observations = []
+            for observation in observations:
+                self._observe_model(observation)
+            return not any(item.get("phase") == "process_error" for item in observations)
+        except (ValueError, OSError, RuntimeError) as exc:
+            self.model_status.setText(f"Could not request model startup: {exc}")
+            return False
+        finally:
+            self.model_start_pending = False
+
+    def _model_started(self):
+        self._observe_model({"phase": "started", "process_id": int(self.model_process.processId()),
+                             "readiness": "not_yet_tested"})
+
+    def _model_error(self, _error):
+        self.model_status.setText(self.model_process.errorString())
+        self._observe_model({"phase": "process_error", "error": self.model_process.errorString()})
+
+    def _model_finished(self, code, status):
+        self.model_status.setText("Local model stopped")
+        self._observe_model({"phase": "finished", "exit_code": code, "exit_status": str(status)})
+        self.model_action_id = None
+
+    def stop_local_model(self):
+        if self.model_process.state() == QProcess.NotRunning:
+            return
+        try:
+            self._application_action("model.stop", {"process_id": int(self.model_process.processId()),
+                                                    "start_action_id": self.model_action_id},
+                                     lambda: self._stop_process(self.model_process))
+        except (ValueError, OSError, RuntimeError) as exc:
+            self.model_status.setText(f"Could not stop the owned model process: {exc}")
 
     def _background(self, function, result, failed=None):
         task = BackgroundTask(function, self)
@@ -627,16 +884,19 @@ class MainWindow(QMainWindow):
         return answer == QMessageBox.Discard
 
     def choose_workspace(self):
-        if self.process.state() != QProcess.NotRunning:
-            self._error("Stop the running workload before switching workspaces.")
+        if self.workload_task or self.chat_task or self.process.state() != QProcess.NotRunning:
+            self._error("Stop the current task work before switching workspaces.")
             return
         if not self._discard_allowed():
             return
         folder = QFileDialog.getExistingDirectory(self, "Open workspace")
         if folder:
-            self._set_workspace(Path(folder))
-            self._clear_editor_draft()
-            self.navigation.setCurrentRow(1)
+            try:
+                self._set_workspace(Path(folder))
+                self._clear_editor_draft()
+                self.navigation.setCurrentRow(1)
+            except (ValueError, OSError, RuntimeError) as exc:
+                self._error(exc)
 
     def new_file(self):
         if not self.workspace:
@@ -651,15 +911,18 @@ class MainWindow(QMainWindow):
             path = Path(destination).resolve()
             if not path.is_relative_to(self.workspace.root) or any(part.casefold() == ".git" for part in path.relative_to(self.workspace.root).parts):
                 raise ValueError("Create the file inside the workspace, outside Git internal folders.")
-            with path.open("x", encoding="utf-8"):
-                pass
+            result = self.task_runtime.create_file(self.task_id, str(path))
+            if result.get("status") != "completed":
+                self.task_panel.show_result("File creation needs attention", result)
+                return
+            self.task_runtime.read(self.task_id, str(path))
             self.document = self.workspace.open(path)
             self._clear_editor_draft()
             self.editor.setPlainText("")
             self.editor.document().setModified(False)
             self.editor.setEnabled(True)
             self._editor_changed()
-        except (ValueError, OSError) as exc:
+        except (ValueError, OSError, RuntimeError) as exc:
             self._error(exc)
 
     def find_in_file(self):
@@ -684,7 +947,40 @@ class MainWindow(QMainWindow):
         self.chat_status.setText("File added to your draft. Review the message before sending.")
 
     def _set_workspace(self, path):
-        self.workspace = Workspace(path)
+        workspace = Workspace(path)
+        if (self.chat_task or self.workload_task) and (not self.workspace or workspace.root != self.workspace.root):
+            raise ValueError("Stop the current task work before switching workspaces.")
+        project = self.task_runtime.open_project(path)
+        previous_project = self.project_id
+        changed = previous_project != project["project_id"]
+        previous_scope = self.store.conversation_scope(self.conversation_id) if self.conversation_id else None
+        initial_legacy = previous_project is None and self.conversation_id is not None and previous_scope is None
+        if changed:
+            self._save_prompt_draft()
+            if previous_project is not None:
+                self.store.set_setting("active_conversation:" + previous_project, self.conversation_id)
+        self.workspace = workspace
+        self.project_id = project["project_id"]
+        if previous_project is None and previous_scope and previous_scope["project_id"] == self.project_id:
+            self.store.set_setting("active_task:" + self.project_id, previous_scope["task_id"])
+            self.store.set_setting("active_conversation:" + self.project_id, self.conversation_id)
+        self._resume_project_task()
+        self.pending_edit = None
+        self.task_panel.apply_button.setEnabled(False)
+        if changed and not initial_legacy:
+            self.prompt_timer.stop()
+            self.conversation_id = self.store.setting("active_conversation:" + self.project_id)
+            visible = {row["id"] for row in self.store.conversations()}
+            scope = self.store.conversation_scope(self.conversation_id) if self.conversation_id else None
+            if (self.conversation_id not in visible or not scope or scope["project_id"] != self.project_id
+                    or scope["task_id"] != self.task_id):
+                self.conversation_id = None
+            self.store.set_setting("active_conversation", self.conversation_id)
+            self._restore_prompt_draft()
+            self._render_chat()
+        elif initial_legacy:
+            self.chat_status.setText("This historical conversation is unassigned. Use 'Use conversation for task' before using it as project context.")
+            self.chat_title.setText("Unassigned conversation")
         self.store.set_setting("workspace", str(self.workspace.root))
         self.workspace_label.setText(f"Workspace · {self.workspace.root.name}")
         self.workspace_label.setToolTip(str(self.workspace.root))
@@ -699,16 +995,21 @@ class MainWindow(QMainWindow):
         if not self.workspace or self.file_model.isDir(index) or not self._discard_allowed():
             return
         try:
-            self.document = self.workspace.open(Path(self.file_model.filePath(index)))
+            path = Path(self.file_model.filePath(index))
+            self.task_runtime.read(self.task_id, str(path))
+            self.document = self.workspace.open(path)
             self._clear_editor_draft()
             self.editor.setPlainText(self.document.text)
             self.editor.document().setModified(False)
             self.editor.setEnabled(True)
             self.file_label.setText(str(self.document.path.relative_to(self.workspace.root)))
-        except (ValueError, OSError) as exc:
+        except (ValueError, OSError, RuntimeError) as exc:
             self._error(exc)
 
     def _editor_changed(self):
+        if self.pending_edit:
+            self.pending_edit = None
+            self.task_panel.apply_button.setEnabled(False)
         if self.document and self.workspace:
             suffix = " *" if self.editor.document().isModified() else ""
             self.file_label.setText(str(self.document.path.relative_to(self.workspace.root)) + suffix)
@@ -732,6 +1033,7 @@ class MainWindow(QMainWindow):
             return
         try:
             self._set_workspace(Path(draft["workspace"]))
+            self.task_runtime.read(self.task_id, str(draft["path"]))
             self.document = self.workspace.open(Path(draft["path"]))
             self.document.digest = draft["digest"]
             self.editor.setPlainText(draft["text"])
@@ -739,7 +1041,7 @@ class MainWindow(QMainWindow):
             self.editor.setEnabled(True)
             self._editor_changed()
             self.statusBar().showMessage("Recovered an unsaved editor draft. Review it before saving.")
-        except (ValueError, OSError, KeyError) as exc:
+        except (ValueError, OSError, RuntimeError, KeyError) as exc:
             self.store.set_setting("editor_draft", draft)
             self.statusBar().showMessage(f"An editor draft is retained in local data but could not be reopened: {exc}")
 
@@ -747,16 +1049,204 @@ class MainWindow(QMainWindow):
         if not self.document or not self.workspace:
             return True
         try:
-            self.workspace.save(self.document, self.editor.toPlainText())
+            result = self.task_runtime.save_document(self.task_id, self.document, self.editor.toPlainText())
+            if result.get("status") != "completed":
+                self.task_panel.show_result("Save needs attention; editor draft retained", result)
+                self._save_editor_draft()
+                self.statusBar().showMessage("Save did not verify successfully. Review task evidence; the editor draft is retained.")
+                return False
+            self.document = self.workspace.open(self.document.path)
             self.editor.document().setModified(False)
             self.draft_timer.stop()
             self.store.set_setting("editor_draft", None)
             self._editor_changed()
             self.statusBar().showMessage("File saved")
             return True
-        except (ValueError, OSError) as exc:
+        except (ValueError, OSError, RuntimeError) as exc:
             self._error(exc)
             return False
+
+    def _ensure_task(self):
+        if not self.project_id:
+            project = self.task_runtime.application_project()
+            self.project_id = project["project_id"]
+            self._resume_project_task()
+
+    def _resume_project_task(self):
+        saved = self.store.setting("active_task:" + self.project_id)
+        records = self.task_runtime.tasks(self.project_id)
+        selected = next((row for row in records if row["task_id"] == saved), None)
+        if selected is None:
+            objective = "Work in " + self.workspace.root.name if self.workspace else "Conversation with CETA"
+            selected = self.task_runtime.start_task(self.project_id, objective)
+        self.task_id = selected["task_id"]
+        self.store.set_setting("active_task:" + self.project_id, self.task_id)
+        self._refresh_task_panel()
+
+    def _refresh_task_panel(self):
+        if self.project_id:
+            scope = (self.project_id, self.task_id)
+            if self.task_panel.displayed_scope != scope:
+                self.task_panel.displayed_scope = scope
+                self.task_panel.result_title.setText("Task results")
+                self.task_panel.results.clear()
+            self.task_panel.set_tasks(self.task_runtime.tasks(self.project_id), self.task_id)
+            self.task_panel.scope.setText("Project: " + (str(self.workspace.root) if self.workspace else "Application conversation"))
+
+    def start_project_task(self):
+        if self.chat_task or self.workload_task:
+            self.task_panel.show_error("Stop current task work before starting another task.")
+            return
+        objective = self.task_panel.objective.text().strip()
+        if not objective:
+            self.task_panel.show_error("Enter the objective for this task.")
+            return
+        self._ensure_task()
+        self._save_prompt_draft()
+        record = self.task_runtime.start_task(self.project_id, objective)
+        self.task_id = record["task_id"]
+        self.store.set_setting("active_task:" + self.project_id, self.task_id)
+        self.pending_edit = None
+        self.task_panel.apply_button.setEnabled(False)
+        self._switch_conversation(None, save_draft=False)
+        self._refresh_task_panel()
+        self._render_chat()
+
+    def select_project_task(self, index):
+        selected = self.task_panel.task_selector.itemData(index)
+        if not selected or selected == self.task_id:
+            return
+        if self.chat_task or self.workload_task:
+            self.task_panel.show_error("Stop current task work before switching tasks.")
+            self._refresh_task_panel()
+            return
+        self._save_prompt_draft()
+        self.task_id = selected
+        self.store.set_setting("active_task:" + self.project_id, selected)
+        self.pending_edit = None
+        self.task_panel.apply_button.setEnabled(False)
+        conversation = None
+        for row in self.store.conversations():
+            scope = self.store.conversation_scope(row["id"])
+            if scope and scope["project_id"] == self.project_id and scope["task_id"] == selected:
+                conversation = row["id"]
+                break
+        self._switch_conversation(conversation, save_draft=False)
+        self._render_chat()
+
+    def bind_current_conversation(self):
+        if self.chat_task or not self.conversation_id:
+            self.task_panel.show_error("Select an idle conversation first.")
+            return
+        try:
+            self._ensure_task()
+            self.store.bind_conversation(self.conversation_id, self.project_id, self.task_id)
+            self.task_panel.show_result("Conversation assigned", {"task_id": self.task_id})
+            self._render_chat()
+        except (ValueError, OSError, RuntimeError) as exc:
+            self.task_panel.show_error(str(exc))
+
+    def inspect_project_task(self):
+        self._task_read_action("Project inspection", "inspect")
+
+    def search_project_task(self):
+        query = self.task_panel.search.text().strip()
+        if query:
+            self._task_read_action("Search results", "search", query)
+
+    def show_task_context(self):
+        self._task_read_action("Current task context", "context")
+
+    def show_task_timeline(self):
+        self._task_read_action("Task timeline", "timeline")
+
+    def import_historical_log(self):
+        if not self.workspace or not self.project_id or not self.task_id:
+            self.task_panel.show_error("Open a project and select a task before importing historical records.")
+            return
+        if self.chat_task or self.workload_task:
+            self.task_panel.show_error("Stop current task work before importing historical records.")
+            return
+        source, _ = QFileDialog.getOpenFileName(self, "Select historical CETA log", "", "JSON Lines (*.jsonl);;All files (*)")
+        if not source:
+            return
+        try:
+            path = Path(source)
+            with path.open("rb") as stream:
+                raw = stream.read(16 * 1024 * 1024 + 1)
+            if len(raw) > 16 * 1024 * 1024:
+                raise ValueError("Historical imports are limited to 16 MiB per file.")
+            expected_hash = hashlib.sha256(raw).hexdigest()
+            kind, accepted = QInputDialog.getItem(self, "Historical log kind", "Select the CETA log format:",
+                ["transition", "authority", "evidence", "identity"], 0, False)
+            if not accepted:
+                return
+            scope, accepted = QInputDialog.getText(self, "Historical import scope",
+                "Describe why these selected records belong in this project's history:")
+            if not accepted:
+                return
+            scope = scope.strip()
+            if not scope:
+                raise ValueError("An explicit project scope statement is required for this import.")
+            review = (f"Source: {path}\nKind: {kind}\nProject: {self.workspace.root}\n"
+                      f"Task: {self.task_runtime.task(self.task_id)['objective']}\nSHA-256: {expected_hash}\n\n"
+                      f"Scope: {scope}\n\nImport as historical records only. Old permits and identities will not become active authority.")
+            if QMessageBox.question(self, "Import historical records", review,
+                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No) != QMessageBox.Yes:
+                return
+            result = self.task_runtime.import_history(self.task_id, path,
+                expected_sha256=expected_hash, kind=kind,
+                provenance={"source_application": "CETA", "project_id": self.project_id, "scope_statement": scope})
+            self.task_panel.show_result("Historical import result", result)
+        except (ValueError, OSError, RuntimeError) as exc:
+            self.task_panel.show_error(str(exc))
+
+    def _task_read_action(self, title, method, *args):
+        try:
+            self._ensure_task()
+            result = getattr(self.task_runtime, method)(self.task_id, *args)
+            self.task_panel.show_result(title, result)
+        except (ValueError, OSError, RuntimeError) as exc:
+            self.task_panel.show_error(str(exc))
+
+    def review_editor_edit(self):
+        if not self.document or not self.workspace:
+            self.task_panel.show_error("Open and edit a project file first.")
+            return
+        try:
+            text = self.editor.toPlainText()
+            proposal = self.task_runtime.propose_edit(self.task_id, str(self.document.path), text)
+            self.pending_edit = {"task_id": self.task_id, "path": str(self.document.path),
+                                 "text": text, "proposal_id": proposal["proposal_id"]}
+            self.task_panel.show_diff(proposal["diff"])
+            self.task_panel.apply_button.setEnabled(True)
+        except (ValueError, OSError, RuntimeError) as exc:
+            self.task_panel.show_error(str(exc))
+
+    def apply_reviewed_edit(self):
+        pending = self.pending_edit
+        if not pending or not self.document:
+            return
+        try:
+            if (pending["task_id"] != self.task_id or pending["path"] != str(self.document.path)
+                    or pending["text"] != self.editor.toPlainText()):
+                raise ValueError("The task or editor changed. Review the new diff before applying.")
+            result = self.task_runtime.apply_edit(self.task_id, pending["proposal_id"], actor_id="user")
+            if result.get("status") != "completed":
+                self.pending_edit = None
+                self.task_panel.apply_button.setEnabled(False)
+                self._save_editor_draft()
+                self.task_panel.show_result("Edit needs attention; editor draft retained", result)
+                return
+            self.document = self.workspace.open(self.document.path)
+            self.editor.document().setModified(False)
+            self._clear_editor_draft()
+            self.pending_edit = None
+            self.task_panel.apply_button.setEnabled(False)
+            self.task_panel.show_result("Edit result", result)
+            self._editor_changed()
+        except (ValueError, OSError, RuntimeError) as exc:
+            self.task_panel.show_error(str(exc))
 
     def _load_conversations(self):
         self.conversation_list.clear()
@@ -774,7 +1264,7 @@ class MainWindow(QMainWindow):
                 listing.addItem(item)
                 if record["id"] == self.conversation_id:
                     listing.setCurrentItem(item)
-        if self.conversation_id is None and self.conversation_list.count():
+        if self.conversation_id is None and self.project_id is None and self.conversation_list.count():
             self.conversation_id = self.conversation_list.item(0).data(Qt.UserRole)
             self.conversation_list.setCurrentRow(0)
         self.conversation_empty.setVisible(not conversations)
@@ -784,29 +1274,49 @@ class MainWindow(QMainWindow):
         self._filter_library(self.library_search.text())
         self._render_chat()
 
+    def _composer_draft_key(self):
+        if self.conversation_id:
+            return "chat_draft:" + self.conversation_id
+        if self.project_id:
+            return "chat_draft:new:" + self.project_id + ":" + (self.task_id or "")
+        return "chat_draft:new"
+
     def _save_prompt_draft(self):
-        self.store.set_setting("chat_draft:" + (self.conversation_id or "new"), self.prompt.toPlainText())
+        self.store.set_setting(self._composer_draft_key(), self.prompt.toPlainText())
 
     def _restore_prompt_draft(self):
         self.prompt_timer.stop()
         self.prompt.blockSignals(True)
-        self.prompt.setPlainText(self.store.setting("chat_draft:" + (self.conversation_id or "new"), ""))
+        self.prompt.setPlainText(self.store.setting(self._composer_draft_key(), ""))
         self.prompt.blockSignals(False)
 
-    def _switch_conversation(self, identifier):
-        self._save_prompt_draft()
+    def _switch_conversation(self, identifier, *, save_draft=True):
+        if save_draft:
+            self._save_prompt_draft()
         self.conversation_id = identifier
         self.store.set_setting("active_conversation", identifier)
+        scope = self.store.conversation_scope(identifier) if identifier else None
+        if scope and scope["project_id"] == self.project_id:
+            self.task_id = scope["task_id"]
+            self.store.set_setting("active_task:" + self.project_id, self.task_id)
+            self._refresh_task_panel()
+        if self.project_id:
+            self.store.set_setting("active_conversation:" + self.project_id, identifier)
         self._restore_prompt_draft()
 
     def _render_chat(self):
         records = self.store.messages(self.conversation_id) if self.conversation_id else []
+        scope = self.store.conversation_scope(self.conversation_id) if self.conversation_id else None
+        self.delete_conversation_button.setText("Archive conversation" if scope else "Delete conversation")
+        self.chat_title.setText("Task conversation" if scope else "Chat")
+        if scope and self.project_id and scope["project_id"] != self.project_id:
+            self.chat_status.setText("This conversation belongs to another project. Open its project before continuing.")
         self.chat_view.render_messages(records, pending_text=self.assistant_text,
                                        model_name=self.model_combo.currentText())
 
     def new_conversation(self):
-        if self.chat_task:
-            self.chat_status.setText("Stop the current response before starting another conversation.")
+        if self.chat_task or self.workload_task:
+            self.chat_status.setText("Stop the current task work before starting another conversation.")
             return
         self._switch_conversation(self.store.new_conversation())
         self.assistant_text = ""
@@ -815,11 +1325,15 @@ class MainWindow(QMainWindow):
         self.prompt.setFocus()
 
     def _select_conversation(self, item):
-        if self.chat_task:
+        if self.chat_task or self.workload_task:
             return
         self._switch_conversation(item.data(Qt.UserRole))
         self._render_chat()
         self.navigation.setCurrentRow(0)
+
+    def _library_selection_changed(self, item, _previous=None):
+        scope = self.store.conversation_scope(item.data(Qt.UserRole)) if item else None
+        self.library_page.delete_button.setText("Archive selected" if scope else "Delete selected")
 
     def export_conversation(self):
         self._export_conversation_id(self.conversation_id)
@@ -830,9 +1344,16 @@ class MainWindow(QMainWindow):
         destination, _ = QFileDialog.getSaveFileName(self, "Export conversation", "conversation.json", "JSON (*.json)")
         if destination:
             try:
-                with Path(destination).open("x", encoding="utf-8") as handle:
-                    json.dump(self.store.messages(identifier), handle, indent=2, ensure_ascii=False)
-            except OSError as exc:
+                if Path(destination).exists() or Path(destination).is_symlink():
+                    raise FileExistsError(17, "File exists", destination)
+                records = self.store.messages(identifier)
+                def export():
+                    with Path(destination).open("x", encoding="utf-8") as handle:
+                        json.dump(records, handle, indent=2, ensure_ascii=False)
+                    return {"path": str(Path(destination).resolve()), "messages": len(records)}
+                self._application_action("conversation.export", {"conversation_id": identifier,
+                                         "destination": str(Path(destination).resolve())}, export)
+            except (ValueError, OSError, RuntimeError) as exc:
                 self._error(exc)
 
     def delete_conversation(self, identifier: str | None = None):
@@ -842,20 +1363,37 @@ class MainWindow(QMainWindow):
         if self.chat_task and target_id == self.conversation_id:
             self.chat_status.setText("Stop the current response before deleting this conversation.")
             return
+        scope = self.store.conversation_scope(target_id)
+        title = "Archive conversation" if scope else "Delete conversation"
+        description = ("Archive this conversation? It will leave the conversation list; its task evidence remains in project history."
+                       if scope else "Delete this conversation? Messages cannot be recovered.")
         answer = QMessageBox.question(
-            self, "Delete conversation", "Delete this conversation? Messages cannot be recovered.",
+            self, title, description,
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No,
         )
         if answer != QMessageBox.Yes:
             return
-        self.store.delete_conversation(target_id)
-        if target_id == self.conversation_id:
+        deleting_current = target_id == self.conversation_id
+        if scope:
+            self.store.archive_conversation(target_id)
+        else:
+            self.store.delete_conversation(target_id)
+        if deleting_current:
+            # The old composer's debounce must not save its text under the next
+            # selected conversation, or under the unrelated new-chat draft.
+            self.prompt_timer.stop()
             self.conversation_id = None
         self._load_conversations()
+        if deleting_current:
+            self.store.set_setting("active_conversation", self.conversation_id)
+            self._restore_prompt_draft()
 
     def send_message(self):
         prompt = self.prompt.toPlainText().strip()
         if not prompt or self.chat_task:
+            return
+        if self.model_probe_running:
+            self.chat_status.setText("Wait for the local model test to finish before sending a message.")
             return
         try:
             client = LocalModelClient(self.endpoint.text().strip())
@@ -877,9 +1415,22 @@ class MainWindow(QMainWindow):
         if len(json.dumps(messages)) > 512000:
             self.chat_status.setText("This conversation is too long for one request. Start a new conversation.")
             return
-        if not self.conversation_id:
-            self.conversation_id = self.store.new_conversation()
-            self.store.set_setting("chat_draft:new", "")
+        try:
+            self._ensure_task()
+            if self.conversation_id:
+                scope = self.store.conversation_scope(self.conversation_id)
+                if scope and (scope["project_id"] != self.project_id or scope["task_id"] != self.task_id):
+                    raise ValueError("This conversation belongs to another task. Select its project and task, or start a new conversation.")
+                if not scope and records:
+                    raise ValueError("This legacy conversation is unassigned. Use 'Use conversation for task' in Projects before sending it as task context.")
+            if not self.conversation_id:
+                draft_key = self._composer_draft_key()
+                self.conversation_id = self.store.new_conversation()
+                self.store.set_setting(draft_key, "")
+            self.store.bind_conversation(self.conversation_id, self.project_id, self.task_id)
+        except (ValueError, OSError, RuntimeError) as exc:
+            self.chat_status.setText(str(exc))
+            return
         self.store.set_setting("active_conversation", self.conversation_id)
         self.store.add_message(self.conversation_id, "user", prompt)
         self.prompt.clear()
@@ -890,12 +1441,25 @@ class MainWindow(QMainWindow):
         self.client = client
         self.send_button.setEnabled(False)
         self.stop_chat_button.setEnabled(True)
-        self.chat_status.setText(f"Generating with {model}…")
+        role = self.chat_role_combo.currentData()
+        self.chat_role_combo.setEnabled(False)
+        self.chat_status.setText(f"Generating with {model}" + (f" as {role}" if role else "") + "…")
+
+        task_id = self.task_id
+        directory = self.store.directory
 
         def generate(task):
-            for token in client.stream(model, messages):
-                task.token.emit(token)
-            return "cancelled" if client.cancelled.is_set() else "complete"
+            runtime = TaskRuntime(directory)
+            try:
+                result = runtime.generate(task_id, LocalProvider(client=client, context_length=4096), model, messages,
+                                          cancelled=task.cancelled, on_token=task.token.emit, role=role)
+                if task.cancelled.is_set() or client.cancelled.is_set() or result.get("status") == "cancelled":
+                    return "cancelled"
+                if result.get("status", "completed") != "completed":
+                    raise RuntimeError(result.get("error") or "The model did not complete its response.")
+                return "complete"
+            finally:
+                runtime.close()
 
         self.chat_task = BackgroundTask(generate, self)
         self.chat_task.token.connect(self._chat_token)
@@ -934,36 +1498,54 @@ class MainWindow(QMainWindow):
         task = self.chat_task
         self.chat_task = None
         self.client = None
+        self.chat_role_combo.setEnabled(True)
         self.send_button.setEnabled(True)
         self.stop_chat_button.setEnabled(False)
         if task:
             task.deleteLater()
 
     def stop_chat(self):
+        if self.chat_task:
+            self.chat_task.cancelled.set()
         if self.client:
             self.client.cancel()
             self.chat_status.setText("Stopping response…")
 
     def refresh_models(self):
         try:
-            client = LocalModelClient(self.endpoint.text().strip())
+            endpoint = self.endpoint.text().strip()
+            client = LocalModelClient(endpoint)
         except ValueError as exc:
             self.model_status.setText(str(exc))
             return
         self.model_status.setText("Connecting to local model service…")
 
+        def current_endpoint():
+            if self.endpoint.text().strip() == endpoint:
+                return True
+            self.model_status.setText("Connection settings changed. Refresh models for the current endpoint.")
+            return False
+
         def loaded(models):
+            if not current_endpoint():
+                return
             selected = self.model_combo.currentText()
             self.model_combo.clear()
             self.model_combo.addItems(models)
             if selected in models:
                 self.model_combo.setCurrentText(selected)
-            self.store.set_setting("endpoint", self.endpoint.text().strip())
-            self.model_status.setText(f"Connected · {len(models)} available models")
-            self.chat_status.setText("Local model connected. Ready to chat." if models else "The local service has no installed models.")
+            self.store.set_setting("endpoint", endpoint)
+            skipped = getattr(client, "skipped_models", [])
+            excluded = f" · {len(skipped)} remote/cloud model(s) excluded" if skipped else ""
+            locality = "runtime-reported local models" if getattr(client, "backend", None) == "ollama" else "inference location unverified"
+            self.model_status.setText(f"Connected · {len(models)} available models{excluded} · {locality}. Test a selected model to verify a response.")
+            self.chat_status.setText("Model service connected; inference has not yet been tested." if models else "The local service has no eligible installed models.")
 
-        self._background(lambda _: client.available_models(), loaded,
-                         lambda error: self.model_status.setText(f"Could not connect: {error}"))
+        def failed(error):
+            if current_endpoint():
+                self.model_status.setText(f"Could not connect: {error}")
+
+        self._background(lambda _: client.available_models(), loaded, failed)
 
     def _load_packs(self):
         self.pack_list.clear()
@@ -987,8 +1569,10 @@ class MainWindow(QMainWindow):
             self._load_packs()
             self.model_status.setText(f"Installed {record['name']}")
 
-        task = self._background(lambda task: self.packs.install(Path(source), task.cancelled), installed,
-                                lambda error: self.model_status.setText(error))
+        task = self._background(lambda task: self._application_action(
+            "model.import", {"source": str(Path(source).resolve()), "destination": str(self.store.directory)},
+            lambda: self.packs.install(Path(source), task.cancelled)), installed,
+            lambda error: self.model_status.setText(error))
         task.finished.connect(lambda: self.import_button.setEnabled(True))
 
     def start_model(self):
@@ -1005,18 +1589,36 @@ class MainWindow(QMainWindow):
         record = item.data(Qt.UserRole)
         self.model_status.setText("Verifying installed model bytes before starting…")
 
-        def start(verified):
+        def prepare(task):
+            profile = inspect_hardware()
+            estimate = ModelOption(
+                tag=record["name"], download_bytes=record["size"],
+                working_bytes=(record["size"] * 5 + 3) // 4 + 1024**3,
+                description="Imported GGUF size-based memory estimate",
+            )
+            assessment = assess_model(profile, estimate)
+            if assessment.mode == "insufficient":
+                raise ValueError(f"This pack does not fit currently available memory. {assessment.reason} Close other applications or select a smaller model.")
+            return self.packs.verify_installed(record["sha256"], task.cancelled), profile, assessment
+
+        def start(prepared):
+            verified, profile, assessment = prepared
+            self._hardware_loaded(profile)
             if self.model_process.state() != QProcess.NotRunning:
                 self.model_status.setText("Another model service is already running.")
                 return
             self.model_log.clear()
             self.model_process.setProgram(executable)
-            self.model_process.setArguments(["--model", verified["path"], "--host", "127.0.0.1", "--port", "8081", "--ctx-size", "8192"])
-            self.model_process.start()
+            arguments = ["--model", verified["path"], "--host", "127.0.0.1", "--port", "8081", "--ctx-size", "4096"]
+            if assessment.mode == "cpu":
+                arguments.extend(["--n-gpu-layers", "0"])
+            self.model_process.setArguments(arguments)
+            if not self._start_owned_model():
+                return
             self.endpoint.setText("http://127.0.0.1:8081/v1")
-            self.model_status.setText("Starting local model… Connect / refresh models when it is ready.")
+            self.model_status.setText(f"Starting local model ({assessment.mode} memory estimate)… Connect / refresh models when it is ready.")
 
-        self._background(lambda task: self.packs.verify_installed(record["sha256"], task.cancelled), start,
+        self._background(prepare, start,
                          lambda error: self.model_status.setText(str(error)))
 
     def start_ollama(self):
@@ -1037,8 +1639,12 @@ class MainWindow(QMainWindow):
         environment = QProcessEnvironment.systemEnvironment()
         environment.insert("OLLAMA_HOST", "127.0.0.1:11434")
         environment.insert("OLLAMA_NO_CLOUD", "1")
+        environment.insert("OLLAMA_CONTEXT_LENGTH", "4096")
+        environment.insert("OLLAMA_NUM_PARALLEL", "1")
+        environment.insert("OLLAMA_MAX_LOADED_MODELS", "1")
         self.model_process.setProcessEnvironment(environment)
-        self.model_process.start()
+        if not self._start_owned_model():
+            return
         self.endpoint.setText("http://127.0.0.1:11434/v1")
         self.model_status.setText("Starting Ollama with cloud features disabled… Connect / refresh models when it is ready.")
 
@@ -1058,13 +1664,29 @@ class MainWindow(QMainWindow):
         self.pull_button.setEnabled(False)
         self.cancel_pull_button.setEnabled(True)
         self.model_status.setText(f"Requesting {name} from the local Ollama service…")
+        endpoint = self.endpoint.text().strip()
 
         def pull(task):
-            for status in client.pull_ollama_model(name):
-                task.token.emit(status)
-            return "cancelled" if client.cancelled.is_set() else "installed"
+            profile = inspect_hardware()
+            option = local_model_option(name)
+            if option:
+                assessment = assess_model(profile, option)
+                if assessment.mode == "insufficient":
+                    raise ValueError(f"This model does not fit currently available memory. {assessment.reason} Close other applications or select a smaller model.")
+            else:
+                task.token.emit("Custom model: memory fit is unassessed. Requesting the explicit download…")
+            if client.cancelled.is_set():
+                return "cancelled", profile
+            def download():
+                for status in client.pull_ollama_model(name):
+                    task.token.emit(status)
+                return "cancelled" if client.cancelled.is_set() else "installed"
+            status = self._application_action("model.download", {"model": name, "endpoint": endpoint}, download)
+            return status, profile
 
-        def complete(status):
+        def complete(result):
+            status, profile = result
+            self._hardware_loaded(profile)
             self.model_status.setText(f"Model pack {status}")
             if status == "installed":
                 self.refresh_models()
@@ -1089,25 +1711,70 @@ class MainWindow(QMainWindow):
 
     def run_workload(self):
         command = self.command.text().strip()
-        if not self.workspace or not command or self.process.state() != QProcess.NotRunning:
+        if not self.workspace or not command or self.workload_task:
             self.statusBar().showMessage("Open a workspace and enter a command first.")
             return
+        try:
+            prepared = self.task_runtime.prepare_command(self.task_id, command)
+        except (ValueError, OSError, RuntimeError) as exc:
+            self._error(exc)
+            return
         self.workload_id = self.store.start_workload(self.workspace.root, command)
+        self.store.bind_workload(self.workload_id, self.project_id, self.task_id)
         self.workload_output = ""
         self.workload_chunks = []
         self.workload_bytes = 0
         self.workload_cancelled = False
         self.output.clear()
-        self.process.setWorkingDirectory(str(self.workspace.root))
-        if os.name == "nt":
-            self.process.setProgram(str(Path(os.environ.get("SystemRoot", "C:/Windows")) / "System32/WindowsPowerShell/v1.0/powershell.exe"))
-            self.process.setArguments(["-NoLogo", "-NoProfile", "-NonInteractive", "-Command", command])
-        else:
-            self.process.setProgram("/bin/sh")
-            self.process.setArguments(["-c", command])
         self.run_button.setEnabled(False)
         self.stop_work_button.setEnabled(True)
-        self.process.start()
+        task_id, directory = self.task_id, self.store.directory
+
+        def run(task):
+            runtime = TaskRuntime(directory)
+            try:
+                return runtime.run_command(task_id, prepared["prepared_id"], cancelled=task.cancelled,
+                                           on_output=task.token.emit)
+            finally:
+                runtime.close()
+
+        self.workload_task = BackgroundTask(run, self)
+        self.workload_task.token.connect(self._governed_workload_output)
+        self.workload_task.result.connect(self._governed_workload_complete)
+        self.workload_task.failed.connect(self._governed_workload_failed)
+        self.workload_task.finished.connect(self._governed_workload_finished)
+        self.workload_task.start()
+
+    def _governed_workload_output(self, text):
+        self.workload_output = (self.workload_output + text)[-2 * 1024 * 1024:]
+        self.output.insertPlainText(text)
+        self.output.verticalScrollBar().setValue(self.output.verticalScrollBar().maximum())
+
+    def _governed_workload_complete(self, result):
+        status = result["status"]
+        outcome = "complete" if status == "completed" else status
+        self.workload_output = result.get("output", self.workload_output)
+        if result.get("error"):
+            self.workload_output = (self.workload_output + "\n" + str(result["error"])).lstrip("\n")
+        self.output.setPlainText(self.workload_output)
+        if self.workload_id:
+            self.store.finish_workload(self.workload_id, outcome, result.get("exit_code"), self.workload_output)
+            self.workload_id = None
+        self.statusBar().showMessage(f"Workload {outcome} · exit {result.get('exit_code')}")
+        self.task_panel.show_result("Command result", result)
+        self._load_workloads()
+
+    def _governed_workload_failed(self, message):
+        self._governed_workload_complete({"status": "needs_reconciliation", "exit_code": None,
+                                         "output": self.workload_output + "\n" + message})
+
+    def _governed_workload_finished(self):
+        task = self.workload_task
+        self.workload_task = None
+        self.run_button.setEnabled(True)
+        self.stop_work_button.setEnabled(False)
+        if task:
+            task.deleteLater()
 
     def _workload_output(self):
         data = bytes(self.process.readAllStandardOutput())
@@ -1158,14 +1825,17 @@ class MainWindow(QMainWindow):
 
     def stop_workload(self):
         self.workload_cancelled = True
+        if self.workload_task:
+            self.workload_task.cancelled.set()
         self._stop_process(self.process)
 
     def closeEvent(self, event: QCloseEvent):
         if not self._discard_allowed():
             event.ignore()
             return
-        if self.chat_task or self.tasks:
+        if self.chat_task or self.tasks or self.workload_task:
             self.stop_chat()
+            self.stop_workload()
             self.cancel_model_download()
             for task in self.tasks:
                 task.cancelled.set()
@@ -1173,13 +1843,17 @@ class MainWindow(QMainWindow):
             event.ignore()
             return
         self.stop_workload()
-        self._stop_process(self.model_process)
+        self.stop_local_model()
         self.process.waitForFinished(3000)
         self.model_process.waitForFinished(3000)
         self.draft_timer.stop()
-        self._clear_editor_draft()
+        # An unavailable workspace/file leaves its recovery draft in storage.
+        # Closing a window with no recovered document must not discard it.
+        if self.document is not None:
+            self._clear_editor_draft()
         self.prompt_timer.stop()
         self._save_prompt_draft()
+        self.task_runtime.close()
         self.store.close()
         event.accept()
 
@@ -1188,8 +1862,11 @@ def main():
     parser = argparse.ArgumentParser(description="CETA native desktop environment")
     parser.add_argument("--data-dir", type=Path, default=None)
     parser.add_argument("--smoke-test", action="store_true")
+    parser.add_argument("--merger-self-test", action="store_true", help="Exercise the merged workflow in the explicitly selected test data folder")
     parser.add_argument("--screenshot", type=Path)
     args = parser.parse_args()
+    if args.merger_self_test and (not args.smoke_test or args.data_dir is None):
+        parser.error("--merger-self-test requires --smoke-test and an explicit --data-dir")
     app = QApplication([sys.argv[0]])
     app.setApplicationName("CETA")
     app.setApplicationVersion(__version__)
@@ -1204,7 +1881,26 @@ def main():
     try:
         window = MainWindow(directory)
         window.show()
-        if args.smoke_test:
+        if args.merger_self_test:
+            def merger_check():
+                report_path = directory / ("merger-self-test-" + uuid4().hex + ".json")
+                try:
+                    from .merger_self_test import run_merger_self_test
+                    report = run_merger_self_test(window)
+                except Exception as exc:
+                    report = {"status": "failed", "error": str(exc)}
+                code = 0 if report.get("status") == "passed" else 1
+                try:
+                    with report_path.open("x", encoding="utf-8") as output:
+                        json.dump(report, output, indent=2, ensure_ascii=False, allow_nan=False)
+                    if args.screenshot and not window.grab().save(str(args.screenshot)):
+                        code = 1
+                except (OSError, ValueError, TypeError):
+                    code = 1
+                window.close()
+                app.exit(code)
+            QTimer.singleShot(0, merger_check)
+        elif args.smoke_test:
             def finish():
                 if args.screenshot:
                     window.grab().save(str(args.screenshot))
@@ -1216,8 +1912,15 @@ def main():
         lock.unlock()
     if window.pending_update:
         try:
-            launch_verified_update(*window.pending_update)
-        except (OSError, ValueError) as exc:
+            runtime = TaskRuntime(directory)
+            try:
+                installer, manifest = window.pending_update
+                runtime.application_action("update.install", {"installer": str(installer), "manifest": manifest,
+                    "outcome_scope": "Installer process launch only; installed version requires later verification"},
+                    lambda: launch_verified_update(installer, manifest))
+            finally:
+                runtime.close()
+        except (OSError, ValueError, RuntimeError) as exc:
             QMessageBox.warning(None, "CETA update did not start",
                                 f"CETA closed safely, but the update could not start: {exc}\nOpen CETA to continue working or download the update again.")
             return 1

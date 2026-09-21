@@ -222,7 +222,7 @@ class DesktopStorageTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             db_path = Path(directory) / "desktop.sqlite3"
             conn = sqlite3.connect(db_path)
-            conn.execute("PRAGMA user_version = 2")
+            conn.execute("PRAGMA user_version = 3")
             conn.close()
             with self.assertRaises(ValueError) as ctx:
                 Store(Path(directory))
@@ -230,7 +230,7 @@ class DesktopStorageTests(unittest.TestCase):
             conn = sqlite3.connect(db_path)
             version = conn.execute("PRAGMA user_version").fetchone()[0]
             conn.close()
-            self.assertEqual(version, 2)
+            self.assertEqual(version, 3)
 
     def test_version_zero_database_receives_schema_and_version(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -240,7 +240,7 @@ class DesktopStorageTests(unittest.TestCase):
             store = Store(Path(directory))
             try:
                 version = store.db.execute("PRAGMA user_version").fetchone()[0]
-                self.assertEqual(version, 1)
+                self.assertEqual(version, 2)
                 tables = {row[0] for row in store.db.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()}
                 self.assertTrue({"settings", "conversations", "messages", "workloads"}.issubset(tables))
             finally:

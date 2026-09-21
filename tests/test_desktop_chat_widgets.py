@@ -51,7 +51,7 @@ class DesktopChatWidgetTests(unittest.TestCase):
         self.assertEqual(
             self.widget.toPlainText(),
             "A place to think and build.\n\nConnect a local model to start a conversation. "
-            "Your workspace is never attached automatically.",
+            "CETA includes the active task's project inventory and instructions. Add file contents explicitly.",
         )
         self.assertEqual(len(self.widget.findChildren(QPushButton)), 0)
 

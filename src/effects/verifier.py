@@ -57,6 +57,11 @@ class EffectVerifier:
         expected_key_id, observer_key = trusted
         if observation.observer_key_id != expected_key_id:
             return EffectVerificationStatus.MISMATCH, "OBSERVER_KEY_ID_MISMATCH"
+        # Renaming an executor or its key does not make its observation independent.
+        # Compare key material, including separately deserialized public-key objects.
+        if any(observer_key.public_bytes_raw() == key.public_bytes_raw()
+               for key in self._trusted_gateway_keys.values()):
+            return EffectVerificationStatus.MISMATCH, "OBSERVER_NOT_INDEPENDENT"
         if not observation.verify_signature(observer_key):
             return EffectVerificationStatus.MISMATCH, "OBSERVATION_SIGNATURE_INVALID"
         return None
