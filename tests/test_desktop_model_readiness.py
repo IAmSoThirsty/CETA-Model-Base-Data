@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import sys
 import threading
+import tempfile
 import unittest
 from unittest.mock import patch
 
@@ -13,12 +14,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from ceta_desktop.models import LocalModelClient, ModelError  # noqa: E402
-from ceta_desktop.hardware import GIB, HardwareProfile  # noqa: E402
+from ceta_desktop.hardware import GIB, GPUInfo, HardwareProfile  # noqa: E402
 
 
 LOCAL_DETAILS = {"details": {"format": "gguf", "parameter_size": "4B", "quantization_level": "Q4_K_M"},
                  "model_info": {"general.architecture": "qwen3"}}
-LOCAL_MODEL = {"name": "local:4b", "size": 2_500_000_000}
+LOCAL_MODEL = {"name": "local:4b", "size": 2_500_000_000, "digest": "a" * 64}
 NATIVE_COMPLETE = b'{"message":{"content":"CETA_READY"},"done":false}\n{"message":{"content":""},"done":true}\n'
 OPENAI_COMPLETE = b'data: {"choices":[{"delta":{"content":"Hello"}}]}\n\ndata: [DONE]\n\n'
 
@@ -32,7 +33,7 @@ def model_service(overrides=None):
         ("POST", "/api/chat"): NATIVE_COMPLETE,
         ("POST", "/v1/chat/completions"): OPENAI_COMPLETE,
         ("GET", "/api/ps"): lambda _: {"models": [{"name": "local:4b", "size": 3_000_000_000,
-                                                   "size_vram": 1_500_000_000, "context_length": 4096}]
+                                                   "size_vram": 1_500_000_000, "context_length": 4096, "digest": "a" * 64}]
                                       if any(request[1] == "/api/chat" for request in requests) else []},
     }
     routes.update(overrides or {})
@@ -53,7 +54,10 @@ def model_service(overrides=None):
             self.send_response(status)
             self.send_header("Content-Length", str(len(encoded)))
             self.end_headers()
-            self.wfile.write(encoded)
+            try:
+                self.wfile.write(encoded)
+            except (BrokenPipeError, ConnectionAbortedError, ConnectionResetError):
+                pass  # Cancellation fixtures deliberately close before server completion.
 
         do_GET = respond
         do_POST = respond
@@ -62,7 +66,8 @@ def model_service(overrides=None):
     thread = threading.Thread(target=lambda: server.serve_forever(poll_interval=0.01), daemon=True)
     thread.start()
     try:
-        yield LocalModelClient(f"http://127.0.0.1:{server.server_port}/v1"), requests
+        with tempfile.TemporaryDirectory() as coordination:
+            yield LocalModelClient(f"http://127.0.0.1:{server.server_port}/v1", coordination_directory=coordination), requests
     finally:
         server.shutdown()
         server.server_close()
@@ -222,8 +227,8 @@ class DesktopModelReadinessTests(unittest.TestCase):
             worker.start()
             try:
                 self.assertTrue(entered.wait(3))
-                second = LocalModelClient(f"http://127.0.0.1:{client.port}/v1")
-                with self.assertRaisesRegex(ModelError, "already running"):
+                second = LocalModelClient(f"http://127.0.0.1:{client.port}/v1", coordination_directory=client.coordination_directory)
+                with self.assertRaisesRegex(ModelError, "Another CETA request"):
                     second.probe_local_model("local:4b")
             finally:
                 release.set()
@@ -257,7 +262,7 @@ class DesktopModelReadinessTests(unittest.TestCase):
             self.assertNotIn("private", json.dumps(requests))
 
     def test_resident_model_reuses_allocated_memory_at_the_requested_context(self):
-        resident = {"models": [{"name": "local:4b", "size": 3_000_000_000, "size_vram": 0, "context_length": 4096}]}
+        resident = {"models": [{"name": "local:4b", "size": 3_000_000_000, "size_vram": 0, "context_length": 4096, "digest": "a" * 64}]}
         with model_service({("GET", "/api/ps"): resident}) as (client, _), patch(
             "ceta_desktop.models.inspect_hardware", return_value=HardwareProfile(16 * GIB, 3 * GIB // 4, 8),
         ):
@@ -266,7 +271,7 @@ class DesktopModelReadinessTests(unittest.TestCase):
             self.assertTrue(client.last_memory_assessment["preloaded"])
 
     def test_resident_model_still_requires_free_ram_headroom(self):
-        resident = {"models": [{"name": "local:4b", "size": 3_000_000_000, "context_length": 4096}]}
+        resident = {"models": [{"name": "local:4b", "size": 3_000_000_000, "context_length": 4096, "digest": "a" * 64}]}
         with model_service({("GET", "/api/ps"): resident}) as (client, requests), patch(
             "ceta_desktop.models.inspect_hardware", return_value=HardwareProfile(16 * GIB, GIB // 4, 8),
         ):
@@ -275,7 +280,7 @@ class DesktopModelReadinessTests(unittest.TestCase):
             self.assertNotIn("/api/chat", [request[1] for request in requests])
 
     def test_larger_context_cannot_reuse_smaller_resident_allocation(self):
-        resident = {"models": [{"name": "local:4b", "size": 3_000_000_000, "context_length": 2048}]}
+        resident = {"models": [{"name": "local:4b", "size": 3_000_000_000, "context_length": 2048, "digest": "a" * 64}]}
         with model_service({("GET", "/api/ps"): resident}) as (client, _), patch(
             "ceta_desktop.models.inspect_hardware", return_value=HardwareProfile(16 * GIB, GIB, 8),
         ):
@@ -287,6 +292,21 @@ class DesktopModelReadinessTests(unittest.TestCase):
             with self.assertRaisesRegex(ModelError, "4096"):
                 client.probe_local_model("local:4b", context_length=8192)
             self.assertNotIn("/api/chat", [request[1] for request in requests])
+
+    def test_unbound_gpu_fit_cannot_admit_external_runtime_when_ram_does_not_fit(self):
+        profile = HardwareProfile(16 * GIB, 3 * GIB, 8, (GPUInfo("Unsupported GPU", 24 * GIB, 20 * GIB, "nvidia-smi"),))
+        with model_service() as (client, requests), patch("ceta_desktop.models.inspect_hardware", return_value=profile):
+            with self.assertRaisesRegex(ModelError, "GPU fit estimate"):
+                list(client.stream("local:4b", [{"role": "user", "content": "private"}], context_length=4096))
+            self.assertNotIn("private", json.dumps(requests))
+
+    def test_resident_tag_with_other_or_missing_digest_does_not_bypass_loading_gate(self):
+        for digest in ("b" * 64, None):
+            resident = {"models": [{"name": "local:4b", "digest": digest, "size": 3_000_000_000, "context_length": 4096}]}
+            with self.subTest(digest=digest), model_service({("GET", "/api/ps"): resident}) as (client, requests):
+                with self.assertRaisesRegex(ModelError, "resident model identity"):
+                    list(client.stream("local:4b", [], context_length=4096))
+                self.assertNotIn("/api/chat", [request[1] for request in requests])
 
     def test_context_budget_is_sent_to_native_ollama_chat(self):
         with model_service() as (client, requests):

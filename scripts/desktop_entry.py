@@ -1,9 +1,13 @@
 """Frozen native entry point; intentionally imports no training dependencies."""
 
 import logging
+import sys
 
 
 def launch():
+    if sys.argv[1:] == ["--hardware-gpu-probe"]:
+        from ceta_desktop.hardware import gpu_probe
+        return gpu_probe()
     try:
         from ceta_desktop.app import main
         return main()

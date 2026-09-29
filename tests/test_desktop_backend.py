@@ -20,6 +20,7 @@ import sqlite3
 
 from ceta_desktop.models import (
     LocalModelClient,
+    ModelDeadlineError,
     ModelError,
     ModelPacks,
     ModelSocket,
@@ -330,6 +331,10 @@ class DesktopStorageTests(unittest.TestCase):
 
 
 class DesktopTransportTests(unittest.TestCase):
+    def setUp(self):
+        directory = self.enterContext(tempfile.TemporaryDirectory())
+        self.enterContext(patch("ceta_desktop.runtime_coordination.default_directory", return_value=Path(directory)))
+
     def test_cancel_interrupts_a_stalled_http10_response(self):
         started, release, completed = threading.Event(), threading.Event(), threading.Event()
 
@@ -403,7 +408,7 @@ class DesktopTransportTests(unittest.TestCase):
             server.server_close()
             thread.join()
 
-    def test_socket_deadline_raises_after_two_minutes(self):
+    def test_socket_read_limit_preserves_timeout_identity(self):
         sock = ModelSocket(socket.AF_INET, socket.SOCK_STREAM)
         sock.cancelled = threading.Event()
         start = 1000.0
@@ -418,9 +423,11 @@ class DesktopTransportTests(unittest.TestCase):
 
         with patch("time.monotonic", side_effect=fake_monotonic), \
              patch("socket.socket.recv_into", fake_recv_into):
-            with self.assertRaises(ModelError) as ctx:
+            with self.assertRaises(ModelDeadlineError) as ctx:
                 sock.recv_into(bytearray(10))
-            self.assertIn("two minutes", str(ctx.exception))
+            self.assertIn("remaining time limit", str(ctx.exception))
+            self.assertEqual(current[0] - start, 130.0)
+            self.assertFalse(sock.cancelled.is_set())
         sock.close()
 
 

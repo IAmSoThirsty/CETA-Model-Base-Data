@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from pathlib import Path
 import os
-import subprocess
 import sys
 import unittest
 from unittest.mock import patch
@@ -46,7 +45,8 @@ class HardwareAssessmentTests(unittest.TestCase):
     def test_more_free_gpu_memory_enables_larger_candidates(self):
         def profile(size):
             return HardwareProfile(32 * GIB, 4 * GIB, 8, (GPUInfo("GPU", size * GIB, size * GIB, "fixture"),))
-        small, large = recommended_model(profile(8)), recommended_model(profile(24))
+        small, large = (max((item for item in assess_models(profile(size)) if item.mode == "gpu"),
+                            key=lambda item: item.model.working_bytes) for size in (8, 24))
         self.assertEqual(small.mode, "gpu")
         self.assertEqual(large.mode, "gpu")
         self.assertGreater(large.model.working_bytes, small.model.working_bytes)
@@ -54,6 +54,7 @@ class HardwareAssessmentTests(unittest.TestCase):
     def test_recommendation_prefers_gpu_fit_over_larger_cpu_fit(self):
         profile = HardwareProfile(128 * GIB, 100 * GIB, 8, (GPUInfo("GPU", 8 * GIB, 8 * GIB, "fixture"),))
         self.assertEqual(recommended_model(profile).mode, "gpu")
+        self.assertEqual(recommended_model(profile).model.tag, "qwen3:4b-instruct-2507-q4_K_M")
 
     def test_unknown_or_invalid_ram_never_becomes_a_fit_claim(self):
         for total, available in ((None, None), (16 * GIB, None), (GIB, 2 * GIB), (-1, 0), (True, 1)):
@@ -84,6 +85,7 @@ class HardwareAssessmentTests(unittest.TestCase):
         with patch("ceta_desktop.hardware._physical_memory", side_effect=OSError("unavailable")), \
                 patch("ceta_desktop.hardware.shutil.which", return_value=None), \
                 patch("ceta_desktop.hardware.Path.is_file", return_value=False), \
+                patch("ceta_desktop.hardware._isolated_gpu_inventory", return_value=()), \
                 patch("ceta_desktop.hardware._windows_gpu_names", side_effect=ValueError("unavailable")):
             profile = inspect_hardware()
         self.assertIsNone(profile.total_ram_bytes)
@@ -91,11 +93,13 @@ class HardwareAssessmentTests(unittest.TestCase):
         self.assertIsNone(recommended_model(profile))
         self.assertTrue(profile.warnings)
 
+    @unittest.skipUnless(os.name == "nt", "Windows contained inventory")
     def test_inventory_process_is_bounded_and_does_not_use_shell(self):
-        with patch("ceta_desktop.hardware.subprocess.run", return_value=subprocess.CompletedProcess([], 0, "output", "")) as run:
+        with patch("ceta_desktop.backends._inspect_contained_command", return_value="output") as run:
             self.assertEqual(_run_inventory(["inventory", "argument"]), "output")
-        self.assertEqual(run.call_args.args[0], ["inventory", "argument"])
-        self.assertEqual(run.call_args.kwargs["timeout"], 8)
+        self.assertEqual(run.call_args.args[:2], ("inventory", ["argument"]))
+        self.assertLessEqual(run.call_args.kwargs["timeout"], 8)
+        self.assertEqual(run.call_args.kwargs["max_output"], 65536)
         self.assertNotIn("shell", run.call_args.kwargs)
 
     @unittest.skipUnless(os.name == "nt", "Windows GPU inventory integration")
@@ -103,7 +107,7 @@ class HardwareAssessmentTests(unittest.TestCase):
         with patch("ceta_desktop.hardware._physical_memory", return_value=(32 * GIB, 20 * GIB)), \
                 patch("ceta_desktop.hardware.shutil.which", return_value="nvidia-smi"), \
                 patch("ceta_desktop.hardware._run_inventory", return_value="Synthetic NVIDIA, 8192, 4096"), \
-                patch("ceta_desktop.hardware.windows_gpu_inventory", return_value=(
+                patch("ceta_desktop.hardware._isolated_gpu_inventory", return_value=(
                     ("Synthetic NVIDIA", 8 * GIB, 7 * GIB), ("Synthetic AMD", 16 * GIB, 12 * GIB),
                 )), patch("ceta_desktop.hardware._windows_gpu_names") as fallback:
             profile = inspect_hardware()

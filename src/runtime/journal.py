@@ -6,6 +6,7 @@ replacing both the database and its retained checkpoints.
 """
 from __future__ import annotations
 
+from collections import OrderedDict
 from contextlib import contextmanager
 from datetime import datetime, timezone
 import hashlib
@@ -13,11 +14,16 @@ import json
 import math
 from pathlib import Path
 import sqlite3
+import sys
 import threading
 from uuid import uuid4
 
 SCHEMA_VERSION = 2
 ZERO_HASH = "0" * 64
+# Process-local hash memoization only. SQLite rows, stream structure and projections
+# are still read and checked on every verification. Large rows simply remain uncached.
+VERIFIED_ROW_BYTES = 8 * 1024 * 1024
+VERIFIED_ROW_COUNT = 4096
 
 
 class JournalError(ValueError):
@@ -98,21 +104,30 @@ def initialize_schema(db):
 
 
 class Journal:
-    def __init__(self, path: Path):
+    def __init__(self, path: Path, *, read_only=False):
         self.path = Path(path).resolve()
-        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.read_only = read_only
+        if not read_only:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
         self._mutex = threading.RLock()
         self._depth = 0
         self._rollback_only = False
         self._observed = {}
         self._pending_heads = {}
+        self._verified_rows = OrderedDict()
+        self._verified_row_bytes = 0
         self.migration_backup = None
-        self.db = sqlite3.connect(self.path, timeout=30, isolation_level=None, check_same_thread=False)
+        self.db = sqlite3.connect(self.path.as_uri() + "?mode=ro" if read_only else self.path,
+                                  uri=read_only, timeout=30, isolation_level=None, check_same_thread=False)
         self.db.row_factory = sqlite3.Row
         try:
             # Reject a future schema before changing persistent pragmas or tables.
             if self.db.execute("PRAGMA user_version").fetchone()[0] > SCHEMA_VERSION:
                 raise JournalError("This data was created by a newer CETA. Install that version to open it.")
+            if read_only:
+                self.db.execute("PRAGMA query_only=ON")
+                self.verify()
+                return
             self.db.execute("PRAGMA foreign_keys=ON")
             with self.transaction():
                 version = self.db.execute("PRAGMA user_version").fetchone()[0]
@@ -149,7 +164,7 @@ class Journal:
         with self._mutex:
             outer = self._depth == 0
             if outer:
-                self.db.execute("BEGIN IMMEDIATE")
+                self.db.execute("BEGIN" if self.read_only else "BEGIN IMMEDIATE")
                 self._rollback_only = False
                 self._pending_heads = {}
             self._depth += 1
@@ -368,6 +383,7 @@ class Journal:
 
     def _clear_archived_settings(self, identifier):
         self.db.execute("DELETE FROM settings WHERE key=?", ("chat_draft:" + identifier,))
+        self.db.execute("DELETE FROM settings WHERE key IN (?,?)", ("attachments:chat_draft:" + identifier, "request_retry:" + identifier))
         current = self.db.execute("SELECT value FROM settings WHERE key='active_conversation'").fetchone()
         if current and json.loads(current[0]) == identifier:
             self.db.execute("DELETE FROM settings WHERE key='active_conversation'")
@@ -391,6 +407,34 @@ class Journal:
                 args.append(task_id)
             return [self._event(row) for row in self.db.execute(query + " ORDER BY sequence", args)]
 
+    def _check_event_hash(self, stored, event):
+        # Compare every persisted field, including its SQLite/Python type. A head,
+        # id, mtime, data_version or trigger alone cannot establish unchanged content.
+        values = tuple(stored)
+        raw = (tuple(stored.keys()), tuple(type(value) for value in values), values)
+        key = (event["project_id"], event["sequence"])
+        cached = self._verified_rows.get(key)
+        if cached is not None and cached[0] == raw:
+            self._verified_rows.move_to_end(key)
+            return
+        body = {name: value for name, value in event.items() if name != "event_hash"}
+        if digest({"domain": "CETA/PROJECT_EVENT/v1", **body}) != event["event_hash"]:
+            raise JournalError("Project journal content hash mismatch")
+        if cached is not None:
+            del self._verified_rows[key]
+            self._verified_row_bytes -= cached[1]
+        # Reserve container overhead as well as field storage; entry count also
+        # bounds dictionary overhead. No decoded mutable payload is cached or shared.
+        size = 1024 + sum(sys.getsizeof(value) for value in values)
+        if VERIFIED_ROW_COUNT < 1 or size > VERIFIED_ROW_BYTES:
+            return
+        while self._verified_rows and (len(self._verified_rows) >= VERIFIED_ROW_COUNT or
+                                      self._verified_row_bytes + size > VERIFIED_ROW_BYTES):
+            _, (_, removed_size) = self._verified_rows.popitem(last=False)
+            self._verified_row_bytes -= removed_size
+        self._verified_rows[key] = (raw, size)
+        self._verified_row_bytes += size
+
     def _verify_project(self, project_id, *, allow_empty=False):
         row = self._project_row(project_id)
         prior, sequence = ZERO_HASH, 0
@@ -402,11 +446,9 @@ class Journal:
             event = self._event(stored)
             sequence += 1
             expected_hash = event["event_hash"]
-            body = {key: value for key, value in event.items() if key != "event_hash"}
             if event["sequence"] != sequence or event["previous_hash"] != prior:
                 raise JournalError("Project journal sequence or predecessor mismatch")
-            if digest({"domain": "CETA/PROJECT_EVENT/v1", **body}) != expected_hash:
-                raise JournalError("Project journal content hash mismatch")
+            self._check_event_hash(stored, event)
             if sequence == 1:
                 if event["kind"] != "project.opened" or event["task_id"] is not None:
                     raise JournalError("Project stream lacks its canonical opening event")
@@ -485,16 +527,21 @@ class Journal:
         return True
 
     def task(self, task_id):
+        return self.task_snapshot(task_id)[0]
+
+    def task_snapshot(self, task_id):
+        """Read a task and its canonical events from one verified transaction."""
         with self.transaction():
             created = self.db.execute("SELECT project_id FROM task_events WHERE task_id=? AND kind='task.created'", (task_id,)).fetchall()
             if len(created) != 1:
                 raise JournalError("Unknown or duplicated canonical task")
             project_id = created[0][0]
-            expected = self._expected_tasks(self._verify_project(project_id))
+            stream = self._verify_project(project_id)
+            expected = self._expected_tasks(stream)
             self._check_tasks(project_id, expected)
             if task_id not in expected:
                 raise JournalError("Unknown canonical task")
-            return dict(expected[task_id])
+            return dict(expected[task_id]), [event for event in stream if event["task_id"] == task_id]
 
     def tasks(self, project_id):
         with self.transaction():
@@ -569,11 +616,12 @@ class Journal:
             self._check_bound_data(self._expected_bound_data(events), events, conversation_id=identifier)
             return True
 
-    def conversation_messages(self, identifier):
+    def conversation_messages(self, identifier, *, include_sequence=False):
         with self.transaction():
             self.verify_conversation(identifier)
             return [dict(row) for row in self.db.execute(
-                "SELECT role,content,status FROM messages WHERE conversation_id=? ORDER BY sequence", (identifier,))]
+                "SELECT " + ("sequence," if include_sequence else "") +
+                "role,content,status FROM messages WHERE conversation_id=? ORDER BY sequence", (identifier,))]
 
     def conversation_scope(self, identifier):
         with self.transaction():
@@ -657,3 +705,5 @@ class Journal:
     def close(self):
         with self._mutex:
             self.db.close()
+            self._verified_rows.clear()
+            self._verified_row_bytes = 0

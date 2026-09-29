@@ -6,6 +6,7 @@ from importlib.resources import files
 import json
 import os
 import shutil
+import sqlite3
 from pathlib import Path
 import subprocess
 import sys
@@ -24,8 +25,13 @@ from PySide6.QtWidgets import (
 
 from . import __version__
 from .models import LocalModelClient, ModelPacks
+from .owned_process import OwnedModelProcess
+from .managed_assets import ManagedAssets
+from .request_control import ModelDeadlineError, RequestBudget, request_scope
+from .backends import (gguf_metadata, inspect_llama_runtime, llama_environment,
+                       llama_launch_plan, validate_runtime_inspection)
 from .hardware import (
-    ModelOption, assess_model, assess_models, format_hardware,
+    assess_model, assess_models, format_hardware,
     inspect_hardware, local_model_option, recommended_model,
 )
 from .storage import Store, application_directory
@@ -41,6 +47,13 @@ from .pages.settings import SettingsPage
 from .pages.updates import UpdatesPage
 from .pages.workloads import WorkloadsPage
 from .pages.tasks import TasksPanel
+from .pages.recovery import RecoveryWindow
+from .pages.runtime_setup import RuntimeSetupPanel
+from .pages.model_setup import ModelSetupPanel
+from .pages.local_setup import LocalSetupPanel
+from .pages.capabilities import CapabilitiesPanel
+from .model_installation import ManagedModels, model_name
+from .runtime_installation import RuntimeInstallation, managed_environment, require_supported_platform
 from runtime.tasks import TaskRuntime
 from runtime.model_provider import LocalProvider
 
@@ -64,11 +77,17 @@ class BackgroundTask(QThread):
 
 
 class MainWindow(QMainWindow):
+    runtime_health_changed = Signal(object)
+
     def __init__(self, directory: Path):
         super().__init__()
-        self.store = Store(directory)
         self.task_runtime = TaskRuntime(directory)
-        self.task_runtime.recover_interrupted()
+        try:
+            self.store = Store(directory)
+            self.recovered_tasks = self.task_runtime.recover_interrupted()
+        except BaseException:
+            self.task_runtime.close()
+            raise
         self.project_id = None
         self.task_id = None
         self.workload_task = None
@@ -81,6 +100,8 @@ class MainWindow(QMainWindow):
         self.tasks: list[BackgroundTask] = []
         self.client: LocalModelClient | None = None
         self.assistant_text = ""
+        self.attachments = []
+        self.retry_request_id = None
         self.response_sequence = None
         self.update_task = None
         self.downloaded_update = None
@@ -96,8 +117,18 @@ class MainWindow(QMainWindow):
         self.model_probe_running = False
         self.model_action_id = None
         self.model_start_pending = False
+        self.model_preparation = None
+        self.model_launch_plan = None
+        self.model_health_task = None
+        self.owned_runtime_recipe = None
+        self.owned_runtime_run = None
+        self.owned_runtime_failure = None
+        self.model_restart_pending = None
+        self.resident_snapshot = None
+        self.resident_endpoint = None
+        self.resident_operation_running = False
         self.pending_model_observations = []
-        self.model_process = QProcess(self)
+        self.model_process = OwnedModelProcess(self) if os.name == "nt" else QProcess(self)
         self.model_process.setProcessChannelMode(QProcess.MergedChannels)
         self.model_process.readyReadStandardOutput.connect(self._model_output)
         self.model_process.started.connect(self._model_started)
@@ -134,6 +165,9 @@ class MainWindow(QMainWindow):
         if saved_workspace and Path(saved_workspace).is_dir():
             self._set_workspace(Path(saved_workspace))
         self.statusBar().showMessage("Ready · Conversations are saved on this computer")
+        if self.recovered_tasks:
+            self.statusBar().showMessage(f"Recovered {len(self.recovered_tasks)} interrupted task(s). "
+                                         "Open Projects → Inspect recovery; uncertain effects were not replayed.")
         self._restore_editor_draft()
 
     def _build_ui(self):
@@ -333,6 +367,14 @@ class MainWindow(QMainWindow):
         top.addWidget(self.privacy_badge)
         layout.addWidget(header)
         self.chat_view = ChatTranscript()
+        self.setup_entry, setup_layout = self._card("Set up local AI", "CETA checks this computer before suggesting a local model. Downloads and test prompts require your setup action.")
+        setup_actions = QHBoxLayout()
+        setup_actions.addWidget(self._action("Set up local AI", self.open_local_setup, "models", primary=True))
+        setup_actions.addWidget(self._action("Use an existing local model", lambda: self.open_local_setup(existing=True)))
+        setup_actions.addWidget(self._action("Continue without AI", lambda: self.guided_setup.skip()))
+        setup_layout.addLayout(setup_actions)
+        self.setup_entry.setVisible(self.store.setting("local_setup_entry_dismissed", "") != "yes" and not self.store.setting("model", ""))
+        layout.addWidget(self.setup_entry)
         layout.addWidget(self.chat_view, 1)
         composer_margin = QVBoxLayout()
         composer_margin.setContentsMargins(24, 10, 24, 8)
@@ -351,7 +393,21 @@ class MainWindow(QMainWindow):
         self.chat_role_combo.setToolTip("Uses the selected model and current task. Role responses are proposals; review their supporting evidence before applying changes.")
         role_row.addWidget(self.chat_role_combo)
         role_row.addStretch()
+        self.chat_resume_button = self._action("Resume task", self.resume_task_access)
+        self.chat_resume_button.setVisible(False)
+        role_row.addWidget(self.chat_resume_button)
         compose_layout.addLayout(role_row)
+        attachment_row = QHBoxLayout()
+        self.attachment_summary = QLabel("No attached files")
+        self.attachment_summary.setWordWrap(True)
+        attachment_row.addWidget(self.attachment_summary, 1)
+        attachment_row.addWidget(self._action("Clear attachments", self.clear_attachments))
+        attachment_row.addWidget(self._action("Preview request", lambda: self.send_message(preview=True)))
+        attachment_row.addWidget(self._action("Restore failed request", self.restore_failed_request))
+        compose_layout.addLayout(attachment_row)
+        self.request_summary = QLabel("Requests reserve space for both input and the response.")
+        self.request_summary.setWordWrap(True)
+        compose_layout.addWidget(self.request_summary)
         self.prompt = QPlainTextEdit()
         self.prompt.setObjectName("chatPrompt")
         self.prompt.setMinimumHeight(58)
@@ -519,6 +575,12 @@ class MainWindow(QMainWindow):
         self.hardware_model_detail.setWordWrap(True)
         hardware_layout.addWidget(self.hardware_model_detail)
         layout.addWidget(hardware)
+        self.runtime_setup_panel = RuntimeSetupPanel(self.store.directory, self._background,
+            self._application_action, self.start_managed_runtime)
+        layout.addWidget(self.runtime_setup_panel)
+        self.model_setup_panel = ModelSetupPanel(self.store.directory, self._background, self._application_action,
+            self.use_managed_model, preference=self.store.setting("managed_model_id", ""))
+        layout.addWidget(self.model_setup_panel)
         service, service_layout = self._card("Local model connection", "CETA starts Ollama with cloud features disabled. Services started outside CETA retain their own privacy settings.")
         form = QFormLayout()
         form.setSpacing(12)
@@ -540,6 +602,22 @@ class MainWindow(QMainWindow):
         controls.addStretch()
         service_layout.addLayout(controls)
         service_layout.addWidget(self.probe_model_button, 0, Qt.AlignLeft)
+        service_layout.addWidget(self._action("Recheck runtime", self.recheck_runtime), 0, Qt.AlignLeft)
+        service_layout.addWidget(self._action("Restart owned runtime", self.restart_local_model), 0, Qt.AlignLeft)
+        self.resident_model_combo = QComboBox()
+        self.resident_model_combo.setAccessibleName("Loaded models reported by the local service")
+        service_layout.addWidget(self.resident_model_combo)
+        resident_controls = QHBoxLayout()
+        self.inspect_residents_button = self._action("Inspect loaded models", self.inspect_loaded_models)
+        self.unload_resident_button = self._action("Unload selected resident", self.unload_selected_model)
+        self.unload_resident_button.setEnabled(False)
+        resident_controls.addWidget(self.inspect_residents_button)
+        resident_controls.addWidget(self.unload_resident_button)
+        resident_controls.addStretch()
+        service_layout.addLayout(resident_controls)
+        self.resident_detail = QLabel("Unloading frees the selected model's residency. It may affect other apps using this service; installed model files are kept.")
+        self.resident_detail.setWordWrap(True)
+        service_layout.addWidget(self.resident_detail)
         layout.addWidget(service)
         packs, packs_layout = self._card("Expansion packs", "Model downloads are optional and separate from application updates. No model is bundled with CETA.")
         download_row = QHBoxLayout()
@@ -572,18 +650,48 @@ class MainWindow(QMainWindow):
         self.model_log.setMaximumHeight(90)
         self.model_log.setPlaceholderText("Local runtime output")
         layout.addWidget(self.model_log)
+        self.advanced_model_controls = (hardware, self.runtime_setup_panel, self.model_setup_panel, service, packs)
+        self.guided_setup = LocalSetupPanel(self, lambda **kwargs: inspect_hardware(**kwargs))
+        layout.insertWidget(2, self.guided_setup)
+        self.capabilities_panel = CapabilitiesPanel(self)
+        layout.insertWidget(3, self.capabilities_panel)
+        self.advanced_model_controls = (*self.advanced_model_controls, self.capabilities_panel)
         return page
+
+    def open_local_setup(self, *, existing=False):
+        self.navigation.setCurrentRow(3)
+        if existing:
+            self.guided_setup.discover()
+        else:
+            self.guided_setup.inspect()
 
     def _models_opened(self, row):
         if row == 3 and self.hardware_profile is None:
             self.refresh_hardware()
 
     def _model_configuration_changed(self, *_):
+        if hasattr(self, "capabilities_panel"):
+            self.capabilities_panel.invalidate()
+        if hasattr(self, "guided_setup"):
+            self.guided_setup.configuration_changed()
+        if self.resident_endpoint is not None and self.endpoint.text().strip() != self.resident_endpoint:
+            self.resident_snapshot = None
+            self.resident_model_combo.clear()
+            self.unload_resident_button.setEnabled(False)
+        if self.model_restart_pending is not None:
+            self.model_restart_pending = None
+        if (self.model_health_task is not None and self.owned_runtime_recipe and
+                self.endpoint.text().strip() != self.owned_runtime_recipe["endpoint"]):
+            self.model_health_task.cancelled.set()
         if hasattr(self, "model_status"):
             self.model_status.setText("Model settings changed. Inference is unverified for the current model and endpoint.")
 
     def _hardware_loaded(self, profile):
+        if hasattr(self, "capabilities_panel"):
+            self.capabilities_panel.hardware_changed(profile)
         self.hardware_profile = profile
+        self.model_setup_panel.set_hardware(profile)
+        self.guided_setup.set_hardware(profile)
         self.hardware_summary.setText(format_hardware(profile))
         previous = self.hardware_model_combo.currentData()
         preferred = previous.model.tag if previous else None
@@ -633,11 +741,14 @@ class MainWindow(QMainWindow):
         self.hardware_model_combo.setEnabled(False)
         self.use_suggested_button.setEnabled(False)
         self.hardware_summary.setText("Inspecting this computer's available memory and graphics hardware…")
-        task = self._background(lambda _: inspect_hardware(), self._hardware_loaded, self._hardware_check_failed)
+        task = self._background(lambda task: inspect_hardware(cancelled=task.cancelled), self._hardware_loaded, self._hardware_check_failed)
         task.finished.connect(self._hardware_check_finished)
 
     def _hardware_check_failed(self, error):
+        self.capabilities_panel.hardware_changed(None)
         self.hardware_profile = None
+        self.model_setup_panel.set_hardware(None)
+        self.guided_setup.set_hardware(None)
         self.hardware_model_combo.clear()
         self.use_suggested_button.setEnabled(False)
         self.hardware_summary.setText(f"Hardware inspection unavailable: {error}")
@@ -648,36 +759,64 @@ class MainWindow(QMainWindow):
         self.hardware_refresh_button.setEnabled(True)
         self.hardware_model_combo.setEnabled(True)
 
-    def probe_model(self):
+    def _configured_model_client(self, endpoint):
+        client = LocalModelClient(endpoint)
+        recipe = self.owned_runtime_recipe
+        containment = getattr(self.model_process, "containment", None)
+        if (recipe and recipe["endpoint"] == endpoint and containment and
+                self.model_process.state() == QProcess.Running):
+            client.expected_job = containment["job_name"]
+            client.coordination_directory = self.model_process.coordination_directory
+            if recipe.get("managed"):
+                client.managed_directory = self.store.directory
+                client.managed_assets = self.model_process.managed_assets
+        return client
+
+    def probe_model(self, *, completed=None, failed=None):
+        def reject(message):
+            self.model_status.setText(message)
+            if failed:
+                failed(message)
         if self.model_probe_running or self.chat_task:
-            self.model_status.setText("Stop the current model request before testing another response.")
+            reject("Stop the current model request before testing another response.")
             return
         model = self.model_combo.currentText().strip()
         if not model:
-            self.model_status.setText("Connect and select an installed local model first.")
+            reject("Connect and select an installed local model first.")
             return
         try:
             endpoint = self.endpoint.text().strip()
-            client = LocalModelClient(endpoint)
+            client = self._configured_model_client(endpoint)
         except ValueError as exc:
-            self.model_status.setText(str(exc))
+            reject(str(exc))
             return
         self.model_probe_running = True
         self.probe_model_button.setEnabled(False)
         self.model_status.setText(f"Testing one short local response from {model}…")
+
+        def show_status(text):
+            self.model_status.setText(text)
+            entry = self.model_setup_panel.entry()
+            if (entry and model_name(entry) == model and self.model_combo.currentText().strip() == model and
+                    self.endpoint.text().strip() == endpoint):
+                self.model_setup_panel.status.setText(text)
 
         def verified(result):
             runtime = result.get("runtime") or {}
             residency = ""
             if isinstance(runtime.get("size_vram"), (int, float)):
                 residency = f" · runtime-reported VRAM {runtime['size_vram'] / 1024**3:.2f} GiB"
-            if self.model_combo.currentText().strip() == model and self.endpoint.text().strip() == endpoint:
-                self.model_status.setText(
+            if not client.cancelled.is_set() and self.model_combo.currentText().strip() == model and self.endpoint.text().strip() == endpoint:
+                show_status(
                     f"Response completed for {result['model']} · runtime reports local inference · "
                     f"{result['elapsed_seconds']:.1f}s{residency}. This short check does not measure general response quality.",
                 )
+                if completed:
+                    completed(result)
             else:
                 self.model_status.setText(f"Test completed for {result['model']} using earlier settings. Current model and endpoint remain unverified.")
+                if failed:
+                    failed("Test cancelled or settings changed. Recheck the current configuration.")
             self.model_log.appendPlainText(f"Local test response ({result['model']}):\n{result['response']}")
 
         def finished():
@@ -686,15 +825,112 @@ class MainWindow(QMainWindow):
 
         directory = self.store.directory
         def probe(task):
+            client.cancelled = task.cancelled
             runtime = TaskRuntime(directory)
             try:
                 return runtime.probe_model(client, model, cancelled=task.cancelled)
             finally:
                 runtime.close()
-        task = self._background(probe, verified,
-                                lambda error: self.model_status.setText(f"Local inference not verified: {error}"))
-        task.cancelled = client.cancelled
+        def probe_failed(error):
+            show_status(f"Local inference not verified: {error}")
+            if failed:
+                failed(str(error))
+        task = self._background(probe, verified, probe_failed)
         task.finished.connect(finished)
+        entry = self.model_setup_panel.entry()
+        if entry and model_name(entry) == model:
+            panel = self.model_setup_panel
+            panel.task = task
+            panel.set_busy(True)
+            task.finished.connect(lambda: panel.finished() if panel.task is task else None)
+        return task
+
+    def recheck_runtime(self):
+        try:
+            endpoint = self.endpoint.text().strip()
+            client = LocalModelClient(endpoint)
+        except ValueError as exc:
+            self.model_status.setText(str(exc))
+            return
+        self.model_status.setText("Checking whether the interrupted service process has ended…")
+        def observed(result):
+            if self.endpoint.text().strip() == endpoint:
+                self.model_status.setText("Runtime coordination is clear. Connect and test the selected model; inference readiness is separate."
+                                          if result["state"] == "idle" else result["reason"])
+        def failed(error):
+            if self.endpoint.text().strip() == endpoint:
+                self.model_status.setText(str(error))
+        self._background(lambda _: self._application_action("model.reconcile", {"endpoint": endpoint},
+                                                           client.reconcile_runtime), observed,
+                         failed)
+
+    def _residency_operation(self, kind, arguments, client, operation, observed):
+        if kind == "model.unload":
+            self.capabilities_panel.invalidate()
+        self.resident_operation_running = True
+        self.inspect_residents_button.setEnabled(False)
+        self.unload_resident_button.setEnabled(False)
+        endpoint = self.endpoint.text().strip()
+        def failed(error):
+            if self.endpoint.text().strip() == endpoint:
+                self.model_status.setText(f"Resident model operation failed: {error}")
+        task = self._background(lambda _: self._application_action(kind, arguments, operation), observed, failed)
+        task.cancelled = client.cancelled
+        def finished():
+            self.resident_operation_running = False
+            self.inspect_residents_button.setEnabled(True)
+            self.unload_resident_button.setEnabled(self.resident_snapshot is not None and self.resident_model_combo.count() > 0)
+        task.finished.connect(finished)
+
+    def inspect_loaded_models(self):
+        if self.resident_operation_running:
+            return
+        try:
+            endpoint = self.endpoint.text().strip()
+            client = LocalModelClient(endpoint)
+        except ValueError as exc:
+            self.model_status.setText(str(exc))
+            return
+        self.resident_snapshot = None
+        self.resident_model_combo.clear()
+        self.model_status.setText("Inspecting the local service's loaded models…")
+        def observed(result):
+            if self.endpoint.text().strip() != endpoint:
+                return
+            self.resident_snapshot, self.resident_endpoint = result, endpoint
+            for row in result["models"]:
+                size = f" · {row['size'] / 1024**3:.1f} GiB reported memory" if row.get("size") is not None else ""
+                self.resident_model_combo.addItem(row["name"] + size, row["name"])
+            self.model_status.setText(f"{len(result['models'])} resident model(s) reported. Select the exact model to unload before switching.")
+        self._residency_operation("model.inspect", {"endpoint": endpoint, "scope": "Read resident model list"},
+                                  client, client.resident_snapshot, observed)
+
+    def unload_selected_model(self):
+        if self.resident_operation_running:
+            return
+        if self.chat_task or self.model_probe_running or self.pack_download_client or self.model_preparation:
+            self.model_status.setText("Stop the active model request, download or preparation before unloading a model.")
+            return
+        snapshot, name = self.resident_snapshot, self.resident_model_combo.currentData()
+        endpoint = self.endpoint.text().strip()
+        if snapshot is None or not name or self.resident_endpoint != endpoint:
+            self.model_status.setText("Inspect loaded models and select the exact resident to unload first.")
+            return
+        try:
+            client = LocalModelClient(endpoint)
+        except ValueError as exc:
+            self.model_status.setText(str(exc))
+            return
+        self.resident_snapshot = None  # A confirmation is single-use, including on failure.
+        self.model_status.setText(f"Requesting unload of {name} and checking its reported residency…")
+        def observed(result):
+            if self.endpoint.text().strip() != endpoint:
+                return
+            self.resident_model_combo.clear()
+            self.model_status.setText(f"Ollama reports {result['model']} unloaded. The next request will recheck the selected model and available memory.")
+            self.refresh_hardware()
+        self._residency_operation("model.unload", {"endpoint": endpoint, "model": name, "inspection": snapshot},
+                                  client, lambda: client.unload_model(snapshot, name), observed)
 
     def _workloads_page(self):
         page, layout = self._page("Workloads", "A record of the commands you ran, their results, and what happened next.")
@@ -815,13 +1051,16 @@ class MainWindow(QMainWindow):
         finally:
             runtime.close()
 
-    def _start_owned_model(self):
+    def _start_owned_model(self, launch_plan=None):
+        self.owned_runtime_run = uuid4().hex
+        self.owned_runtime_failure = None
         self.model_action_id = None
         self.model_start_pending = True
         self.pending_model_observations = []
         try:
             record = self._application_action(
                 "model.start", {"program": self.model_process.program(), "arguments": self.model_process.arguments(),
+                                "launch_plan": launch_plan,
                                 "outcome_scope": "Request local process startup; readiness is checked separately"},
                 self.model_process.start, return_action=True)
             self.model_action_id = record["action_id"]
@@ -839,26 +1078,140 @@ class MainWindow(QMainWindow):
 
     def _model_started(self):
         self._observe_model({"phase": "started", "process_id": int(self.model_process.processId()),
+                             "containment": getattr(self.model_process, "containment", None),
                              "readiness": "not_yet_tested"})
+        run = self.owned_runtime_run
+        QTimer.singleShot(0, lambda: self._begin_owned_health(run))
+
+    def _begin_owned_health(self, run):
+        containment = getattr(self.model_process, "containment", None)
+        recipe = self.owned_runtime_recipe
+        if (run != self.owned_runtime_run or not containment or not recipe or
+                self.model_process.state() != QProcess.Running or self.endpoint.text().strip() != recipe["endpoint"]):
+            return
+        job_name, endpoint = containment["job_name"], recipe["endpoint"]
+        client = LocalModelClient(endpoint, coordination_directory=self.model_process.coordination_directory)
+        self.model_status.setText("Waiting for the owned runtime's HTTP service. No inference has been tested.")
+
+        def current():
+            return (self.owned_runtime_run == run and self.endpoint.text().strip() == endpoint and
+                    self.model_process.state() == QProcess.Running and
+                    (getattr(self.model_process, "containment", None) or {}).get("job_name") == job_name)
+
+        def healthy(result):
+            if not current() or client.cancelled.is_set():
+                return
+            if recipe.get("managed") and result.get("health", {}).get("version") != recipe["managed"]["version"]:
+                failed("The service version differs from the pinned managed runtime")
+                return
+            self._set_available_models(result["models"], endpoint)
+            self.model_status.setText(f"Owned {recipe['backend']} service healthy · {len(result['models'])} eligible model(s). "
+                                      "Select a model and test a response; inference and capabilities remain unverified.")
+            self.chat_status.setText("Owned local service connected; inference has not yet been tested.")
+            self.runtime_health_changed.emit({"run": run, "endpoint": endpoint, "result": result})
+
+        def failed(error):
+            if not current() or client.cancelled.is_set():
+                return
+            self.owned_runtime_failure = str(error)
+            self.runtime_health_changed.emit({"run": run, "endpoint": endpoint, "error": str(error)})
+            self.model_status.setText(f"Owned runtime is not ready: {error}. Stopping its workers…")
+            self.stop_local_model()
+
+        action = self.model_action_id
+        def inspect(task):
+            client.cancelled = task.cancelled
+            return self._application_action("model.inspect",
+                {"endpoint": endpoint, "job_name": job_name, "start_action_id": action,
+                 "scope": "Owned HTTP health and model metadata; no inference request"},
+                lambda: client.wait_owned_service(recipe["backend"], job_name))
+        task = self._background(inspect, healthy, failed)
+        self.model_health_task = task
+        def finished():
+            if self.model_health_task is task:
+                self.model_health_task = None
+        task.finished.connect(finished)
 
     def _model_error(self, _error):
+        self.model_launch_plan = None
+        self.owned_runtime_failure = self.model_process.errorString()
         self.model_status.setText(self.model_process.errorString())
         self._observe_model({"phase": "process_error", "error": self.model_process.errorString()})
 
     def _model_finished(self, code, status):
-        self.model_status.setText("Local model stopped")
-        self._observe_model({"phase": "finished", "exit_code": code, "exit_status": str(status)})
+        self.model_launch_plan = None
+        if self.model_health_task is not None:
+            self.model_health_task.cancelled.set()
+        observation = getattr(self.model_process, "last_observation", None)
+        self.model_status.setText("Owned runtime workers stopped. Recheck runtime to resolve an interrupted request, then start again."
+                                  if observation else "Local model process stopped; separate worker termination is unverified.")
+        self._observe_model({"phase": "finished", "exit_code": code, "exit_status": str(status),
+                             "worker_shutdown": observation})
         self.model_action_id = None
+        if self.owned_runtime_failure:
+            self.model_status.setText(f"Runtime unavailable: {self.owned_runtime_failure}. "
+                                      "Owned workers stopped." if observation else f"Runtime unavailable: {self.owned_runtime_failure}")
+        if self.model_restart_pending is not None:
+            QTimer.singleShot(0, self._complete_owned_restart)
 
-    def stop_local_model(self):
-        if self.model_process.state() == QProcess.NotRunning:
+    def restart_local_model(self):
+        if not isinstance(self.model_process, OwnedModelProcess) or not self.owned_runtime_recipe:
+            self.model_status.setText("CETA can restart only a runtime it started in this window. External services remain under their owner's control.")
             return
+        if self.model_restart_pending is not None:
+            self.model_status.setText("An owned runtime restart is already waiting for worker shutdown.")
+            return
+        if self.chat_task or self.model_probe_running or self.pack_download_client or self.model_preparation or self.resident_operation_running:
+            self.model_status.setText("Stop the active model request, download or preparation before restarting its runtime.")
+            return
+        recipe = dict(self.owned_runtime_recipe)
+        if self.endpoint.text().strip() != recipe["endpoint"]:
+            self.model_status.setText("The selected endpoint differs from the owned runtime. Select its endpoint before restarting it.")
+            return
+        self.model_restart_pending = {"recipe": recipe, "run": self.owned_runtime_run}
+        if self.model_process.state() == QProcess.NotRunning:
+            QTimer.singleShot(0, self._complete_owned_restart)
+        else:
+            self.model_status.setText("Restart requested. Waiting for all owned workers to stop…")
+            if not self.stop_local_model(keep_restart=True):
+                self.model_restart_pending = None
+
+    def _complete_owned_restart(self):
+        pending = self.model_restart_pending
+        if pending is None or self.model_process.state() != QProcess.NotRunning:
+            return
+        self.model_restart_pending = None
+        recipe = pending["recipe"]
+        if self.owned_runtime_run != pending["run"] or self.endpoint.text().strip() != recipe["endpoint"]:
+            self.model_status.setText("Runtime settings changed during shutdown. Restart was cancelled.")
+            return
+        if recipe["backend"] == "ollama":
+            if recipe.get("managed"):
+                self.start_managed_runtime()
+            else:
+                self.start_ollama()
+        else:
+            self.start_model(executable=recipe["program"], expected_pack=recipe["pack"])
+
+    def stop_local_model(self, *, keep_restart=False):
+        if not keep_restart:
+            self.model_restart_pending = None
+        if self.model_health_task is not None:
+            self.model_health_task.cancelled.set()
+        if self.model_preparation is not None:
+            self.model_preparation.cancelled.set()
+            self.model_status.setText("Stopping runtime inspection; no model launch will be admitted.")
+            return False
+        if self.model_process.state() == QProcess.NotRunning:
+            return True
         try:
             self._application_action("model.stop", {"process_id": int(self.model_process.processId()),
                                                     "start_action_id": self.model_action_id},
                                      lambda: self._stop_process(self.model_process))
+            return True
         except (ValueError, OSError, RuntimeError) as exc:
             self.model_status.setText(f"Could not stop the owned model process: {exc}")
+            return False
 
     def _background(self, function, result, failed=None):
         task = BackgroundTask(function, self)
@@ -943,8 +1296,42 @@ class MainWindow(QMainWindow):
             self.chat_status.setText("This file is too large to attach. Copy the relevant section into your message.")
             return
         relative = self.document.path.relative_to(self.workspace.root).as_posix()
-        self.prompt.setPlainText(self.prompt.toPlainText() + f"\n\nFile: {relative}\n```\n{text}\n```\n")
-        self.chat_status.setText("File added to your draft. Review the message before sending.")
+        if len(self.attachments) >= 8 and not any(item["path"] == relative for item in self.attachments):
+            self.chat_status.setText("Attach at most eight files per request.")
+            return
+        self.attachments = [item for item in self.attachments if item["path"] != relative]
+        self.attachments.append({"path": relative, "workspace": str(self.workspace.root), "text": text,
+            "base_sha256": self.document.digest, "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(), "stale": False})
+        self._refresh_attachments()
+        self._save_prompt_draft()
+        self.chat_status.setText("File snapshot attached with its path and applicable instructions. Preview the request before sending.")
+
+    def _refresh_attachments(self):
+        self.attachment_summary.setText("Attached: " + ", ".join(item["path"] +
+            (" (changed; attach again)" if item.get("stale") else "") for item in self.attachments)
+            if self.attachments else "No attached files")
+
+    def clear_attachments(self):
+        self.attachments = []
+        self._refresh_attachments()
+        self._save_prompt_draft()
+
+    def restore_failed_request(self):
+        if self.chat_task or not self.conversation_id:
+            return
+        retry = self.store.setting("request_retry:" + self.conversation_id)
+        if not retry:
+            self.chat_status.setText("There is no failed request to restore in this conversation.")
+            return
+        if self.prompt.toPlainText().strip() or self.attachments:
+            self.chat_status.setText("Save or clear the current draft before restoring the failed request.")
+            return
+        self.prompt.setPlainText(retry["prompt"])
+        self.attachments = retry["attachments"]
+        self.retry_request_id = retry["request_id"]
+        self._refresh_attachments()
+        self._save_prompt_draft()
+        self.chat_status.setText("Failed request restored. Sending unchanged text retries the existing user turn with a new attempt.")
 
     def _set_workspace(self, path):
         workspace = Workspace(path)
@@ -1007,6 +1394,11 @@ class MainWindow(QMainWindow):
             self._error(exc)
 
     def _editor_changed(self):
+        if self.document and self.workspace:
+            for item in self.attachments:
+                if item["workspace"] == str(self.workspace.root) and item["path"] == self.document.path.relative_to(self.workspace.root).as_posix():
+                    item["stale"] = hashlib.sha256(self.editor.toPlainText().encode("utf-8")).hexdigest() != item["text_sha256"]
+            self._refresh_attachments()
         if self.pending_edit:
             self.pending_edit = None
             self.task_panel.apply_button.setEnabled(False)
@@ -1092,6 +1484,64 @@ class MainWindow(QMainWindow):
                 self.task_panel.results.clear()
             self.task_panel.set_tasks(self.task_runtime.tasks(self.project_id), self.task_id)
             self.task_panel.scope.setText("Project: " + (str(self.workspace.root) if self.workspace else "Application conversation"))
+            access = self.task_runtime.task_access_status(self.task_id)
+            self.task_panel.access_status.setText("Task access: " + access["status"] +
+                ". Resume grants another 24 hours of reading and generation; edits and commands still require review.")
+            for button in (self.task_panel.resume_button, self.chat_resume_button):
+                button.setText("Reauthorize task" if access["status"] == "revoked" else "Resume task")
+                button.setProperty("access_status", access["status"])
+                button.setEnabled(access["status"] in {"expired", "revoked"})
+            self.chat_resume_button.setVisible(access["status"] in {"expired", "revoked"})
+            self.task_panel.recovery_action.clear()
+            for item in self.task_runtime.pending_reconciliation(self.project_id):
+                self.task_panel.recovery_action.addItem(item["kind"] + " · " + item["action_id"], item)
+
+    def resume_task_access(self):
+        if not self.task_id or self.chat_task or self.workload_task:
+            return
+        try:
+            expected = self.task_panel.resume_button.property("access_status")
+            actual = self.task_runtime.task_access_status(self.task_id)["status"]
+            if expected != actual:
+                raise ValueError("Task access changed. Review the updated action before continuing.")
+            operation = self.task_runtime.reauthorize_task if actual == "revoked" else self.task_runtime.renew_task_grant
+            operation(self.task_id)
+            self.pending_edit = None
+            self.task_panel.apply_button.setEnabled(False)
+            self.chat_status.setText("Task resumed. Your conversation and draft are retained; prepared actions need fresh review.")
+        except (ValueError, OSError, RuntimeError) as exc:
+            self.task_panel.show_error(str(exc))
+            self.chat_status.setText(str(exc))
+        self._refresh_task_panel()
+
+    def show_task_recovery(self):
+        try:
+            self._ensure_task()
+            self._refresh_task_panel()
+            pending = self.task_runtime.pending_reconciliation(self.project_id)
+            interrupted = [row for row in self.task_runtime.tasks(self.project_id)
+                           if row["status"] in {"interrupted", "needs_reconciliation"}]
+            text = ["Interrupted generation can be submitted as a new request. No effect is replayed automatically.",
+                    "Uncertain edits can be checked against the current file. Arbitrary command effects remain unresolved."]
+            text.extend(row["objective"] + " · " + row["status"] for row in interrupted)
+            text.extend(row["kind"] + " · " + row["action_id"] + " · " + row["task_id"] for row in pending)
+            if not interrupted and not pending:
+                text.append("No interrupted or uncertain operations in this project.")
+            self.task_panel.result_title.setText("Recovery for this project")
+            self.task_panel.results.setPlainText("\n\n".join(text))
+        except (ValueError, OSError, RuntimeError) as exc:
+            self.task_panel.show_error(str(exc))
+
+    def recheck_edit_outcome(self):
+        selected = self.task_panel.recovery_action.currentData()
+        if not selected or self.chat_task or self.workload_task:
+            return
+        try:
+            result = self.task_runtime.record_reconciliation(selected["task_id"], selected["action_id"], inspect_resource=True)
+            self._refresh_task_panel()
+            self.task_panel.show_result("Current resource observation", result)
+        except (ValueError, OSError, RuntimeError) as exc:
+            self.task_panel.show_error(str(exc))
 
     def start_project_task(self):
         if self.chat_task or self.workload_task:
@@ -1283,12 +1733,16 @@ class MainWindow(QMainWindow):
 
     def _save_prompt_draft(self):
         self.store.set_setting(self._composer_draft_key(), self.prompt.toPlainText())
+        self.store.set_setting("attachments:" + self._composer_draft_key(), self.attachments)
 
     def _restore_prompt_draft(self):
         self.prompt_timer.stop()
         self.prompt.blockSignals(True)
         self.prompt.setPlainText(self.store.setting(self._composer_draft_key(), ""))
         self.prompt.blockSignals(False)
+        self.attachments = self.store.setting("attachments:" + self._composer_draft_key(), [])
+        self.retry_request_id = None
+        self._refresh_attachments()
 
     def _switch_conversation(self, identifier, *, save_draft=True):
         if save_draft:
@@ -1388,28 +1842,43 @@ class MainWindow(QMainWindow):
             self.store.set_setting("active_conversation", self.conversation_id)
             self._restore_prompt_draft()
 
-    def send_message(self):
+    def _draft_revision(self):
+        body = {"text": self.prompt.toPlainText(), "attachments": self.attachments,
+                "project": self.project_id, "task": self.task_id, "conversation": self.conversation_id,
+                "endpoint": self.endpoint.text().strip(), "model": self.model_combo.currentText().strip(),
+                "role": self.chat_role_combo.currentData(), "retry": self.retry_request_id}
+        return hashlib.sha256(json.dumps(body, sort_keys=True, ensure_ascii=False).encode("utf-8")).hexdigest()
+
+    def send_message(self, checked=False, *, preview=False):
         prompt = self.prompt.toPlainText().strip()
         if not prompt or self.chat_task:
+            return
+        if self.guided_setup.busy:
+            self.chat_status.setText("Finish or pause local AI setup before sending. Your draft has been kept.")
             return
         if self.model_probe_running:
             self.chat_status.setText("Wait for the local model test to finish before sending a message.")
             return
         try:
-            client = LocalModelClient(self.endpoint.text().strip())
+            client = self._configured_model_client(self.endpoint.text().strip())
             model = self.model_combo.currentText().strip()
             if not model:
                 self.chat_status.setText("Open Models and connect to an installed model first.")
                 return
             if len(prompt) > 100000:
                 raise ValueError("This message is too long. Keep it below 100,000 characters.")
+            if any(item.get("stale") for item in self.attachments):
+                raise ValueError("An attached editor draft changed. Attach that file again before sending.")
         except ValueError as exc:
             self.chat_status.setText(str(exc))
             return
         self.store.set_setting("endpoint", self.endpoint.text().strip())
         self.store.set_setting("model", model)
-        records = self.store.messages(self.conversation_id) if self.conversation_id else []
-        messages = [{"role": row["role"], "content": row["content"]} for row in records if row["status"] == "complete"]
+        records = self.store.messages(self.conversation_id, include_sequence=True) if self.conversation_id else []
+        retry = self.store.setting("request_retry:" + self.conversation_id) if self.conversation_id else None
+        retry = retry if retry and retry["request_id"] == self.retry_request_id and retry["prompt"] == prompt and retry["attachments"] == self.attachments else None
+        messages = [{"role": row["role"], "content": row["content"]} for row in records
+                    if row["status"] == "complete" and (not retry or row["sequence"] != retry["user_sequence"])]
         messages.append({"role": "user", "content": prompt})
         # Validate before consuming the draft or adding an unsendable message.
         if len(json.dumps(messages)) > 512000:
@@ -1423,45 +1892,151 @@ class MainWindow(QMainWindow):
                     raise ValueError("This conversation belongs to another task. Select its project and task, or start a new conversation.")
                 if not scope and records:
                     raise ValueError("This legacy conversation is unassigned. Use 'Use conversation for task' in Projects before sending it as task context.")
-            if not self.conversation_id:
-                draft_key = self._composer_draft_key()
-                self.conversation_id = self.store.new_conversation()
-                self.store.set_setting(draft_key, "")
-            self.store.bind_conversation(self.conversation_id, self.project_id, self.task_id)
+            self._refresh_task_panel()
+            self.task_runtime._access(self.task_id, "Generate")
         except (ValueError, OSError, RuntimeError) as exc:
             self.chat_status.setText(str(exc))
             return
-        self.store.set_setting("active_conversation", self.conversation_id)
-        self.store.add_message(self.conversation_id, "user", prompt)
-        self.prompt.clear()
-        self._save_prompt_draft()
-        self.assistant_text = ""
-        self.response_sequence = self.store.add_message(self.conversation_id, "assistant", "", "generating")
-        self._load_conversations()
         self.client = client
         self.send_button.setEnabled(False)
         self.stop_chat_button.setEnabled(True)
         role = self.chat_role_combo.currentData()
         self.chat_role_combo.setEnabled(False)
-        self.chat_status.setText(f"Generating with {model}" + (f" as {role}" if role else "") + "…")
-
+        self.chat_status.setText("Preparing the complete request; your draft has not been sent…")
         task_id = self.task_id
+        directory = self.store.directory
+        captured = {"revision": self._draft_revision(), "prompt": prompt, "messages": messages, "model": model,
+                    "role": role, "task_id": task_id, "project_id": self.project_id, "records": records,
+                    "attachments": json.loads(json.dumps(self.attachments)), "retry": retry, "preview": preview}
+        timing = RequestBudget(180).receipt()
+
+        def prepare(task):
+            with request_scope(180, task.cancelled, timing):
+                runtime = TaskRuntime(directory)
+                try:
+                    return runtime.prepare_generation(task_id, LocalProvider(client=client, context_length=4096),
+                        model, messages, role=role, attachments=captured["attachments"], cancelled=task.cancelled)
+                finally:
+                    runtime.close()
+
+        preparation = BackgroundTask(prepare, self)
+        preparation.cancelled = client.cancelled
+        self.chat_task = preparation
+        preparation.result.connect(lambda plan: self._generation_prepared(preparation, client, captured, plan))
+        preparation.failed.connect(lambda error: self.chat_status.setText("Request not sent: " + error))
+        preparation.finished.connect(lambda: self._preparation_finished(preparation))
+        preparation.start()
+
+    def _preparation_finished(self, preparation):
+        if self.chat_task is preparation:
+            self._chat_finished()
+        else:
+            preparation.deleteLater()
+
+    def _generation_prepared(self, preparation, client, captured, plan):
+        self.capabilities_panel.observe_prepared(plan)
+        if preparation.cancelled.is_set():
+            self.chat_status.setText("Preparation stopped. Your draft is retained.")
+            return
+        if self._draft_revision() != captured["revision"]:
+            self.chat_status.setText("The draft, attachments or model changed during preparation. Nothing was sent; prepare again.")
+            return
+        current_records = self.store.messages(self.conversation_id, include_sequence=True) if self.conversation_id else []
+        if current_records != captured["records"]:
+            self.chat_status.setText("Conversation history changed during preparation. Nothing was sent; prepare again.")
+            return
+        budget = plan["budget"]
+        counted = budget.get("verified") is True
+        summary = (f"{'Counted' if counted else 'Estimated'} input {budget['input_token_estimate']} + "
+                   f"output {budget['reserved_output_tokens']} + "
+                   f"{'context margin' if counted else 'template reserve'} {budget['template_overhead_reserve']} / {budget['context_length']}. "
+                   f"{budget['retained_history_pairs']} earlier turns retained. " +
+                   ("Template and tokenizer counted on the owned model worker." if counted else "Tokenizer not verified."))
+        summary += f" {plan['request_time_budget']['seconds']:g}s total request limit, including preparation and review."
+        self.request_summary.setText(summary + (f" {len(plan['omitted'])} item(s) omitted." if plan["omitted"] else ""))
+        self.request_summary.setToolTip(json.dumps(plan["omitted"], indent=2))
+        if captured["preview"]:
+            box = QMessageBox(self)
+            box.setWindowTitle("Prepared request preview")
+            box.setText(summary)
+            box.setInformativeText("Included files: " + (", ".join(plan["selected_paths"]) or "none") +
+                "\nOmissions: " + json.dumps(plan["omitted"], ensure_ascii=False) +
+                "\nDetails contain the exact prepared JSON request. Choose OK to send or Cancel to keep editing.")
+            box.setDetailedText(json.dumps(plan["payload"], indent=2, ensure_ascii=False))
+            box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+            box.setDefaultButton(QMessageBox.Cancel)
+            if box.exec() != QMessageBox.Ok:
+                self.chat_status.setText("Preview closed. Your draft has not been sent.")
+                return
+        elif any("path" in item for item in plan["omitted"]):
+            omitted = ", ".join(item["path"] for item in plan["omitted"] if "path" in item)
+            if QMessageBox.question(self, "Files do not fit this request",
+                    "These files cannot fit alongside the required instructions and response reserve: " + omitted +
+                    "\nSend without those file contents? Cancel to choose smaller excerpts.",
+                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No) != QMessageBox.Yes:
+                self.chat_status.setText("Request not sent. Choose smaller attachments or shorten the request.")
+                return
+        if preparation.cancelled.is_set() or self._draft_revision() != captured["revision"]:
+            self.chat_status.setText("The prepared draft changed or was stopped. Nothing was sent.")
+            return
+        previous_conversation = self.conversation_id
+        previous_response = self.response_sequence
+        try:
+            RequestBudget(180, preparation.cancelled, plan["request_time_budget"]).check()
+            self.task_runtime._access(captured["task_id"], "Generate")
+            with self.store.journal.transaction():
+                if not self.conversation_id:
+                    old_key = self._composer_draft_key()
+                    self.conversation_id = self.store.new_conversation()
+                    self.store.set_setting(old_key, "")
+                    self.store.set_setting("attachments:" + old_key, [])
+                self.store.bind_conversation(self.conversation_id, captured["project_id"], captured["task_id"])
+                self.store.set_setting("active_conversation", self.conversation_id)
+                user_sequence = (captured["retry"]["user_sequence"] if captured["retry"] else
+                                 self.store.add_message(self.conversation_id, "user", captured["prompt"]))
+                self.response_sequence = self.store.add_message(self.conversation_id, "assistant", "", "generating")
+                self.store.set_setting("request_retry:" + self.conversation_id,
+                    {"request_id": plan["request_id"], "user_sequence": user_sequence,
+                     "prompt": captured["prompt"], "attachments": captured["attachments"]})
+        except (ValueError, OSError, RuntimeError, sqlite3.Error) as exc:
+            self.conversation_id = previous_conversation
+            self.response_sequence = previous_response
+            self.chat_status.setText("Request was not admitted: " + str(exc))
+            return
+        self.prompt.clear()
+        self.attachments = []
+        self.retry_request_id = None
+        self._refresh_attachments()
+        self._save_prompt_draft()
+        self.assistant_text = ""
+        self._load_conversations()
+        self.chat_status.setText("Generating with " + captured["model"] + "…")
+        self.client = client
+        self.send_button.setEnabled(False)
+        self.stop_chat_button.setEnabled(True)
+        self.chat_role_combo.setEnabled(False)
         directory = self.store.directory
 
         def generate(task):
             runtime = TaskRuntime(directory)
             try:
-                result = runtime.generate(task_id, LocalProvider(client=client, context_length=4096), model, messages,
-                                          cancelled=task.cancelled, on_token=task.token.emit, role=role)
+                result = runtime.generate(captured["task_id"], LocalProvider(client=client, context_length=4096),
+                    captured["model"], captured["messages"], cancelled=task.cancelled, on_token=task.token.emit,
+                    role=captured["role"], prepared=plan)
+                if result.get("status") == "timed_out":
+                    return "timed_out"
                 if task.cancelled.is_set() or client.cancelled.is_set() or result.get("status") == "cancelled":
                     return "cancelled"
                 if result.get("status", "completed") != "completed":
                     raise RuntimeError(result.get("error") or "The model did not complete its response.")
                 return "complete"
+            except ModelDeadlineError:
+                return "timed_out"
             finally:
                 runtime.close()
 
         self.chat_task = BackgroundTask(generate, self)
+        self.chat_task.cancelled = client.cancelled
         self.chat_task.token.connect(self._chat_token)
         self.chat_task.result.connect(self._chat_complete)
         self.chat_task.failed.connect(self._chat_failed)
@@ -1478,6 +2053,12 @@ class MainWindow(QMainWindow):
         if self.response_sequence is not None:
             self.store.update_response(self.response_sequence, self.assistant_text, "generating")
 
+    def _backend_uncertainty(self):
+        state = getattr(self.client, "backend_state", None) if self.client else None
+        if isinstance(state, dict) and state.get("state") in {"uncertain", "in_flight"}:
+            return " Backend termination is unconfirmed. Use Recheck runtime in Models; a service restart alone may leave model workers running."
+        return ""
+
     def _chat_complete(self, status):
         self.response_timer.stop()
         self.chat_render_timer.stop()
@@ -1485,13 +2066,16 @@ class MainWindow(QMainWindow):
             self.store.update_response(self.response_sequence, self.assistant_text, status)
             self.response_sequence = None
         self.assistant_text = ""
-        self.chat_status.setText("Response complete" if status == "complete" else "Response stopped")
+        if status == "complete" and self.conversation_id:
+            self.store.set_setting("request_retry:" + self.conversation_id, None)
+        message = {"complete": "Response complete", "timed_out": "Response time limit reached; partial output and retry material are retained."}.get(status, "Response stopped")
+        self.chat_status.setText(message + self._backend_uncertainty())
         self._render_chat()
 
     def _chat_failed(self, message):
         status = "cancelled" if self.client and self.client.cancelled.is_set() else "failed"
         self._chat_complete(status)
-        self.chat_status.setText("Response stopped" if status == "cancelled" else f"Could not complete the response: {message}")
+        self.chat_status.setText(("Response stopped" if status == "cancelled" else f"Could not complete the response: {message}") + self._backend_uncertainty())
         self._render_chat()
 
     def _chat_finished(self):
@@ -1529,12 +2113,7 @@ class MainWindow(QMainWindow):
         def loaded(models):
             if not current_endpoint():
                 return
-            selected = self.model_combo.currentText()
-            self.model_combo.clear()
-            self.model_combo.addItems(models)
-            if selected in models:
-                self.model_combo.setCurrentText(selected)
-            self.store.set_setting("endpoint", endpoint)
+            self._set_available_models(models, endpoint)
             skipped = getattr(client, "skipped_models", [])
             excluded = f" · {len(skipped)} remote/cloud model(s) excluded" if skipped else ""
             locality = "runtime-reported local models" if getattr(client, "backend", None) == "ollama" else "inference location unverified"
@@ -1546,6 +2125,15 @@ class MainWindow(QMainWindow):
                 self.model_status.setText(f"Could not connect: {error}")
 
         self._background(lambda _: client.available_models(), loaded, failed)
+
+    def _set_available_models(self, models, endpoint):
+        selected = self.model_combo.currentText()
+        self.model_combo.clear()
+        self.model_combo.addItems(models)
+        if selected:
+            # A disappeared model must not silently select a different model.
+            self.model_combo.setCurrentText(selected)
+        self.store.set_setting("endpoint", endpoint)
 
     def _load_packs(self):
         self.pack_list.clear()
@@ -1575,54 +2163,74 @@ class MainWindow(QMainWindow):
             lambda error: self.model_status.setText(error))
         task.finished.connect(lambda: self.import_button.setEnabled(True))
 
-    def start_model(self):
+    def start_model(self, *, executable=None, expected_pack=None):
         item = self.pack_list.currentItem()
         if not item:
             self.model_status.setText("Select an installed model pack first.")
             return
-        if self.model_process.state() != QProcess.NotRunning:
+        if self.model_restart_pending is not None or self.model_preparation is not None or self.model_process.state() != QProcess.NotRunning:
             self.model_status.setText("Stop the current model before starting another pack.")
             return
-        executable, _ = QFileDialog.getOpenFileName(self, "Select your llama-server executable", "", "Executable (*.exe)" if os.name == "nt" else "All files (*)")
+        if executable is None:
+            executable, _ = QFileDialog.getOpenFileName(self, "Select your llama-server executable", "", "Executable (*.exe)" if os.name == "nt" else "All files (*)")
         if not executable:
             return
-        record = item.data(Qt.UserRole)
+        record = dict(item.data(Qt.UserRole))
+        if expected_pack is not None and record["sha256"] != expected_pack:
+            self.model_status.setText("The selected GGUF pack changed. Start the selected pack explicitly instead of restarting an earlier selection.")
+            return
+        endpoint_before = self.endpoint.text()
         self.model_status.setText("Verifying installed model bytes before starting…")
 
         def prepare(task):
-            profile = inspect_hardware()
-            estimate = ModelOption(
-                tag=record["name"], download_bytes=record["size"],
-                working_bytes=(record["size"] * 5 + 3) // 4 + 1024**3,
-                description="Imported GGUF size-based memory estimate",
-            )
-            assessment = assess_model(profile, estimate)
-            if assessment.mode == "insufficient":
-                raise ValueError(f"This pack does not fit currently available memory. {assessment.reason} Close other applications or select a smaller model.")
-            return self.packs.verify_installed(record["sha256"], task.cancelled), profile, assessment
+            verified = self.packs.verify_installed(record["sha256"], task.cancelled)
+            metadata = gguf_metadata(verified["path"], task.cancelled)
+            inspection = self._application_action("model.inspect",
+                {"program": str(Path(executable).resolve()), "scope": "Inspect version, launch options and devices; no model load"},
+                lambda: inspect_llama_runtime(executable, task.cancelled))
+            # Inventory after potentially slow hashing/probing, never a saved
+            # development-machine profile. Recheck the executable before handoff.
+            profile = inspect_hardware(cancelled=task.cancelled)
+            plan = llama_launch_plan(verified, profile, inspection, metadata)
+            validate_runtime_inspection(inspection, task.cancelled)
+            return plan, profile, inspection, task.cancelled
 
         def start(prepared):
-            verified, profile, assessment = prepared
-            self._hardware_loaded(profile)
-            if self.model_process.state() != QProcess.NotRunning:
-                self.model_status.setText("Another model service is already running.")
-                return
-            self.model_log.clear()
-            self.model_process.setProgram(executable)
-            arguments = ["--model", verified["path"], "--host", "127.0.0.1", "--port", "8081", "--ctx-size", "4096"]
-            if assessment.mode == "cpu":
-                arguments.extend(["--n-gpu-layers", "0"])
-            self.model_process.setArguments(arguments)
-            if not self._start_owned_model():
-                return
-            self.endpoint.setText("http://127.0.0.1:8081/v1")
-            self.model_status.setText(f"Starting local model ({assessment.mode} memory estimate)… Connect / refresh models when it is ready.")
+            plan, profile, inspection, cancelled = prepared
+            try:
+                validate_runtime_inspection(inspection, cancelled, rehash=False)
+                selected = self.pack_list.currentItem()
+                if self.endpoint.text() != endpoint_before or selected is None or selected.data(Qt.UserRole)["sha256"] != record["sha256"]:
+                    raise ValueError("Model selection or endpoint changed during preparation. Start again with the selected configuration.")
+                if self.model_process.state() != QProcess.NotRunning:
+                    raise ValueError("Another model service is already running.")
+                self._hardware_loaded(profile)
+                self.model_log.clear()
+                self.model_process.setProgram(plan["program"])
+                self.model_process.setArguments(plan["arguments"])
+                environment = QProcessEnvironment()
+                for key, value in llama_environment().items():
+                    environment.insert(key, value)
+                self.model_process.setProcessEnvironment(environment)
+                if isinstance(self.model_process, OwnedModelProcess):
+                    self.model_process.setEndpoint("127.0.0.1", 8081)
+                self.owned_runtime_recipe = {"backend": "llama.cpp", "endpoint": "http://127.0.0.1:8081/v1",
+                                             "program": plan["program"], "pack": record["sha256"]}
+                if not self._start_owned_model(plan):
+                    return
+                self.model_launch_plan = plan
+                self.endpoint.setText("http://127.0.0.1:8081/v1")
+                device = plan["device"]["id"] if plan["device"] else "CPU"
+                health = "Waiting for service health." if isinstance(self.model_process, OwnedModelProcess) else "Connect / refresh models when ready; endpoint ownership is unverified on this platform."
+                self.model_status.setText(f"Starting local model on {device} (estimated memory, one 4096-token slot)… {health}")
+            except (ValueError, OSError) as exc:
+                self.model_status.setText(str(exc))
 
-        self._background(prepare, start,
-                         lambda error: self.model_status.setText(str(error)))
+        self.model_preparation = self._background(prepare, start, lambda error: self.model_status.setText(str(error)))
+        self.model_preparation.finished.connect(lambda: setattr(self, "model_preparation", None))
 
     def start_ollama(self):
-        if self.model_process.state() != QProcess.NotRunning:
+        if self.model_restart_pending is not None or self.model_preparation is not None or self.model_process.state() != QProcess.NotRunning:
             self.model_status.setText("A model service started by CETA is already running.")
             return
         executable = shutil.which("ollama")
@@ -1633,6 +2241,126 @@ class MainWindow(QMainWindow):
         if not executable:
             self.model_status.setText("Install Ollama from ollama.com first, then start its local service here. You can also use a GGUF pack with llama-server.")
             return
+        self._launch_ollama(executable)
+
+    def _protect_managed_runtime(self, installer, task, purpose):
+        assets = ManagedAssets(installer)
+        try:
+            result = self._application_action("runtime.inspect", {"purpose": purpose},
+                lambda: assets.protect_runtime(cancelled=task.cancelled, progress=task.token.emit))
+            return result, assets
+        except BaseException:
+            assets.close()
+            raise
+
+    def start_managed_runtime(self):
+        if (self.model_restart_pending is not None or self.model_preparation is not None or
+                self.model_process.state() != QProcess.NotRunning or self.runtime_setup_panel.task is not None or
+                self.chat_task or self.model_probe_running or self.pack_download_client or self.resident_operation_running):
+            self.model_status.setText("Finish the active model operation before starting the managed runtime.")
+            return
+        endpoint = self.endpoint.text().strip()
+        self.runtime_setup_panel.set_busy(True)
+        self.runtime_setup_panel.status.setText("Verifying all managed runtime files and reading this computer's hardware…")
+
+        def prepare(task):
+            require_supported_platform()
+            result, assets = self._protect_managed_runtime(RuntimeInstallation(self.store.directory), task,
+                "Protect and verify managed runtime files before startup")
+            try:
+                return result, inspect_hardware(cancelled=task.cancelled), assets
+            except BaseException:
+                assets.close()
+                raise
+
+        def prepared(value):
+            result, profile, assets = value
+            try:
+                if (task.cancelled.is_set() or self.endpoint.text().strip() != endpoint or
+                        self.model_process.state() != QProcess.NotRunning):
+                    self.runtime_setup_panel.status.setText("Runtime startup cancelled or settings changed. Start again to recheck.")
+                    return
+                self._hardware_loaded(profile)
+                if self._launch_ollama(result["executable"], managed=result, assets=assets):
+                    self.runtime_setup_panel.status.setText("Managed runtime startup requested. Service health is checked automatically; model inference remains untested.")
+                else:
+                    self.runtime_setup_panel.status.setText(self.model_status.text())
+            finally:
+                if assets is not getattr(self.model_process, "managed_assets", None):
+                    assets.close()
+
+        def finished():
+            if self.model_preparation is task:
+                self.model_preparation = None
+            self.runtime_setup_panel.set_busy(False)
+
+        task = self._background(prepare, prepared, self.runtime_setup_panel.status.setText)
+        self.model_preparation = task
+        task.token.connect(self.runtime_setup_panel.status.setText)
+        task.finished.connect(finished)
+
+    def use_managed_model(self, identifier, *, completed=None, failed=None):
+        panel = self.model_setup_panel
+        def reject(message):
+            panel.status.setText(message)
+            if failed:
+                failed(message)
+        recipe = self.owned_runtime_recipe
+        if (panel.task is not None or self.chat_task or self.model_probe_running or self.model_preparation or
+                self.pack_download_client or self.resident_operation_running):
+            reject("Finish the active model operation before selecting and testing another model.")
+            return
+        if (self.model_process.state() != QProcess.Running or not recipe or not recipe.get("managed") or
+                self.endpoint.text().strip() != recipe["endpoint"] or not getattr(self.model_process, "containment", None)):
+            reject("Start the CETA-managed runtime above before selecting and testing this model.")
+            return
+        endpoint, run = recipe["endpoint"], self.owned_runtime_run
+        assets = getattr(self.model_process, "managed_assets", None)
+        if assets is None or assets.closed:
+            reject("Restart the managed runtime to protect its assets before selecting a model.")
+            return
+        client = LocalModelClient(endpoint, coordination_directory=self.model_process.coordination_directory)
+        client.expected_job = self.model_process.containment["job_name"]
+        panel.set_busy(True)
+        panel.status.setText("Rechecking the selected model files and the owned runtime's model identity…")
+        def verify(task):
+            client.cancelled = task.cancelled
+            def inspect():
+                result = assets.protect_model(ManagedModels(self.store.directory), identifier,
+                    cancelled=task.cancelled, progress=task.token.emit)
+                profile = client.request_profile(result["model"])
+                if profile.get("backend") != "ollama" or profile.get("locality") != "local" or profile.get("digest") != result["sha256"]:
+                    raise ValueError("The owned runtime's model identity does not match the pinned installed files.")
+                return result
+            result = self._application_action("model.inspect", {"managed": True, "catalog_id": identifier,
+                "endpoint": endpoint, "purpose": "Select a pinned model before an explicit bounded response test"}, inspect)
+            return result, inspect_hardware(cancelled=task.cancelled)
+        def selected(value):
+            if (task.cancelled.is_set() or self.owned_runtime_run != run or self.endpoint.text().strip() != endpoint or
+                    self.model_process.state() != QProcess.Running):
+                reject("Model selection cancelled or runtime settings changed. Select and test again.")
+                return
+            result, profile = value
+            self._hardware_loaded(profile)
+            self.model_combo.setCurrentText(result["model"])
+            self.store.set_setting("managed_model_id", identifier)
+            self.store.set_setting("model", result["model"])
+            panel.status.setText("Pinned model selected. Running the requested short response test; the result appears in Local model connection.")
+            if completed is None and failed is None:
+                self.probe_model()
+            else:
+                self.probe_model(completed=completed, failed=failed)
+        task = self._background(verify, selected, reject)
+        panel.task = task
+        task.token.connect(panel.status.setText)
+        task.finished.connect(lambda: panel.finished() if panel.task is task else None)
+        panel.pause_button.setEnabled(True)
+        return task
+
+    def _launch_ollama(self, executable, *, managed=None, assets=None):
+        if managed and (assets is None or assets.closed or not isinstance(self.model_process, OwnedModelProcess)):
+            self.model_status.setText("Protect and verify managed assets before starting this runtime.")
+            return False
         self.model_log.clear()
         self.model_process.setProgram(executable)
         self.model_process.setArguments(["serve"])
@@ -1642,11 +2370,28 @@ class MainWindow(QMainWindow):
         environment.insert("OLLAMA_CONTEXT_LENGTH", "4096")
         environment.insert("OLLAMA_NUM_PARALLEL", "1")
         environment.insert("OLLAMA_MAX_LOADED_MODELS", "1")
+        port = 11434
+        if managed:
+            values = managed_environment(self.store.directory, executable, dict(os.environ))
+            environment = QProcessEnvironment()
+            for key, value in values.items():
+                environment.insert(key, value)
+            port = 11435
         self.model_process.setProcessEnvironment(environment)
-        if not self._start_owned_model():
-            return
-        self.endpoint.setText("http://127.0.0.1:11434/v1")
-        self.model_status.setText("Starting Ollama with cloud features disabled… Connect / refresh models when it is ready.")
+        if isinstance(self.model_process, OwnedModelProcess):
+            self.model_process.setManagedAssets(assets)
+            self.model_process.setEndpoint("127.0.0.1", port)
+        endpoint = f"http://127.0.0.1:{port}/v1"
+        self.owned_runtime_recipe = {"backend": "ollama", "endpoint": endpoint, "program": executable,
+                                     **({"managed": managed} if managed else {})}
+        if not self._start_owned_model(launch_plan=managed):
+            if isinstance(self.model_process, OwnedModelProcess) and self.model_process.state() == QProcess.NotRunning:
+                self.model_process.releaseManagedAssets()
+            return False
+        self.endpoint.setText(endpoint)
+        health = "Waiting for service health." if isinstance(self.model_process, OwnedModelProcess) else "Connect / refresh models when ready; endpoint ownership is unverified on this platform."
+        self.model_status.setText(f"Starting Ollama with cloud features disabled… {health}")
+        return True
 
     def download_model_pack(self):
         if self.pack_download_client:
@@ -1667,7 +2412,7 @@ class MainWindow(QMainWindow):
         endpoint = self.endpoint.text().strip()
 
         def pull(task):
-            profile = inspect_hardware()
+            profile = inspect_hardware(cancelled=task.cancelled)
             option = local_model_option(name)
             if option:
                 assessment = assess_model(profile, option)
@@ -1815,6 +2560,9 @@ class MainWindow(QMainWindow):
     def _stop_process(self, process):
         if process.state() == QProcess.NotRunning:
             return
+        if isinstance(process, OwnedModelProcess):
+            process.kill()
+            return
         pid = int(process.processId())
         if os.name == "nt" and pid:
             subprocess.run([str(Path(os.environ.get("SystemRoot", "C:/Windows")) / "System32/taskkill.exe"),
@@ -1830,9 +2578,12 @@ class MainWindow(QMainWindow):
         self._stop_process(self.process)
 
     def closeEvent(self, event: QCloseEvent):
+        self.model_restart_pending = None
         if not self._discard_allowed():
             event.ignore()
             return
+        if self.guided_setup.busy:
+            self.guided_setup.pause()
         if self.chat_task or self.tasks or self.workload_task:
             self.stop_chat()
             self.stop_workload()
@@ -1845,7 +2596,12 @@ class MainWindow(QMainWindow):
         self.stop_workload()
         self.stop_local_model()
         self.process.waitForFinished(3000)
-        self.model_process.waitForFinished(3000)
+        if not self.model_process.waitForFinished(3000) and self.model_process.state() != QProcess.NotRunning:
+            self.statusBar().showMessage("Owned runtime workers have not confirmed shutdown. Close again after they stop.")
+            event.ignore()
+            return
+        if isinstance(self.model_process, OwnedModelProcess):
+            self.model_process.releaseManagedAssets()
         self.draft_timer.stop()
         # An unavailable workspace/file leaves its recovery draft in storage.
         # Closing a window with no recovered document must not discard it.
@@ -1879,9 +2635,14 @@ def main():
         return 1
     marker = open_application_marker()
     try:
-        window = MainWindow(directory)
+        try:
+            window = MainWindow(directory)
+        except (ValueError, OSError, sqlite3.Error) as exc:
+            window = RecoveryWindow(directory, str(exc))
         window.show()
-        if args.merger_self_test:
+        if isinstance(window, RecoveryWindow) and args.smoke_test:
+            QTimer.singleShot(0, lambda: app.exit(2))
+        elif args.merger_self_test:
             def merger_check():
                 report_path = directory / ("merger-self-test-" + uuid4().hex + ".json")
                 try:

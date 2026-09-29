@@ -185,6 +185,8 @@ def main():
         "--name", "CETA", "--paths", str(ROOT / "src"),
         "--icon", str(icon_path),
         "--add-data", f"{channel};ceta_desktop",
+        "--add-data", f"{ROOT / 'src/ceta_desktop/runtime_catalog.json'};ceta_desktop",
+        "--add-data", f"{ROOT / 'src/ceta_desktop/model_catalog.json'};ceta_desktop",
         "--add-data", f"{ROOT / 'src/ceta/operation_contracts.json'};ceta",
         "--add-data", f"{ROOT / 'src/ceta_desktop/icon.svg'};ceta_desktop",
         "--add-data", f"{ROOT / 'src/ceta_desktop/assets'};ceta_desktop/assets",

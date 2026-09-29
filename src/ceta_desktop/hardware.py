@@ -16,8 +16,11 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import tempfile
+import time
 
 from .hardware_windows import windows_gpu_inventory
+from .request_control import ModelCancelledError, ModelDeadlineError, checkpoint, deadline_limit
 
 GIB = 1024 ** 3
 CONTEXT_TOKENS = 4096
@@ -127,9 +130,10 @@ def assess_models(profile: HardwareProfile) -> tuple[ModelAssessment, ...]:
 def recommended_model(profile: HardwareProfile) -> ModelAssessment | None:
     candidates = assess_models(profile)
     for mode in ("gpu", "cpu"):
-        matches = [item for item in candidates if item.mode == mode]
-        if matches:
-            return max(matches, key=lambda item: item.model.working_bytes)
+        for tag in ("qwen3:4b-instruct-2507-q4_K_M", "qwen3:1.7b-q4_K_M", "qwen3:0.6b-q4_K_M"):
+            for item in candidates:
+                if item.model.tag == tag and item.mode == mode:
+                    return item
     return None
 
 
@@ -158,15 +162,45 @@ def _physical_memory() -> tuple[int | None, int | None]:
     return None, None
 
 
-def _run_inventory(command: list[str]) -> str:
-    result = subprocess.run(
-        command, check=True, capture_output=True, text=True, encoding="utf-8",
-        errors="replace", timeout=8,
-        creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
-    )
-    if len(result.stdout) > 65536:
-        raise ValueError("Hardware inventory returned too much data")
-    return result.stdout
+def _check_inventory(cancelled, deadline):
+    checkpoint()
+    if cancelled is not None and cancelled.is_set():
+        raise ModelCancelledError("Hardware inspection cancelled.")
+    if time.monotonic() >= deadline:
+        raise ModelDeadlineError("Hardware inspection exceeded its time limit.")
+
+
+def _run_inventory(command: list[str], *, cancelled=None, deadline=None) -> str:
+    deadline = deadline_limit(min(deadline or float("inf"), time.monotonic() + 8))
+    _check_inventory(cancelled, deadline)
+    if os.name == "nt":
+        from .backends import _inspect_contained_command
+        class Cancellation:
+            def is_set(self):
+                _check_inventory(cancelled, deadline)
+                return False
+        return _inspect_contained_command(command[0], command[1:], dict(os.environ),
+            Cancellation(), timeout=max(.001, deadline - time.monotonic()), max_output=65536)
+    with tempfile.TemporaryFile() as output:
+        process = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=output, stderr=subprocess.STDOUT)
+        try:
+            while process.poll() is None:
+                _check_inventory(cancelled, deadline)
+                if os.fstat(output.fileno()).st_size > 65536:
+                    raise ValueError("Hardware inventory returned too much data")
+                time.sleep(.02)
+            _check_inventory(cancelled, deadline)
+            if process.returncode:
+                raise subprocess.CalledProcessError(process.returncode, command)
+            output.seek(0)
+            data = output.read(65537)
+            if len(data) > 65536:
+                raise ValueError("Hardware inventory returned too much data")
+            return data.decode("utf-8", errors="replace")
+        finally:
+            if process.poll() is None:
+                process.kill()
+                process.wait(timeout=1)
 
 
 def _nvidia_gpus(raw: str) -> tuple[GPUInfo, ...]:
@@ -183,13 +217,13 @@ def _nvidia_gpus(raw: str) -> tuple[GPUInfo, ...]:
     return tuple(result)
 
 
-def _windows_gpu_names() -> tuple[str, ...]:
+def _windows_gpu_names(*, cancelled=None, deadline=None) -> tuple[str, ...]:
     system = Path(os.environ.get("SystemRoot", r"C:\Windows")) / "System32"
     command = [str(system / "WindowsPowerShell/v1.0/powershell.exe"), "-NoProfile", "-NonInteractive", "-Command",
                "[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; "
                "@(Get-CimInstance Win32_VideoController -ErrorAction Stop | "
                "ForEach-Object { $_.Name }) | ConvertTo-Json -Compress"]
-    names = json.loads(_run_inventory(command).lstrip("\ufeff"))
+    names = json.loads(_run_inventory(command, cancelled=cancelled, deadline=deadline).lstrip("\ufeff"))
     if isinstance(names, str):
         names = [names]
     if not isinstance(names, list) or any(not isinstance(name, str) for name in names):
@@ -197,16 +231,52 @@ def _windows_gpu_names() -> tuple[str, ...]:
     return tuple(name.strip() for name in names if name.strip())
 
 
-def inspect_hardware() -> HardwareProfile:
+def _isolated_gpu_inventory(*, cancelled=None, deadline=None):
+    arguments = (["--hardware-gpu-probe"] if getattr(sys, "frozen", False) else
+                 ["-B", "-m", "ceta_desktop.hardware", "--gpu-probe"])
+    rows = json.loads(_run_inventory([sys.executable, *arguments], cancelled=cancelled, deadline=deadline))
+    if (not isinstance(rows, list) or len(rows) > 64 or any(
+            not isinstance(row, list) or len(row) != 3 or not isinstance(row[0], str) or
+            not 0 < len(row[0]) <= 256 or type(row[1]) is not int or row[1] < 0 or
+            (row[2] is not None and (type(row[2]) is not int or not 0 <= row[2] <= row[1])) for row in rows)):
+        raise ValueError("Malformed Windows GPU inventory")
+    return tuple(tuple(row) for row in rows)
+
+
+def gpu_probe():
+    """Internal child entry; no Qt, model load, or persistent hardware profile."""
+    data = json.dumps(windows_gpu_inventory()).encode("ascii")
+    if os.name == "nt":
+        # A frozen windowed executable has no Python stdout stream. Its explicit
+        # inherited Win32 pipe still exists, including without a visible console.
+        api = ctypes.WinDLL("kernel32", use_last_error=True)
+        api.GetStdHandle.argtypes, api.GetStdHandle.restype = [ctypes.c_uint32], ctypes.c_void_p
+        api.WriteFile.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_uint32,
+                                 ctypes.POINTER(ctypes.c_uint32), ctypes.c_void_p]
+        api.WriteFile.restype = ctypes.c_int
+        written = ctypes.c_uint32()
+        if not api.WriteFile(api.GetStdHandle(0xFFFFFFF5), data, len(data), ctypes.byref(written), None) or written.value != len(data):
+            raise ctypes.WinError(ctypes.get_last_error())
+    else:
+        os.write(1, data)
+    return 0
+
+
+def inspect_hardware(*, cancelled=None, deadline=None, include_gpus=True) -> HardwareProfile:
+    deadline = deadline_limit(min(deadline or float("inf"), time.monotonic() + 20))
+    _check_inventory(cancelled, deadline)
     warnings = []
     total = available = None
     try:
         total, available = _physical_memory()
     except (OSError, ValueError) as exc:
         warnings.append(f"Physical RAM query failed: {exc}")
+    _check_inventory(cancelled, deadline)
     if total is None or available is None:
         warnings.append("Physical RAM availability is unknown on this system.")
     gpus: tuple[GPUInfo, ...] = ()
+    if not include_gpus:
+        return HardwareProfile(total, available, os.cpu_count() or 1, (), tuple(warnings))
     executable = shutil.which("nvidia-smi")
     if not executable and os.name == "nt":
         candidate = Path(os.environ.get("SystemRoot", r"C:\Windows")) / "System32/nvidia-smi.exe"
@@ -216,27 +286,35 @@ def inspect_hardware() -> HardwareProfile:
         try:
             gpus = _nvidia_gpus(_run_inventory([
                 executable, "--query-gpu=name,memory.total,memory.free", "--format=csv,noheader,nounits",
-            ]))
+            ], cancelled=cancelled, deadline=deadline))
         except (OSError, ValueError, subprocess.SubprocessError) as exc:
             warnings.append(f"NVIDIA VRAM query failed: {exc}")
+        _check_inventory(cancelled, deadline)
     if os.name == "nt":
         try:
             measured = {gpu.name.casefold() for gpu in gpus}
-            native = windows_gpu_inventory()
+            native = _isolated_gpu_inventory(cancelled=cancelled, deadline=deadline)
             if native:
                 gpus += tuple(GPUInfo(name, capacity, budget, "DXGI process budget")
                               for name, capacity, budget in native if name.casefold() not in measured)
             else:
-                names = _windows_gpu_names()
+                names = _windows_gpu_names(cancelled=cancelled, deadline=deadline)
                 gpus += tuple(GPUInfo(name, None, None, "Windows identity only")
                               for name in names if name.casefold() not in measured)
         except (OSError, ValueError, subprocess.SubprocessError) as exc:
             warnings.append(f"Windows GPU identification failed: {exc}")
+        _check_inventory(cancelled, deadline)
     if any(gpu.free_bytes is None for gpu in gpus) or not gpus:
         warnings.append("Dedicated GPU free memory is unverified for unmeasured devices; shared RAM is not extra VRAM.")
     if any(gpu.backend == "DXGI process budget" for gpu in gpus):
-        warnings.append("Windows GPU budgets belong to this CETA process; the model service's budget may differ.")
+        warnings.append("Windows GPU budgets belong to the CETA inventory process; the model service's budget may differ.")
     return HardwareProfile(total, available, os.cpu_count() or 1, gpus, tuple(warnings))
+
+
+if __name__ == "__main__":
+    if sys.argv[1:] != ["--gpu-probe"]:
+        raise SystemExit("Use the CETA desktop to inspect hardware.")
+    raise SystemExit(gpu_probe())
 
 
 def format_hardware(profile: HardwareProfile) -> str:

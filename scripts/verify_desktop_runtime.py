@@ -7,6 +7,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
 import time
 import unittest
@@ -14,7 +15,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 TEST_GROUPS = {
     "desktop": ("test_desktop*.py",),
-    "task_runtime": ("test_task_runtime.py", "test_task_roles.py", "test_project_tools.py", "test_model001_integration.py"),
+    "task_runtime": ("test_task_runtime.py", "test_task_roles.py", "test_generation_plan.py", "test_runtime_recovery.py", "test_project_tools.py", "test_model001_integration.py"),
     "journal": ("test_*journal*.py", "test_legacy_history.py"),
     "authority": ("test_authority*.py", "test_identity_authority_trust.py"),
     "effects": ("test_effect*.py",),
@@ -46,6 +47,30 @@ def selected_tests(root: Path = ROOT) -> tuple[Path, ...]:
     return tuple(sorted(selected))
 
 
+def source_attribution(root: Path = ROOT) -> dict:
+    def git(*arguments):
+        try:
+            return subprocess.run(["git", "-C", str(root), *arguments], capture_output=True,
+                                  text=True, timeout=10, check=True).stdout.strip()
+        except (OSError, subprocess.SubprocessError):
+            return None
+    paths = {path for folder in ("src", "scripts", "tests") for path in (root / folder).rglob("*")
+             if path.is_file() and path.suffix in {".py", ".json"} and "__pycache__" not in path.parts}
+    paths.update(path for name in ("uv.lock", "pyproject.toml") if (path := root / name).is_file())
+    hashes = {path.relative_to(root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(paths)}
+    return {"root": str(root.resolve()), "head": git("rev-parse", "HEAD"),
+            "branch": git("branch", "--show-current"), "status": git("status", "--porcelain=v1"),
+            "file_hashes": hashes, "source_sha256": hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()}
+
+
+def test_ids(suite):
+    for item in suite:
+        if isinstance(item, unittest.TestSuite):
+            yield from test_ids(item)
+        else:
+            yield item.id()
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--list", action="store_true", help="List selected test modules without executing them")
@@ -68,12 +93,24 @@ def main(argv: list[str] | None = None) -> int:
             if str(directory) not in sys.path:
                 sys.path.insert(0, str(directory))
         suite = unittest.defaultTestLoader.loadTestsFromNames([path.stem for path in files])
+        cases = list(test_ids(suite))
         if suite.countTestCases() == 0:
             raise RuntimeError("No desktop/runtime tests were discovered.")
+        before = source_attribution()
         result = unittest.TextTestRunner(verbosity=2).run(suite)
-        report = {"schema": "ceta.desktop-runtime-verification.v1", "passed": result.wasSuccessful(),
+        after = source_attribution()
+        unchanged = before["source_sha256"] == after["source_sha256"]
+        passed = result.wasSuccessful() and unchanged
+        interpreter = Path(getattr(sys, "_base_executable", sys.executable))
+        report = {"schema": "ceta.desktop-runtime-verification.v2", "passed": passed,
                   "tests_run": result.testsRun, "failures": len(result.failures), "errors": len(result.errors),
                   "skipped": len(result.skipped), "elapsed_seconds": time.monotonic() - started,
+                  "test_cases": cases, "skip_details": [{"test": test.id(), "reason": reason} for test, reason in result.skipped],
+                  "failure_details": [{"test": test.id(), "traceback": trace} for test, trace in result.failures + result.errors],
+                  "source_before": before, "source_unchanged_during_tests": unchanged,
+                  "source_after_sha256": after["source_sha256"],
+                  "interpreter": {"path": sys.executable, "version": sys.version,
+                                  "base_executable": str(interpreter), "sha256": hashlib.sha256(interpreter.read_bytes()).hexdigest()},
                   "operation_contracts_sha256": contract_sha256,
                   "test_files": [path.relative_to(ROOT).as_posix() for path in files],
                   "scope": "native desktop and governed runtime; no training, installer, or deployment claim"}
@@ -81,8 +118,8 @@ def main(argv: list[str] | None = None) -> int:
             with args.report.open("x", encoding="utf-8") as handle:
                 json.dump(report, handle, indent=2)
                 handle.write("\n")
-        print("CETA DESKTOP AND GOVERNED RUNTIME VERIFICATION: " + ("PASS" if result.wasSuccessful() else "FAIL"))
-        return 0 if result.wasSuccessful() else 1
+        print("CETA DESKTOP AND GOVERNED RUNTIME VERIFICATION: " + ("PASS" if passed else "FAIL"))
+        return 0 if passed else 1
     except (OSError, ValueError, RuntimeError) as exc:
         print(f"CETA DESKTOP AND GOVERNED RUNTIME VERIFICATION: FAIL ({exc})", file=sys.stderr)
         return 1

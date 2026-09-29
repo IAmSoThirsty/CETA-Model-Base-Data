@@ -31,6 +31,9 @@ class FakeLocalClient:
         self.failure = failure
 
     def stream(self, model, messages, **limits):
+        before_dispatch = limits.pop("before_dispatch", None)
+        if before_dispatch:
+            before_dispatch()
         self.requests.append({"model": model, "messages": messages, "limits": limits})
         if self.failure:
             raise ValueError(self.failure)
@@ -299,7 +302,12 @@ class MergedTaskGuiTests(unittest.TestCase):
             with patch("ceta_desktop.app.LocalModelClient", return_value=client):
                 self.window.probe_model()
                 self.wait_idle()
-            probe.assert_called_once_with("offline-readiness-fixture", max_tokens=32, context_length=4096)
+        probe.assert_called_once()
+        self.assertEqual(probe.call_args.args, ("offline-readiness-fixture",))
+        self.assertEqual(probe.call_args.kwargs["max_tokens"], 32)
+        self.assertEqual(probe.call_args.kwargs["context_length"], 4096)
+        self.assertIn("CETA_READY", probe.call_args.kwargs["messages"][-1]["content"])
+        self.assertTrue(callable(probe.call_args.kwargs["before_dispatch"]))
         self.assertEqual((self.window.project_id, self.window.task_id), scope)
         self.assertIn("Synthetic readiness response", self.window.model_log.toPlainText())
         history = self.window.task_runtime.journal.events("application")

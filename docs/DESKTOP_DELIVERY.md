@@ -27,6 +27,250 @@ Its historical model evaluations are not evidence for desktop application qualit
 
 ## Current release classification
 
+The public desktop release remains **0.3.3**. The current source includes the
+**0.4.0 local candidate**, whose dated implementation and validation are recorded
+in [the merger report](operations/MERGER_IMPLEMENTATION_20260919.md). That candidate
+was unsigned and unpublished. The dependable offline product plan is now being
+implemented; its completion and qualification must be established against a new
+exact build. Neither historical tests nor the source changes below qualify a new
+installer or establish installed real-model operation without network access.
+
+September 27 implementation: expired tasks have an explicit **Resume task** action;
+revoked tasks use **Reauthorize task**. Both retain the same task/history and require
+fresh preparation of edits and commands. **Inspect recovery** shows interrupted
+work; **Recheck edit outcome** observes the current file revision without replaying
+the original operation. Unresolved effects block further edits/commands in that
+project, including from another task. Arbitrary command effects cannot be cleared
+by an acknowledgment alone.
+
+Startup checks database integrity and runtime identity before normal data writes.
+Missing, corrupt, inaccessible or mismatched identity beside governed history
+opens a recovery view. It can read and export available conversation text as
+unverified material, without issuing authority or replacing data. Exports use new
+files outside the original folder. Preserve the whole folder and inspect backups
+separately; Windows-protected identities require their original account and are
+not promised to work when copied to another computer.
+
+Repeated journal reads reuse successful event-hash calculations only when every
+stored field and its type still match the verified record. Rows, stream order,
+checkpoints, retained history and task projections are checked on every read.
+The process-local cache has a conservative 8 MiB row-storage budget and 4,096-entry
+limit; oversized or evicted records receive full hash verification. Closing the
+journal releases it. This reduces repeated verification work without treating a
+database timestamp or unchanged head as proof that historical content is intact.
+Task authority checks read task state and its event history together in one
+verified transaction. Signature, principal, revocation, expiry and requested-operation
+checks use that snapshot; each new access check obtains current history again.
+
+Chat prepares its request before consuming the composer. Ordinary chat asks the
+local assistant to answer the latest question directly and follow the
+requested format; internal application task labels and ids remain in the evidence
+receipt. Project chats still include applicable project instructions and context,
+and selected source contents remain data rather than executable authority.
+
+File attachments retain their paths, applicable nested instructions and captured
+editor revisions; changed
+snapshots require reattachment. **Preview request** shows the outgoing payload.
+Input, output and a template allowance are considered together, with omissions
+disclosed and omitted file content requiring review. The current advanced profile
+uses an explicitly unverified estimate for external or unsupported configurations.
+For a CETA-managed pinned Ollama/Qwen3 model, preparation verifies the assets,
+renders the actual chat template and counts tokens through the owned model worker.
+The request reserves output plus one context slot, and the preview labels counted
+versus estimated input. Changed worker/model/context or a count failure prevents
+dispatch and retains the draft. Ollama requests explicitly disable prompt truncation
+and context shifting. Evaluated input must match the prepared count; a mismatch
+marks the response unqualified. Managed counts also bind the protected asset session;
+other models/devices and installed offline qualification remain separate requirements.
+Guided setup uses current-machine
+memory estimates and requires a real response test before reporting text liveness.
+**Restore failed request** restores retry material; an unchanged retry retains the
+original user turn and creates a separate assistant attempt. Failed preparation
+and failed storage admission keep the draft. Empty or malformed model completions
+are errors, and revoked/expired task authority cannot produce a successful short
+response through the cancellation polling window.
+
+Native chat now shares one 180-second monotonic request budget across preparation,
+preview review and generation. Reviewing a preview consumes that same budget;
+expiry before admission keeps the draft and requires a newly prepared request.
+Context scans, token counting, hardware checks and local HTTP connect/read/write
+poll that budget and cancellation. A generation timeout has its own visible status,
+retains partial output and retry material, and does not set the user's Stop event.
+An unconfirmed backend remains uncertain until the existing stop/reconcile path
+establishes termination. This is cooperative deadline enforcement; blocking native
+filesystem/database calls and final audit/shutdown latency still require qualification.
+
+Current source progress and remaining work are tracked in the
+[offline implementation record](operations/CETA_OFFLINE_IMPLEMENTATION_20260927.md).
+The app inspects each executing computer for hardware; it does not use this
+development machine's RAM/GPU observations as another installation's readiness.
+Hardware estimates alone do not establish compatible acceleration or capabilities.
+**Measure this configuration** is a separate explicit action on the Models page.
+It requires a CETA-managed pinned model, unloads that selected digest for a cold
+sample and runs seven bounded synthetic requests: cold response, two exact
+instruction checks, one selected-file check and three warm response samples.
+The screen discloses the 4096-token context, 1024-token output ceiling and
+21-minute request budget; inspection and stopping can add time. It sends no user
+project content and downloads nothing; the
+synthetic file and observation history remain in the current profile.
+
+Results distinguish successful text generation from passing instructions or file
+use. Failed checks remain failed even when the model produced fluent text. Speed
+uses measured time to first visible text (including request preparation) and actual
+runtime-reported token counts/durations. Missing, malformed or insufficient timing
+data stays unmeasured. Three completed warm samples must each match the requested
+number sequence, contain at least 16 reported output tokens and reach first text in
+at most five seconds and at least five reported tokens/second to earn the narrow
+synthetic `responsive` label; otherwise measured results are `slow`. This does not
+promise that every prompt meets those targets. OS file caches are not cleared for
+the cold sample. The pinned timing fields are documented in the
+[Ollama 0.34.3 API types](https://github.com/ollama/ollama/blob/v0.34.3/api/types.go).
+
+Observations bind the app source/executable digest, fixture revision, process
+session, observed hardware identity, runtime archive, model/template/parameter
+identity, protected assets, owned worker and generation limits. Settings, hardware
+identity or worker changes make earlier results historical. Restart and copied
+history never restore current readiness; **Previous measurements** only presents
+historical records. Stop keeps completed observations and preserves uncertain
+backend state for the existing recovery path. Reviewed coding, larger contexts,
+GPU placement, vision, voice and autonomous tools are still explicitly unqualified.
+Hardware refreshes run in background work with cancellation. NVIDIA/PowerShell
+queries and Windows DXGI inspection use contained helper processes with bounded
+time/output. DXGI's memory budget belongs to the inventory helper, so it is not
+presented as the inference worker's measured placement. A failed guided refresh
+clears the old hardware summary and choices. RAM-only request admission skips GPU
+inspection because that path does not qualify GPU placement.
+
+The Models page now has an explicit CETA-managed Windows x64 runtime path:
+**Download / resume runtime** or **Import runtime ZIP**, followed by **Start managed
+runtime**. This pins official Ollama 0.34.3 archive and extracted-file checksums;
+the archive is about 1.36 GiB and needs at least 3.41 GiB free space to install.
+Models require additional disk space. Downloads and imports are explicit background
+actions, and imports require no network connection. Runtime licenses are available
+from the same panel. Failed/interrupted files are preserved, not silently removed.
+
+Managed startup rechecks the pinned files and inspects this computer's hardware.
+Its profile and model store are under the current CETA data directory and its local
+service uses port 11435. It does not use or change an existing Ollama model store;
+the existing-runtime controls remain available separately. Restart repeats the
+checks. The owned service must report the pinned version before being described as
+healthy. No model is installed by runtime setup, and service health does not prove
+inference, GPU acceleration or capabilities. The complete guided model setup and
+installed offline qualification require the evidence described below. Managed Windows
+startup opens files before hashing with write/delete sharing denied, protects
+containing paths against renames, and retains those handles through confirmed owned
+worker shutdown. Model manifests and blobs receive the same protection before use.
+Changed or released sessions reject request preparation/dispatch. Restart re-verifies;
+an uninterrupted protected session avoids hashing the same large files per request.
+Directory handles permit new entries, which runtime-tree inspection rejects at
+admission. This is filesystem sharing protection, not an OS sandbox. Atomic
+protection through parent-process crashes and wider loader/device qualification
+remain open requirements.
+
+The managed model panel offers six pinned Qwen3 text candidates (0.6B through
+32B), with current-machine memory estimates. A fitting 4B Instruct, 1.7B or 0.6B
+candidate is suggested; larger choices remain explicit. **Download / resume
+model**, **Import model ZIP**, **Export offline model**, **Pause**, and **Model
+license** operate on the selected candidate. Downloads verify exact manifest/blob
+identities, and import/export retain license files. An offline ZIP transfers model
+assets without transferring conversations, authority, or hardware readiness.
+
+After starting the managed runtime, **Use and test model** verifies the installed
+files and the owned service's model digest before selecting it and sending the
+requested short synthetic prompt. The result establishes bounded text response
+liveness only; quality and GPU acceleration require separate checks. The real
+Qwen3 0.6B CPU path completed governed chat, unload, cancellation recovery and
+restart in the September 27 source harness. The same model passed offline ZIP
+export/import with the downloader forbidden during import. These checks did not
+use an installed/frozen CETA build or OS network isolation. The small model did
+not obey the probe's exact response instruction, so capability quality remains
+unqualified. See the implementation record for source-bound evidence and limits.
+
+New installations show **Set up local AI**, **Use an existing local model**, and
+**Continue without AI** in Chat. Models retains the setup card for later use.
+**Inspect this computer** reads current hardware and destination disk space in a
+worker. The guide presents at most three estimated candidates, retaining an
+explicit saved choice, with model/runtime sizes, data location, context and licenses.
+**Install and test** explicitly requests acquisition, file verification, owned
+service startup/health and the existing governed short response probe.
+
+**Import offline archives** selects the pinned runtime ZIP and the selected CETA
+model ZIP; neither import downloads missing files. **Recheck installed setup**
+verifies already installed bytes, starts or checks the owned managed service, and
+tests it without downloading. **Pause setup** preserves completed and partial files
+and requests shutdown of the managed workers used by that setup. Cancellation of
+an external-service test does not stop the external service. **Find existing local
+models** reads the configured local endpoint, then lets the user select and test
+an installed model without installing or restarting that service.
+
+Setup retains choices and the dismissed welcome card across restart, never a live
+readiness flag. A reopened app rechecks hardware and assets before testing again.
+Changing model settings or stopping the owned runtime invalidates the displayed
+current test result. Chat drafts are retained while setup is active. Continuing
+without AI leaves saved conversations and workspace editing available. A successful
+setup result proves a completed short local response; it does not qualify general
+reasoning, instruction following, GPU acceleration, or an installed offline build.
+
+Imported GGUF startup now inspects the selected llama-server executable and its
+available devices before planning a load. Unknown physical RAM prevents startup.
+A GPU plan requires a matching dedicated device reported by that runtime; otherwise
+CETA assesses an explicit CPU-only plan. Launches fix one slot, a 4096-token context,
+cache/offload settings and a single device. The runtime must support the required
+controls, and its executable/environment must remain unchanged through preparation.
+**Stop local model** also cancels pending inspection. The recorded memory components
+remain estimates until an actual load is observed.
+
+For externally managed Ollama, a GPU listed by Windows cannot alone approve loading
+a model that exceeds available RAM. Reusing a resident allocation requires matching
+reported model identity and context. Backend placement, exact token limits and
+inference quality retain their stated qualification limits.
+
+CETA requests now share an endpoint-wide lock across cooperating processes in the
+same OS account, including loopback aliases and alternate URL prefixes. An interrupted
+dispatch without a terminal response leaves durable **backend state uncertain**.
+Chat distinguishes stopped output from unconfirmed server termination and blocks
+another dispatch on that runtime. Metadata failure before transmission does not
+create an uncertain dispatch.
+
+On Windows, CETA now starts its model runtime suspended, assigns it to a job that
+retains ordinary child workers, saves that ownership, and then permits execution.
+An occupied endpoint prevents startup. Generation checks that the actual endpoint
+process belongs to the recorded job. **Stop local model** terminates that job;
+process completion is reported only after its active-process count reaches zero.
+Closing the last job handle after an app crash also terminates its members.
+
+Owned Windows startup now polls HTTP health automatically, with a deadline and a
+check that every connection belongs to the expected job. Healthy HTTP metadata is
+shown separately from tested inference. No test prompt is sent automatically.
+The model catalog preserves an existing manual model choice even if it disappears.
+
+After stopping an interrupted request, use **Restart owned runtime**. This explicit
+action waits for worker shutdown, reconciles the ended job at startup, and starts
+a new owned instance. GGUF restart repeats file/runtime inspection and fresh
+hardware admission for the same selected pack. Changed settings, failed stop, an
+active local request or a shared lease can prevent restart. CETA never restarts an
+external service through this control. Stop, Recheck, Start also remains available.
+Job control does not contain brokered/remote work or a malicious executable.
+
+For Ollama, **Inspect loaded models** provides a short-lived, endpoint-bound list.
+**Unload selected resident** explicitly affects that model and may interrupt other
+clients using it. CETA rechecks service identity and model digest before sending
+an empty unload request, then requires both acknowledgment and reported absence
+from residency. It retains installed files and the active model choice; a later
+request repeats memory admission. Unconfirmed unload retains uncertain state.
+Mutable tags and other clients remain outside an atomic server-side transaction.
+An acknowledgment or empty model list cannot clear earlier uncertain inference.
+
+An isolated empty-profile smoke test passed health/shutdown/restart against the
+installed Ollama 0.34.3 executable. It did not load a model or isolate OS networking;
+it does not qualify inference, GPU behavior or a frozen installer. Windows runtime
+inspection subprocesses now use the same child lifetime control. Hardware/context
+stages participate in the shared request deadline. Hard latency bounds around
+native I/O, the frozen hardware helper and broader backend/model/candidate
+qualification remain in progress.
+
+### Published 0.3.3 record
+
 CETA desktop 0.3.3 corrects the Windows icon resources in the application,
 installer and uninstaller. Each contains the existing CETA artwork at nine native
 sizes from 16 through 256 pixels, including a PNG frame at 256. Installed shortcut

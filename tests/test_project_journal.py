@@ -129,6 +129,102 @@ class ProjectJournalTests(unittest.TestCase):
         self.assertEqual(self.journal.events("application"), before)
         self.append("test.event", {"after": True})
 
+    def test_unchanged_rows_reuse_hash_work_without_sharing_returned_payloads(self):
+        original = self.journal.events("application")
+        with patch.object(journal_module, "digest", wraps=journal_module.digest) as hashes:
+            for _ in range(3):
+                self.journal.task("task")
+                self.journal.head("application")
+                current = self.journal.events("application")
+                current[-1]["payload"]["objective"] = "caller mutation"
+            self.assertEqual(hashes.call_count, 0)
+        self.assertEqual(self.journal.events("application"), original)
+        self.assertEqual(self.journal.task("task")["objective"], "Preserve work")
+
+    def test_cached_rows_detect_each_changed_persisted_field(self):
+        self.journal.events("application")
+        self.journal.db.execute("DROP TRIGGER task_events_no_update")
+        changes = {"id": "replacement", "actor_id": "intruder", "kind": "test.replaced",
+                   "observed_at": "different", "payload": '{"objective":"replaced"}',
+                   "event_hash": "f" * 64, "previous_hash": "f" * 64, "sequence": 3}
+        for field, value in changes.items():
+            with self.subTest(field=field):
+                with self.assertRaises(JournalError):
+                    with self.journal.transaction():
+                        self.journal.db.execute(f"UPDATE task_events SET {field}=? WHERE sequence=2", (value,))
+                        self.journal.events("application")
+                self.assertEqual(self.journal.task("task")["objective"], "Preserve work")
+
+    def test_cached_rows_detect_other_connection_tampering(self):
+        self.journal.events("application")
+        other = sqlite3.connect(self.path)
+        try:
+            with other:
+                other.execute("DROP TRIGGER task_events_no_update")
+                other.execute("UPDATE task_events SET payload=? WHERE sequence=2", ('{"objective":"other writer"}',))
+        finally:
+            other.close()
+        with self.assertRaisesRegex(JournalError, "content hash"):
+            self.journal.events("application")
+
+    def test_task_snapshot_returns_independent_verified_state_and_history(self):
+        task, events = self.journal.task_snapshot("task")
+        self.assertEqual(task, self.journal.task("task"))
+        self.assertEqual(events, self.journal.events("application", task_id="task"))
+        task["status"] = "forged"
+        events[0]["payload"]["objective"] = "forged"
+        current, history = self.journal.task_snapshot("task")
+        self.assertEqual(current["status"], "ready")
+        self.assertEqual(history[0]["payload"]["objective"], "Preserve work")
+
+    def test_cached_rows_observe_valid_other_connection_append(self):
+        before = self.journal.events("application")
+        other = Journal(self.path)
+        try:
+            other.append("application", "test.event", {"other": True}, task_id="task")
+        finally:
+            other.close()
+        with patch.object(journal_module, "digest", wraps=journal_module.digest) as hashes:
+            current = self.journal.events("application")
+            self.assertEqual(hashes.call_count, 1)
+        self.assertEqual(current[:-1], before)
+        self.assertEqual(current[-1]["payload"], {"other": True})
+
+    def test_hash_memoization_does_not_hide_projection_changes(self):
+        self.journal.events("application")
+        self.journal.db.execute("UPDATE project_tasks SET objective='changed' WHERE task_id='task'")
+        with self.assertRaisesRegex(JournalError, "membership"):
+            self.journal.task("task")
+
+    def test_cached_rolled_back_event_does_not_replace_committed_history(self):
+        before = self.journal.events("application")
+        with self.assertRaisesRegex(ValueError, "rollback"):
+            with self.journal.transaction():
+                self.append("test.event", {"aborted": True})
+                self.journal.events("application")
+                raise ValueError("rollback")
+        self.append("test.event", {"committed": True})
+        current = self.journal.events("application")
+        self.assertEqual(current[:-1], before)
+        self.assertEqual(current[-1]["payload"], {"committed": True})
+
+    def test_hash_cache_limits_fall_back_to_full_verification(self):
+        with patch.object(journal_module, "VERIFIED_ROW_COUNT", 2):
+            for index in range(6):
+                self.append("test.event", {"index": index})
+            events = self.journal.events("application")
+            self.assertLessEqual(len(self.journal._verified_rows), 2)
+            self.assertLessEqual(self.journal._verified_row_bytes, journal_module.VERIFIED_ROW_BYTES)
+        self.journal._verified_rows.clear()
+        self.journal._verified_row_bytes = 0
+        with patch.object(journal_module, "VERIFIED_ROW_BYTES", 1):
+            with patch.object(journal_module, "digest", wraps=journal_module.digest) as hashes:
+                self.assertEqual(self.journal.events("application"), events)
+                self.assertEqual(self.journal.events("application"), events)
+                self.assertEqual(hashes.call_count, 2 * len(events))
+            self.assertFalse(self.journal._verified_rows)
+            self.assertEqual(self.journal._verified_row_bytes, 0)
+
     def test_projection_append_failure_rolls_back_event_and_head(self):
         before = self.journal.events("application")
         observed = dict(self.journal._observed)

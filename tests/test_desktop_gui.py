@@ -156,7 +156,7 @@ class DesktopGuiTests(unittest.TestCase):
         self.assertEqual(tuple(row), ("complete", 0))
         self.assertEqual(self.window.workload_history.count(), 1)
 
-    def test_failed_model_connection_keeps_user_message(self):
+    def test_failed_model_connection_keeps_unsent_draft(self):
         self.window.endpoint.setText("http://127.0.0.1:1/v1")
         self.window.model_combo.setCurrentText("unavailable-test-model")
         self.window.prompt.setPlainText("Keep this message")
@@ -169,8 +169,8 @@ class DesktopGuiTests(unittest.TestCase):
                 break
         self.assertIsNone(self.window.chat_task)
         messages = self.window.store.messages(self.window.conversation_id)
-        self.assertEqual(messages[0]["content"], "Keep this message")
-        self.assertEqual(messages[-1]["status"], "failed")
+        self.assertEqual(messages, [])
+        self.assertEqual(self.window.prompt.toPlainText(), "Keep this message")
         self.assertTrue(self.window.send_button.isEnabled())
 
     def test_cancelling_workload_records_cancellation(self):
@@ -197,8 +197,10 @@ class DesktopGuiTests(unittest.TestCase):
         self.window.open_document(self.window.file_model.index(str(path)))
         self.assertEqual(self.window.prompt.toPlainText(), "")
         self.window.attach_document()
-        self.assertIn("selected file contents", self.window.prompt.toPlainText())
-        self.assertIn("code.txt", self.window.prompt.toPlainText())
+        self.assertEqual(self.window.prompt.toPlainText(), "")
+        self.assertEqual(self.window.attachments[0]["text"], "selected file contents")
+        self.assertEqual(self.window.attachments[0]["path"], "code.txt")
+        self.assertIn("code.txt", self.window.attachment_summary.text())
 
     def test_unsaved_draft_recovery_does_not_modify_original(self):
         path = self.root / "recover.txt"

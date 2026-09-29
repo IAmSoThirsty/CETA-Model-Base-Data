@@ -54,6 +54,22 @@ class TaskRuntimeTests(unittest.TestCase):
         self.addCleanup(runtime.close)
         return runtime
 
+    def test_authority_check_verifies_one_current_task_snapshot(self):
+        journal = self.runtime.journal
+        with patch.object(journal, "_verify_project", wraps=journal._verify_project) as verification:
+            self.assertEqual(self.runtime._access(self.task_id, "Generate")["task_id"], self.task_id)
+            self.assertEqual(verification.call_count, 1)
+        with self.assertRaises(ValueError):
+            self.runtime._access(self.task_id, "Execute")
+
+    def test_task_snapshot_observes_revocation_from_another_runtime(self):
+        self.runtime._access(self.task_id, "Generate")
+        other = self.new_runtime()
+        other.revoke_task(self.task_id)
+        self.assertEqual(self.runtime.task_access_status(self.task_id)["status"], "revoked")
+        with self.assertRaisesRegex(ValueError, "revoked"):
+            self.runtime._access(self.task_id, "Generate")
+
     def events(self, kind=None, runtime=None, task_id=None):
         runtime = runtime or self.runtime
         return runtime.journal.events(self.project["project_id"], kind=kind, task_id=task_id or self.task_id)
@@ -205,7 +221,7 @@ class TaskRuntimeTests(unittest.TestCase):
         system = provider.calls[0]["messages"][0]
         self.assertEqual(system["role"], "system")
         self.assertIn("Preserve source and report evidence", system["content"])
-        self.assertIn("value = 1", system["content"])
+        self.assertIn("value = 1", provider.calls[0]["messages"][-1]["content"])
         self.assertEqual(self.events("operation.intent"), [])
         self.assertEqual(self.source.read_text(), "value = 1\n")
         intent = self.events("provider.intent")[-1]["payload"]
@@ -231,8 +247,9 @@ class TaskRuntimeTests(unittest.TestCase):
     def test_revocation_during_generation_is_observed_as_cancellation(self):
         second = self.new_runtime()
         provider = FakeProvider()
-        result = self.runtime.generate(self.task_id, provider, "fake", [],
-                                       on_token=lambda _text: second.revoke_task(self.task_id))
+        with patch("runtime.tasks.time.monotonic", return_value=100.0):
+            result = self.runtime.generate(self.task_id, provider, "fake", [],
+                                           on_token=lambda _text: second.revoke_task(self.task_id))
         self.assertEqual(result["status"], "cancelled")
         self.assertEqual(self.events("provider.result")[-1]["payload"]["status"], "cancelled")
         self.assertEqual(self.runtime.task(self.task_id)["status"], "cancelled")
@@ -270,7 +287,8 @@ class TaskRuntimeTests(unittest.TestCase):
         clock = {"offset": 0}
         def token(_text):
             clock["offset"] = 25 * 60 * 60 * 1000
-        with patch.object(task_module, "_now", side_effect=lambda: original_now() + clock["offset"]):
+        with patch.object(task_module, "_now", side_effect=lambda: original_now() + clock["offset"]), \
+                patch("runtime.tasks.time.monotonic", return_value=100.0):
             result = self.runtime.generate(self.task_id, FakeProvider(), "fake", [], on_token=token)
         self.assertEqual(result["status"], "cancelled")
 

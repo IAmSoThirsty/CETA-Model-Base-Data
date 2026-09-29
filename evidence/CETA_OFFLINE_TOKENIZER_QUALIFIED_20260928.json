@@ -1,0 +1,1199 @@
+{
+  "schema": "ceta.managed-model-lifecycle.v1",
+  "passed": true,
+  "source_before": {
+    "root": "T:\\00-Active\\CETA-desktop-delivery-20260906",
+    "head": "aadbeb1aff74118e6042cd5194268ebba6d18e28",
+    "branch": "codex/ceta-desktop-release",
+    "status": "M PACKAGE_MANIFEST.json\n M SHA256SUMS\n M docs/DESKTOP_DELIVERY.md\n M docs/operations/CONTINUITY_MAP.md\n M licenses/THIRD-PARTY-NOTICES.md\n M scripts/build_desktop.py\n M scripts/verify_desktop_runtime.py\n M src/ceta_desktop/app.py\n M src/ceta_desktop/hardware.py\n M src/ceta_desktop/models.py\n M src/ceta_desktop/pages/tasks.py\n M src/ceta_desktop/storage.py\n M src/runtime/journal.py\n M src/runtime/model_provider.py\n M src/runtime/runtime_keys.py\n M src/runtime/tasks.py\n M tests/test_desktop_backend.py\n M tests/test_desktop_gui.py\n M tests/test_desktop_hardware.py\n M tests/test_desktop_hardware_ui.py\n M tests/test_desktop_merged_tasks.py\n M tests/test_desktop_model_readiness.py\n M tests/test_merged_distribution.py\n M tests/test_task_roles.py\n M tests/test_task_runtime.py\n?? docs/operations/CETA_OFFLINE_IMPLEMENTATION_20260927.md\n?? docs/operations/CETA_OFFLINE_PRODUCT_PLAN_20260925.md\n?? evidence/CETA_OFFLINE_BACKEND_ADMISSION_20260927.json\n?? evidence/CETA_OFFLINE_GUIDED_SETUP_20260928.json\n?? evidence/CETA_OFFLINE_GUIDED_SETUP_REAL_20260928.json\n?? evidence/CETA_OFFLINE_GUIDED_SETUP_UI_20260928.png\n?? evidence/CETA_OFFLINE_MANAGED_MODELS_20260927.json\n?? evidence/CETA_OFFLINE_MANAGED_MODELS_UI_20260927.png\n?? evidence/CETA_OFFLINE_MANAGED_MODEL_REAL_20260927.json\n?? evidence/CETA_OFFLINE_MANAGED_RUNTIME_20260927.json\n?? evidence/CETA_OFFLINE_MANAGED_RUNTIME_UI_20260927.png\n?? evidence/CETA_OFFLINE_MANAGED_SERVICE_20260927.json\n?? evidence/CETA_OFFLINE_MODEL_ROUNDTRIP_20260927.json\n?? evidence/CETA_OFFLINE_OLLAMA_SERVICE_20260927.json\n?? evidence/CETA_OFFLINE_OLLAMA_SERVICE_FINAL_20260927.json\n?? evidence/CETA_OFFLINE_OWNED_RUNTIME_20260927.json\n?? evidence/CETA_OFFLINE_OWNED_RUNTIME_FINAL_20260927.json\n?? evidence/CETA_OFFLINE_OWNED_RUNTIME_UI_DIAGNOSTIC_20260927.png\n?? evidence/CETA_OFFLINE_RECOVERY_20260927.json\n?? evidence/CETA_OFFLINE_RECOVERY_FINAL_20260927.json\n?? evidence/CETA_OFFLINE_RECOVERY_UI_20260927.png\n?? evidence/CETA_OFFLINE_RECOVERY_UI_FONTS_20260927.png\n?? evidence/CETA_OFFLINE_REQUESTS_20260927.json\n?? evidence/CETA_OFFLINE_REQUESTS_FINAL_20260927.json\n?? evidence/CETA_OFFLINE_REQUEST_UI_20260927.png\n?? evidence/CETA_OFFLINE_RUNTIME_COORDINATION_20260927.json\n?? evidence/CETA_OFFLINE_RUNTIME_COORDINATION_FINAL_20260927.json\n?? evidence/CETA_OFFLINE_RUNTIME_COORDINATION_UI_20260927.png\n?? evidence/CETA_OFFLINE_RUNTIME_LIFECYCLE_20260927.json\n?? evidence/CETA_OFFLINE_RUNTIME_LIFECYCLE_UI_20260927.png\n?? evidence/CETA_OFFLINE_TOKENIZER_20260928.json\n?? evidence/CETA_OFFLINE_TOKENIZER_DIAGNOSTIC2_20260928.json\n?? evidence/CETA_OFFLINE_TOKENIZER_DIAGNOSTIC_20260928.json\n?? evidence/CETA_OFFLINE_TOKENIZER_REAL_20260928.json\n?? evidence/CETA_OFFLINE_TOKENIZER_REAL_FINAL_20260928.json\n?? scripts/verify_guided_setup.py\n?? scripts/verify_managed_model.py\n?? scripts/verify_owned_service.py\n?? src/ceta_desktop/backends.py\n?? src/ceta_desktop/model_catalog.json\n?? src/ceta_desktop/model_installation.py\n?? src/ceta_desktop/owned_process.py\n?? src/ceta_desktop/pages/local_setup.py\n?? src/ceta_desktop/pages/model_setup.py\n?? src/ceta_desktop/pages/recovery.py\n?? src/ceta_desktop/pages/runtime_setup.py\n?? src/ceta_desktop/request_tokens.py\n?? src/ceta_desktop/runtime_catalog.json\n?? src/ceta_desktop/runtime_coordination.py\n?? src/ceta_desktop/runtime_installation.py\n?? src/ceta_desktop/windows_job.py\n?? src/runtime/generation_plan.py\n?? tests/test_desktop_backend_admission.py\n?? tests/test_desktop_local_setup.py\n?? tests/test_desktop_managed_model_ui.py\n?? tests/test_desktop_managed_runtime_ui.py\n?? tests/test_desktop_model_installation.py\n?? tests/test_desktop_owned_runtime.py\n?? tests/test_desktop_recovery.py\n?? tests/test_desktop_request_tokens.py\n?? tests/test_desktop_requests.py\n?? tests/test_desktop_runtime_coordination.py\n?? tests/test_desktop_runtime_installation.py\n?? tests/test_desktop_runtime_lifecycle.py\n?? tests/test_generation_plan.py\n?? tests/test_runtime_recovery.py",
+    "file_hashes": {
+      "pyproject.toml": "d66c3a6fbf2842e81fce9a7f64fe0bcf9456bc4f7ac990ca3b1ce4e317d1f51a",
+      "scripts/build_ceta_curriculum.py": "a9a10782a1b400f62eeb7aa535aa389eada08d3a62469d9fc8a5d1377ac518f8",
+      "scripts/build_ceta_curriculum_v3.py": "62e3ae3ffa26c72746d5f4fe8f41605eb8be0d68981746216a8c2f4dcce6a802",
+      "scripts/build_desktop.py": "88526fab3cdb22d69c3b00b388e5ee85fc112ae63a66f82d0950f83291482be6",
+      "scripts/build_language_adapter_dataset.py": "2432c8de56d66e03740313feeabed9df55e521d36bc419bb8d2029d0dd2a829f",
+      "scripts/build_local_manifest.py": "e6a2bbd4b170136cda4ec64c46707dffe077627ac6660e10e3fb25f89eacf886",
+      "scripts/build_package_manifest.py": "8788ef7c78ac493f26b8618a61b00a75cbb0fc35734a1062defa89d365e29644",
+      "scripts/build_release.py": "00f3dc76e66535d3c14b9e93440abce323d6400686fa8f90c8bf7896c2a458de",
+      "scripts/build_release_zip.py": "791ea1eb140df1e34a8f43d6b0c6905024c623058df4c4350fda4c0193ec9e79",
+      "scripts/build_sha256sums.py": "304abc0aed41b2a4d3458018c863a346aab67b99ab5daa47f1c5172c1cbcae40",
+      "scripts/create_desktop_verification.py": "83a4e01e9bd9b2fa27422633b73cc33f88e3410dc35a2e440746df3c973b5e19",
+      "scripts/desktop_entry.py": "3f6bb0bd8ea75526bca09a1122fa0c6adae5804dbdbf99438d36c162f54b060c",
+      "scripts/desktop_icon_resources.py": "a7078a743587a54eb5bf66f86e4754444e1aa19b352890547a7f3300fd16a020",
+      "scripts/desktop_icons.py": "c59bfc942189e1a268b5596eb76b737506083f0c42804366c09113db600e82c0",
+      "scripts/desktop_notices.py": "b7c1e434b1725097000a6120c417395e03d205854474ed9eac4ffaf53bbbdea7",
+      "scripts/desktop_signing.py": "80220e949c52757a82f33ca1128697406b981c282c6b06314064fcb96fe95cb3",
+      "scripts/desktop_update_keys.py": "cd8c740ef7cb5d7c0a73ed10202126c03080e5411a6bf264ddf881c8ad921378",
+      "scripts/hostile_audit.py": "8d200cb7636194c632fa8a81a6bb42a515db1a10afa3b795334bb519f3b24e19",
+      "scripts/hostile_epoch_gate.py": "2abbba8252db17ecb9ee46ee1d64d84f839fd5ee8f9db1664b1089b57698291b",
+      "scripts/ingest_supplied_architecture_data.py": "487af6c6f11252c589277450a5c67ee299e3f6ffd33c1ff933eb9527b3d1d6a3",
+      "scripts/network_boundary.py": "bdaa86b9a5c716e179bdac51329be5779a34c9ce4bcfc601eb24a10277091781",
+      "scripts/prepare_desktop_sandbox.py": "9ce36b6f5d0601e23c79685f8f44ff25e2e95c826d496d03fe58256e2d9a6bb3",
+      "scripts/run_bounded_models.py": "4915b4f6fb15d7e3d893a5264d24706cb25c81a6db088e7fd76e423fa8bf7b88",
+      "scripts/run_controlled_language_inference.py": "666062d386b9b1e4a8fc5c411fb6e583ba06aa2ea96b233a91fe12141e470c82",
+      "scripts/run_epoch_readiness.py": "0ba5c9d504922071580cf9416fc62d5f0b9007058b50d572e55cdd8abbbe4a86",
+      "scripts/score_controlled_language_evaluation.py": "d5659c3cab2195ebc698d3596ba12ebf22e2181e48c7d29fa8b543f885eac1eb",
+      "scripts/sign_desktop_update.py": "db37aa472f571ef6ed038bcc8da384c7805603c5bbfcfa298e107117afda5d3c",
+      "scripts/train_language_adapter.py": "76c812ae0cab645b7a8da7acf175a8eb54aa0709a9459985c4f5a3385b7bcf1e",
+      "scripts/validate_architecture.py": "8c703af2fafcf70d1fbca5401ee2cd4e9a3eb3d919744eb30a0e92083daa22e4",
+      "scripts/validate_architecture_material.py": "078b0607d85a34f21f56976b542dd4429a78585c1b0406391ec74c23e66c572d",
+      "scripts/validate_ceta_curriculum.py": "fee44b0d26731088bfdb6cdc0eea10bbb048bf80e2c3a5bd2f40cc58e589b075",
+      "scripts/validate_ceta_curriculum_v3.py": "14b7852f35eef1e19c8d4088b623ed714c3d7a63702d7d87f04b616fd6185bd4",
+      "scripts/validate_controlled_evaluation.py": "921cc153120dca6c2bae0459127039005702ac8b13307b80abe3fe5ae9b7cdf3",
+      "scripts/validate_evidence_registry.py": "47c0a4d2585bc3026e85871c980a70368bf74ebe43de67a5ecf8f9e196b0ccfb",
+      "scripts/validate_language_adapter_dataset.py": "1d71cb079e2ef90730263c8605b2715ee00dd7d23dac1a6b3e113be8b5441646",
+      "scripts/verify_all.py": "10c96d43cc0439d20ada7f9d8993a317a8a06e449f2b6e989613720dffe0dc73",
+      "scripts/verify_corpus_manifest.py": "958aeb8e8f0dcb9520c25caf69b4b1ea39f00621d430d3d89c3de45277e92b33",
+      "scripts/verify_desktop_inference.py": "377d5e52ed02dc1dac99c0383b2a480073c4bda41faec5261d761dc46640341f",
+      "scripts/verify_desktop_runtime.py": "343cbcc80cdf6dbf29fc3c7763870561e873b3a522fbda1dc8b0bfb87e1dfeeb",
+      "scripts/verify_epoch_continuation_report.py": "66fdb12bb9bf09c47aea5432207184b679ca9c933122de91bbb0f629a8a82e25",
+      "scripts/verify_epoch_readiness_report.py": "b490d65f1b63660cfd056303144279477b1b879e8c0b85807db91150c070a4fe",
+      "scripts/verify_final_heldout_report.py": "1ef80c977dd9a5382ac245955964abcbde4e28d971c64a2a1f2efbb41c10626a",
+      "scripts/verify_guided_setup.py": "9b811521ceced2ffa8c5229edca92d57adf60926563ef69d677359025d58f1e4",
+      "scripts/verify_language_epoch_report.py": "52f7434b713c7e0b1290e020c472f3e441fd81b8e6df8bb63480ba5aff0d875f",
+      "scripts/verify_managed_model.py": "1d285a3195940ead9dfac79c01ee0c94b7ba59a246f3bd7307efcc9f1a7d8c80",
+      "scripts/verify_owned_service.py": "58682adcaa3ed2391155a7ebd30695e0a6f98a4ad0efe33d7d23d3f5f6b8eb09",
+      "scripts/verify_package.py": "3004f0b6434743aa392cd11b870f1ac3a19412320845717f762481d6b880b593",
+      "src/architecture_contracts.py": "2f0d691b7521a2544a9d2562587863fd0e6c05f3589add078cb4076f7e6273bd",
+      "src/authority/__init__.py": "e96e58c7495b9ab2c55a6e721f01e1135b767ad3d3702265a42a8b16d5895aee",
+      "src/authority/context.py": "53635e51fbe9d328f8d2b0cfa778eaaf9f206b3df82e45dc1cd6291d752d383f",
+      "src/authority/ledger.py": "77c9deb8f3cf4f64196baab0d3e5dbdebec5cb7e1083b735e8bd23370e677c86",
+      "src/authority/model.py": "8a1b7538687b01eb5ede108469475d30fde445895603410a0b63ecb4003af62e",
+      "src/ceta/__init__.py": "dfdcceb93cbc0a36ae99000bdd54374be39e6b18f4d6c76f81825fd4a13c27ab",
+      "src/ceta/model.py": "602e8318635031ae4c6fd0ee959c6e37a6f16d5ae887e815475d543ea02da048",
+      "src/ceta/operation_contracts.json": "3d7d07f646987569947cd3cdde35392673b3a2bae32488a583e023cbd7134cb0",
+      "src/ceta/vm.py": "579fb905528970b07750fe41326d303334da138ba4a165ec2f9623480e52cfcc",
+      "src/ceta_desktop/__init__.py": "23368256890df7d689cc30fa8b0779d07a450300a7ce75076637d716b51734ab",
+      "src/ceta_desktop/app.py": "48f9ed454d8100a260e10537459f1cf7e581f370f4a6f71c4a4d92163144fe99",
+      "src/ceta_desktop/backends.py": "72b298dcdb8353397c3a632c93af47d2ddd9ad1f0e299ad33ad246932c9ba49d",
+      "src/ceta_desktop/chat_widgets.py": "3fde9ad719b1ebad36e5d7fee32798e0668b7be9a08f460af09cf0691770a52e",
+      "src/ceta_desktop/components.py": "4627893beed12779490b61b350115233c0939534cff889610b2a692723681c9b",
+      "src/ceta_desktop/editor.py": "a215a9c2a1566dc7ee632efc211d72908044ba3487705fe559ce1f0c9e09fac5",
+      "src/ceta_desktop/hardware.py": "ab3bf4fa2df4e27861fe6a58f8e6d736a2d22fd9f6e4aa1c5d8a3a9ef79ae2fe",
+      "src/ceta_desktop/hardware_windows.py": "fae27fe8480db6b48a028289166552f70090885dd0ae51fac9ca7f912c14e9cc",
+      "src/ceta_desktop/installation.py": "a9e6219c57d619f194668b866ecaa2dd0db1170467d807e487996aaa7ef4a98e",
+      "src/ceta_desktop/instance.py": "6d472aecdb44f466173f6dc923bf61b8c2f80657fbbc2ee6fb1ba9db700f0f30",
+      "src/ceta_desktop/merger_self_test.py": "7f53c15469bd83a15c2fcfa78da9fe3cd70ce797e38975a67b005c588eb3ed30",
+      "src/ceta_desktop/model_catalog.json": "0eddb2ce9ec4f4b9f7a3d6840f09fdd8a517c3d5d9fa00b693677db18492e23d",
+      "src/ceta_desktop/model_installation.py": "fef3be58b44d408da276cdf22ea9524601bcb3ea77630b1817c3a74d3c694e46",
+      "src/ceta_desktop/models.py": "3b06e385c30228b4195ffe109d07f986e4e86c785ede4acc868f98227b44fd7f",
+      "src/ceta_desktop/owned_process.py": "24497a03852567ef3ff7cc226a6ae411665d136ebe0ad324c4e0e18bdcbcebd8",
+      "src/ceta_desktop/pages/__init__.py": "9461f5866dac84f892b70bd0be9c3188feac72ae3ea34bf49e22161f039f6c9d",
+      "src/ceta_desktop/pages/library.py": "6845192735008e37b969c1cebfca8160c311a7d31ce3a73d18dda2c56ae4e882",
+      "src/ceta_desktop/pages/local_setup.py": "fb4ee3190301865cebdbeb9f97c4ac76ac062890f3acfa3532c8cf0b77383754",
+      "src/ceta_desktop/pages/model_setup.py": "4194df3335683d96f64e2afe601f88cca4bd0198b1941f74313cdf4205df5f85",
+      "src/ceta_desktop/pages/recovery.py": "6cd92af9b6d4f8ef02e1fb7b51bf93586c46a2188a95dad9cc2d87e8777c4b07",
+      "src/ceta_desktop/pages/runtime_setup.py": "9a219c7894a589cf3ff96cb59b4d84740051a9ed90a2b5987d259a0f883601b9",
+      "src/ceta_desktop/pages/settings.py": "89ad6ea9aa1c0ba0c2240c0ea35d229de8d06f9f45183d4d5f1377c34c515d9e",
+      "src/ceta_desktop/pages/tasks.py": "3db91af1f72fa1b770e732d2e3b0d694ecd3b926f930c67a12d4ac99c45251c8",
+      "src/ceta_desktop/pages/updates.py": "662ee54b81df99a11ad295a7cfaef69bb69b0272dac82a6ebb262d2a06fe7a39",
+      "src/ceta_desktop/pages/workloads.py": "108c9c81b008fd08465b17c9f50870e6ed3e9e8a17b2815e322ad532cda13c3d",
+      "src/ceta_desktop/release_channel.json": "c11303d5c74c40540a2779d415f8c734e2f1210a8b5f136b2e4633401132e863",
+      "src/ceta_desktop/request_tokens.py": "799197069e942ab324c10b40500063efb0d69b1c932be9cdc8a44683f4d29768",
+      "src/ceta_desktop/runtime_catalog.json": "a6954268814d54622f42f491a95707368259f82e0674871f4f9417c4e795f392",
+      "src/ceta_desktop/runtime_coordination.py": "6d166544946db67e40276f2a31f051bdff9f56045cc077cf98b809a28f952115",
+      "src/ceta_desktop/runtime_installation.py": "7cf3fd398d267e9185e36d20b050e73c37d59a4fc7d412d9bcb96e228a8fd22a",
+      "src/ceta_desktop/storage.py": "25f69972f08c844a385329dc144375abba70388163f56e6954cb53269417a6da",
+      "src/ceta_desktop/theme.py": "a967a3e3743f6ce408f5ab835a28f801081301368186101c1ca07457d9e273d8",
+      "src/ceta_desktop/updates.py": "ee86152f754466c5aa951b280656b948ef4234f88d8d59e8f14a1fe924a3eea8",
+      "src/ceta_desktop/windows_job.py": "29db985c1d3a933bcb511aefdc28eb8b545c234502798bb3ffb0bd92e9025981",
+      "src/ceta_desktop/workspace.py": "09e74e08ec69fbdc0f0b94f2fe8c35bfc56241c75ce90db3150693745dcf9a93",
+      "src/ceta_model001/__init__.py": "07523ecba0a475fc3f3e8cc0399c839ee081fa6528e718664f4ed91a65f017fd",
+      "src/ceta_model001/context.py": "81eea37fa2579e8a23297ae26b22766f689b5edc4d5a7bcc1499f1128a666911",
+      "src/ceta_model001/decision.py": "c31bc066386e166a5dc8897434c9f3e365fb68decb58ba604bbc2bc58a41f413",
+      "src/ceta_model001/explanation.py": "03f2680e927d5f6adc82e09656df71473689c596a03ec7273d319528fa61493c",
+      "src/ceta_model001/forge/__init__.py": "323e2d1295e754cad6ce5c9f974965eca5e2abea2944b62bc9f79f075a156752",
+      "src/ceta_model001/forge/adjudicator.py": "43559111dc8f358b439936c7efa92df8422fef4a8c0753666f2463f29ed02628",
+      "src/ceta_model001/forge/context.py": "83156576009e5dfca743ba1e90b6e6c1e72c063dbee9abfcc1f96d8abba5e25f",
+      "src/ceta_model001/forge/harnesses.py": "3ea310d21600418e2baa92de48acdd0b3bf65c32d3211868bbebfdd4d9587024",
+      "src/ceta_model001/forge/ledger.py": "fdb597a0ba6291faaa42b83e36f3b83a6fc5c7b430531659bd25be69a92aa44a",
+      "src/ceta_model001/forge/register.py": "2805862d9856064b2a494b284a23ca7355b1e7a4960ceb889b903a9d0eec784b",
+      "src/ceta_model001/forge/roles.py": "7c4fe38793aeb5cdd03de70e035803b396529a175942f39197b01a5cc41f06ab",
+      "src/ceta_model001/forge/types.py": "c3f8edfac20d4e7897cb889d4c384c04f7d7c4a0f1d117d2bd9d765ac5d026be",
+      "src/ceta_model001/validation.py": "26b0fea23ebedfb1b0558a6e42f2a4af3fba64683fb3f478eb151e8703e5d33f",
+      "src/effects/__init__.py": "1288246391f9eb80f9b4e5120828bb0c3fb90dc1212cf37a6444860190d7e608",
+      "src/effects/gateway.py": "da07e946d48d744483e4b6896b1d793f78dcc617b803972dbecce3ff437961f2",
+      "src/effects/model.py": "5f967bde8e7660f2077a450eca6b88b9a012745ac1a81650ce9d90b4d5873c72",
+      "src/effects/verifier.py": "e57065da921c10ab467e7137a92d767fd65eb599403cea09dde19f60327750cb",
+      "src/evidence_registry/__init__.py": "331b02b108af384b0c7a81795add52e34251ad03087c5c406af763f60705cc38",
+      "src/evidence_registry/model.py": "7349de0d3a440302128d73a500d1d3f7550ebf0719ce7e66ffdf4f51f411b417",
+      "src/evidence_registry/registry.py": "141600dc483b65b283d26214270047806dfca16f9b9abe6dbe3d1fb3e67e3e9a",
+      "src/formal_verification/__init__.py": "76c9347469387c222fa20f7671ceb742a8494ceb34526673116898add4bde982",
+      "src/formal_verification/checks.py": "8d42922fa4570d5f5f7a5244561edc43713a90696defa9b1185c7231e5059c9a",
+      "src/history/__init__.py": "2f608e6e31390b921048b01acce2ff89a7f3c5e67bd429cc66b863c10bc18118",
+      "src/history/ledger.py": "a93ccf43e836e3fa2ce7b54c1afd805627cf36c0d659801736fb51e22e10a90d",
+      "src/history/model.py": "7cecd9e450d70a65971d1d4b24d308cea7c8458d464deb69b67ae05c2d067071",
+      "src/history/projector.py": "0b2e1f1baf47af68d4bd02ec5affe8bdb0a8d6f8362f1732a0c4b88fae78018b",
+      "src/host_shell/__init__.py": "6e6e1ec0bbe99121aabd0f14c862de7258c9ccfd3108b93dff5af0cc28cd0326",
+      "src/host_shell/shell.py": "0656c3de7702e5fd5a07ee9cc06e79708baeddee2c4f39a0e0b7736f5d4ff3f8",
+      "src/identity_registry/__init__.py": "50b6d8a731a4a197c6d9c01ee5f0377d066ae4e20b7bcda5a32e73df38bc369b",
+      "src/identity_registry/assertion.py": "e071043ae1d1ee6c4cb189654e39b8625f0940dc20f0ca9546d17e3c12896e9b",
+      "src/identity_registry/registry.py": "07bc0d240c855f0064eca58d6392752c409af1c382326f1050f761d771d55289",
+      "src/memory_projection/__init__.py": "313c330230cbab092d4442b67d9832ad38f8ca4b120395b2b87a66e49d5c6665",
+      "src/memory_projection/projection.py": "293c1766ee28bcbe8edf0ac6a486d13a418a0b3e36e90d50a5c15da127cf2fed",
+      "src/observation_compiler/__init__.py": "423aafe0cbb269c654d4dd5d2ba976718b6ffefdf17def29fb692d960f126d4b",
+      "src/observation_compiler/compiler.py": "dd7f7ec1650e093e878bca25e5b504b978bdff2e06e3a030418541838f5bdcee",
+      "src/reasoning/__init__.py": "f0b5b92b83b2c02f942ef74e49b6895ba17813316220fa8250ad9897f326b5c6",
+      "src/reasoning/defeaters.py": "bcd48b11a58296ff139652d9184041f04127f058aa9d70fa642a2c5e4930e58a",
+      "src/reasoning/search.py": "62c29d9cd111b08cc00e2b8029d999c34a0edee48c630ca5f914eb1cbeb10d35",
+      "src/runtime/__init__.py": "049ba8ec049a8b0dc083541e05fcdd66fcc4c2bb59930e06c5fd7d27762bd7e2",
+      "src/runtime/core.py": "9dbc35780331a41cd1961143f4ce2264f7d47b7a355393a55d8f373ed663f4ca",
+      "src/runtime/generation_plan.py": "1f54e565d23e991287a0b9ddf2399d8afbb69859c53bd05b7a8726ea144faa23",
+      "src/runtime/journal.py": "184f12cff7cfa6105570f4fee7107abe8e7a47b308a56f5cc1ef7bfd48f26c24",
+      "src/runtime/journal_owners.py": "672db2efdbb61f8bf5862bc413aa2e391448078a00296b6bf5abc46febdec62e",
+      "src/runtime/legacy_history.py": "b85bb4ccd34d85856c49bf1d0723bb43ad3a53a923c73e3c8cfaf1719a0ec7a5",
+      "src/runtime/model_provider.py": "4ef72625e360d293f962c0640aa26801f4a7e0933a84492c69889a62a13b168a",
+      "src/runtime/project_tools.py": "6a39c79e1171285c07dbc3931759178c1b06ed661f10d8d08062d71367a55201",
+      "src/runtime/runtime_keys.py": "33fcd5e5500f207738362d7ac18ad20e54a696f6d52d44ecd582fa64e57ced97",
+      "src/runtime/tasks.py": "db6a99eef857393cfc278d341f26bb9eed3b67d70b605d456c0c1e8760665e4c",
+      "src/security_sensors/__init__.py": "46e5e7e67a53f657d31a3a87a6d42a50fb34bc90d9bb6899f0787266faf247a6",
+      "src/security_sensors/sensors.py": "5ddf2a80f89836d362652e49a65a168764a97cfb282dcaacfcac925c71e7b7e0",
+      "src/serialization/__init__.py": "5de0944ab473f2c9453387e80e854ee7ae67bfa4f3d199b7f8a14ebc72ef6065",
+      "src/serialization/serializer.py": "5c6c5f44b4388a526aaf833707a98d64ff59a9393e3f618971ea607bfbd98873",
+      "src/tool_adapters/__init__.py": "76f85c1ee3590a5e2dab2f03d1f03631b4eab6de01f4f86b132cd62d889d71b6",
+      "src/tool_adapters/adapters.py": "bd887838e835236c6ad5ca6f22df90231958f9f078d8595fa93be8a5992b92b1",
+      "src/training/__init__.py": "d36105dbf21cdf3a9554f2be0a9b65fec929c51964e21a9d90cbc9da88c1205c",
+      "src/training/curriculum.py": "90866fd53267c716cd5511c60803779f016a6b332457170149febe5a0c39b451",
+      "src/training/dataset.py": "d6ce764d91cd9c4e13e22900373ac82737e1dc2d460b3778a76ae825fd12f412",
+      "src/training/evaluator.py": "e0be2a8a4104532888d8c26d3ae0ae0f883a241bc2a554ee6fd40ab694616339",
+      "src/training/failure_taxonomy.py": "d80c23f02566010019747d7ad3905c702f6e58ec1b2f247e37abe01023edc9a9",
+      "src/training/governed.py": "fedddec8dfeb1aadd1ddf0255ffde50d581f3fd16d8556aaa12fa75a220239da",
+      "src/training/language_adapter.py": "e35f30938d213501dbcaf0d487011e9aa6a018f8dad508cb0337df5a38b1a686",
+      "src/training/model.py": "683430d9942eedee87d2d63dc3bb80d40ee8985918abedd81007304fa62d2ccd",
+      "src/training/source_policy.py": "d300c5611c10a683a5d187aeb49dcba21cbd922e1a26b83ab28475a8ddd439b6",
+      "src/training/worlds.py": "f803b26d4adbb665f363f9d9f63c70630a48f94aa84591a174b238909bf597b5",
+      "src/training/worlds_v3.py": "e05dabf1294aec75f891557429078746287e3afb7cc027fe352b92b771f16f65",
+      "src/transition_policy/__init__.py": "37116320d8669eb5828481c1d5fc6a3e9dc340cc761cff43a80516e6eb8fd3b7",
+      "src/transition_policy/actions.py": "491d7fa9f9e937449b74f8bb48aed5bf594bb20b6bc9d0e33662973390a58b71",
+      "src/transition_policy/encoder.py": "4b635cf222f66b9931bbd9c75a744756a14bdfa889d73037f22f6516c5775afc",
+      "src/transition_policy/interface.py": "ea60862915d27cfc7ae8b43d33f4d893b2fc1ce0ae24481dfcec1f826dd4da78",
+      "src/transition_policy/loss.py": "ef13ce0a3802e4c361bf4fa6f8e22f4a70bad59eeaf5f8545fb1e414af2c7639",
+      "src/transition_policy/neural.py": "a0d022560b0761ce2799f5aa704496a9724831dc07ce0ecc9818635424953c0f",
+      "src/transition_policy/schema.py": "20f808c0217cfccaa4df9fbf3d4b3ea96d2c0e81ae86938aecfc5f10f8adb16d",
+      "tests/test_architecture_contracts.py": "58e12d0c250969ea6abae0fecaa0b57dee599b3d8756a64d6d1775f8a76a0b68",
+      "tests/test_authority_concurrency.py": "6e0902fce5701ff63da2fa0e653c8f5154bcab2b90019e79e1c1fa50dedafcac",
+      "tests/test_authority_ledger.py": "5f4212c3f3e2e2a2f824d13053b1171cfc695fdf6388adc4ce7f419988935dca",
+      "tests/test_ceta_operation_algebra.py": "d118a0bf08330992a16e97ab323375a4aeed88e6b6b0dc9b5b4b75d600a27a70",
+      "tests/test_ceta_vm_boundary.py": "e4d83d6599ebd79b325369b404786becb93db426bce845f2531f2cc3447741dd",
+      "tests/test_ceta_world_curriculum.py": "caed1205cec7096938894d528f751a6fca362c26bde65336f25b42c6ff2c4af5",
+      "tests/test_ceta_world_curriculum_v3.py": "29a06df2bd966f3f2b744699f63da8eddc57db300d4e9298909210f17a4c57ef",
+      "tests/test_desktop_backend.py": "c5feb88f6903fd72bd99d7e5cfd564dbbce02e352345d8b884448c16e1d3d6b0",
+      "tests/test_desktop_backend_admission.py": "38c54e881de3aba734a60a99262604e8bf1379399b5013016e1d8b8de9503f19",
+      "tests/test_desktop_chat_widgets.py": "de6d6f951be8a40d76d47ba84c972afaa718ef67912462dfb77ba4657745bf8a",
+      "tests/test_desktop_conversation_lifecycle.py": "db1242d4c47746ee66d5c450ccb538c9ee51876226a11e97d51e655dbd7a70d9",
+      "tests/test_desktop_gui.py": "219fa80118a32e97be1b7619573cae9fcab3b5fb3100780b4f4450de453133c0",
+      "tests/test_desktop_hardware.py": "96e296a9cc5cfe4f399a8f5b2a7c37b43e879445785a7bc2c07ead0a6b7087bf",
+      "tests/test_desktop_hardware_ui.py": "1e61261b8e5aeaacce0cef7576a93d708735688432129f2bf496c1a46fa2ff85",
+      "tests/test_desktop_hardware_windows.py": "ca927f0a3762f11d2609d0e8c8ed0823c456deba6e983c560f2997d672609165",
+      "tests/test_desktop_icon_resources.py": "aa479e50c8a0d65fa43c2a944b46dc36e56c69ce1f0dbf3376d596f0a316f665",
+      "tests/test_desktop_icons.py": "ce8722407f6e345ebaba8485713829e0462b39671abff4f2569e4de08d2528c0",
+      "tests/test_desktop_installation.py": "99d699f59799040ce641d0c7dd0c18c56575f4a3f175d1a923c066eab35015f0",
+      "tests/test_desktop_local_setup.py": "ba6eb68764ca930a9e1158ae7329541534860aadbdfaab0ff2a4453d39913ecc",
+      "tests/test_desktop_managed_model_ui.py": "bf1b9fae1ba4cb062819008963f3e3ce9f5c824f30c32ccf33f02e8438eb4648",
+      "tests/test_desktop_managed_runtime_ui.py": "1255d867f934a8c7c3164380baceb3e2f395935c2eca013cebe4f56937601f77",
+      "tests/test_desktop_merged_tasks.py": "10aaf40e676f33f173c8696e8259f668e5acb1f9d11423dd7576eba5071c9404",
+      "tests/test_desktop_model_installation.py": "04fd4edd63955c4e8af5c0aa08b809db68762e9261ad55e099a0b42e7d5e113e",
+      "tests/test_desktop_model_readiness.py": "651d0202dcd42907f4dc8dbac2f570be6cac7c75f02818cf4567689904cd40cf",
+      "tests/test_desktop_navigation.py": "50ac774a6ef3a1ad8de33395cb14c17ec2fe4bdd2bc6aafa1f133811cf0d01e9",
+      "tests/test_desktop_network_boundary.py": "90cca02e90e8573a0e49217b624a1f0e790bbe583e7fd6c07a7922339a665d9c",
+      "tests/test_desktop_notices.py": "afb9ccd2fb5133a2fb7f4114989f4ced6b4f70684c22faca80d443f000f061ca",
+      "tests/test_desktop_owned_runtime.py": "4efcc5ff489f1514fd563d81b635c14884b8ef601ccbba3af11dcfb5855d8d30",
+      "tests/test_desktop_recovery.py": "e46228768d8d6d7b3cbfdad1e31550dd6c73ad54fa922f2d355f7988098b0991",
+      "tests/test_desktop_request_tokens.py": "81628684f6a0f8d52639f1e155c8a362387f322669a370e7bf3bbfeb485b45b4",
+      "tests/test_desktop_requests.py": "3c294fdc9de493707f4a22c7710d97107b8d15171eff1edd80962aaea889f85a",
+      "tests/test_desktop_runtime_coordination.py": "ad264d7df3b2703e34753aa23b50bbd1f1ddec81591a8335bcaba72687d4b928",
+      "tests/test_desktop_runtime_installation.py": "a9645facec20833dc71287e18da2512e0687845552d22231e35b1077070ea9d2",
+      "tests/test_desktop_runtime_lifecycle.py": "221014514ba1dc5071d7c02d66f58666cb0ffbf324a5c7312fd2dce57de42ae8",
+      "tests/test_desktop_sandbox.py": "6f571a195521f42750af6d493bfb5c7c915e7f4ece7e06d4456fbed32e0fb8cb",
+      "tests/test_desktop_signing.py": "30a5ffcb5274dfb970223dbf882c515f880ae3a513719e0f9ae144ce1abdff23",
+      "tests/test_desktop_theme.py": "fba18782b33f41374d4742b1756d132e3864e35164e999af49b570e50617c610",
+      "tests/test_desktop_update_keys.py": "cd9a2140ba8ba4de17193bdbd09802979f409f339f59a90ef51713d485ead0a1",
+      "tests/test_desktop_updates.py": "8d6177084be17d06f53596345f1a951978629a6aa948dedac35a49c31900cf19",
+      "tests/test_desktop_verification.py": "bfe03721cedcd3d9ca43507eb6e61d2e6ad686691666a8fe4a7ac3c6e584135d",
+      "tests/test_effect_boundary.py": "e5836a2d502886ba6484636840950db4389ec4f92e0a7b345201ff616872fa5c",
+      "tests/test_effect_invocation_replay.py": "7af150e4cea80e5915229886d095f1fb3abcac84734dde809c7770c711b1bf96",
+      "tests/test_epoch_continuation.py": "0309e7512b7ce81a9610b006812b286941fe8f8eb658dd85b52a3c7adde8892a",
+      "tests/test_generation_plan.py": "51bc88c0297707e07f6f9ab7df2ef7ce22a62477c71d1f3a93876ea475929eca",
+      "tests/test_governed_training.py": "e2dba32b64457c7f104bcfe17f26998c39255e00ec43fc24d00844bfc09577af",
+      "tests/test_h100_evidence.py": "01abfc6c3962798b0b1ceefdff27c5b9d92a1e1fb74c31675481a0fc8c2bc307",
+      "tests/test_identity_authority_trust.py": "745b8fe0292318cb4da3d1594c7f0a9acb96cab864b106198ce65564dec409db",
+      "tests/test_language_adapter.py": "cd04b5f604f60cd063af0573801c86d6a5f1b9066d9cf314b92a9bd544bbef35",
+      "tests/test_language_dependency_compatibility.py": "055ffef4fa91444cfbce79c1c623b5594abe1411a374548d91746c5d0a20de37",
+      "tests/test_legacy_history.py": "201f37db49443e37fa3cfce21e3ec367a9c862771239619d51ec0937bd813fea",
+      "tests/test_memory_projection.py": "10fd89c4b9e3b6c9282afc46548e8c61a41c4dfbf6f9dac5a7301291f016de13",
+      "tests/test_merged_distribution.py": "2b6138ca987252b33a0aaa87c9738289eddcbb8bda89467e6f7086587fb33bd8",
+      "tests/test_model001_integration.py": "a7da16fcdd8ff2ece3822f18820596d77084d70aa54c63bacd62da9b9f1f18f4",
+      "tests/test_neural_transition_policy.py": "a3915e61f3074984ccd74fadb2fd673d3044defb5d3397cc7d7c39952be8bd13",
+      "tests/test_project_journal.py": "a9e8a6c4ad72b2cfedaa2204f4441b10666031b5d82824cbdb46a15c5925ff6c",
+      "tests/test_project_tools.py": "e5d4c2ec852813a5648daf241a3983551caa87aa5f74dfb33a56baf26e56ea24",
+      "tests/test_release_safety.py": "ddae6112a9290ee7f1eee9ad9b7d0dae3271aae328ff4deb1ef534fe495e0b24",
+      "tests/test_runtime_end_to_end.py": "9ce3beb66b67736df5a90992da0593182422ccc5d786646e130159b958184745",
+      "tests/test_runtime_recovery.py": "80a19210802176641c2639c8940b3f7ddf86cc561589b956628010a9775321bb",
+      "tests/test_source_boundaries.py": "a70fa9779acf3a13d2a4894fe005541040a1a6e1c2a704ad1595d44b1a5e7d5f",
+      "tests/test_supplied_architecture_data.py": "1427c4b00925541ebd4a4c4dfc28f2c6e226e8d306a5faa997edb9bc110508ff",
+      "tests/test_task_roles.py": "9e05a99e34492db23fe30a7ed66ae4e678971d9bbd4f0dada129bcea9cd21750",
+      "tests/test_task_runtime.py": "6d67318ea2a2ba7cf35e19c1417cf89985b5a300c4b6314f5c0b37721e68189a",
+      "tests/test_transition_history.py": "de8d9c52309db00019f33323b1c8bf2e422bcdd1ecb2cf5861cf18ac5e0a53b3",
+      "tests/test_transition_training.py": "f8f6f45b217e3d05ff0816111b56f402162105a4f7bd01a450df7c0085808285",
+      "tests/test_verification_runner.py": "3c0a710f02ec6d01e1c22dff34c803f37d0d8ff70f8aa3b010360c5571623e58",
+      "uv.lock": "8519c6b83ae1eb182e13b32eb3f4941cd175acb939c3b662d0a4c4dd34db967f"
+    },
+    "source_sha256": "a5f0f3e392189a424d01b0fb60f1d9d368d4f4d4cd709cc292fb9ba1aba27c22"
+  },
+  "scope": "Source runtime, pinned weights, real local generation and owned lifecycle with synthetic prompts",
+  "models_downloaded": false,
+  "os_network_isolation": false,
+  "frozen_application": false,
+  "steps": [
+    {
+      "operation": "health",
+      "result": {
+        "status": "service_healthy",
+        "backend": "ollama",
+        "health": {
+          "version": "0.34.3"
+        },
+        "models": [
+          "ceta-qwen3-06b:7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435"
+        ],
+        "skipped_models": [],
+        "endpoint": {
+          "host": "127.0.0.1",
+          "port": 51411,
+          "prefix": "/v1"
+        },
+        "containment": {
+          "job_name": "Local\\CETA-runtime-3a7682797be54d0a888bb556d582b335",
+          "state": "present",
+          "active_processes": 2,
+          "total_processes": 11,
+          "kill_on_close": true,
+          "breakaway": false,
+          "owner_contained": true,
+          "owner": {
+            "pid": 6536,
+            "created_100ns": 134350521473425862,
+            "source": "Windows process times"
+          }
+        },
+        "elapsed_seconds": 3.875,
+        "inference": "not_tested",
+        "scope": "Owned HTTP metadata response only"
+      }
+    },
+    {
+      "operation": "governed_probe",
+      "result": {
+        "status": "verified",
+        "model": "ceta-qwen3-06b:7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+        "response": "**Observation:**  \nNo content is provided for the synthetic readiness probe.  \n\n**Inference:**  \nThe probe is designed to assess whether the selected local model",
+        "elapsed_seconds": 1.687000000005355,
+        "characters": 161,
+        "locality": "local",
+        "runtime": {
+          "name": "ceta-qwen3-06b:7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+          "model": "ceta-qwen3-06b:7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+          "digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+          "source": "runtime-reported",
+          "size": 1018534295,
+          "size_vram": 0,
+          "context_length": 4096
+        },
+        "telemetry_source": "runtime-reported",
+        "memory_assessment": {
+          "mode": "resident",
+          "preloaded": true,
+          "digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+          "placement": "external-runtime-managed",
+          "verified": false,
+          "reason": "The runtime reports this digest already allocated at the requested context; placement and quiescence remain unverified."
+        },
+        "backend_state": {
+          "state": "idle",
+          "terminal_observed": true,
+          "dispatched": true,
+          "runtime": "loopback:51411",
+          "scope": "cooperating CETA requests in this OS account; external clients remain independent"
+        }
+      }
+    },
+    {
+      "operation": "governed_chat",
+      "result": {
+        "provider": "ceta-local",
+        "model": "ceta-qwen3-06b:7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+        "status": "completed",
+        "text": "Two plus two equals four.",
+        "error": null,
+        "generation": {
+          "max_tokens": 96,
+          "context_length": 4096
+        },
+        "resource_admission": {
+          "mode": "resident",
+          "preloaded": true,
+          "digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+          "placement": "external-runtime-managed",
+          "verified": false,
+          "reason": "The runtime reports this digest already allocated at the requested context; placement and quiescence remain unverified."
+        },
+        "backend_state": {
+          "state": "idle",
+          "terminal_observed": true,
+          "dispatched": true,
+          "runtime": "loopback:51411",
+          "scope": "cooperating CETA requests in this OS account; external clients remain independent"
+        },
+        "generation_metrics": {
+          "prompt_eval_count": 113,
+          "prompt_eval_cached_count": 70,
+          "eval_count": 7,
+          "done_reason": "stop"
+        },
+        "context": {
+          "capture_claim_id": "cl_aecf2afff46c4562",
+          "capture_evidence_id": "ev_73c5bd8fc0374172",
+          "context_hash": "f20c15b942ce7a77f05238cf3470351cc9b8c790bda45d4bfb46157515f0ef93",
+          "objective": "Synthetic managed text verification",
+          "project_context": {
+            "files": [],
+            "fingerprint": "45dbdb4c71d9ee9f5c4d2a8ffd2b55feaf2137f5444074e7a4efcd930e2aa88e",
+            "instructions": [],
+            "objective": "Synthetic managed text verification",
+            "policy_version": "ceta-coding-policy-v1",
+            "project_id": "application",
+            "root": null
+          },
+          "project_id": "application",
+          "proposal_id": "pr_87e69461f2864849",
+          "receipt": {
+            "actor_id": "local-user:Quencher",
+            "claim_versions": {
+              "cl_aecf2afff46c4562": 2
+            },
+            "expires_at": "2026-09-28T07:01:08.353841+00:00",
+            "issued_at": "2026-09-28T06:56:08.353841+00:00",
+            "policy_id": "ceta-context-capture",
+            "policy_version": "1",
+            "receipt_hash": "99f894eaa6ccc24f0ffe632daedbea332cc2365b77efd02ca025c2bb48cb5d0b",
+            "receipt_id": "ctx_397bc524b9ff44e6",
+            "state_fingerprint": "801350558814059e05b805d1933b76a0bf2c7720f43546c795a9c0453eab9a64",
+            "task_id": "task-3bbbbfa33c3b473f9ed404f7b00fd2dd"
+          },
+          "snapshot_hash": "6c4ccc2644176d979a0005cc4c2d02c64b6c1af382057cc98e7f976134bf8c45",
+          "task_id": "task-3bbbbfa33c3b473f9ed404f7b00fd2dd",
+          "unresolved_claims": []
+        },
+        "evidence": {
+          "evidence_id": "ev_d2cf1bb290774114",
+          "artifact_hash": "542a5f1e37d198367fbd048633ba001f36e0526a7ced054dc89d5773453ab482",
+          "observation_id": "024e3a68c5e84abc812684f6d47fc850",
+          "project_id": "application",
+          "task_id": "task-3bbbbfa33c3b473f9ed404f7b00fd2dd"
+        },
+        "invocation_id": "generation-8d3b4f38e85546e4a3651a070c5b3bc9",
+        "role_proposal": null,
+        "request_id": "request-10bbbc7a1e8b4fd29c388e80e599372c",
+        "payload_hash": "58abb27b27a34312bd9a2c3d821381c791e7613a1a9bebf83ee84fa225a81d1f",
+        "budget": {
+          "context_length": 4096,
+          "input_token_estimate": 113,
+          "input_tokens": 113,
+          "limitation": "Exact text count for this observed worker; asset lifetime and capability qualification remain separate.",
+          "method": "owned-ollama-render-llama-tokenize-v1",
+          "reserved_output_tokens": 96,
+          "retained_history_pairs": 0,
+          "template_overhead_reserve": 1,
+          "tokenization": {
+            "binding": {
+              "context_length": 4096,
+              "executable": "T:\\00-Active\\CETA-desktop-delivery-20260906\\build\\managed-runtime-qualification-v0343\\data\\managed-runtimes\\ollama-0.34.3-306ce9e81e3491d1\\lib\\ollama\\llama-server.exe",
+              "job": "Local\\CETA-runtime-3a7682797be54d0a888bb556d582b335",
+              "model_digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+              "model_path": "T:\\00-Active\\CETA-desktop-delivery-20260906\\build\\managed-runtime-qualification-v0343\\data\\managed-runtime-state\\models\\blobs\\sha256-7f4030143c1c477224c5434f8272c662a8b042079a0a584f0a27a1684fe2e1fa",
+              "runner": {
+                "host": "127.0.0.1",
+                "owner": {
+                  "created_100ns": 134350521611997167,
+                  "pid": 21440,
+                  "source": "Windows process times"
+                },
+                "port": 51423
+              },
+              "runtime_archive_sha256": "306ce9e81e3491d147f558e60d7a389499f244d10f71859c6e4e899241d1b4ae"
+            },
+            "input_tokens": 113,
+            "messages_sha256": "2da4e92eda78e25fa67057fbc3ee1cdab7d604722dc5bde039953d9b1e2e8883",
+            "method": "owned-ollama-render-llama-tokenize-v1",
+            "rendered_sha256": "fef8e517cc972291d534df7f79e280ac14480d01a4a5343318d541ba88660388",
+            "scope": "Exact text count for this observed worker; asset lifetime and capability qualification remain separate.",
+            "verified": true
+          },
+          "verified": true
+        },
+        "omitted": []
+      }
+    },
+    {
+      "operation": "tokenizer_case",
+      "case": "unicode",
+      "matched": true,
+      "result": {
+        "provider": "ceta-local",
+        "model": "ceta-qwen3-06b:7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+        "status": "completed",
+        "text": "Hello! \u4f60\u63d0\u4f9b\u4e86\u591a\u4e2a\u4e2d\u6587\u53e5\u5b50\uff0c\u770b\u8d77\u6765\u50cf\u662f\u6d4b\u8bd5\u6216\u793a\u4f8b\u5185\u5bb9\u3002\u867d\u7136\u6211\u65e0\u6cd5\u76f4\u63a5\u6267\u884c\u6216\u9a8c\u8bc1\u8fd9\u4e9b\u5185\u5bb9\uff0c\u4f46\u4f60\u53ef\u4ee5\u544a\u8bc9\u6211\u4f60\u60f3\u8981\u505a\u4ec0\u4e48\uff0c\u6211\u4f1a\u5c3d\u529b\u534f\u52a9\u4f60\u3002",
+        "error": null,
+        "generation": {
+          "max_tokens": 96,
+          "context_length": 4096
+        },
+        "resource_admission": {
+          "mode": "resident",
+          "preloaded": true,
+          "digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+          "placement": "external-runtime-managed",
+          "verified": false,
+          "reason": "The runtime reports this digest already allocated at the requested context; placement and quiescence remain unverified."
+        },
+        "backend_state": {
+          "state": "idle",
+          "terminal_observed": true,
+          "dispatched": true,
+          "runtime": "loopback:51411",
+          "scope": "cooperating CETA requests in this OS account; external clients remain independent"
+        },
+        "generation_metrics": {
+          "prompt_eval_count": 192,
+          "prompt_eval_cached_count": 70,
+          "eval_count": 40,
+          "done_reason": "stop"
+        },
+        "context": {
+          "capture_claim_id": "cl_07ccc2dc0db24b5d",
+          "capture_evidence_id": "ev_878af136cd9941ca",
+          "context_hash": "015746f55a8747c26a9c9e767c1cc91da95962bfdf376f678d56038e2e0f8c03",
+          "objective": "Synthetic tokenizer case: unicode",
+          "project_context": {
+            "files": [],
+            "fingerprint": "8a17cb3ca7dd12cd22cba625ed30faf281067127881957dd283566ec5441ffb1",
+            "instructions": [],
+            "objective": "Synthetic tokenizer case: unicode",
+            "policy_version": "ceta-coding-policy-v1",
+            "project_id": "application",
+            "root": null
+          },
+          "project_id": "application",
+          "proposal_id": "pr_981b2f7c725f4eaa",
+          "receipt": {
+            "actor_id": "local-user:Quencher",
+            "claim_versions": {
+              "cl_07ccc2dc0db24b5d": 2
+            },
+            "expires_at": "2026-09-28T07:01:22.582093+00:00",
+            "issued_at": "2026-09-28T06:56:22.582093+00:00",
+            "policy_id": "ceta-context-capture",
+            "policy_version": "1",
+            "receipt_hash": "60d5b0c19cc90f5ae45587fad8e2b0dce353f0991c0f031cc8044624f1e95822",
+            "receipt_id": "ctx_597a3ae76a1c4a61",
+            "state_fingerprint": "af221deb3d4abd93f649f3ff4497bf0efacf688bc46b2a33e4c9ecc492702142",
+            "task_id": "task-89a51351f2c54375985cb6de6b9559d7"
+          },
+          "snapshot_hash": "553ec08b4f8407050edaaf3480d193350c81f321c1a4e572543b3d75f6c2d432",
+          "task_id": "task-89a51351f2c54375985cb6de6b9559d7",
+          "unresolved_claims": []
+        },
+        "evidence": {
+          "evidence_id": "ev_9ad6f73e2c2f48ca",
+          "artifact_hash": "b51760f8415464ee37f8cbfa8a06c6cc3c9f07d653f96b56e2af191d0676bf2c",
+          "observation_id": "f356c30e677b4cfa939ebf5c4fde679a",
+          "project_id": "application",
+          "task_id": "task-89a51351f2c54375985cb6de6b9559d7"
+        },
+        "invocation_id": "generation-bff653837ccb4c548864b72266aac190",
+        "role_proposal": null,
+        "request_id": "request-846ff7b7efe04d9fad1149a9c73c532a",
+        "payload_hash": "dc03211715e39ad030fdec31d5958609c241fe871682a05cc01210bbf8e7ff5e",
+        "budget": {
+          "context_length": 4096,
+          "input_token_estimate": 192,
+          "input_tokens": 192,
+          "limitation": "Exact text count for this observed worker; asset lifetime and capability qualification remain separate.",
+          "method": "owned-ollama-render-llama-tokenize-v1",
+          "reserved_output_tokens": 96,
+          "retained_history_pairs": 0,
+          "template_overhead_reserve": 1,
+          "tokenization": {
+            "binding": {
+              "context_length": 4096,
+              "executable": "T:\\00-Active\\CETA-desktop-delivery-20260906\\build\\managed-runtime-qualification-v0343\\data\\managed-runtimes\\ollama-0.34.3-306ce9e81e3491d1\\lib\\ollama\\llama-server.exe",
+              "job": "Local\\CETA-runtime-3a7682797be54d0a888bb556d582b335",
+              "model_digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+              "model_path": "T:\\00-Active\\CETA-desktop-delivery-20260906\\build\\managed-runtime-qualification-v0343\\data\\managed-runtime-state\\models\\blobs\\sha256-7f4030143c1c477224c5434f8272c662a8b042079a0a584f0a27a1684fe2e1fa",
+              "runner": {
+                "host": "127.0.0.1",
+                "owner": {
+                  "created_100ns": 134350521611997167,
+                  "pid": 21440,
+                  "source": "Windows process times"
+                },
+                "port": 51423
+              },
+              "runtime_archive_sha256": "306ce9e81e3491d147f558e60d7a389499f244d10f71859c6e4e899241d1b4ae"
+            },
+            "input_tokens": 192,
+            "messages_sha256": "550b6c0a5e3c2d9e89a6d80f4e5e729c3d4c9e76c1a85c3ff6ce9e18c1aa539d",
+            "method": "owned-ollama-render-llama-tokenize-v1",
+            "rendered_sha256": "be96d6648632a0fca700e41211a99d5ce55c7192662a80f5f153bc6e884f113b",
+            "scope": "Exact text count for this observed worker; asset lifetime and capability qualification remain separate.",
+            "verified": true
+          },
+          "verified": true
+        },
+        "omitted": []
+      }
+    },
+    {
+      "operation": "tokenizer_case",
+      "case": "code_and_control_text",
+      "matched": true,
+      "result": {
+        "provider": "ceta-local",
+        "model": "ceta-qwen3-06b:7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+        "status": "completed",
+        "text": "Observation: The code provided is a simple print statement that outputs \"hello\".  \nInference: The code is correctly implemented.  \nUnknown: No unknowns in the code.  \nSource: Provided code is untrusted.",
+        "error": null,
+        "generation": {
+          "max_tokens": 96,
+          "context_length": 4096
+        },
+        "resource_admission": {
+          "mode": "resident",
+          "preloaded": true,
+          "digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+          "placement": "external-runtime-managed",
+          "verified": false,
+          "reason": "The runtime reports this digest already allocated at the requested context; placement and quiescence remain unverified."
+        },
+        "backend_state": {
+          "state": "idle",
+          "terminal_observed": true,
+          "dispatched": true,
+          "runtime": "loopback:51411",
+          "scope": "cooperating CETA requests in this OS account; external clients remain independent"
+        },
+        "generation_metrics": {
+          "prompt_eval_count": 126,
+          "prompt_eval_cached_count": 73,
+          "eval_count": 46,
+          "done_reason": "stop"
+        },
+        "context": {
+          "capture_claim_id": "cl_8edc7988f64f4036",
+          "capture_evidence_id": "ev_6c9c20706b0a4386",
+          "context_hash": "3ec039f9ad070a7d247cf6d7d4b862987edbe37b8de3765b90b8f5f2852be63d",
+          "objective": "Synthetic tokenizer case: code_and_control_text",
+          "project_context": {
+            "files": [],
+            "fingerprint": "b1729c6b39bce27364f9c48a8d551d528e800b6812f187d55eb02939db81d9f0",
+            "instructions": [],
+            "objective": "Synthetic tokenizer case: code_and_control_text",
+            "policy_version": "ceta-coding-policy-v1",
+            "project_id": "application",
+            "root": null
+          },
+          "project_id": "application",
+          "proposal_id": "pr_af805aec1aad4f09",
+          "receipt": {
+            "actor_id": "local-user:Quencher",
+            "claim_versions": {
+              "cl_8edc7988f64f4036": 2
+            },
+            "expires_at": "2026-09-28T07:01:38.439564+00:00",
+            "issued_at": "2026-09-28T06:56:38.439564+00:00",
+            "policy_id": "ceta-context-capture",
+            "policy_version": "1",
+            "receipt_hash": "b3c0bd9334ad7ebc218873225ab9021f5002ec303e988f8c87bf0a78b6f92dc6",
+            "receipt_id": "ctx_973d6a9b2b6c44e4",
+            "state_fingerprint": "696f83005b6cc6782db09c4a8d9d7a1459dbcaf2baa688f7b8a95a26336f5ca5",
+            "task_id": "task-8ea8b70af4c24f0b928cd3890fea6150"
+          },
+          "snapshot_hash": "34f943c0ad626a9e6ea964e8496313ee153fd2fdfbe1343b35c11d7443184324",
+          "task_id": "task-8ea8b70af4c24f0b928cd3890fea6150",
+          "unresolved_claims": []
+        },
+        "evidence": {
+          "evidence_id": "ev_719e8813e3614d12",
+          "artifact_hash": "ec7cb2184657cb057d3010389fc09bf68a1b4ddf9945a1dc10317344a233aede",
+          "observation_id": "c02a3ebaf2774d73a52e7f9cc6a5607e",
+          "project_id": "application",
+          "task_id": "task-8ea8b70af4c24f0b928cd3890fea6150"
+        },
+        "invocation_id": "generation-99fc71577149447bb89e6a003a660fd0",
+        "role_proposal": null,
+        "request_id": "request-58ed0d7f9cf24b64afa2d4f729510c82",
+        "payload_hash": "6f564e018dcf056db65475e1196ce8aea54fa9b0f3e5c32b081602a8e884451f",
+        "budget": {
+          "context_length": 4096,
+          "input_token_estimate": 126,
+          "input_tokens": 126,
+          "limitation": "Exact text count for this observed worker; asset lifetime and capability qualification remain separate.",
+          "method": "owned-ollama-render-llama-tokenize-v1",
+          "reserved_output_tokens": 96,
+          "retained_history_pairs": 0,
+          "template_overhead_reserve": 1,
+          "tokenization": {
+            "binding": {
+              "context_length": 4096,
+              "executable": "T:\\00-Active\\CETA-desktop-delivery-20260906\\build\\managed-runtime-qualification-v0343\\data\\managed-runtimes\\ollama-0.34.3-306ce9e81e3491d1\\lib\\ollama\\llama-server.exe",
+              "job": "Local\\CETA-runtime-3a7682797be54d0a888bb556d582b335",
+              "model_digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+              "model_path": "T:\\00-Active\\CETA-desktop-delivery-20260906\\build\\managed-runtime-qualification-v0343\\data\\managed-runtime-state\\models\\blobs\\sha256-7f4030143c1c477224c5434f8272c662a8b042079a0a584f0a27a1684fe2e1fa",
+              "runner": {
+                "host": "127.0.0.1",
+                "owner": {
+                  "created_100ns": 134350521611997167,
+                  "pid": 21440,
+                  "source": "Windows process times"
+                },
+                "port": 51423
+              },
+              "runtime_archive_sha256": "306ce9e81e3491d147f558e60d7a389499f244d10f71859c6e4e899241d1b4ae"
+            },
+            "input_tokens": 126,
+            "messages_sha256": "58de95ef3c540da805b98f29f973126f6002139313eb283c5eeb1b2655c498cb",
+            "method": "owned-ollama-render-llama-tokenize-v1",
+            "rendered_sha256": "17de351f498e711068b1327ca98ca7f3c92de1508c6627fee92922223dd045c3",
+            "scope": "Exact text count for this observed worker; asset lifetime and capability qualification remain separate.",
+            "verified": true
+          },
+          "verified": true
+        },
+        "omitted": []
+      }
+    },
+    {
+      "operation": "tokenizer_case",
+      "case": "paired_history",
+      "matched": true,
+      "result": {
+        "provider": "ceta-local",
+        "model": "ceta-qwen3-06b:7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+        "status": "completed",
+        "text": "Hello! I'm here to help with anything you need. What can I do for you today?",
+        "error": null,
+        "generation": {
+          "max_tokens": 96,
+          "context_length": 4096
+        },
+        "resource_admission": {
+          "mode": "resident",
+          "preloaded": true,
+          "digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+          "placement": "external-runtime-managed",
+          "verified": false,
+          "reason": "The runtime reports this digest already allocated at the requested context; placement and quiescence remain unverified."
+        },
+        "backend_state": {
+          "state": "idle",
+          "terminal_observed": true,
+          "dispatched": true,
+          "runtime": "loopback:51411",
+          "scope": "cooperating CETA requests in this OS account; external clients remain independent"
+        },
+        "generation_metrics": {
+          "prompt_eval_count": 126,
+          "prompt_eval_cached_count": 73,
+          "eval_count": 21,
+          "done_reason": "stop"
+        },
+        "context": {
+          "capture_claim_id": "cl_c977010bafaa4eba",
+          "capture_evidence_id": "ev_1b9d06c7ed104ad8",
+          "context_hash": "3fd5a300837a92ea5ca7ef05e2943d75c763d79f6e8ef5b6eb6ec14d1bcaf218",
+          "objective": "Synthetic tokenizer case: paired_history",
+          "project_context": {
+            "files": [],
+            "fingerprint": "1bc5c4586c4633241f722fabb10e672e28c78c83e8052693327e443a34d305ee",
+            "instructions": [],
+            "objective": "Synthetic tokenizer case: paired_history",
+            "policy_version": "ceta-coding-policy-v1",
+            "project_id": "application",
+            "root": null
+          },
+          "project_id": "application",
+          "proposal_id": "pr_703a0207871b4800",
+          "receipt": {
+            "actor_id": "local-user:Quencher",
+            "claim_versions": {
+              "cl_c977010bafaa4eba": 2
+            },
+            "expires_at": "2026-09-28T07:01:53.764158+00:00",
+            "issued_at": "2026-09-28T06:56:53.764158+00:00",
+            "policy_id": "ceta-context-capture",
+            "policy_version": "1",
+            "receipt_hash": "b41f335f7226479c6c3dc71902a5f8d2dd835c9d45b3176fe5b5f505359b77c5",
+            "receipt_id": "ctx_2715a840a94c4d6b",
+            "state_fingerprint": "afc36c9a164b338aea9f820e184f734cedb356a0780d88025efcf76e0d64a49f",
+            "task_id": "task-f99b4226e8554aff8470a5679465752b"
+          },
+          "snapshot_hash": "94af67f586507deadf564a720b99cf4a71511d04766582f090069490bb5e24d8",
+          "task_id": "task-f99b4226e8554aff8470a5679465752b",
+          "unresolved_claims": []
+        },
+        "evidence": {
+          "evidence_id": "ev_6609563a61e9490d",
+          "artifact_hash": "0064bf0571f5e7aee996c18fb0324eb40fdea526f57cc531a30ed22c14ebca7e",
+          "observation_id": "6460f7aaa17f491b995ba1cf10b737b6",
+          "project_id": "application",
+          "task_id": "task-f99b4226e8554aff8470a5679465752b"
+        },
+        "invocation_id": "generation-93a747540ab84238a46ee819a94cd11e",
+        "role_proposal": null,
+        "request_id": "request-93bd374241bb433c828ca8169d01d988",
+        "payload_hash": "456087fc1dd9a6c915bbabc8bed3af1147e8abea88c7fd06c694b44f5a8f0cf0",
+        "budget": {
+          "context_length": 4096,
+          "input_token_estimate": 126,
+          "input_tokens": 126,
+          "limitation": "Exact text count for this observed worker; asset lifetime and capability qualification remain separate.",
+          "method": "owned-ollama-render-llama-tokenize-v1",
+          "reserved_output_tokens": 96,
+          "retained_history_pairs": 1,
+          "template_overhead_reserve": 1,
+          "tokenization": {
+            "binding": {
+              "context_length": 4096,
+              "executable": "T:\\00-Active\\CETA-desktop-delivery-20260906\\build\\managed-runtime-qualification-v0343\\data\\managed-runtimes\\ollama-0.34.3-306ce9e81e3491d1\\lib\\ollama\\llama-server.exe",
+              "job": "Local\\CETA-runtime-3a7682797be54d0a888bb556d582b335",
+              "model_digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+              "model_path": "T:\\00-Active\\CETA-desktop-delivery-20260906\\build\\managed-runtime-qualification-v0343\\data\\managed-runtime-state\\models\\blobs\\sha256-7f4030143c1c477224c5434f8272c662a8b042079a0a584f0a27a1684fe2e1fa",
+              "runner": {
+                "host": "127.0.0.1",
+                "owner": {
+                  "created_100ns": 134350521611997167,
+                  "pid": 21440,
+                  "source": "Windows process times"
+                },
+                "port": 51423
+              },
+              "runtime_archive_sha256": "306ce9e81e3491d147f558e60d7a389499f244d10f71859c6e4e899241d1b4ae"
+            },
+            "input_tokens": 126,
+            "messages_sha256": "d8a200dca45150eb6342ee45902712766ae37fadaa35d6b2ea788b46d4af5798",
+            "method": "owned-ollama-render-llama-tokenize-v1",
+            "rendered_sha256": "eda268c92bdcc90e869da74414ab82bcff561d30796d62c76fd2b59cfd8f9004",
+            "scope": "Exact text count for this observed worker; asset lifetime and capability qualification remain separate.",
+            "verified": true
+          },
+          "verified": true
+        },
+        "omitted": []
+      }
+    },
+    {
+      "operation": "tokenizer_case",
+      "case": "long_prompt",
+      "matched": true,
+      "result": {
+        "provider": "ceta-local",
+        "model": "ceta-qwen3-06b:7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+        "status": "completed",
+        "text": "None of the provided text contains any actual information or data that can be used to make observations, inferences, or unknowns. The text appears to be a random string of characters, possibly generated from a synthetic tokenizer instruction. There is no context or data to support any analysis or reasoning.",
+        "error": null,
+        "generation": {
+          "max_tokens": 96,
+          "context_length": 4096
+        },
+        "resource_admission": {
+          "mode": "resident",
+          "preloaded": true,
+          "digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+          "placement": "external-runtime-managed",
+          "verified": false,
+          "reason": "The runtime reports this digest already allocated at the requested context; placement and quiescence remain unverified."
+        },
+        "backend_state": {
+          "state": "idle",
+          "terminal_observed": true,
+          "dispatched": true,
+          "runtime": "loopback:51411",
+          "scope": "cooperating CETA requests in this OS account; external clients remain independent"
+        },
+        "generation_metrics": {
+          "prompt_eval_count": 1106,
+          "prompt_eval_cached_count": 73,
+          "eval_count": 59,
+          "done_reason": "stop"
+        },
+        "context": {
+          "capture_claim_id": "cl_7fa0afe60aa345c8",
+          "capture_evidence_id": "ev_ca941b84b1b14ad8",
+          "context_hash": "b27984541cfc0449f3d990a7fc10defd3c9e3e0d1e525d6036615621d4707da0",
+          "objective": "Synthetic tokenizer case: long_prompt",
+          "project_context": {
+            "files": [],
+            "fingerprint": "d6e0a37da07039b045e9afc1b3fd090afb2d22cfd4ee777aadd7f961f1f43f3a",
+            "instructions": [],
+            "objective": "Synthetic tokenizer case: long_prompt",
+            "policy_version": "ceta-coding-policy-v1",
+            "project_id": "application",
+            "root": null
+          },
+          "project_id": "application",
+          "proposal_id": "pr_2660b39fc9f34dd7",
+          "receipt": {
+            "actor_id": "local-user:Quencher",
+            "claim_versions": {
+              "cl_7fa0afe60aa345c8": 2
+            },
+            "expires_at": "2026-09-28T07:02:09.636594+00:00",
+            "issued_at": "2026-09-28T06:57:09.636594+00:00",
+            "policy_id": "ceta-context-capture",
+            "policy_version": "1",
+            "receipt_hash": "30ed895c05a8cc8169db47225709e580b8fe4598d8c66a1debfe61ab890743a9",
+            "receipt_id": "ctx_738209351e9c4dbf",
+            "state_fingerprint": "e05f769a47a7da2ca8fc475daf1c9f3ece8e327b8582dc1bf47626daddec6d2f",
+            "task_id": "task-d200b8d30df24a09a4d545f71638453b"
+          },
+          "snapshot_hash": "fe0faa0e696d399a001153c35f4ad90c85470274afffdb532d4f07dfe0e022c1",
+          "task_id": "task-d200b8d30df24a09a4d545f71638453b",
+          "unresolved_claims": []
+        },
+        "evidence": {
+          "evidence_id": "ev_31d7f48550264cd3",
+          "artifact_hash": "1646b4f1579b2d31c3f8918c9b9b3cbf86fa14c0fbbcc508764995d054f6be78",
+          "observation_id": "962d3599ee1a4f4b85ad8466dac71fcd",
+          "project_id": "application",
+          "task_id": "task-d200b8d30df24a09a4d545f71638453b"
+        },
+        "invocation_id": "generation-458c0f02dba8432f9b01bdadfc034774",
+        "role_proposal": null,
+        "request_id": "request-7c952a7d2b9f4958bf04458a843f4dc4",
+        "payload_hash": "903c21b2d4f458da1910ba1bce6631cc89ddb49a04198b1e99bc342678492b11",
+        "budget": {
+          "context_length": 4096,
+          "input_token_estimate": 1106,
+          "input_tokens": 1106,
+          "limitation": "Exact text count for this observed worker; asset lifetime and capability qualification remain separate.",
+          "method": "owned-ollama-render-llama-tokenize-v1",
+          "reserved_output_tokens": 96,
+          "retained_history_pairs": 0,
+          "template_overhead_reserve": 1,
+          "tokenization": {
+            "binding": {
+              "context_length": 4096,
+              "executable": "T:\\00-Active\\CETA-desktop-delivery-20260906\\build\\managed-runtime-qualification-v0343\\data\\managed-runtimes\\ollama-0.34.3-306ce9e81e3491d1\\lib\\ollama\\llama-server.exe",
+              "job": "Local\\CETA-runtime-3a7682797be54d0a888bb556d582b335",
+              "model_digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+              "model_path": "T:\\00-Active\\CETA-desktop-delivery-20260906\\build\\managed-runtime-qualification-v0343\\data\\managed-runtime-state\\models\\blobs\\sha256-7f4030143c1c477224c5434f8272c662a8b042079a0a584f0a27a1684fe2e1fa",
+              "runner": {
+                "host": "127.0.0.1",
+                "owner": {
+                  "created_100ns": 134350521611997167,
+                  "pid": 21440,
+                  "source": "Windows process times"
+                },
+                "port": 51423
+              },
+              "runtime_archive_sha256": "306ce9e81e3491d147f558e60d7a389499f244d10f71859c6e4e899241d1b4ae"
+            },
+            "input_tokens": 1106,
+            "messages_sha256": "80a308be75a6de672e45b3992eed8e14a4f9b3fad6ba3e7cb4ee5c04afbe9c1e",
+            "method": "owned-ollama-render-llama-tokenize-v1",
+            "rendered_sha256": "dc99cb3b2b1fce31d04dbb4bef852538fad946bb7388784a4fc93718b624a1a8",
+            "scope": "Exact text count for this observed worker; asset lifetime and capability qualification remain separate.",
+            "verified": true
+          },
+          "verified": true
+        },
+        "omitted": []
+      }
+    },
+    {
+      "operation": "oversized_request_rejected",
+      "reason": "The current request and mandatory instructions exceed this context budget after reserving 128 output tokens. Shorten the request or select a qualified larger context; your draft is retained.",
+      "generation_intents": 0,
+      "backend_state": {
+        "state": "idle",
+        "terminal_observed": true,
+        "dispatched": true,
+        "runtime": "loopback:51411",
+        "scope": "cooperating CETA requests in this OS account; external clients remain independent"
+      }
+    },
+    {
+      "operation": "unload",
+      "result": {
+        "status": "unloaded",
+        "model": "ceta-qwen3-06b:7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+        "digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+        "owner": {
+          "pid": 6536,
+          "created_100ns": 134350521473425862,
+          "source": "Windows process times"
+        },
+        "observed_at": 1790578665.1005888,
+        "scope": "Ollama acknowledged unload and no longer reports this model resident; external clients remain independent."
+      }
+    },
+    {
+      "operation": "cancel_generation",
+      "result": {
+        "provider": "ceta-local",
+        "model": "ceta-qwen3-06b:7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+        "status": "cancelled",
+        "text": "Here",
+        "error": null,
+        "generation": {
+          "max_tokens": 512,
+          "context_length": 4096
+        },
+        "resource_admission": {
+          "mode": "resident",
+          "preloaded": true,
+          "digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+          "placement": "external-runtime-managed",
+          "verified": false,
+          "reason": "The runtime reports this digest already allocated at the requested context; placement and quiescence remain unverified."
+        },
+        "backend_state": {
+          "state": "uncertain",
+          "terminal_observed": false,
+          "dispatched": true,
+          "runtime": "loopback:51411",
+          "scope": "cooperating CETA requests in this OS account; external clients remain independent"
+        },
+        "context": {
+          "capture_claim_id": "cl_2c7591591e9d4d9b",
+          "capture_evidence_id": "ev_2338639153a74e3b",
+          "context_hash": "8dbbf9d34e674762fdaac4627772b4bf970be0db4dc90cb092444b6c95895a7a",
+          "objective": "Synthetic managed cancellation verification",
+          "project_context": {
+            "files": [],
+            "fingerprint": "f4cbc935fbcbcff074e582ab18fa14674b63ffefaab145e231586d7a05adbffa",
+            "instructions": [],
+            "objective": "Synthetic managed cancellation verification",
+            "policy_version": "ceta-coding-policy-v1",
+            "project_id": "application",
+            "root": null
+          },
+          "project_id": "application",
+          "proposal_id": "pr_248e45efd38e4f9d",
+          "receipt": {
+            "actor_id": "local-user:Quencher",
+            "claim_versions": {
+              "cl_2c7591591e9d4d9b": 2
+            },
+            "expires_at": "2026-09-28T07:02:48.231816+00:00",
+            "issued_at": "2026-09-28T06:57:48.231816+00:00",
+            "policy_id": "ceta-context-capture",
+            "policy_version": "1",
+            "receipt_hash": "649565b5f34e8ced1383effdb0966d6277a29f2b6a358cd7803f2f253037aae0",
+            "receipt_id": "ctx_c2c2ea48466848a0",
+            "state_fingerprint": "7775b51802c70d167ff39bff605099e90f46ea40ec56d03c5f7dd089ea2af5d1",
+            "task_id": "task-f1057186bd02481f8b0fd0c2116b0099"
+          },
+          "snapshot_hash": "53b544a13bb1c4a753ac5aeab72ae191e19123bd8f2d0716ac2cd62d865e221e",
+          "task_id": "task-f1057186bd02481f8b0fd0c2116b0099",
+          "unresolved_claims": []
+        },
+        "evidence": {
+          "evidence_id": "ev_209b01c391f94fc6",
+          "artifact_hash": "382ca781d19d1487231f84d1d55cea48633f077ff5ea7f0b1b5438e21180dca3",
+          "observation_id": "58861b0f28f841d4be389ed37e25f1e0",
+          "project_id": "application",
+          "task_id": "task-f1057186bd02481f8b0fd0c2116b0099"
+        },
+        "invocation_id": "generation-786bfc164f2f4150879af4de723c2e97",
+        "role_proposal": null,
+        "request_id": "request-c29b7c2b30ca4013a0bdcb7506b1fcbe",
+        "payload_hash": "bba77a33eb8dec030b280a14b691bb3744159ef54370bbca5360c2693f7c4abf",
+        "budget": {
+          "context_length": 4096,
+          "input_token_estimate": 116,
+          "input_tokens": 116,
+          "limitation": "Exact text count for this observed worker; asset lifetime and capability qualification remain separate.",
+          "method": "owned-ollama-render-llama-tokenize-v1",
+          "reserved_output_tokens": 512,
+          "retained_history_pairs": 0,
+          "template_overhead_reserve": 1,
+          "tokenization": {
+            "binding": {
+              "context_length": 4096,
+              "executable": "T:\\00-Active\\CETA-desktop-delivery-20260906\\build\\managed-runtime-qualification-v0343\\data\\managed-runtimes\\ollama-0.34.3-306ce9e81e3491d1\\lib\\ollama\\llama-server.exe",
+              "job": "Local\\CETA-runtime-3a7682797be54d0a888bb556d582b335",
+              "model_digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+              "model_path": "T:\\00-Active\\CETA-desktop-delivery-20260906\\build\\managed-runtime-qualification-v0343\\data\\managed-runtime-state\\models\\blobs\\sha256-7f4030143c1c477224c5434f8272c662a8b042079a0a584f0a27a1684fe2e1fa",
+              "runner": {
+                "host": "127.0.0.1",
+                "owner": {
+                  "created_100ns": 134350522784769591,
+                  "pid": 4200,
+                  "source": "Windows process times"
+                },
+                "port": 50212
+              },
+              "runtime_archive_sha256": "306ce9e81e3491d147f558e60d7a389499f244d10f71859c6e4e899241d1b4ae"
+            },
+            "input_tokens": 116,
+            "messages_sha256": "50f3ffc7e631e8359534c058ebbfcc705d5b2adbf6ecf21723ad83f63bdba505",
+            "method": "owned-ollama-render-llama-tokenize-v1",
+            "rendered_sha256": "0b6ede56e0d302869929754d3f6b783ce0d74e4cf0bf7f43890e70a50c06876f",
+            "scope": "Exact text count for this observed worker; asset lifetime and capability qualification remain separate.",
+            "verified": true
+          },
+          "verified": true
+        },
+        "omitted": []
+      }
+    },
+    {
+      "operation": "stop",
+      "result": {
+        "job_name": "Local\\CETA-runtime-3a7682797be54d0a888bb556d582b335",
+        "active_processes": 0,
+        "total_processes": 15,
+        "kill_on_close": true,
+        "breakaway": false
+      }
+    },
+    {
+      "operation": "reconcile",
+      "result": {
+        "state": "idle",
+        "method": "owned_job_ended",
+        "job": {
+          "job_name": "Local\\CETA-runtime-3a7682797be54d0a888bb556d582b335",
+          "state": "absent",
+          "active_processes": 0
+        },
+        "prior_request_id": "5a8ab7c3439449329647f2339a823d4c",
+        "observed_at": 1790578685.4654322,
+        "reason": "The recorded Windows job has no remaining workers. Start the owned runtime again before sending a request.",
+        "scope": "Job members only; brokered or remote work is outside this lifetime control."
+      }
+    },
+    {
+      "operation": "health",
+      "result": {
+        "status": "service_healthy",
+        "backend": "ollama",
+        "health": {
+          "version": "0.34.3"
+        },
+        "models": [
+          "ceta-qwen3-06b:7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435"
+        ],
+        "skipped_models": [],
+        "endpoint": {
+          "host": "127.0.0.1",
+          "port": 51411,
+          "prefix": "/v1"
+        },
+        "containment": {
+          "job_name": "Local\\CETA-runtime-3514f93c519a44f6843a7a45879f25b4",
+          "state": "present",
+          "active_processes": 2,
+          "total_processes": 11,
+          "kill_on_close": true,
+          "breakaway": false,
+          "owner_contained": true,
+          "owner": {
+            "pid": 9600,
+            "created_100ns": 134350522854751130,
+            "source": "Windows process times"
+          }
+        },
+        "elapsed_seconds": 1.0470000000059372,
+        "inference": "not_tested",
+        "scope": "Owned HTTP metadata response only"
+      }
+    },
+    {
+      "operation": "probe_after_restart",
+      "result": {
+        "status": "verified",
+        "model": "ceta-qwen3-06b:7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+        "response": "No project content.  \nCETA_READY.",
+        "elapsed_seconds": 1.3279999999940628,
+        "characters": 33,
+        "locality": "local",
+        "runtime": {
+          "name": "ceta-qwen3-06b:7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+          "model": "ceta-qwen3-06b:7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+          "digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+          "source": "runtime-reported",
+          "size": 1018534295,
+          "size_vram": 0,
+          "context_length": 4096
+        },
+        "telemetry_source": "runtime-reported",
+        "memory_assessment": {
+          "mode": "resident",
+          "preloaded": true,
+          "digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+          "placement": "external-runtime-managed",
+          "verified": false,
+          "reason": "The runtime reports this digest already allocated at the requested context; placement and quiescence remain unverified."
+        },
+        "backend_state": {
+          "state": "idle",
+          "terminal_observed": true,
+          "dispatched": true,
+          "runtime": "loopback:51411",
+          "scope": "cooperating CETA requests in this OS account; external clients remain independent"
+        }
+      }
+    },
+    {
+      "operation": "stop",
+      "result": {
+        "job_name": "Local\\CETA-runtime-3514f93c519a44f6843a7a45879f25b4",
+        "active_processes": 0,
+        "total_processes": 13,
+        "kill_on_close": true,
+        "breakaway": false
+      }
+    }
+  ],
+  "runtime": {
+    "schema": "ceta.runtime-installation.v1",
+    "backend": "ollama",
+    "version": "0.34.3",
+    "archive_sha256": "306ce9e81e3491d147f558e60d7a389499f244d10f71859c6e4e899241d1b4ae",
+    "files_verified": 82,
+    "executable": "T:\\00-Active\\CETA-desktop-delivery-20260906\\build\\managed-runtime-qualification-v0343\\data\\managed-runtimes\\ollama-0.34.3-306ce9e81e3491d1\\ollama.exe",
+    "verified_at": 1790578546.7247255,
+    "inference": "not_tested",
+    "scope": "Pinned runtime bytes; device support and inference require separate checks."
+  },
+  "model": {
+    "schema": "ceta.managed-model-installation.v1",
+    "model": "ceta-qwen3-06b:7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+    "catalog_id": "qwen3-06b",
+    "sha256": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+    "files_verified": 5,
+    "observed_at": 1790578547.15241,
+    "bytes": 522653767,
+    "inference": "not_tested"
+  },
+  "hardware": {
+    "total_ram_bytes": 16561942528,
+    "available_ram_bytes": 7105277952,
+    "logical_cpus": 16,
+    "gpus": [
+      {
+        "name": "AMD Radeon (TM) Graphics",
+        "total_bytes": 519634944,
+        "free_bytes": 519634944,
+        "backend": "DXGI process budget"
+      }
+    ],
+    "warnings": [
+      "Windows GPU budgets belong to this CETA process; the model service's budget may differ."
+    ]
+  },
+  "source_after_sha256": "a5f0f3e392189a424d01b0fb60f1d9d368d4f4d4cd709cc292fb9ba1aba27c22",
+  "source_unchanged": true
+}

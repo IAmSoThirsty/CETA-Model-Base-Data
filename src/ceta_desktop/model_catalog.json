@@ -1,0 +1,108 @@
+{
+  "schema": "ceta.managed-model-catalog.v1",
+  "revision": "2026-09-27.1",
+  "entries": [
+    {
+      "id": "qwen3-06b",
+      "label": "Qwen3 0.6B",
+      "description": "Smallest download; limited text assistant",
+      "repository": "library/qwen3",
+      "source_tag": "0.6b-q4_K_M",
+      "source": "https://ollama.com/library/qwen3:0.6b-q4_K_M",
+      "quantization": "Q4_K_M",
+      "manifest": "{\"schemaVersion\":2,\"mediaType\":\"application/vnd.docker.distribution.manifest.v2+json\",\"config\":{\"mediaType\":\"application/vnd.docker.container.image.v1+json\",\"digest\":\"sha256:b0830f4ff6a0220cfd995455206353b0ed23c0aee865218b154b7a75087b4e55\",\"size\":490},\"layers\":[{\"mediaType\":\"application/vnd.ollama.image.model\",\"digest\":\"sha256:7f4030143c1c477224c5434f8272c662a8b042079a0a584f0a27a1684fe2e1fa\",\"size\":522640096},{\"mediaType\":\"application/vnd.ollama.image.template\",\"digest\":\"sha256:ae370d884f108d16e7cc8fd5259ebc5773a0afa6e078b11f4ed7e39a27e0dfc4\",\"size\":1723},{\"mediaType\":\"application/vnd.ollama.image.license\",\"digest\":\"sha256:d18a5cc71b84bc4af394a31116bd3932b42241de70c77d2b76d69a314ec8aa12\",\"size\":11338},{\"mediaType\":\"application/vnd.ollama.image.params\",\"digest\":\"sha256:cff3f395ef3756ab63e58b0ad1b32bb6f802905cae1472e6a12034e4246fbbdb\",\"size\":120}]}",
+      "sha256": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+      "runtime_version": "0.34.3",
+      "capabilities": [
+        "text"
+      ],
+      "qualification": "candidate; local execution and quality unverified"
+    },
+    {
+      "id": "qwen3-17b",
+      "label": "Qwen3 1.7B",
+      "description": "Lightweight text candidate",
+      "repository": "library/qwen3",
+      "source_tag": "1.7b-q4_K_M",
+      "source": "https://ollama.com/library/qwen3:1.7b-q4_K_M",
+      "quantization": "Q4_K_M",
+      "manifest": "{\"schemaVersion\":2,\"mediaType\":\"application/vnd.docker.distribution.manifest.v2+json\",\"config\":{\"mediaType\":\"application/vnd.docker.container.image.v1+json\",\"digest\":\"sha256:517ccaff02fe9f99718ab2f478e611aa2813c36263eeed86c2427bc122d14ad8\",\"size\":487},\"layers\":[{\"mediaType\":\"application/vnd.ollama.image.model\",\"digest\":\"sha256:3d0b790534fe4b79525fc3692950408dca41171676ed7e21db57af5c65ef6ab6\",\"size\":1359279776},{\"mediaType\":\"application/vnd.ollama.image.template\",\"digest\":\"sha256:ae370d884f108d16e7cc8fd5259ebc5773a0afa6e078b11f4ed7e39a27e0dfc4\",\"size\":1723},{\"mediaType\":\"application/vnd.ollama.image.license\",\"digest\":\"sha256:d18a5cc71b84bc4af394a31116bd3932b42241de70c77d2b76d69a314ec8aa12\",\"size\":11338},{\"mediaType\":\"application/vnd.ollama.image.params\",\"digest\":\"sha256:cff3f395ef3756ab63e58b0ad1b32bb6f802905cae1472e6a12034e4246fbbdb\",\"size\":120}]}",
+      "sha256": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+      "runtime_version": "0.34.3",
+      "capabilities": [
+        "text"
+      ],
+      "qualification": "candidate; local execution and quality unverified"
+    },
+    {
+      "id": "qwen3-4b",
+      "label": "Qwen3 4B Instruct",
+      "description": "Balanced text candidate",
+      "repository": "library/qwen3",
+      "source_tag": "4b-instruct-2507-q4_K_M",
+      "source": "https://ollama.com/library/qwen3:4b-instruct-2507-q4_K_M",
+      "quantization": "Q4_K_M",
+      "manifest": "{\"schemaVersion\":2,\"mediaType\":\"application/vnd.docker.distribution.manifest.v2+json\",\"config\":{\"mediaType\":\"application/vnd.docker.container.image.v1+json\",\"digest\":\"sha256:b72accf9724e93698c57cbd3b1af2d3341b3d05ec2089d86d273d97964853cd2\",\"size\":487},\"layers\":[{\"mediaType\":\"application/vnd.ollama.image.model\",\"digest\":\"sha256:85e4a5b7b8ef0e48af0e8658f5aaab9c2324c76c1641493f4d1e25fce54b18b9\",\"size\":2497280480},{\"mediaType\":\"application/vnd.ollama.image.template\",\"digest\":\"sha256:eade0a07cac7712787bbce23d12f9306adb4781d873d1df6e16f7840fa37afec\",\"size\":1379},{\"mediaType\":\"application/vnd.ollama.image.license\",\"digest\":\"sha256:d18a5cc71b84bc4af394a31116bd3932b42241de70c77d2b76d69a314ec8aa12\",\"size\":11338},{\"mediaType\":\"application/vnd.ollama.image.params\",\"digest\":\"sha256:0914c7781e001948488d937994217538375b4fd8c1466c5e7a625221abd3ea7a\",\"size\":119}]}",
+      "sha256": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+      "runtime_version": "0.34.3",
+      "capabilities": [
+        "text"
+      ],
+      "qualification": "candidate; local execution and quality unverified"
+    },
+    {
+      "id": "qwen3-8b",
+      "label": "Qwen3 8B",
+      "description": "Larger text candidate",
+      "repository": "library/qwen3",
+      "source_tag": "8b-q4_K_M",
+      "source": "https://ollama.com/library/qwen3:8b-q4_K_M",
+      "quantization": "Q4_K_M",
+      "manifest": "{\"schemaVersion\":2,\"mediaType\":\"application/vnd.docker.distribution.manifest.v2+json\",\"config\":{\"mediaType\":\"application/vnd.docker.container.image.v1+json\",\"digest\":\"sha256:05a61d37b08453e59290add468e3bb2f688e23a01e967fecb0e2fa41218cea76\",\"size\":487},\"layers\":[{\"mediaType\":\"application/vnd.ollama.image.model\",\"digest\":\"sha256:a3de86cd1c132c822487ededd47a324c50491393e6565cd14bafa40d0b8e686f\",\"size\":5225374496},{\"mediaType\":\"application/vnd.ollama.image.template\",\"digest\":\"sha256:ae370d884f108d16e7cc8fd5259ebc5773a0afa6e078b11f4ed7e39a27e0dfc4\",\"size\":1723},{\"mediaType\":\"application/vnd.ollama.image.license\",\"digest\":\"sha256:d18a5cc71b84bc4af394a31116bd3932b42241de70c77d2b76d69a314ec8aa12\",\"size\":11338},{\"mediaType\":\"application/vnd.ollama.image.params\",\"digest\":\"sha256:cff3f395ef3756ab63e58b0ad1b32bb6f802905cae1472e6a12034e4246fbbdb\",\"size\":120}]}",
+      "sha256": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+      "runtime_version": "0.34.3",
+      "capabilities": [
+        "text"
+      ],
+      "qualification": "candidate; local execution and quality unverified"
+    },
+    {
+      "id": "qwen3-14b",
+      "label": "Qwen3 14B",
+      "description": "Higher memory text candidate",
+      "repository": "library/qwen3",
+      "source_tag": "14b-q4_K_M",
+      "source": "https://ollama.com/library/qwen3:14b-q4_K_M",
+      "quantization": "Q4_K_M",
+      "manifest": "{\"schemaVersion\":2,\"mediaType\":\"application/vnd.docker.distribution.manifest.v2+json\",\"config\":{\"mediaType\":\"application/vnd.docker.container.image.v1+json\",\"digest\":\"sha256:78b3b822087d5199783c8203553a5a92ce5eb7b683a5a81003f8efea9b399d74\",\"size\":488},\"layers\":[{\"mediaType\":\"application/vnd.ollama.image.model\",\"digest\":\"sha256:a8cc1361f3145dc01f6d77c6c82c9116b9ffe3c97b34716fe20418455876c40e\",\"size\":9276184896},{\"mediaType\":\"application/vnd.ollama.image.template\",\"digest\":\"sha256:ae370d884f108d16e7cc8fd5259ebc5773a0afa6e078b11f4ed7e39a27e0dfc4\",\"size\":1723},{\"mediaType\":\"application/vnd.ollama.image.license\",\"digest\":\"sha256:d18a5cc71b84bc4af394a31116bd3932b42241de70c77d2b76d69a314ec8aa12\",\"size\":11338},{\"mediaType\":\"application/vnd.ollama.image.params\",\"digest\":\"sha256:cff3f395ef3756ab63e58b0ad1b32bb6f802905cae1472e6a12034e4246fbbdb\",\"size\":120}]}",
+      "sha256": "bdbd181c33f2ed1b31c972991882db3cf4d192569092138a7d29e973cd9debe8",
+      "runtime_version": "0.34.3",
+      "capabilities": [
+        "text"
+      ],
+      "qualification": "candidate; local execution and quality unverified"
+    },
+    {
+      "id": "qwen3-32b",
+      "label": "Qwen3 32B",
+      "description": "Largest catalog candidate; substantial memory required",
+      "repository": "library/qwen3",
+      "source_tag": "32b-q4_K_M",
+      "source": "https://ollama.com/library/qwen3:32b-q4_K_M",
+      "quantization": "Q4_K_M",
+      "manifest": "{\"schemaVersion\":2,\"mediaType\":\"application/vnd.docker.distribution.manifest.v2+json\",\"config\":{\"mediaType\":\"application/vnd.docker.container.image.v1+json\",\"digest\":\"sha256:afdf5c7585b363536f93782f1e44f1b81db4237847cd8b4bd2c5c33b0d76c94b\",\"size\":488},\"layers\":[{\"mediaType\":\"application/vnd.ollama.image.model\",\"digest\":\"sha256:3291abe70f16ee9682de7bfae08db5373ea9d6497e614aaad63340ad421d6312\",\"size\":20201240160},{\"mediaType\":\"application/vnd.ollama.image.template\",\"digest\":\"sha256:ae370d884f108d16e7cc8fd5259ebc5773a0afa6e078b11f4ed7e39a27e0dfc4\",\"size\":1723},{\"mediaType\":\"application/vnd.ollama.image.license\",\"digest\":\"sha256:d18a5cc71b84bc4af394a31116bd3932b42241de70c77d2b76d69a314ec8aa12\",\"size\":11338},{\"mediaType\":\"application/vnd.ollama.image.params\",\"digest\":\"sha256:cff3f395ef3756ab63e58b0ad1b32bb6f802905cae1472e6a12034e4246fbbdb\",\"size\":120}]}",
+      "sha256": "030ee887880fc378860c2dd35101da424377520441ae4bfe7be6deff8ade7840",
+      "runtime_version": "0.34.3",
+      "capabilities": [
+        "text"
+      ],
+      "qualification": "candidate; local execution and quality unverified"
+    }
+  ],
+  "licenses": {
+    "sha256:d18a5cc71b84bc4af394a31116bd3932b42241de70c77d2b76d69a314ec8aa12": "                                 Apache License\n                           Version 2.0, January 2004\n                        http://www.apache.org/licenses/\n\n   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\n\n   1. Definitions.\n\n      \"License\" shall mean the terms and conditions for use, reproduction,\n      and distribution as defined by Sections 1 through 9 of this document.\n\n      \"Licensor\" shall mean the copyright owner or entity authorized by\n      the copyright owner that is granting the License.\n\n      \"Legal Entity\" shall mean the union of the acting entity and all\n      other entities that control, are controlled by, or are under common\n      control with that entity. For the purposes of this definition,\n      \"control\" means (i) the power, direct or indirect, to cause the\n      direction or management of such entity, whether by contract or\n      otherwise, or (ii) ownership of fifty percent (50%) or more of the\n      outstanding shares, or (iii) beneficial ownership of such entity.\n\n      \"You\" (or \"Your\") shall mean an individual or Legal Entity\n      exercising permissions granted by this License.\n\n      \"Source\" form shall mean the preferred form for making modifications,\n      including but not limited to software source code, documentation\n      source, and configuration files.\n\n      \"Object\" form shall mean any form resulting from mechanical\n      transformation or translation of a Source form, including but\n      not limited to compiled object code, generated documentation,\n      and conversions to other media types.\n\n      \"Work\" shall mean the work of authorship, whether in Source or\n      Object form, made available under the License, as indicated by a\n      copyright notice that is included in or attached to the work\n      (an example is provided in the Appendix below).\n\n      \"Derivative Works\" shall mean any work, whether in Source or Object\n      form, that is based on (or derived from) the Work and for which the\n      editorial revisions, annotations, elaborations, or other modifications\n      represent, as a whole, an original work of authorship. For the purposes\n      of this License, Derivative Works shall not include works that remain\n      separable from, or merely link (or bind by name) to the interfaces of,\n      the Work and Derivative Works thereof.\n\n      \"Contribution\" shall mean any work of authorship, including\n      the original version of the Work and any modifications or additions\n      to that Work or Derivative Works thereof, that is intentionally\n      submitted to Licensor for inclusion in the Work by the copyright owner\n      or by an individual or Legal Entity authorized to submit on behalf of\n      the copyright owner. For the purposes of this definition, \"submitted\"\n      means any form of electronic, verbal, or written communication sent\n      to the Licensor or its representatives, including but not limited to\n      communication on electronic mailing lists, source code control systems,\n      and issue tracking systems that are managed by, or on behalf of, the\n      Licensor for the purpose of discussing and improving the Work, but\n      excluding communication that is conspicuously marked or otherwise\n      designated in writing by the copyright owner as \"Not a Contribution.\"\n\n      \"Contributor\" shall mean Licensor and any individual or Legal Entity\n      on behalf of whom a Contribution has been received by Licensor and\n      subsequently incorporated within the Work.\n\n   2. Grant of Copyright License. Subject to the terms and conditions of\n      this License, each Contributor hereby grants to You a perpetual,\n      worldwide, non-exclusive, no-charge, royalty-free, irrevocable\n      copyright license to reproduce, prepare Derivative Works of,\n      publicly display, publicly perform, sublicense, and distribute the\n      Work and such Derivative Works in Source or Object form.\n\n   3. Grant of Patent License. Subject to the terms and conditions of\n      this License, each Contributor hereby grants to You a perpetual,\n      worldwide, non-exclusive, no-charge, royalty-free, irrevocable\n      (except as stated in this section) patent license to make, have made,\n      use, offer to sell, sell, import, and otherwise transfer the Work,\n      where such license applies only to those patent claims licensable\n      by such Contributor that are necessarily infringed by their\n      Contribution(s) alone or by combination of their Contribution(s)\n      with the Work to which such Contribution(s) was submitted. If You\n      institute patent litigation against any entity (including a\n      cross-claim or counterclaim in a lawsuit) alleging that the Work\n      or a Contribution incorporated within the Work constitutes direct\n      or contributory patent infringement, then any patent licenses\n      granted to You under this License for that Work shall terminate\n      as of the date such litigation is filed.\n\n   4. Redistribution. You may reproduce and distribute copies of the\n      Work or Derivative Works thereof in any medium, with or without\n      modifications, and in Source or Object form, provided that You\n      meet the following conditions:\n\n      (a) You must give any other recipients of the Work or\n          Derivative Works a copy of this License; and\n\n      (b) You must cause any modified files to carry prominent notices\n          stating that You changed the files; and\n\n      (c) You must retain, in the Source form of any Derivative Works\n          that You distribute, all copyright, patent, trademark, and\n          attribution notices from the Source form of the Work,\n          excluding those notices that do not pertain to any part of\n          the Derivative Works; and\n\n      (d) If the Work includes a \"NOTICE\" text file as part of its\n          distribution, then any Derivative Works that You distribute must\n          include a readable copy of the attribution notices contained\n          within such NOTICE file, excluding those notices that do not\n          pertain to any part of the Derivative Works, in at least one\n          of the following places: within a NOTICE text file distributed\n          as part of the Derivative Works; within the Source form or\n          documentation, if provided along with the Derivative Works; or,\n          within a display generated by the Derivative Works, if and\n          wherever such third-party notices normally appear. The contents\n          of the NOTICE file are for informational purposes only and\n          do not modify the License. You may add Your own attribution\n          notices within Derivative Works that You distribute, alongside\n          or as an addendum to the NOTICE text from the Work, provided\n          that such additional attribution notices cannot be construed\n          as modifying the License.\n\n      You may add Your own copyright statement to Your modifications and\n      may provide additional or different license terms and conditions\n      for use, reproduction, or distribution of Your modifications, or\n      for any such Derivative Works as a whole, provided Your use,\n      reproduction, and distribution of the Work otherwise complies with\n      the conditions stated in this License.\n\n   5. Submission of Contributions. Unless You explicitly state otherwise,\n      any Contribution intentionally submitted for inclusion in the Work\n      by You to the Licensor shall be under the terms and conditions of\n      this License, without any additional terms or conditions.\n      Notwithstanding the above, nothing herein shall supersede or modify\n      the terms of any separate license agreement you may have executed\n      with Licensor regarding such Contributions.\n\n   6. Trademarks. This License does not grant permission to use the trade\n      names, trademarks, service marks, or product names of the Licensor,\n      except as required for reasonable and customary use in describing the\n      origin of the Work and reproducing the content of the NOTICE file.\n\n   7. Disclaimer of Warranty. Unless required by applicable law or\n      agreed to in writing, Licensor provides the Work (and each\n      Contributor provides its Contributions) on an \"AS IS\" BASIS,\n      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or\n      implied, including, without limitation, any warranties or conditions\n      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A\n      PARTICULAR PURPOSE. You are solely responsible for determining the\n      appropriateness of using or redistributing the Work and assume any\n      risks associated with Your exercise of permissions under this License.\n\n   8. Limitation of Liability. In no event and under no legal theory,\n      whether in tort (including negligence), contract, or otherwise,\n      unless required by applicable law (such as deliberate and grossly\n      negligent acts) or agreed to in writing, shall any Contributor be\n      liable to You for damages, including any direct, indirect, special,\n      incidental, or consequential damages of any character arising as a\n      result of this License or out of the use or inability to use the\n      Work (including but not limited to damages for loss of goodwill,\n      work stoppage, computer failure or malfunction, or any and all\n      other commercial damages or losses), even if such Contributor\n      has been advised of the possibility of such damages.\n\n   9. Accepting Warranty or Additional Liability. While redistributing\n      the Work or Derivative Works thereof, You may choose to offer,\n      and charge a fee for, acceptance of support, warranty, indemnity,\n      or other liability obligations and/or rights consistent with this\n      License. However, in accepting such obligations, You may act only\n      on Your own behalf and on Your sole responsibility, not on behalf\n      of any other Contributor, and only if You agree to indemnify,\n      defend, and hold each Contributor harmless for any liability\n      incurred by, or claims asserted against, such Contributor by reason\n      of your accepting any such warranty or additional liability.\n\n   END OF TERMS AND CONDITIONS\n\n   APPENDIX: How to apply the Apache License to your work.\n\n      To apply the Apache License to your work, attach the following\n      boilerplate notice, with the fields enclosed by brackets \"[]\"\n      replaced with your own identifying information. (Don't include\n      the brackets!)  The text should be enclosed in the appropriate\n      comment syntax for the file format. We also recommend that a\n      file or class name and description of purpose be included on the\n      same \"printed page\" as the copyright notice for easier\n      identification within third-party archives.\n   Copyright 2024 Alibaba Cloud\n   Licensed under the Apache License, Version 2.0 (the \"License\");\n   you may not use this file except in compliance with the License.\n   You may obtain a copy of the License at\n       http://www.apache.org/licenses/LICENSE-2.0\n   Unless required by applicable law or agreed to in writing, software\n   distributed under the License is distributed on an \"AS IS\" BASIS,\n   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n   See the License for the specific language governing permissions and\n   limitations under the License."
+  },
+  "registry_blob_redirect_hosts": [
+    "dd20bb891979d25aebc8bec07b2b3bbc.r2.cloudflarestorage.com"
+  ]
+}

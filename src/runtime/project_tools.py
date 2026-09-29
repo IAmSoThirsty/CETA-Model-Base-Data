@@ -18,6 +18,7 @@ import time
 from typing import Any, Callable, Mapping, Sequence
 
 from ceta_desktop.workspace import MAX_EDITOR_BYTES, Workspace, WorkspaceError
+from ceta_desktop.request_control import ModelCancelledError, ModelDeadlineError, checkpoint
 
 MAX_SCAN_ENTRIES = 10_000
 MAX_CONTEXT_CHARS = 64_000
@@ -57,6 +58,7 @@ def _alias(path: Path) -> bool:
 
 
 def _root(root: Path | str) -> Path:
+    checkpoint()
     source = Path(os.path.abspath(root))
     if any(_sensitive(part) for part in source.parts):
         raise ProjectToolError("Git internals and sensitive directories cannot be selected as project roots.")
@@ -117,6 +119,7 @@ def _checked(root: Path, path: Path | str, *, allow_new: bool = False) -> Path:
 
 def read_file(root: Path | str, path: Path | str) -> dict[str, Any]:
     """Read bounded UTF-8 source; never silently truncate source evidence."""
+    checkpoint()
     root = _root(root)
     target = _checked(root, path)
     if target.stat().st_size > MAX_EDITOR_BYTES:
@@ -126,6 +129,7 @@ def read_file(root: Path | str, path: Path | str) -> dict[str, Any]:
         if before.st_nlink > 1 or not stat.S_ISREG(before.st_mode):
             raise ProjectToolError("Source must be a regular, unaliased project file.")
         raw = stream.read(MAX_EDITOR_BYTES + 1)
+        checkpoint()
         after = os.fstat(stream.fileno())
     current = _checked(root, path).stat()
     if (current.st_ino, current.st_dev, current.st_mtime_ns, current.st_size) != (
@@ -153,19 +157,24 @@ def _inventory(root: Path) -> tuple[list[dict[str, Any]], list[dict[str, str]], 
     entries_seen = 0
     truncated = False
     while pending:
+        checkpoint()
         directory = pending.pop()
         try:
             with os.scandir(directory) as iterator:
                 entries = []
                 for entry in iterator:
+                    checkpoint()
                     entries_seen += 1
                     if entries_seen > MAX_SCAN_ENTRIES:
                         truncated = True
                         break
                     entries.append(entry)
+        except (ModelCancelledError, ModelDeadlineError):
+            raise
         except OSError as exc:
             raise ProjectToolError(f"Cannot inspect directory {directory.relative_to(root)}: {exc}") from exc
         for entry in sorted(entries, key=lambda item: item.name.casefold()):
+            checkpoint()
             target = Path(entry.path)
             relative = target.relative_to(root).as_posix()
             reason = None
@@ -241,6 +250,7 @@ def _capture_git(argv: list[str], root: Path, environment: dict[str, str], *,
             reader.start()
         ended = set()
         while len(ended) != 2 or process.poll() is None:
+            checkpoint()
             if time.monotonic() - started >= timeout_seconds:
                 raise _GitInspectionLimit("Git inspection exceeded its time budget.")
             try:
@@ -288,7 +298,10 @@ def _git_state(root: Path) -> dict[str, Any]:
 
     def query(*args: str) -> subprocess.CompletedProcess[str]:
         try:
+            checkpoint()
             return _capture_git(base + list(args), root, environment)
+        except (ModelCancelledError, ModelDeadlineError):
+            raise
         except (OSError, subprocess.TimeoutExpired) as exc:
             raise ProjectToolError(f"Git inspection failed: {exc}") from exc
 
@@ -437,6 +450,7 @@ def compile_project_context(root: Path | str, objective: str, paths: Sequence[Pa
 
 
 def validate_project_context(context: Mapping[str, Any]) -> None:
+    checkpoint()
     if context.get("schema") != "ceta.project-context.v1" or context.get("fingerprint") != _json_hash(_context_body(context)):
         raise ContextStaleError("Context receipt integrity failed.")
     try:
@@ -454,6 +468,8 @@ def validate_project_context(context: Mapping[str, Any]) -> None:
         for document in [*context["instructions"], *context["files"], *context["omitted"]]:
             if read_file(context["root"], document["path"])["sha256"] != document["sha256"]:
                 raise ContextStaleError(f"Context file changed: {document['path']}")
+    except (ModelCancelledError, ModelDeadlineError):
+        raise
     except (OSError, KeyError, TypeError, ProjectToolError) as exc:
         if isinstance(exc, ContextStaleError):
             raise

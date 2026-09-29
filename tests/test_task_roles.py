@@ -37,7 +37,7 @@ class TaskRoleTests(unittest.TestCase):
                 result = self.runtime.generate(self.task_id, provider, "test-only", [{"role": "user", "content": "Review it"}], paths=("source.py",), role=role)
                 self.assertEqual(len(provider.calls), 1)
                 self.assertIn("Selected role: " + role, provider.calls[0][1][0]["content"])
-                self.assertIn("answer = 1", provider.calls[0][1][0]["content"])
+                self.assertIn("answer = 1", provider.calls[0][1][-1]["content"])
                 proposal = result["role_proposal"]
                 self.assertFalse(proposal["grants_authority"])
                 self.assertFalse(proposal["independent_evidence"])

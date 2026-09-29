@@ -41,3 +41,36 @@ saved. This check does not restrict running compatible modified local libraries.
 Conversations and model packs are in a separate application-data folder.
 
 See [Qt's upstream explanation](https://www.qt.io/development/open-source-lgpl-obligations).
+
+## Optional managed Ollama runtime
+
+CETA's managed runtime controls download or import the official standalone Ollama
+0.34.3 Windows x64 distribution only when explicitly requested. Runtime binaries
+and models are not bundled with the CETA installer. The catalog in
+`ceta_desktop/runtime_catalog.json` retains the upstream Ollama MIT license text
+and pins every file in that optional archive. The Models page's **Runtime licenses**
+control shows that license and the dependency-notice paths before downloading.
+
+The imported runtime's `lib/ollama` directory retains all license, copyright and
+notice files supplied in the archive, without modification. Those dependencies
+carry their own terms. CETA verifies this managed distribution against its pinned
+catalog; the advanced existing-runtime path remains available for other or
+modified compatible installations. These managed runtime checks do not change
+the Qt library replacement rights and instructions above.
+
+Upstream: [Ollama v0.34.3](https://github.com/ollama/ollama/releases/tag/v0.34.3)
+and [its MIT license](https://raw.githubusercontent.com/ollama/ollama/v0.34.3/LICENSE).
+
+## Optional managed Qwen3 models
+
+The managed model catalog offers optional Qwen3 text models from the Ollama
+registry. Model weights are not bundled with CETA and are acquired only through
+an explicit download or offline import. `ceta_desktop/model_catalog.json` pins
+each model manifest and all referenced files, including the upstream Apache 2.0
+license text. **Model license** displays that text before acquisition.
+
+Verified installation preserves the upstream license blob without modification;
+CETA's offline model export includes it with the original manifest and all other
+referenced blobs. Import verifies the same pinned files. Model assets carry their
+own license terms; their inclusion in the catalog is not a claim about model
+quality or compatibility with every computer.

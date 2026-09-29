@@ -64,6 +64,8 @@ class Store:
             self.db.execute("DELETE FROM messages WHERE conversation_id=?", (identifier,))
             self.db.execute("DELETE FROM conversations WHERE id=?", (identifier,))
             self._delete_setting("chat_draft:" + identifier)
+            self._delete_setting("attachments:chat_draft:" + identifier)
+            self._delete_setting("request_retry:" + identifier)
             if self.setting("active_conversation") == identifier:
                 self._delete_setting("active_conversation")
 
@@ -75,8 +77,8 @@ class Store:
                 self.journal.append(scope["project_id"], "conversation.renamed",
                     {"conversation_id": identifier, "title": title}, task_id=scope["task_id"])
 
-    def messages(self, identifier: str) -> list[dict]:
-        return self.journal.conversation_messages(identifier)
+    def messages(self, identifier: str, *, include_sequence=False) -> list[dict]:
+        return self.journal.conversation_messages(identifier, include_sequence=include_sequence)
 
     def add_message(self, identifier: str, role: str, content: str, status: str = "complete") -> int:
         with self.journal.transaction():

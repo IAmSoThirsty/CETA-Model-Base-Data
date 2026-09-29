@@ -152,6 +152,28 @@ class MergedDistributionTests(unittest.TestCase):
         self.assertIn("FAIL", output.getvalue())
         self.assertNotIn("PASS", output.getvalue())
 
+    def test_runner_records_exact_skip_and_rejects_source_change_during_run(self):
+        runner = load_runner()
+        case = unittest.FunctionTestCase(lambda: None)
+        result = unittest.TestResult()
+        result.testsRun = 1
+        result.skipped = [(case, "fixture unavailable")]
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "report.json"
+            with patch.object(runner, "verify_contract_resource", return_value="a" * 64), \
+                    patch.object(runner, "selected_tests", return_value=(ROOT / "tests/test_task_runtime.py",)), \
+                    patch.object(runner.importlib.util, "find_spec", return_value=object()), \
+                    patch.object(runner.unittest.defaultTestLoader, "loadTestsFromNames", return_value=unittest.TestSuite([case])), \
+                    patch.object(runner.unittest.TextTestRunner, "run", return_value=result), \
+                    patch.object(runner, "source_attribution", side_effect=[{"source_sha256": "before"}, {"source_sha256": "after"}]), \
+                    redirect_stdout(io.StringIO()):
+                self.assertEqual(runner.main(["--report", str(report)]), 1)
+            record = json.loads(report.read_text())
+            self.assertFalse(record["passed"])
+            self.assertFalse(record["source_unchanged_during_tests"])
+            self.assertEqual(record["skip_details"], [{"test": case.id(), "reason": "fixture unavailable"}])
+            self.assertEqual(record["test_cases"], [case.id()])
+
 
 if __name__ == "__main__":
     unittest.main()
