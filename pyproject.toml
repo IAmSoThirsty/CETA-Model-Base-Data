@@ -19,12 +19,12 @@ ceta_desktop = ["*.json", "*.svg", "assets/*.png"]
 desktop = ["PySide6-Essentials==6.11.2"]
 training = ["torch>=2.13,<2.14"]
 language-adapter = [
-    "accelerate==1.14.0",
+    "accelerate==1.15.0",
     "bitsandbytes==0.50.1",
     "numpy==2.4.2",
     "peft==0.20.0",
     "safetensors==0.8.0",
-    "transformers==5.10.1",
+    "transformers==5.19.0",
 ]
 
 [dependency-groups]
